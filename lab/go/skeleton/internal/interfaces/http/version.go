@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 
-	"fitness-tracker/internal/interfaces/http/apigen"
+	"skeleton/internal/interfaces/http/apigen"
 )
 
 // GetVersion reports the version the running binary was built from.

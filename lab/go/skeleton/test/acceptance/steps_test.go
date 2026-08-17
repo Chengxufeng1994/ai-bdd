@@ -9,8 +9,8 @@ import (
 
 	"github.com/cucumber/godog"
 
-	apihttp "fitness-tracker/internal/interfaces/http"
-	"fitness-tracker/internal/interfaces/http/apigen"
+	apihttp "skeleton/internal/interfaces/http"
+	"skeleton/internal/interfaces/http/apigen"
 )
 
 // registerSteps binds Gherkin step text to Go functions.

@@ -63,7 +63,7 @@ func TestFeatures(t *testing.T) {
 	o.TestingT = t
 
 	status := godog.TestSuite{
-		Name:                 "fitness-tracker",
+		Name:                 "skeleton",
 		TestSuiteInitializer: InitializeTestSuite,
 		ScenarioInitializer:  InitializeScenario,
 		Options:              &o,

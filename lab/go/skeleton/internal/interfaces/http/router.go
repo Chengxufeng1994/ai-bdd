@@ -3,7 +3,7 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 
-	"fitness-tracker/internal/interfaces/http/apigen"
+	"skeleton/internal/interfaces/http/apigen"
 )
 
 // NewRouter wires the generated handlers onto a gin engine.

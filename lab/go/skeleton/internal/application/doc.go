@@ -4,7 +4,7 @@
 // storage, clocks, external services — it declares as an interface (a port) and
 // receives by injection. It never imports infrastructure.
 //
-// The full request-to-response chain is in ../../docs/dataflow.md.
+// The full request-to-response chain is in ../../docs/DATAFLOW.md.
 //
 // # Structure
 //

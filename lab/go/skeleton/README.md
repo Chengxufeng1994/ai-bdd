@@ -1,4 +1,4 @@
-# testbed: fitness-tracker
+# lab/go/skeleton
 
 A Go + godog project used to dogfood the `ai-bdd` skills end to end:
 **CLARIFY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**.
@@ -28,6 +28,25 @@ Most people think of three or four of these unprompted.
 **This is the bar for `bdd-clarify`:** a run that does not surface the
 bodyweight and per-side questions is a run that failed, regardless of how
 polished its output looks.
+
+## One scenario at a time
+
+This is a *skeleton*, not a fitness app. It hosts whichever scenario is being
+used to evaluate the skills; `prompts/` names them:
+
+```
+prompts/1-fitness-tracker-clarify.md    the brief a run starts from
+docs/bdd/                               that run's example maps and questions
+features/                               the scenarios it produced
+```
+
+Only CLARIFY, SPEC and PLAN are language-agnostic enough to be swapped freely.
+Once IMPLEMENT fills `internal/`, the code belongs to one scenario — so archive
+a completed run before starting another rather than trying to keep two live.
+
+Other languages get their own skeleton beside this one: `lab/python/skeleton`,
+`lab/typescript/skeleton`. Everything upstream of IMPLEMENT is shared; only the
+harness differs.
 
 ## Ground rule
 
@@ -61,16 +80,15 @@ make gen-api      # or: go generate -run oapi-codegen ./internal/...
 
 `make help` lists every target.
 
-`//go:generate` directives stay in the package that consumes their output, and
-the Makefile is the entry point on top of them. That combination is what lets a
-second generator arrive later without reorganising anything: `go generate -run`
-selects one tool at a time, so `gen-proto` can sit beside `gen-api` while each
-directive stays next to the code it produces.
+Every `//go:generate` directive lives in the build-tagged `generate.go` at the
+repository root, and the Makefile sits on top of them. Two reasons: all
+directives then run from the same directory, so every path — spec, config,
+output — is root-relative and reads alike; and repo-scoped generators like
+mockery, which expect to run from the root and belong to no package, have
+somewhere to live.
 
-The alternative — collecting every directive into one root `generate.go` — buys
-a single place to look, at the cost of paths that outlive the packages they
-point at, and it does not actually generalise: buf and protoc carry their own
-config and plugin flags and were never going to live in a Go file anyway.
+`go generate -run <tool>` selects one generator at a time, which is what makes
+per-tool Makefile targets possible without splitting the file up.
 
 The generator is pinned as a `tool` dependency in `go.mod`, so it stays out of
 the module's real requirements while everyone still regenerates with the same
@@ -88,11 +106,12 @@ cheapest check that the pipeline still works:
 rm -rf internal/interfaces/http/apigen && go generate ./... && go test ./...
 ```
 
-`cfg.yaml` sits beside `generate.go`, not beside the spec. Its `output` path is
-resolved relative to the directory the `//go:generate` directive runs in, **not**
-relative to the config file — verified by running the generator from a different
-directory and watching the output land in the wrong place. Separating the two
-would leave that path unreadable.
+`api/cfg.yaml` sits beside the spec it configures. Its `output` path is resolved
+relative to the directory the generator runs in — **not** relative to the config
+file, verified by running it from elsewhere and watching the output land in the
+wrong place. Because every directive runs from the root, every path in that file
+is root-relative, which is the only arrangement where it reads correctly from
+wherever you happen to open it.
 
 ### Response conventions
 
@@ -119,20 +138,26 @@ ability to tell a client bug from a user mistake.
 ## Layout
 
 ```
-fitness-tracker/
-├── api/openapi.yaml         HTTP contract; paths derive from scenarios
+skeleton/
+├── api/
+│   ├── openapi.yaml         HTTP contract; paths derive from scenarios
+│   └── cfg.yaml             oapi-codegen configuration
+├── generate.go              every //go:generate directive, build-tagged
 ├── cmd/fitness/             composition root; wiring only
 ├── internal/
 │   ├── domain/              business rules and entities; depends on nothing
 │   ├── application/         use-case orchestration; depends on domain; declares ports
 │   ├── infrastructure/      port implementations; depends on domain + application
 │   └── interfaces/http/     HTTP adapter
-│       ├── generate.go      the go:generate directive
-│       ├── cfg.yaml         oapi-codegen configuration
 │       ├── apigen/          generated — never edited, fully rebuildable
 │       │   └── api.gen.go
 │       ├── server.go        handlers; no gin types in sight
 │       └── router.go        engine, middleware, route registration
+├── docs/
+│   ├── ARCHITECTURE.md      start here for the whole picture
+│   └── DATAFLOW.md          every conversion on the path, and who owns it
+├── prompts/                 fixed inputs for evaluating the skills
+│   └── 1-fitness-tracker-clarify.md   one scenario's starting brief
 ├── features/                .feature files — specifications, not test code
 │   └── version.feature      the walking skeleton
 └── test/acceptance/         the godog harness that executes them
@@ -206,15 +231,15 @@ can be checked against the example map mechanically rather than by reading:
 | Example map | Gherkin | What can be checked |
 | --- | --- | --- |
 | Story | `Feature:` | — |
-| Rule R1 (blue card) | `Rule:` | every rule has a `Rule:` block |
-| Example E1.1 (green card) | `@E1.1` on a `Scenario` | every example has a scenario; no orphan scenarios |
+| Rule Rule 1 (blue card) | `Rule:` | every rule has a `Rule:` block |
+| Example Example 1.1 (green card) | `@Example1.1` on a `Scenario` | every example has a scenario; no orphan scenarios |
 
 ```gherkin
 Feature: Total training volume
 
   Rule: Volume is the sum of load times reps across working sets
 
-    @E1.1
+    @Example1.1
     Scenario: A single barbell set
       ...
 ```
@@ -226,7 +251,7 @@ references, and renumbering silently repoints them.
 
 | Tag | Meaning |
 | --- | --- |
-| `@E1.1` | traces to an example map entry |
+| `@Example1.1` | traces to an example map entry |
 | `@wip` | being worked on right now |
 | `@smoke` | must pass before anything else is trusted |
 | `@slow` | excluded from the fast loop (`-godog.tags="~@slow"`) |

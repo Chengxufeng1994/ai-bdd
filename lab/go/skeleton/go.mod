@@ -1,4 +1,4 @@
-module fitness-tracker
+module skeleton
 
 go 1.26.5
 

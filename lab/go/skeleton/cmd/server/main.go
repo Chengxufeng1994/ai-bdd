@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"os"
 
-	apihttp "fitness-tracker/internal/interfaces/http"
+	apihttp "skeleton/internal/interfaces/http"
 )
 
 // version is overridden at build time:
@@ -22,7 +22,7 @@ import (
 var version = "dev"
 
 func main() {
-	addr := os.Getenv("FITNESS_ADDR")
+	addr := os.Getenv("APP_ADDR")
 	if addr == "" {
 		addr = ":8080"
 	}

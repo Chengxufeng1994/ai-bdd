@@ -1,76 +1,12 @@
-# 分層職責與資料流
+# 資料流與轉換
 
-一筆請求從協定進來、變成領域行為、再變回協定回應的完整路徑，以及每一層被允許
-做什麼。
+這份文件只回答一件事：**一筆資料從進來到出去，經過哪幾次轉換、每一次歸誰管。**
+正要動手寫 handler、mapper 或 assembler 時讀它。
+
+方向感、目錄結構與分層職責在 [ARCHITECTURE.md](./ARCHITECTURE.md)，這裡不重複。
 
 範例用「記錄一次訓練」與「查詢總容量」。**聚合與欄位名稱是示意的**，實際有哪些
 聚合由 CLARIFY 決定。
-
----
-
-## 目錄結構
-
-```
-internal/
-├── interfaces/                       ① 對外協議層
-│   └── http/
-│       ├── apigen/                   由 openapi.yaml 產生的請求／回應型別
-│       ├── handler/                  只做：取參數 → mapper → port/in → presenter
-│       ├── mapper/                   HTTP 請求 → command / query
-│       ├── presenter/                application dto → HTTP 回應
-│       ├── errmap/                   domain error kind → status ＋ Problem
-│       └── router.go                 engine、middleware、路由註冊
-│
-├── application/                      ② 用例編排層
-│   ├── port/
-│   │   ├── in/                       driving：給 interfaces 呼叫
-│   │   └── out/                      driven：給 infrastructure 實作
-│   ├── command/                      語意化輸入，無 json tag
-│   ├── query/
-│   ├── dto/                          對外回傳的資料形狀，非領域實體
-│   ├── handler/                      實作 port/in，編排 domain ＋ port/out
-│   ├── assembler/                    domain → dto（簡單時併入 handler）
-│   └── service/                      門面：handler 的組裝束
-│
-├── domain/                           ③ 核心領域層
-│   └── workout/
-│       ├── entity.go
-│       ├── value_object.go
-│       ├── event.go
-│       └── error.go                  錯誤 kind，不含傳輸層代碼
-│
-└── infrastructure/                   ④ 技術實作層
-    ├── persistence/postgres/         實作 port/out
-    └── storage/s3/
-```
-
-### `apigen/` 取代 `request/` 與 `response/`
-
-有 schema 產碼的協定（HTTP／gRPC／GraphQL），請求與回應型別**一律由產碼提供**。
-手寫一份 `request/`、`response/` 會造成兩個真相來源，schema 一改就漂移。
-
-沒有 schema 的協定（CLI、Lambda 事件）才手寫，放在該協定自己的
-`request/`、`response/` 下。
-
-### `dto/` 獨立成 package 是必要的
-
-`dto` 誰都不 import，所以 `port/out` 與 `query` 可以同時依賴它。若把視圖型別放進
-`query`，`port/out` 的 reader 要回傳它就得 import `query`，而 `query` 又要 import
-`port/out` 拿介面——循環相依。獨立的 `dto/` 讓讀取 port 能正當地留在 `port/out`，
-port 的分類因此保持一致。
-
----
-
-## 分層職責
-
-| 層 | 可以做 | 不可以做 | 依賴誰 |
-| --- | --- | --- | --- |
-| **interfaces** | 解析協定、呼叫 port/in、翻譯錯誤 | 任何業務判斷；持有領域物件 | port/in、command、query、dto、domain error kind |
-| **application** | 編排、交易邊界、呼叫 port/out、發布事件 | 業務規則本身；認識任何協定 | domain |
-| **domain** | 全部業務規則與不變式 | 認識資料庫、HTTP、交易 | 無 |
-| **infrastructure** | 實作 port/out、SQL、重試、連線 | 業務判斷 | domain、application |
-
-**判準**：刪掉一個 protocol package，應該少掉一個入口，而**不少任何一條業務規則**。
 
 ---
 

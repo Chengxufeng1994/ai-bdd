@@ -1,7 +1,7 @@
 package http
 
 import (
-	"fitness-tracker/internal/interfaces/http/apigen"
+	"skeleton/internal/interfaces/http/apigen"
 )
 
 // Server implements the generated StrictServerInterface.

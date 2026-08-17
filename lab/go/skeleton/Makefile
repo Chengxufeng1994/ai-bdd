@@ -112,7 +112,7 @@ lint-fix:
 ## build: Build the server with the version stamped in
 .PHONY: build
 build:
-	go build -ldflags "-X main.version=$$(git describe --tags --always --dirty 2>/dev/null || echo dev)" -o bin/fitness ./cmd/fitness
+	go build -ldflags "-X main.version=$$(git describe --tags --always --dirty 2>/dev/null || echo dev)" -o bin/server ./cmd/server
 
 ## verify: Everything CI should run
 .PHONY: verify
