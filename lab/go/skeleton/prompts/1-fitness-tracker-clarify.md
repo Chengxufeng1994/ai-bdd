@@ -1,11 +1,20 @@
-# CLARIFY 的固定測試提示
+# CLARIFY 的固定測試提示 — 口語 brief 版
 
-`prompts/` 收所有評估 ai-bdd skill 用的固定輸入，一個步驟一個檔。
+`prompts/` 收所有評估 ai-bdd skill 用的固定輸入。
+
+同一個情境有兩份輸入，測不同的失敗模式：
+
+| 版本 | 測什麼 |
+| --- | --- |
+| **本檔（口語 brief）** | 面對明顯不完整的輸入，能不能問出該問的 |
+| [PRD 版](./1-fitness-tracker-clarify-prd.md) | 面對**看起來已經完成**的輸入，敢不敢質疑它 |
+
+十個模糊點與及格標準兩份共用，定義在本檔。
 
 每次評估都用同一段輸入，否則兩次執行的差異可能來自提問方式而不是 skill 本身。
 **逐字複製，不要即興改寫。**
 
-> 後續步驟多半不需要自己的提示——SPEC 吃 CLARIFY 的 `example-map.md`、PLAN 吃
+> 後續步驟多半不需要自己的提示——SPEC 吃 CLARIFY 的 `example-mapping.md`、PLAN 吃
 > `.feature`，輸入就是上一步的產物。真正需要固定提示的是**鏈的起點**，也就是
 > 這一個。等到第三個檔案出現時，再把共用的評估方法抽成 `prompts/README.md`。
 

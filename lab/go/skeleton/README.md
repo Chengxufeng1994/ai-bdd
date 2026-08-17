@@ -35,8 +35,9 @@ This is a *skeleton*, not a fitness app. It hosts whichever scenario is being
 used to evaluate the skills; `prompts/` names them:
 
 ```
-prompts/1-fitness-tracker-clarify.md    the brief a run starts from
-docs/bdd/                               that run's example maps and questions
+prompts/1-fitness-tracker-clarify.md      a casual brief
+prompts/1-fitness-tracker-clarify-prd.md  the same scenario as an approved PRD
+docs/bdd/                                 that run's example maps and questions
 features/                               the scenarios it produced
 ```
 
@@ -157,7 +158,8 @@ skeleton/
 │   ├── ARCHITECTURE.md      start here for the whole picture
 │   └── DATAFLOW.md          every conversion on the path, and who owns it
 ├── prompts/                 fixed inputs for evaluating the skills
-│   └── 1-fitness-tracker-clarify.md   one scenario's starting brief
+│   ├── 1-fitness-tracker-clarify.md       casual brief
+│   └── 1-fitness-tracker-clarify-prd.md   the same scenario as an approved PRD
 ├── features/                .feature files — specifications, not test code
 │   └── version.feature      the walking skeleton
 └── test/acceptance/         the godog harness that executes them

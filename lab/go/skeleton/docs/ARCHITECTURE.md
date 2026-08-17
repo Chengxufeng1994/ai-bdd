@@ -74,7 +74,7 @@ Runtime — one process, one protocol so far:
 Development — the chain the testbed exists to exercise:
 
 ```
-prompts/ ──▶ CLARIFY ──▶ docs/bdd/*/example-map.md
+prompts/ ──▶ CLARIFY ──▶ docs/bdd/*/example-mapping.md
                               │
                               ▼
                             SPEC ──▶ features/*.feature

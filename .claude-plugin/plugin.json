@@ -1,0 +1,16 @@
+{
+  "name": "ai-bdd",
+  "description": "AI-assisted BDD workflow: turn requirements into Gherkin feature files, generate step definitions, run BDD suites, and keep scenarios in sync with code.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Benny.XF.Cheng",
+    "email": "benny.xf.cheng@vivotek.com"
+  },
+  "keywords": [
+    "bdd",
+    "gherkin",
+    "cucumber",
+    "testing",
+    "tdd"
+  ]
+}
