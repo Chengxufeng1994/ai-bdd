@@ -1,0 +1,7 @@
+# Build output. Generated code is committed on purpose (see generate.go); build
+# artefacts are not, because they are reproducible from it.
+/bin/
+
+# Test artefacts
+*.test
+coverage.out

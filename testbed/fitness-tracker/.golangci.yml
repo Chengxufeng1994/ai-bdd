@@ -1,0 +1,53 @@
+# golangci-lint v2. The binary is pinned as a `tool` dependency in go.mod, so CI
+# and every developer run the same version — a linter that changes underneath you
+# turns a green branch red for reasons unrelated to the change.
+version: "2"
+
+linters:
+  default: standard
+
+  enable:
+    # Correctness
+    - bodyclose # an unclosed response body leaks a connection until GC
+    - errorlint # %v on an error breaks errors.Is/As silently
+    - nilerr # `if err != nil { return nil }` swallows the failure
+    - rowserrcheck
+    - sqlclosecheck
+
+    # Style the team would otherwise argue about in review
+    - godot
+    - misspell
+    - revive
+    - unconvert
+    - whitespace
+
+    # Test quality
+    - testifylint # catches assert/require misuse, which produces tests that cannot fail
+
+  settings:
+    revive:
+      rules:
+        - name: exported
+          # Exported symbols carry the contract other layers rely on; an
+          # undocumented one is a boundary nobody wrote down.
+          arguments: [checkPrivateReceivers]
+
+    errcheck:
+      # Errors are the point. The only ignorable ones are those where handling
+      # is genuinely impossible or meaningless.
+      exclude-functions:
+        - (*github.com/gin-gonic/gin.Context).Error
+
+  exclusions:
+    rules:
+      # Generated code is regenerated, not fixed. Linting it produces findings
+      # nobody can act on without editing a file marked DO NOT EDIT.
+      - path: \.gen\.go$
+        linters: [revive, godot, errorlint, unconvert, whitespace]
+      - path: mocks/mocks\.go$
+        linters: [revive, godot, whitespace]
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

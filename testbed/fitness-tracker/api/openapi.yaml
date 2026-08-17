@@ -1,0 +1,211 @@
+# Fitness Tracker — HTTP API contract.
+#
+# Endpoints are derived from scenarios, not invented here. A path appears in
+# this file once a scenario in ../features/ requires it, and the vocabulary used
+# for schema and field names must match the glossary that SPEC maintains — the
+# API is one more place the ubiquitous language has to hold.
+#
+# /version is the exception that proves the rule: it carries no domain meaning,
+# and exists to keep one thin path through the whole chain
+# (spec -> generated code -> handler -> scenario -> godog) alive from day one.
+# No fitness endpoint may be added before CLARIFY has produced an example map.
+openapi: 3.0.3
+
+info:
+  title: Fitness Tracker API
+  version: 0.0.0
+  description: |
+    A contract for the interfaces layer. It describes transport only —
+    every rule about what a valid workout is, and how volume is computed,
+    lives in the domain layer and is specified in ../features/.
+
+    Success responses are shaped by the domain and differ per operation.
+    Failures share one shape for every operation: RFC 9457 Problem Details.
+    Clients then need one error path, not one per endpoint.
+
+paths:
+  /version:
+    get:
+      operationId: getVersion
+      summary: Report the version the running service was built from
+      responses:
+        "200":
+          description: The running version
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      # Only 500 is declared. The reusable responses below exist to be shared,
+      # not to be pasted onto every operation: declaring 401 on an endpoint that
+      # never authenticates makes the contract lie, and generated clients will
+      # carry dead branches for it.
+
+components:
+  schemas:
+    Version:
+      type: object
+      required:
+        - version
+      properties:
+        version:
+          type: string
+          description: Semantic version of the running build
+          example: "0.0.0"
+
+    Problem:
+      description: |
+        RFC 9457 Problem Details. Served as `application/problem+json`.
+
+        `type` is the machine-readable identity of the failure and is what a
+        client should branch on — HTTP status alone is too coarse, since one
+        409 can mean several different things. `title` is for humans and may be
+        reworded without notice, so clients must not match on it.
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri-reference
+          description: >
+            Stable URI identifying the problem type. Treat it as an
+            identifier, not a link; it need not resolve.
+          default: "about:blank"
+          example: "https://errors.example.com/workout-not-found"
+        title:
+          type: string
+          description: Short human-readable summary. Do not branch on this.
+          example: "Workout not found"
+        status:
+          type: integer
+          format: int32
+          minimum: 100
+          maximum: 599
+          description: HTTP status code, repeated here for logs and clients that lose it.
+          example: 404
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence.
+          example: "No workout with id 01H8X... exists for this user."
+        instance:
+          type: string
+          format: uri-reference
+          description: URI identifying this specific occurrence.
+          example: "/workouts/01H8X..."
+
+    ValidationProblem:
+      description: |
+        A Problem carrying per-field failures. RFC 9457 permits extension
+        members; `errors` is one. Kept separate from Problem so that only the
+        operations that can actually fail validation expose the extra field.
+      allOf:
+        - $ref: "#/components/schemas/Problem"
+        - type: object
+          required:
+            - errors
+          properties:
+            errors:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                required:
+                  - pointer
+                  - detail
+                properties:
+                  pointer:
+                    type: string
+                    description: JSON Pointer (RFC 6901) to the offending member.
+                    example: "/sets/0/weightKg"
+                  detail:
+                    type: string
+                    example: "must be greater than or equal to 0"
+
+  responses:
+    BadRequest:
+      description: The request could not be parsed — malformed JSON, wrong types, missing path parameter.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+
+    Unauthorized:
+      description: No credentials were supplied, or they were not valid.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+
+    Forbidden:
+      description: Authenticated, but not allowed to perform this operation.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+
+    NotFound:
+      description: The addressed resource does not exist.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+
+    Conflict:
+      description: >
+        The request conflicts with the current state — a duplicate creation,
+        or a concurrent modification that invalidated the caller's assumption.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+
+    UnprocessableEntity:
+      description: >
+        The request parsed correctly but violates a domain rule. Distinct from
+        400: 400 means "I cannot read this", 422 means "I read it and it is not
+        allowed". Conflating them robs clients of the ability to tell a client
+        bug from a user mistake.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/ValidationProblem"
+
+    TooManyRequests:
+      description: Rate limit exceeded.
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: integer
+            format: int32
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+
+    InternalServerError:
+      description: >
+        An unhandled failure. `detail` must stay generic — stack traces,
+        SQL fragments and internal hostnames belong in logs, not in a response
+        body that reaches whoever made the request.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+
+    ServiceUnavailable:
+      description: A dependency the service needs is down, or the service is shutting down.
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema:
+            type: integer
+            format: int32
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"

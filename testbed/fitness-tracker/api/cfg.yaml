@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/v2.7.2/configuration-schema.json
+#
+# `output` is resolved relative to the directory the generator runs in. Every
+# //go:generate directive lives in the repository root, so every path in this
+# file is root-relative — the same frame of reference the spec, the Makefile and
+# every other generator's config use.
+package: apigen
+generate:
+  gin-server: true
+  models: true
+  strict-server: true
+output: internal/interfaces/http/apigen/api.gen.go

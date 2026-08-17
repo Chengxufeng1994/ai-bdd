@@ -1,0 +1,38 @@
+# mockery v3 — mocks for the ports the application layer declares.
+#
+# Only `internal/application` is listed. Ports are interfaces the application
+# needs the outside world to satisfy (storage, clocks, external services), and
+# those are the only things worth mocking. `domain` deliberately has no
+# dependencies to stand in for — if a domain type ever needs a mock, the
+# dependency rule has been broken and the fix is in the design, not here.
+#
+# `interfaces` on the generated adapters is not listed either: those are
+# generated code with a real implementation one line away, so a mock would test
+# the mock.
+#
+# Nothing is generated yet, because no port exists until CLARIFY has produced an
+# example map and SPEC has turned it into scenarios. This file is here so that
+# the first port is mocked by running `make gen-mock`, with no setup step in
+# between to forget.
+
+all: false
+recursive: true
+
+# Mocks live beside the interface they stand in for, in their own package, so
+# that importing them cannot pull test doubles into a production build path.
+dir: "{{.InterfaceDir}}/mocks"
+filename: "mocks.go"
+pkgname: "mocks"
+structname: "{{.InterfaceName}}"
+
+formatter: goimports
+force-file-write: true
+log-level: info
+
+# testify mocks match the assertion library the tests already use.
+template: testify
+
+packages:
+  fitness-tracker/internal/application:
+    config:
+      all: true
