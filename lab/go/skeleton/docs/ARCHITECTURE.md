@@ -40,7 +40,7 @@ skeleton/
 │   └── interfaces/http/      HTTP adapter
 │       ├── apigen/           generated from openapi.yaml — never edited
 │       ├── server.go         handlers; no gin types in their signatures
-│       └── router.go         engine, middleware, route registration
+│       └── router.go         engine, spec validation, route registration
 ├── features/                 .feature files — specifications, not test code
 ├── test/acceptance/          the godog harness that executes them
 ├── prompts/                  fixed inputs for evaluating the skills
@@ -172,6 +172,11 @@ been confirmed to fail when it should.
 
 **No authentication or authorisation exists.** `GET /version` is unauthenticated
 and exposes only a build string.
+
+Requests are validated against `api/openapi.yaml` by middleware before reaching a
+handler, so anything off-contract is rejected at the edge — verified: a `POST` to
+`/version` returns 400 rather than reaching the router, and an undeclared path
+returns 404.
 
 Two decisions already made that will matter once endpoints arrive:
 

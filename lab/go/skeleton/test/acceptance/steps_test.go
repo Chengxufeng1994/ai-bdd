@@ -41,7 +41,11 @@ func theServiceIsRunningAtVersion(ctx context.Context, version string) error {
 		return err
 	}
 
-	w.router = apihttp.NewRouter(apihttp.NewServer(version))
+	router, err := apihttp.NewRouter(apihttp.NewServer(version))
+	if err != nil {
+		return err
+	}
+	w.router = router
 
 	return nil
 }

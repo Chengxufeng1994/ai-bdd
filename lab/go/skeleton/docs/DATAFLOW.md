@@ -180,7 +180,7 @@ copier、mapstructure 這類靠欄位名自動對應的工具，在這四個位�
 
 | 層 | 檢查什麼 | 失敗 | 誰寫 |
 | --- | --- | --- | --- |
-| interfaces | **形狀**：JSON 合不合法、必填在不在、型別對不對 | 400 | 由 schema 產生 |
+| interfaces | **形狀**：JSON 合不合法、必填在不在、型別對不對 | 400 | `OapiRequestValidator` 依 `openapi.yaml` 自動擋掉，不必手寫 |
 | application | **前提**：識別碼格式、權限、資源存不存在 | 401／403／404 | 手寫 |
 | domain | **意義**：業務規則、聚合不變式 | 422（由 kind 對應） | 手寫 |
 

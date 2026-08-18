@@ -27,7 +27,10 @@ func main() {
 		addr = ":8080"
 	}
 
-	router := apihttp.NewRouter(apihttp.NewServer(version))
+	router, err := apihttp.NewRouter(apihttp.NewServer(version))
+	if err != nil {
+		log.Fatalf("build router: %v", err)
+	}
 
 	log.Printf("fitness %s listening on %s", version, addr)
 

@@ -7,6 +7,7 @@
 package: apigen
 generate:
   gin-server: true
+  embedded-spec: true
   models: true
   strict-server: true
 output: internal/interfaces/http/apigen/api.gen.go
