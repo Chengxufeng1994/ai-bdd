@@ -32,7 +32,7 @@ skeleton/
 ├── api/
 │   ├── openapi.yaml          the HTTP contract; source of truth for §3.2
 │   └── cfg.yaml              oapi-codegen configuration
-├── cmd/fitness/              composition root — wiring only, no decisions
+├── cmd/server/               composition root — wiring only, no decisions
 ├── internal/                 Go enforces this boundary at compile time
 │   ├── domain/               business rules and entities; imports nothing
 │   ├── application/          use-case orchestration; declares ports
@@ -41,6 +41,9 @@ skeleton/
 │       ├── apigen/           generated from openapi.yaml — never edited
 │       ├── server.go         handlers; no gin types in their signatures
 │       └── router.go         engine, spec validation, route registration
+├── pkg/
+│   ├── config/               the only place that reads os.Getenv
+│   └── log/                  the Logger interface, backed by slog
 ├── features/                 .feature files — specifications, not test code
 ├── test/acceptance/          the godog harness that executes them
 ├── prompts/                  fixed inputs for evaluating the skills
@@ -133,7 +136,9 @@ Business endpoints are absent on purpose. See §9.
 
 ## 4. Data Stores
 
-**None.** Nothing is persisted. The service holds no state between requests.
+**None yet.** Nothing is persisted; the service holds no state between requests.
+PostgreSQL with pgx, sqlc and golang-migrate is chosen for when a scenario needs
+it — see §3.2.
 
 `internal/infrastructure/` is where a repository would live, and
 `internal/application/port/out/` is where its interface would be declared — the
@@ -198,6 +203,27 @@ make test              # unit + acceptance, with -race
 make test-integration  # adds tests behind the `integration` build tag
 make verify            # what CI would run
 ```
+
+### Configuration
+
+Every setting arrives through the environment, and `pkg/config` is the only
+package that reads it. Anything reading `os.Getenv` elsewhere cannot be varied in
+a test without setting global state, and its default stops being visible.
+
+| Variable | Default | Accepts |
+| --- | --- | --- |
+| `APP_ADDR` | `:8080` | `host:port` |
+| `APP_LOG_LEVEL` | `info` | `debug` `info` `warn` `error` |
+| `APP_LOG_FORMAT` | `text` | `text` `json` |
+
+An unrecognised value refuses to start and reports **every** offending variable
+at once. A silent fallback is worse than a crash here: a mistyped
+`APP_LOG_LEVEL` that quietly resolves to `info` costs an hour of wondering why
+the debug lines never appear.
+
+`pkg/config` and `pkg/log` do not import each other. Configuration decides
+*what* to build, the logger decides *how*; the mapping between them lives in
+`cmd/server`, which is the only place allowed to know both.
 
 ### Three levels of test
 
