@@ -61,6 +61,21 @@ def step_templates(texts: list[str]) -> tuple[int, int, int]:
     return steps, len(seen), sum(1 for v in seen.values() if v == 1)
 
 
+def outcome_coverage(text: str) -> list[tuple[str, int, int]]:
+    """每條 Rule 走過幾個成功結果、幾個失敗結果。
+
+    只數 `Then 操作成功` / `Then 操作失敗`——邊界是判斷題，機器數不出來，
+    所以這裡不假裝數得出來，只把成功與失敗的分布攤開。
+    """
+    out = []
+    for blk in re.split(r"^\s*Rule:", text, flags=re.M)[1:]:
+        name = blk.split("\n", 1)[0].strip()
+        ok = len(re.findall(r"^\s*Then 操作成功", blk, re.M))
+        ng = len(re.findall(r"^\s*Then 操作失敗", blk, re.M))
+        out.append((name, ok, ng))
+    return out
+
+
 def check(root: Path) -> int:
     bdd = root / "docs" / "bdd"
     feat_dir = find_features(root)
@@ -108,10 +123,15 @@ def check(root: Path) -> int:
         if unexplained:
             issues.append(f"漏了 {unexplained} 且檔案裡沒有註解說明")
 
+        # 一條規則只走過一種結果不是錯，但要看得見——多數時候它代表沒問過
+        # 「這條規則被違反時會怎樣」。邊界機器判不了，所以只報成功／失敗。
+        lop = [n for n, ok, ng in outcome_coverage(ftext) if bool(ok) != bool(ng)]
+
         explained = sorted(set(missing) - set(unexplained), key=key)
         status = "✗" if issues else "✓"
         print(f"{status} {slug:30} {len(exs & tags):>3}/{len(exs)} 例子 · {states[0] if len(states)==1 else '?':7}"
-              + (f" · 已交代不寫 {explained}" if explained else ""))
+              + (f" · 已交代不寫 {explained}" if explained else "")
+              + (f" · 單一結果的規則 {len(lop)}" if lop else ""))
         for i in issues:
             print(f"    ✗ {i}")
             problems += 1
