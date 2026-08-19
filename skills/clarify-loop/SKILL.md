@@ -1,5 +1,5 @@
 ---
-name: bdd-clarify-loop
+name: clarify-loop
 description: >
   多輪迭代把未解問題逐一問到收斂——每題四個選項、必要時附提案與理由，答不出來就
   記成紅卡並繼續下一題，每輪結束給進度。可接手 bdd-clarify 的紅卡，也可單獨用在

@@ -1,5 +1,5 @@
 ---
-name: bdd-clarify-story-splitting
+name: story-splitting
 description: >
   把太大的 story 切成數則仍能獨立交付價值的小 story——優先沿規則切，切不動時
   用九種切分模式，並用兩條規則挑出最好的切法。判斷「該不該切」也在這裡。
@@ -23,7 +23,7 @@ description: >
 ## Skill Boundaries
 
 - 要從需求找出規則與例子 → 改用 `bdd-clarify`，本 skill 只管切分
-- 要把紅卡問到收斂 → 改用 `bdd-clarify-loop`
+- 要把紅卡問到收斂 → 改用 `clarify-loop`
 - 要決定切完之後**先做哪一則** → 那是排序，屬於 `bdd-plan`。本 skill 只切，不排
 - 本 skill 不寫規格、不估點數
 

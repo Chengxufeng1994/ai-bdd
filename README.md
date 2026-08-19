@@ -23,8 +23,8 @@ ai-bdd/
 │   └── bdd-workflow.md # BDD practice reference
 ├── skills/
 │   ├── bdd-clarify/
-│   ├── bdd-clarify-loop/
-│   ├── bdd-clarify-story-splitting/
+│   ├── clarify-loop/
+│   ├── story-splitting/
 │   └── skill-rules/
 ├── lab/
 │   └── golang/
