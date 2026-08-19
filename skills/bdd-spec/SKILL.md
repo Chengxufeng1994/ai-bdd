@@ -338,7 +338,7 @@ MUST: 每個 `.feature` 在 `Feature:` 上掛**恰好一個**狀態 tag。本 sk
 | 未就緒（使用者仍要求先寫） | `@draft` ＋ 一段說明它建立在哪些未定的答案上 |
 
 完整詞彙表（含 `@wip` `@review` `@done`，由後面的 skill 寫入）在
-`docs/blueprint.md` 的「狀態 tag」。**不要在這裡抄一份**——同一張表存兩處就會漂移。
+`references/state-tags.md`。**不要在這裡抄一份**——同一張表存兩處就會漂移。
 
 ### 型別 tag —— `@command` 或 `@query`
 

@@ -52,8 +52,8 @@ IMPLEMENT／VERIFY 需要綁定技術棧；REVIEW 部分需要。
 | 步驟 | skill | 職責 | 狀態 |
 | --- | --- | --- | --- |
 | CLARIFY | `bdd-clarify` | 切分 → 規則／例子／問題 → 就緒判定 | **已實作** |
-| | `bdd-clarify-loop` | 多輪把紅卡問到收斂；也可單獨使用 | **已實作** |
-| | `bdd-clarify-story-splitting` | 沿規則切；九種模式；兩條選法規則 | **已實作** |
+| | `clarify-loop` | 多輪把紅卡問到收斂；也可單獨使用 | **已實作** |
+| | `story-splitting` | 沿規則切；九種模式；兩條選法規則 | **已實作** |
 | SPEC | `bdd-spec` | 例子 → `.feature` ＋ 詞彙表 | 未實作 |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
 | PLAN | `bdd-plan` | 分層與順序的總體決策 | 未實作 |
@@ -118,46 +118,24 @@ Always-on: ~1,620 tok  每個 session 都付
 `bdd-clarify` 的產物已為此設計：規則與例子有編號（Rule 1、Example 1.1），下游 Gherkin
 情境回指這些編號，鏈才接得起來。**編號一旦寫出去就不要重排。**
 
-### 狀態 tag —— 這則 story 走到第幾步
+### 狀態 tag
 
-`.feature` 檔在 `Feature:` 上掛**恰好一個**狀態 tag，記錄它在六步流程的哪一站。
-這是**唯一的**跨 skill 共用詞彙表；各 skill 不要自己抄一份，會漂移。
+`.feature` 在 `Feature:` 上掛恰好一個狀態 tag（`@draft` `@ready` `@wip`
+`@review` `@done`），記錄它走到六步的哪一站。
 
-| tag | 由誰寫入 | 意義 |
-| --- | --- | --- |
-| `@draft` | `bdd-spec` | 來源 map 未就緒。可用來對齊理解，**不是**講定的驗收條件 |
-| `@ready` | `bdd-spec` | 來源 map 已就緒，三方講定，等實作 |
-| `@wip` | `bdd-implement` 開工時 | 正在實作這則 |
-| `@review` | `bdd-implement` 全綠後 | 等 REVIEW |
-| `@done` | `bdd-review` 通過後 | 六步走完 |
+完整詞彙表與三個設計決定在 `skills/bdd-spec/references/state-tags.md`——
+**它是 skill 之間的契約，所以跟著 skill 走，不放在這份設計文件裡**。
+別人安裝這個 plugin 時拿不到 `docs/`，契約寫在這裡就等於斷了。
 
-三個設計決定，各有理由：
-
-**掛在 `Feature:` 不掛在場景。** 狀態追蹤的是「這則 story 走到哪一步」，
-不是「哪幾條場景綠了」——後者跑一次測試就知道，而**任何重述可觀察狀態的標記都會
-漂移**，不一致時錯的是標記，看起來有權威的也是標記。
-
-**必填，而且恰好一個。** 少標一個是可機械偵測的（`grep -L`），
-負向旗標（「沒標＝正常」）則分不出「不需要標」與「忘了標」——
-第一份真實產出正是在這裡失守：兩則未就緒的 `.feature` 沒有任何標記，
-跟已就緒的長得一模一樣。
-
-**由執行那一步的 skill 寫入，不由人維護。** 狀態是流程的副產品，
-不是一個要記得更新的欄位。
-
-CI 用 `--tags "~@draft"` 排除未定案的場景——它們不該擋住任何人的 build。
-
-IMPORTANT: 六個 skill 目前只有 `bdd-spec` 存在，所以只有 `@draft` / `@ready`
-兩個轉換是實作過的，其餘是**保留的名字**。後面三個 skill 做出來時若發現需要不同
-的切分，以那時的實測為準——這張表可以改，但要一次改完，不要各自加自己的。
+依賴方向：repo 的文件可以指向 skill，skill 不可以指向 repo 的文件。
 
 ---
 
 ## 進度
 
 - [x] `bdd-clarify`
-- [x] `bdd-clarify-loop`
-- [x] `bdd-clarify-story-splitting`
+- [x] `clarify-loop`
+- [x] `story-splitting`
 - [x] `lab/go/skeleton` — Go ＋ godog 實測場（骨架綠，零業務）
 - [ ] 拿健身追蹤需求跑一次 `bdd-clarify`，驗證產物格式
 - [ ] 依實跑結果修正格式，再做 `bdd-spec`
