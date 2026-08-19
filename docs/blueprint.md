@@ -29,9 +29,9 @@ BDD 實踐本身的定義（三個實踐、雙迴圈、Gherkin 反模式）見
 
 | 步驟 | 這一步在問什麼 | BDD 作法 | 產物 |
 | --- | --- | --- | --- |
-| **CLARIFY** | 我們到底要解決什麼？哪些還不知道？ | Example Mapping：規則／例子／問題 | `example-mapping.md` ＋ 就緒判定 |
+| **CLARIFY** | 給誰用？要解決什麼？哪些還不知道？ | 識別 actor ＋ INVEST 切分 ＋ Example Mapping | `actor.md`、`example-mapping.md` ＋ 就緒判定 |
 | **SPEC** | 業務讀得懂的驗收條件長怎樣？ | Gherkin，反命令式稽核 | `.feature` ＋ 詞彙表 |
-| **PLAN** | 每條情境在哪層驗？先做哪一條？ | 情境分層 ＋ 依行為排序 | 分層表 ＋ 實作順序 |
+| **PLAN** | 這些情境怎麼做出來？先做哪一條？ | 從 `.feature` 翻譯結構 ＋ 垂直切片排序 | `plan.md`：API／元件／schema／風險／順序 |
 | **IMPLEMENT** | 讓情境從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | 跑情境 ＋ 失敗判讀 | 測試結果 ＋ 判讀結論 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | 對照情境驗收 ＋ 鏈稽核 | 審查結論 ＋ 稽核報告 |
@@ -54,11 +54,9 @@ IMPLEMENT／VERIFY 需要綁定技術棧；REVIEW 部分需要。
 | CLARIFY | `bdd-clarify` | 切分 → 規則／例子／問題 → 就緒判定 | **已實作** |
 | | `clarify-loop` | 多輪把紅卡問到收斂；也可單獨使用 | **已實作** |
 | | `story-splitting` | 沿規則切；九種模式；兩條選法規則 | **已實作** |
-| SPEC | `bdd-spec` | 例子 → `.feature` ＋ 詞彙表 | 未實作 |
+| SPEC | `bdd-spec` | 例子 → `.feature`；封閉步驟文法 | **已實作** |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
-| PLAN | `bdd-plan` | 分層與順序的總體決策 | 未實作 |
-| | `bdd-plan-layering` | 每條情境該在 unit／integration／e2e | 未實作 |
-| | `bdd-plan-ordering` | 按可交付行為排序 | 未實作 |
+| PLAN | `bdd-plan` | `.feature` → API／元件／schema／風險／順序 | **已實作** |
 | IMPLEMENT | `bdd-implement` | 實作流程總入口 | 未實作 |
 | | `bdd-implement-step-definitions` | 比對既有 step 再產新的 | 未實作 |
 | | `bdd-implement-outside-in` | 雙迴圈 | 未實作 |
@@ -137,8 +135,12 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] `clarify-loop`
 - [x] `story-splitting`
 - [x] `lab/go/skeleton` — Go ＋ godog 實測場（骨架綠，零業務）
-- [ ] 拿健身追蹤需求跑一次 `bdd-clarify`，驗證產物格式
-- [ ] 依實跑結果修正格式，再做 `bdd-spec`
+- [x] 拿健身追蹤需求跑一次 `bdd-clarify`，依實跑結果修正格式
+- [x] `bdd-spec` — 依 11 份真實 `.feature` 反覆修正，封閉文法把
+      76 個場景的步驟樣板從 208 降到 41
+- [x] `bdd-plan` — 拿實測場的 5 個 `.feature`（69 個場景）跑過，依執行者回報的
+      三處摩擦修正：場景區塊的粒度、「需要資料庫」的判準、跨 feature 順序的歸屬
+- [ ] `bdd-implement`
 
 順序刻意是「做一個 → 實跑 → 再做下一個」。**產物格式就是介面**：SPEC 讀
 example map、PLAN 讀 `.feature`、REVIEW 稽核整條鏈，下游全都依賴上游實際吐出
