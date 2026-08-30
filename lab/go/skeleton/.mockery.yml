@@ -1,19 +1,21 @@
 # mockery v3 — mocks for the ports the application layer declares.
 #
-# Only `internal/application` is listed. Ports are interfaces the application
-# needs the outside world to satisfy (storage, clocks, external services), and
-# those are the only things worth mocking. `domain` deliberately has no
-# dependencies to stand in for — if a domain type ever needs a mock, the
-# dependency rule has been broken and the fix is in the design, not here.
+# Only port/out is listed. Driven ports are what the application needs the
+# outside world to satisfy, and they are the only things worth mocking. The
+# driving ports in port/in are generic and implemented by our own handlers — a
+# mock of one would test the mock.
 #
-# `interfaces` on the generated adapters is not listed either: those are
-# generated code with a real implementation one line away, so a mock would test
-# the mock.
+# `domain` deliberately has no dependencies to stand in for — if a domain type
+# ever needs a mock, the dependency rule has been broken and the fix is in the
+# design, not here.
 #
-# Nothing is generated yet, because no port exists until CLARIFY has produced an
-# example map and SPEC has turned it into scenarios. This file is here so that
-# the first port is mocked by running `make gen-mock`, with no setup step in
-# between to forget.
+# `interfaces` is not listed either: those are generated adapters with a real
+# implementation one line away, so a mock would test the mock.
+#
+# One port exists: out.VersionProvider. It has a single method, so its tests use
+# a hand-written stub rather than the generated mock — see the note on keeping
+# ports small in internal/application/doc.go. The mock is generated anyway,
+# because the pipeline being exercised is what makes the next port free.
 
 all: false
 recursive: true
@@ -33,6 +35,6 @@ log-level: info
 template: testify
 
 packages:
-  fitness-tracker/internal/application:
+  skeleton/internal/application/port/out:
     config:
       all: true

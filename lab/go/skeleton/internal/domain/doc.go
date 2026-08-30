@@ -33,10 +33,12 @@
 //
 // # Errors
 //
-// Domain errors carry a kind, not a transport code. `ErrKindNotFound` rather
-// than 404 — the domain has no idea it is being served over HTTP, and the same
-// error has to become a gRPC status, a GraphQL extension and a CLI exit code
-// elsewhere. Each adapter owns its own mapping from kind to protocol.
+// A failure originating here is classified with application/errors' Kind, the
+// same vocabulary every other layer uses — see ../application/errors/errors.go.
+// There is no domain-local kind: one vocabulary beats two that would drift
+// apart. Domain still has no idea it is being served over HTTP, gRPC or a CLI;
+// the adapter's kind → protocol table, not domain, is the only mapping to a
+// transport code.
 //
 // # Not yet populated
 //

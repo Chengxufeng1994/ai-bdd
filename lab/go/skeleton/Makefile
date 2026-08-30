@@ -7,11 +7,11 @@ help:
 
 # Code generation
 #
-# //go:generate directives live in the package that consumes their output, so a
-# deleted package takes its directive with it and never leaves a path pointing
-# at something that no longer exists. This Makefile is the entry point on top of
-# them: `go generate -run` selects one generator at a time, which is what makes
-# per-tool targets possible without moving the directives to one central file.
+# //go:generate directives all live in generate.go at the repository root (see
+# that file's doc comment for why), not beside the package that consumes their
+# output. This Makefile is the entry point on top of them: `go generate -run`
+# selects one generator at a time, which is what makes per-tool targets
+# possible without touching generate.go itself.
 #
 # A future generator fits the same shape. buf and protoc cannot share a single
 # root generate.go — they carry their own config and plugin flags — but they can
@@ -112,11 +112,11 @@ lint-fix:
 ## build: Build the server with the version stamped in
 .PHONY: build
 build:
-	go build -ldflags "-X main.version=$$(git describe --tags --always --dirty 2>/dev/null || echo dev)" -o bin/server ./cmd/server
+	go build -ldflags "-X skeleton/pkg/version.value=$$(git describe --tags --always --dirty 2>/dev/null || echo dev)" -o bin/server ./cmd/server
 
 ## verify: Everything CI should run
 .PHONY: verify
-verify: verify-fmt verify-generated lint
+verify: verify-fmt verify-generated verify-stamp lint
 	go vet ./...
 	go test -race ./...
 
@@ -139,6 +139,21 @@ verify-generated:
 		echo "generated code is stale — run 'make gen' and commit the result"; \
 		exit 1; \
 	fi
+
+# `-X` aimed at a symbol that does not exist is not an error: the linker writes
+# nothing and the binary reports its default. Renaming the package or the
+# variable would therefore ship a build reporting "dev" with every test still
+# green, because the acceptance suite injects its own version and never touches
+# this path. This is the only gate that would notice.
+#
+# Like verify-fmt and verify-generated, this has no `## ` help line: `make help`
+# lists what you would run by hand, and these three are reached through `verify`.
+.PHONY: verify-stamp
+verify-stamp:
+	@command -v strings >/dev/null || { echo "verify-stamp needs 'strings' (binutils)"; exit 1; }
+	@go build -ldflags "-X skeleton/pkg/version.value=STAMP-PROBE" -o bin/.stamp-probe ./cmd/server
+	@strings bin/.stamp-probe | grep -qx STAMP-PROBE || { rm -f bin/.stamp-probe; echo "ldflags symbol path no longer resolves: skeleton/pkg/version.value"; exit 1; }
+	@rm -f bin/.stamp-probe
 
 ## clean: Remove build output
 .PHONY: clean
