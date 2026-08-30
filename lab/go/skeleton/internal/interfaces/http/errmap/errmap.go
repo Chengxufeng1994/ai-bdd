@@ -10,8 +10,10 @@
 // with; ToInternalServerError renders the one body every unclassified error
 // gets. ToProblem is what a handler calls: it combines the two, translating a
 // classified error's message into a Problem document whose Status is
-// StatusFor's classification, and falling back to ToInternalServerError's
-// generic body for anything it does not recognise. An operation whose
+// StatusFor's classification, and calling ToInternalServerError for the generic
+// body of anything it does not recognise. It calls it rather than rebuilding
+// the same literal: two documents assembled from the same two constants agree
+// only until a field is added to one of them. An operation whose
 // contract declares more than one failure response switches on the status
 // ToProblem returns to pick among its generated response types; one whose
 // contract declares only 500, like /version, coerces the body's Status back
@@ -127,11 +129,12 @@ const problemTypeBase = "https://errors.skeleton.local"
 func ToProblem(err error, locale string, tr i18n.Translator) (int, apigen.Problem) {
 	var e apperrors.Error
 	if !errors.As(err, &e) || e.Kind == apperrors.KindUnclassified || e.MessageKey == "" {
-		return http.StatusInternalServerError, apigen.Problem{
-			Type:   unclassifiedProblemType,
-			Title:  unclassifiedProblemTitle,
-			Status: http.StatusInternalServerError,
-		}
+		// The generic body comes from ToInternalServerError rather than from a
+		// second literal here. The generated response type is a defined type
+		// whose underlying type is Problem, so the conversion is free — and it
+		// makes "the body an unrecognised error gets" one definition instead of
+		// two that happen to read the same two constants.
+		return http.StatusInternalServerError, apigen.Problem(ToInternalServerError(err))
 	}
 
 	status := StatusFor(e)

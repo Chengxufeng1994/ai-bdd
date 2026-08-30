@@ -224,9 +224,11 @@
 // Only http/ exists. It serves the version endpoint and carries the mapper,
 // presenter and errmap packages described above — trivially small for this one
 // operation, but present so that the shape is the one the next protocol and the
-// next endpoint copy. errmap carries the whole kind table, but /version can only
-// answer 200 or 500, so the table is exercised by its tests and by nothing in
-// production yet.
+// next endpoint copy. errmap carries the whole kind table and ToProblem runs it
+// on every classified failure, so it has a production caller — but /version can
+// answer only 200 or 500, so GetVersion discards what the table classified to
+// and renders 500 regardless. Every row but the fallback is therefore exercised
+// by tests alone until an operation declares a second failure response.
 //
 // The rest arrive when something needs them — a protocol added before it has a
 // caller is a guess about an interface nobody has asked for.

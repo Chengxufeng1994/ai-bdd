@@ -67,6 +67,15 @@ type Error struct {
 	// failure and what clients branch on, so it is API surface, not an
 	// internal string. It is set together with Kind in one literal at the
 	// call site that raises the failure.
+	//
+	// Never build one by interpolation. fmt.Sprintf("workout.%s.not_found",
+	// id) reads like a more precise key and is a different thing entirely:
+	// the RFC 9457 type is what clients log, group by and alert on, so a key
+	// carrying a request's own data gives every occurrence a distinct
+	// identity — nothing groups, no alert can be written against it, and the
+	// value is republished into a field no log pipeline knows to redact.
+	// Values that vary per occurrence belong in Params, which exists for
+	// exactly that and is rendered into the message rather than its identity.
 	MessageKey string
 
 	// Params are the values a message template interpolates. They reach the

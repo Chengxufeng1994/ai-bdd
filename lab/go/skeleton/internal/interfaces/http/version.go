@@ -31,21 +31,18 @@ func (s *Server) GetVersion(ctx context.Context, request apigen.GetVersionReques
 		// api/openapi.yaml declares only 200 and 500 for this operation, so
 		// oapi-codegen never generated a 404/422/409/... response type for it
 		// to return here — there is nothing errmap.StatusFor's classification
-		// could select among. Every failure at this endpoint is a 500
-		// regardless of kind; an operation whose contract declares more than
-		// one failure response switches on the status ToProblem returns to
-		// choose among its generated response types instead.
-		status, problem := errmap.ToProblem(err, localeOf(ctx), s.tr)
+		// could select among, which is why the status is discarded rather than
+		// switched on. An operation whose contract declares more than one
+		// failure response switches on the status ToProblem returns to choose
+		// among its generated response types instead.
+		_, problem := errmap.ToProblem(err, localeOf(ctx), s.tr)
 
-		// This operation's contract declares one failure response, so whatever
-		// the kind classified to, the wire answer is 500 — and the document has
-		// to say the same number, or it contradicts its own status line (RFC
-		// 9457 §3.1.4 requires the two to match). The classification is not
-		// lost: Type still carries the specific identity, which is what a
-		// client branches on.
-		if status != http.StatusInternalServerError {
-			problem.Status = http.StatusInternalServerError
-		}
+		// Unconditional: every failure here renders as 500 whatever its kind,
+		// and RFC 9457 §3.1.4 requires the body to say the same number as the
+		// status line it travels under. The classification is not lost — Type
+		// still carries the specific identity, which is what a client branches
+		// on.
+		problem.Status = http.StatusInternalServerError
 
 		return apigen.GetVersion500ApplicationProblemPlusJSONResponse{
 			InternalServerErrorApplicationProblemPlusJSONResponse: apigen.InternalServerErrorApplicationProblemPlusJSONResponse(problem),

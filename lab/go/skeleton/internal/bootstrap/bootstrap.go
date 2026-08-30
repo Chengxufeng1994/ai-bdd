@@ -36,8 +36,8 @@ type Deps struct {
 	// make them pollute each other intermittently.
 	Version string
 
-	// Logger receives what never reaches a client — an error's Where, Details
-	// and cause.
+	// Logger receives what never reaches a client — an error's Where,
+	// DetailedError and cause.
 	Logger log.Logger
 
 	// Translator renders message keys for the locale a request asked for.
