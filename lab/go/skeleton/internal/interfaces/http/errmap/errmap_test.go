@@ -9,9 +9,40 @@ import (
 	"testing"
 
 	apperrors "skeleton/internal/application/errors"
+	"skeleton/internal/interfaces/http/apigen"
 	"skeleton/internal/interfaces/http/errmap"
 	"skeleton/pkg/i18n"
 )
+
+// assertGenericProblem checks that problem is the body this adapter gives a
+// failure it refuses to describe, identity included.
+//
+// The status alone proves nothing here, and that is the whole reason this
+// helper exists. Both of ToProblem's branches can produce a 500 — the generic
+// one always does, and the classified one does whenever a kind maps there — so
+// a test asserting only the number passes no matter which branch ran, and
+// cannot fail when the guard that separates them is deleted. What actually
+// distinguishes them is what the client can identify the failure as: the
+// generic branch answers with RFC 9457's reserved "about:blank" and a fixed
+// summary, the classified branch with a type derived from the message key and
+// a translated title.
+//
+// The literals are spelled out rather than read from errmap's constants on
+// purpose. They are the wire contract a client branches on; a test that read
+// the same constants the code does would follow them wherever they went.
+func assertGenericProblem(t *testing.T, problem apigen.Problem) {
+	t.Helper()
+
+	if problem.Type != "about:blank" {
+		t.Errorf("Type: want RFC 9457's reserved about:blank for a failure with no specific identity, got %q", problem.Type)
+	}
+	if problem.Title != "Internal Server Error" {
+		t.Errorf("Title: want the generic summary, got %q", problem.Title)
+	}
+	if problem.Status != http.StatusInternalServerError {
+		t.Errorf("body status: want 500, got %d", problem.Status)
+	}
+}
 
 func TestToInternalServerErrorReportsStatus500(t *testing.T) {
 	got := errmap.ToInternalServerError(errors.New("anything"))
@@ -150,13 +181,16 @@ func TestToProblemRendersParamsButNeverTheLogChannel(t *testing.T) {
 
 // An unrecognised error takes the same path an unclassified one does: 500
 // with a generic body. Recognise-then-default is a security property, so it
-// is asserted rather than assumed.
+// is asserted rather than assumed — and asserted on the body's identity, not
+// only its status, so that the test can tell "took the generic branch" from
+// "took the classified branch and landed on 500 anyway".
 func TestToProblemDefaultsUnrecognisedErrorsTo500(t *testing.T) {
 	status, problem := errmap.ToProblem(errors.New("something nobody classified"), "en", i18n.NewBundle(nil))
 
 	if status != http.StatusInternalServerError {
 		t.Errorf("status: want 500, got %d", status)
 	}
+	assertGenericProblem(t, problem)
 
 	body, err := json.Marshal(problem)
 	if err != nil {
@@ -170,6 +204,13 @@ func TestToProblemDefaultsUnrecognisedErrorsTo500(t *testing.T) {
 // An apperrors.Error whose Kind was never set — the zero value,
 // KindUnclassified — takes the same default path an unrecognised error does,
 // rather than being treated as some accidental classification.
+//
+// The identity assertion is what gives this test teeth. Delete ToProblem's
+// KindUnclassified guard and the error falls through to StatusFor, whose
+// default is also 500 — so a status-only assertion stays green while the
+// client starts receiving a type and a title derived from a message key
+// nobody classified, which is precisely the accidental classification this
+// test claims to forbid.
 func TestToProblemDefaultsZeroKindTo500(t *testing.T) {
 	appErr := apperrors.Error{
 		MessageKey: "whatever",
@@ -181,6 +222,7 @@ func TestToProblemDefaultsZeroKindTo500(t *testing.T) {
 	if status != http.StatusInternalServerError {
 		t.Errorf("status: want 500, got %d", status)
 	}
+	assertGenericProblem(t, problem)
 
 	body, err := json.Marshal(problem)
 	if err != nil {
