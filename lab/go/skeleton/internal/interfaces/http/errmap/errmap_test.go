@@ -62,27 +62,27 @@ func TestStatusFor(t *testing.T) {
 		want int
 	}{
 		"not found": {
-			err:  apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindNotFound}, Err: errors.New("workout 42 does not exist")},
+			err:  apperrors.Error{Kind: apperrors.KindNotFound, Err: errors.New("workout 42 does not exist")},
 			want: http.StatusNotFound,
 		},
 		"invalid": {
-			err:  apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindInvalid}, Err: errors.New("weight must be >= 0")},
+			err:  apperrors.Error{Kind: apperrors.KindInvalid, Err: errors.New("weight must be >= 0")},
 			want: http.StatusUnprocessableEntity,
 		},
 		"conflict": {
-			err:  apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindConflict}, Err: errors.New("workout already recorded")},
+			err:  apperrors.Error{Kind: apperrors.KindConflict, Err: errors.New("workout already recorded")},
 			want: http.StatusConflict,
 		},
 		"unauthorized": {
-			err:  apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindUnauthorized}, Err: errors.New("no credentials supplied")},
+			err:  apperrors.Error{Kind: apperrors.KindUnauthorized, Err: errors.New("no credentials supplied")},
 			want: http.StatusUnauthorized,
 		},
 		"forbidden": {
-			err:  apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindForbidden}, Err: errors.New("not allowed to delete this workout")},
+			err:  apperrors.Error{Kind: apperrors.KindForbidden, Err: errors.New("not allowed to delete this workout")},
 			want: http.StatusForbidden,
 		},
 		"unavailable": {
-			err:  apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindUnavailable}, Err: errors.New("build stamp unreadable")},
+			err:  apperrors.Error{Kind: apperrors.KindUnavailable, Err: errors.New("build stamp unreadable")},
 			want: http.StatusServiceUnavailable,
 		},
 		"unclassified apperrors.Error falls back to 500": {

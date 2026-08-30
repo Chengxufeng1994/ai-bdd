@@ -12,7 +12,7 @@ import (
 // use case wraps an apperrors.Error with %w on its way up, possibly more than
 // once, and an adapter must still find it with errors.As.
 func TestErrorsAsRecoversThroughWrapping(t *testing.T) {
-	original := apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindNotFound}, Err: errors.New("workout 42 does not exist")}
+	original := apperrors.Error{Kind: apperrors.KindNotFound, Err: errors.New("workout 42 does not exist")}
 	wrapped := fmt.Errorf("get workout: %w", original)
 
 	var got apperrors.Error
@@ -40,7 +40,7 @@ func TestKindZeroValueIsUnclassified(t *testing.T) {
 // errors.As passing (for instance by matching on Error() text) still fails.
 func TestUnwrapReturnsTheWrappedError(t *testing.T) {
 	want := errors.New("build stamp unreadable")
-	e := apperrors.Error{Descriptor: apperrors.Descriptor{Kind: apperrors.KindUnavailable}, Err: want}
+	e := apperrors.Error{Kind: apperrors.KindUnavailable, Err: want}
 
 	got := e.Unwrap()
 	if !errors.Is(got, want) {

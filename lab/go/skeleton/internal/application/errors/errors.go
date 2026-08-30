@@ -102,12 +102,20 @@ type Where string
 // logs and never to a client. The split is what keeps a 500's body generic
 // while an operator still gets everything.
 type Error struct {
-	// Descriptor is the failure's identity: its code, its message key and its
-	// kind. It is embedded rather than flattened into three fields so that the
-	// three cannot be set apart from one another — Error{Code: "X"} does not
-	// compile, and a literal that goes around the catalog has to say
-	// Descriptor{...} out loud, where a reviewer sees it. See catalog.go.
-	Descriptor
+	// Kind classifies the failure. The zero value, KindUnclassified, is
+	// treated by every adapter as an unrecognised error.
+	Kind Kind
+
+	// Code is the stable identifier support tooling quotes. A catalog entry
+	// in catalog.go sets it together with MessageKey and Kind in one literal.
+	Code string
+
+	// MessageKey identifies the message this failure renders to. An adapter
+	// uses it both as the translation key and, rendered, as the RFC 9457
+	// type a client branches on — so it is API surface, not an internal
+	// string. A catalog entry in catalog.go sets it together with Code and
+	// Kind.
+	MessageKey string
 
 	// Params are the values a message template interpolates. They reach the
 	// client, so they carry domain values — an identifier, a count, a unit —
