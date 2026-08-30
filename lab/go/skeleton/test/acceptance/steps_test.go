@@ -9,7 +9,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	apihttp "skeleton/internal/interfaces/http"
+	"skeleton/internal/bootstrap"
 	"skeleton/internal/interfaces/http/apigen"
 )
 
@@ -41,7 +41,9 @@ func theServiceIsRunningAtVersion(ctx context.Context, version string) error {
 		return err
 	}
 
-	router, err := apihttp.NewRouter(apihttp.NewServer(version))
+	// Assembled through the same function cmd/server uses, so this scenario
+	// exercises the wiring the binary actually runs.
+	router, err := bootstrap.NewHandler(version)
 	if err != nil {
 		return err
 	}

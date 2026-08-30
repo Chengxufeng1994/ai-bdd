@@ -3,6 +3,7 @@ package acceptance_test
 import (
 	"context"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,11 @@ type world struct {
 	// router is the assembled HTTP surface for this scenario. Each scenario
 	// builds its own, so two scenarios can run servers configured differently
 	// at the same time.
-	router *gin.Engine
+	//
+	// It is http.Handler rather than *gin.Engine: the acceptance suite asserts on
+	// behaviour, and naming the framework here would make swapping it a change to
+	// the tests as well as to the adapter.
+	router http.Handler
 
 	// resp holds the last response, so a Then step can assert on it instead of
 	// the When step having to know what will be checked.

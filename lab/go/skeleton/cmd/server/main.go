@@ -14,7 +14,7 @@ import (
 	"net/http"
 	"os"
 
-	apihttp "skeleton/internal/interfaces/http"
+	"skeleton/internal/bootstrap"
 	"skeleton/pkg/config"
 	"skeleton/pkg/log"
 	"skeleton/pkg/version"
@@ -38,11 +38,9 @@ func main() {
 	)
 
 	// Read once here, in the only place allowed to touch the package variable.
-	// Everything below receives it as an argument, because the acceptance suite
-	// runs concurrent servers at different versions in one process.
 	v := version.Build()
 
-	router, err := apihttp.NewRouter(apihttp.NewServer(v))
+	router, err := bootstrap.NewHandler(v)
 	if err != nil {
 		logger.Error("build router", "error", err)
 		os.Exit(1)
