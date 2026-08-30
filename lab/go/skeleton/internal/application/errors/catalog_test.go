@@ -27,22 +27,27 @@ func TestNewTakesAllThreeFromTheDescriptor(t *testing.T) {
 	}
 }
 
-func TestWithParamsAndWithDetailsDoNotMutateTheOriginal(t *testing.T) {
-	base := apperrors.New(apperrors.VersionUnavailable, "usecase.GetVersion", nil)
+// TestWithParamsCopiesTheCallersMap guards the aliasing risk that actually
+// matters: an Error is wrapped, returned and logged well after the call site
+// that built it has moved on, so WithParams must not keep the caller's map by
+// reference — a later mutation there must not silently change what a past
+// failure says it was.
+func TestWithParamsCopiesTheCallersMap(t *testing.T) {
+	params := map[string]any{"id": "01H8X"}
 
-	derived := base.WithParams(map[string]any{"id": "01H8X"}).WithDetails("3 retries over 5s")
+	err := apperrors.New(apperrors.VersionUnavailable, "usecase.GetVersion", nil).WithParams(params)
+	params["id"] = "mutated"
 
-	if base.Params != nil {
-		t.Errorf("Params: want the original untouched, got %v", base.Params)
+	if err.Params["id"] != "01H8X" {
+		t.Errorf("Params: want the value at the time of the call, got %v", err.Params["id"])
 	}
-	if base.Details != "" {
-		t.Errorf("Details: want the original untouched, got %q", base.Details)
-	}
-	if derived.Params["id"] != "01H8X" {
-		t.Errorf("derived Params: want id 01H8X, got %v", derived.Params)
-	}
-	if derived.Details != "3 retries over 5s" {
-		t.Errorf("derived Details: got %q", derived.Details)
+}
+
+func TestWithDetailsSetsTheField(t *testing.T) {
+	got := apperrors.New(apperrors.VersionUnavailable, "usecase.GetVersion", nil).WithDetails("3 retries over 5s")
+
+	if got.Details != "3 retries over 5s" {
+		t.Errorf("Details: got %q", got.Details)
 	}
 }
 

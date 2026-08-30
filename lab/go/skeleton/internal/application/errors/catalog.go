@@ -10,11 +10,15 @@ type Descriptor struct {
 	// Code is the stable identifier support tooling quotes.
 	Code string
 
-	// MessageKey is the translation key, and the identity a client branches
-	// on once an adapter renders it as an RFC 9457 type.
+	// MessageKey identifies the message this failure renders to. An adapter
+	// uses it both as the translation key and, rendered, as the RFC 9457
+	// type a client branches on — so it is API surface, not an internal
+	// string.
 	MessageKey string
 
-	// Kind is the classification an adapter maps to its own vocabulary.
+	// Kind is the classification an adapter maps to its own vocabulary. The
+	// zero value, KindUnclassified, is treated by every adapter as an
+	// unrecognised error.
 	Kind Kind
 }
 
@@ -36,26 +40,28 @@ var VersionUnavailable = Descriptor{
 
 // New builds an Error from a Descriptor.
 //
-// This is the only way Code, MessageKey and Kind are set. Filling them
-// individually is what the Descriptor exists to prevent, so no setter for them
-// is offered — a caller who needs a new combination adds a Descriptor, where
-// the three stay together and a reviewer sees them at once.
+// Embedding Descriptor in Error is what makes Code, MessageKey and Kind
+// inseparable: there is no path that sets one without the other two. What
+// this does not do is stop a caller writing Error{Descriptor: Descriptor{...}}
+// inline instead of naming a catalog entry — that residue stays visible in
+// review, which is the point; New exists so the common path never has a
+// reason to reach for the struct literal at all.
 func New(d Descriptor, where Where, err error) Error {
-	return Error{
-		Kind:       d.Kind,
-		Code:       d.Code,
-		MessageKey: d.MessageKey,
-		Where:      where,
-		Err:        err,
-	}
+	return Error{Descriptor: d, Where: where, Err: err}
 }
 
 // WithParams returns a copy of e carrying the values its message interpolates.
 //
-// It returns a copy rather than mutating so that a Descriptor-built Error can
-// be shared and specialised without one caller's params reaching another's.
+// The map is copied because an Error outlives the call that built it: it is
+// wrapped, returned, and logged after the caller has moved on. Storing the
+// caller's map by reference would let a later mutation there change what a
+// past failure says it was.
 func (e Error) WithParams(params map[string]any) Error {
-	e.Params = params
+	copied := make(map[string]any, len(params))
+	for k, v := range params {
+		copied[k] = v
+	}
+	e.Params = copied
 	return e
 }
 
