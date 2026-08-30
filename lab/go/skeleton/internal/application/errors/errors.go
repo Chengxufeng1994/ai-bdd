@@ -47,7 +47,7 @@
 // this package. Kind classifies a non-nil error and nothing else.
 package errors
 
-import "fmt"
+import "strings"
 
 // Kind classifies why a use case failed, independently of any transport.
 //
@@ -85,25 +85,75 @@ const (
 	KindUnavailable
 )
 
+// Where names the logical operation an Error was produced in, such as
+// "usecase.GetVersion".
+//
+// It composes: each layer that wraps an Error adds its own, so unwrapping the
+// chain yields a path — service.VersionService.GetVersion: usecase.GetVersion:
+// read build version: connection refused. That is cheaper than a stack trace,
+// which costs at capture time, and it survives refactoring, because it names
+// what the code was doing rather than which frames it happened to be in.
+type Where string
+
 // Error is an application-layer failure classified by Kind.
 //
-// Err is wrapped, never discarded: a use case builds an Error around the
-// failure it received from a port, and the caller can still recover that
-// original error with errors.As or errors.Is.
+// Two channels leave this type and they must not be confused. Params is
+// rendered into the response a client receives; Where, Details and Err go to
+// logs and never to a client. The split is what keeps a 500's body generic
+// while an operator still gets everything.
 type Error struct {
 	// Kind classifies the failure. The zero value, KindUnclassified, is
 	// treated by every adapter as an unrecognised error.
 	Kind Kind
 
+	// Code is the stable identifier support tooling quotes. It is set from a
+	// Descriptor, never on its own — see catalog.go.
+	Code string
+
+	// MessageKey identifies the message this failure renders to. An adapter
+	// uses it both as the translation key and, rendered, as the RFC 9457
+	// type a client branches on — so it is API surface, not an internal
+	// string. It is set from a Descriptor, never on its own.
+	MessageKey string
+
+	// Params are the values a message template interpolates. They reach the
+	// client, so they carry domain values — an identifier, a count, a unit —
+	// and never the text of an underlying error.
+	Params map[string]any
+
+	// Where names the operation this failure was produced in. It names
+	// internal structure and must never reach a client.
+	Where Where
+
+	// Details is context the caller knows that Err does not say: how many
+	// retries, over what timeout, against which upstream. It goes to logs
+	// only. If it would merely restate Err, leave it empty.
+	Details string
+
 	// Err is the underlying failure this Error classifies.
 	Err error
 }
 
-// Error renders e for logs: which Kind it was classified as and what caused
-// it. It is not what a client sees — see errmap for the response body a
-// caller actually receives — so this may say more than that body does.
+// Error renders e for logs: where it happened, which code it carries, what the
+// caller observed, and what caused it. It is not what a client sees — see the
+// HTTP adapter's errmap for that — so it deliberately says more.
 func (e Error) Error() string {
-	return fmt.Sprintf("kind %d: %v", e.Kind, e.Err)
+	var b strings.Builder
+
+	for _, part := range []string{string(e.Where), e.Code, e.Details} {
+		if part != "" {
+			b.WriteString(part)
+			b.WriteString(": ")
+		}
+	}
+
+	if e.Err != nil {
+		b.WriteString(e.Err.Error())
+	} else {
+		b.WriteString(e.MessageKey)
+	}
+
+	return b.String()
 }
 
 // Unwrap returns the failure Error classifies, so that errors.Is and
