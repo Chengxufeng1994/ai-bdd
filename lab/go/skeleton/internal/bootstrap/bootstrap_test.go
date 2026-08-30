@@ -9,6 +9,8 @@ import (
 
 	"skeleton/internal/bootstrap"
 	"skeleton/internal/interfaces/http/apigen"
+	"skeleton/pkg/i18n"
+	"skeleton/pkg/log"
 )
 
 // features/version.feature runs one scenario, so one version, at a time — it
@@ -25,7 +27,7 @@ func TestNewHandlerIsIndependentAcrossConcurrentVersions(t *testing.T) {
 		go func(version string) {
 			defer wg.Done()
 
-			router, err := bootstrap.NewHandler(version)
+			router, err := bootstrap.NewHandler(bootstrap.Deps{Version: version, Logger: log.Discard(), Translator: i18n.NewBundle(nil)})
 			if err != nil {
 				t.Errorf("NewHandler(%q): %v", version, err)
 				return

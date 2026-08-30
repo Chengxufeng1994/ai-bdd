@@ -17,23 +17,56 @@ import (
 	"skeleton/internal/application/usecase/query"
 	"skeleton/internal/infrastructure/buildinfo"
 	apihttp "skeleton/internal/interfaces/http"
+	"skeleton/pkg/config"
+	"skeleton/pkg/i18n"
+	"skeleton/pkg/log"
 )
 
-// NewHandler assembles the HTTP surface reporting the given version.
+// Deps are the constructed objects the application is assembled from.
 //
-// The version is a parameter and must stay one. Reaching for pkg/version from
-// inside would make every assembled handler share one value, and the acceptance
-// suite runs scenarios concurrently at different versions — they would pollute
-// each other intermittently, which is the hardest kind of failure to trace.
+// It is deliberately not pkg/config.Config: that holds settings read from the
+// environment, this holds objects already built from them. Merging the two
+// would make "was this read or constructed" unanswerable at a glance, and the
+// answer decides who is allowed to change a field.
+type Deps struct {
+	// Version is the build version this instance reports. It is a parameter
+	// and must stay one: the acceptance suite runs scenarios concurrently at
+	// different versions in one process, so a package-level read here would
+	// make them pollute each other intermittently.
+	Version string
+
+	// Logger receives what never reaches a client — an error's Where, Details
+	// and cause.
+	Logger log.Logger
+
+	// Translator renders message keys for the locale a request asked for.
+	Translator i18n.Translator
+}
+
+// NewHandler assembles the HTTP surface from deps.
 //
 // It returns http.Handler rather than *gin.Engine so that router.go remains the
 // only hand-written file naming gin.
-func NewHandler(version string) (http.Handler, error) {
-	svc := service.NewVersionService(query.NewGetVersion(buildinfo.NewProvider(version)))
+func NewHandler(deps Deps) (http.Handler, error) {
+	svc := service.NewVersionService(query.NewGetVersion(buildinfo.NewProvider(deps.Version)))
 
 	engine, err := apihttp.NewRouter(apihttp.NewServer(svc))
 	if err != nil {
 		return nil, err
 	}
 	return engine, nil
+}
+
+// LogFormat maps a validated configuration value onto a logger option.
+//
+// It lives here rather than in either package because the composition root is
+// the one place allowed to know both. Putting it in config would make config
+// import log; putting it in log would make log import config. Either way the
+// two stop being replaceable on their own. It is here rather than in main
+// because this package is testable and main is not.
+func LogFormat(f config.LogFormat) log.Format {
+	if f == config.LogFormatJSON {
+		return log.FormatJSON
+	}
+	return log.FormatText
 }
