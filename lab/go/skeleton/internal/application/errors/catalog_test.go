@@ -10,12 +10,12 @@ import (
 	apperrors "skeleton/internal/application/errors"
 )
 
-// TestCatalogEntrySpecialisedWithAtAndWrapping checks that a catalog prototype
+// TestCatalogEntrySpecialisedWithWhereAndErr checks that a catalog prototype
 // keeps its identity — Kind, Code, MessageKey — through specialisation, and
-// that At and Wrapping attach what varies per occurrence.
-func TestCatalogEntrySpecialisedWithAtAndWrapping(t *testing.T) {
+// that WithWhere and WithErr attach what varies per occurrence.
+func TestCatalogEntrySpecialisedWithWhereAndErr(t *testing.T) {
 	cause := errors.New("connection refused")
-	got := apperrors.VersionUnavailable.At("usecase.GetVersion").Wrapping(cause)
+	got := apperrors.VersionUnavailable.WithWhere("usecase.GetVersion").WithErr(cause)
 
 	if got.Code != apperrors.VersionUnavailable.Code {
 		t.Errorf("Code: want %q, got %q", apperrors.VersionUnavailable.Code, got.Code)
@@ -61,8 +61,8 @@ func TestWithDetailsSetsTheField(t *testing.T) {
 // Where 疊加是「在哪裡發生」這個需求的實作方式：每一層包裝加上自己的，解開就得到
 // 一條路徑。這比 stack trace 便宜，且命名的是邏輯操作而非 Go 呼叫框。
 func TestWhereComposesThroughWrapping(t *testing.T) {
-	inner := apperrors.VersionUnavailable.At("usecase.GetVersion").
-		Wrapping(fmt.Errorf("read build version: %w", errors.New("connection refused")))
+	inner := apperrors.VersionUnavailable.WithWhere("usecase.GetVersion").
+		WithErr(fmt.Errorf("read build version: %w", errors.New("connection refused")))
 
 	outer := fmt.Errorf("%w", apperrors.Error{
 		Where: "service.VersionService.GetVersion",

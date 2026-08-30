@@ -25,21 +25,22 @@ var VersionUnavailable = Error{
 	MessageKey: "version.unavailable",
 }
 
-// At returns a copy of e naming the operation it happened in.
+// WithWhere returns a copy of e naming the operation it happened in.
 //
-// Where composes: each layer that wraps an Error calls At again with its own
-// name, so unwrapping the chain yields a path — see Where's doc comment in
-// errors.go.
-func (e Error) At(where Where) Error {
+// Where composes: each layer that wraps an Error calls WithWhere again with
+// its own name, so unwrapping the chain yields a path — see Where's doc
+// comment in errors.go.
+func (e Error) WithWhere(where Where) Error {
 	e.Where = where
 	return e
 }
 
-// Wrapping returns a copy of e classifying the given failure.
+// WithErr returns a copy of e wrapping the given failure.
 //
-// A catalog entry names what generally went wrong; Wrapping attaches the
-// specific occurrence so errors.As and errors.Unwrap can still reach it.
-func (e Error) Wrapping(err error) Error {
+// A catalog entry names what generally went wrong; WithErr attaches the
+// specific occurrence, so the result wraps err and errors.As and errors.Unwrap
+// can still reach it.
+func (e Error) WithErr(err error) Error {
 	e.Err = err
 	return e
 }

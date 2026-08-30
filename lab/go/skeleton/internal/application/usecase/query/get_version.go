@@ -52,8 +52,8 @@ func (h getVersionHandler) Handle(ctx context.Context, _ GetVersion) (GetVersion
 	v, err := h.versions.Version(ctx)
 	if err != nil {
 		return GetVersionResult{}, apperrors.VersionUnavailable.
-			At("usecase.GetVersion").
-			Wrapping(fmt.Errorf("read build version: %w", err))
+			WithWhere("usecase.GetVersion").
+			WithErr(fmt.Errorf("read build version: %w", err))
 	}
 
 	return GetVersionResult{Value: v}, nil
