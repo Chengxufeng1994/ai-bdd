@@ -163,19 +163,28 @@
 //	MUST: a handler returns a typed response and a nil error, never a
 //	returned error.
 //
-// oapi-codegen's generated strict handler has three default error paths, and
-// every one of them writes gin.H{"msg": err.Error()}: RequestErrorHandlerFunc,
-// HandlerErrorFunc and ResponseErrorHandlerFunc in apigen/api.gen.go. Only the
-// second is reached by breaking the MUST. The other two are handed failures no
-// handler can see — a request the spec accepted but the glue could not decode,
-// a response that would not serialise, a client that hung up mid-write — and
-// those errors carry socket addresses and internal hostnames. Worse, they are
-// opt-out rather than opt-in: NewStrictHandlerWithOptions fills every hook left
-// nil with the leaking default, so configuring one hook is not "the leak is
-// closed", it is "one of three is closed".
+// oapi-codegen generates four default error paths, and every one of them
+// writes gin.H{"msg": err.Error()}. Three are hooks on the strict handler —
+// RequestErrorHandlerFunc, HandlerErrorFunc and ResponseErrorHandlerFunc — and
+// the fourth is GinServerOptions.ErrorHandler, which the parameter-binding
+// wrappers call. Only HandlerErrorFunc is reached by breaking the MUST. The
+// others are handed failures no handler can see — a request the spec accepted
+// but the glue could not decode, a parameter that would not parse, a response
+// that would not serialise, a client that hung up mid-write — and those errors
+// carry socket addresses and internal hostnames. Worse, they are opt-out rather
+// than opt-in: NewStrictHandlerWithOptions fills every hook left nil with the
+// leaking default, and RegisterHandlers passes an empty GinServerOptions that
+// does the same. Configuring one is not "the leak is closed", it is "one of
+// four is closed".
 //
-// router.go therefore sets all three to one handler that logs the error and
-// renders errmap's generic Problem body, so breaking the MUST no longer leaks;
+// Two of the four have no generated call site today, because /version declares
+// no parameters and no request body. They are wired regardless: the file that
+// makes them live is api/openapi.yaml, and nothing in it would tell whoever
+// edits it that a leak just switched on.
+//
+// router.go therefore sets all four to handlers that log the error and render
+// errmap's generic Problem body at the status that path means, so breaking the
+// MUST no longer leaks;
 // it only costs a less precise status than the handler's own kind would have
 // chosen. The logging half is load-bearing, not decoration: the body that
 // handler writes deliberately says nothing, so the record is the only account

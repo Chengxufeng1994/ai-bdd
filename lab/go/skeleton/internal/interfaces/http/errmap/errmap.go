@@ -7,8 +7,9 @@
 // belongs to each adapter, and this is HTTP's copy of it.
 //
 // StatusFor classifies an error into the status this adapter would answer
-// with; ToInternalServerError renders the one body every unclassified error
-// gets. ToProblem is what a handler calls: it combines the two, translating a
+// with; ToGenericProblem renders the body a failure with no identity gets, at
+// whatever status it is answered with, and ToInternalServerError is that body
+// at the status a handler's own failure takes. ToProblem is what a handler calls: it combines the two, translating a
 // classified error's message into a Problem document whose Status is
 // StatusFor's classification, and calling ToInternalServerError for the generic
 // body of anything it does not recognise. It calls it rather than rebuilding
@@ -35,8 +36,28 @@ import (
 // specific identity. RFC 9457 reserves "about:blank" for exactly this.
 const unclassifiedProblemType = "about:blank"
 
-// unclassifiedProblemTitle is the human-readable summary for the same.
-const unclassifiedProblemTitle = "Internal Server Error"
+// ToGenericProblem renders err as a Problem document identifying nothing
+// beyond the status it is answered with.
+//
+// This is the shape every failure this adapter cannot categorise takes. A
+// request the generated glue could not bind is a 400 and a handler that
+// returned an error is a 500; both are equally unexplainable to the client, and
+// only the status separates them. Collapsing the first into the second would
+// blame the server for the client's mistake.
+//
+// Title is derived from status rather than stored per status. "about:blank" is
+// RFC 9457's way of saying a problem has no identity beyond its status code,
+// which makes the status phrase the only title it can honestly carry —
+// deriving it is what stops the two from disagreeing.
+//
+// err is never rendered, for the reason ToInternalServerError gives below.
+func ToGenericProblem(_ error, status int) apigen.Problem {
+	return apigen.Problem{
+		Type:   unclassifiedProblemType,
+		Title:  http.StatusText(status),
+		Status: int32(status),
+	}
+}
 
 // ToInternalServerError renders err as the shared 500 Problem document.
 //
@@ -52,18 +73,21 @@ const unclassifiedProblemTitle = "Internal Server Error"
 // logs before rendering its failure at all. Logging again here would emit each
 // of those failures twice, the second time under a message naming no operation.
 //
-// The parameter is unused and stays anyway. It is what makes a call site read
+// The parameter is forwarded to ToGenericProblem, which does not render it
+// either. It stays in both signatures because it is what makes a call site read
 // as "render this error" rather than "render the 500", which is the difference
 // between a caller that still has the error in hand and one that has already
 // dropped it — and it keeps a later decision to lift something safe out of err,
-// a correlation id say, a change to this function rather than to every
+// a correlation id say, a change to these two functions rather than to every
 // caller's signature.
-func ToInternalServerError(_ error) apigen.InternalServerErrorApplicationProblemPlusJSONResponse {
-	return apigen.InternalServerErrorApplicationProblemPlusJSONResponse{
-		Type:   unclassifiedProblemType,
-		Title:  unclassifiedProblemTitle,
-		Status: http.StatusInternalServerError,
-	}
+//
+// The body is ToGenericProblem's rather than a second literal here, for the
+// same reason ToProblem below reuses this one: two documents assembled from the
+// same constants agree only until a field is added to one of them.
+func ToInternalServerError(err error) apigen.InternalServerErrorApplicationProblemPlusJSONResponse {
+	return apigen.InternalServerErrorApplicationProblemPlusJSONResponse(
+		ToGenericProblem(err, http.StatusInternalServerError),
+	)
 }
 
 // StatusFor reports the HTTP status err classifies to.

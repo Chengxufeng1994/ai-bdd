@@ -58,54 +58,97 @@ func NewRouter(si apigen.StrictServerInterface, logger log.Logger) (*gin.Engine,
 	// also lived here it would have two homes and they would disagree.
 	engine.Use(middleware.OapiRequestValidator(spec))
 
-	// All three hooks, not just the one a handler can trip. Every field left
-	// nil here is filled by NewStrictHandlerWithOptions with a default that
-	// writes gin.H{"msg": err.Error()} into the body, so setting two of three
-	// leaves the third leaking — and the third is reached by failures nobody
-	// writes code for: a response that fails to serialise, a connection the
-	// client dropped mid-write. Those carry socket addresses and internal
+	// All four generated error paths, not just the one a handler can trip.
+	// Three are hooks on the strict handler; the fourth is
+	// GinServerOptions.ErrorHandler, which the parameter-binding wrappers call
+	// and which RegisterHandlers leaves unset by passing an empty options
+	// struct. Each one left unset keeps a default that writes
+	// gin.H{"msg": err.Error()} into the body, so closing three is not "the
+	// leak is closed" — and the ones easiest to forget are exactly the ones
+	// reached by failures nobody writes code for: a parameter that will not
+	// parse, a response that fails to serialise, a connection the client
+	// dropped mid-write. Those errors carry socket addresses and internal
 	// hostnames.
 	//
-	// RequestErrorHandlerFunc's default answers 400 rather than 500, and
-	// collapsing it into the generic 500 loses that distinction. It costs
-	// nothing real: OapiRequestValidator above rejects a request that does not
-	// match api/openapi.yaml before the strict handler is reached, so a
-	// genuine "I cannot read this" is already a 400 from the validator, and
-	// what remains here is a decode failure on a request the spec accepted —
-	// a server-side surprise, not a client mistake.
-	onError := errorFunc(logger)
-	strict := apigen.NewStrictHandlerWithOptions(si, nil, apigen.StrictGinServerOptions{
-		RequestErrorHandlerFunc:  onError,
-		HandlerErrorFunc:         onError,
-		ResponseErrorHandlerFunc: onError,
-	})
-	apigen.RegisterHandlers(engine, strict)
+	// Two of the four have no generated call site while /version is the only
+	// operation, because it declares no parameters and no request body. They
+	// are wired anyway: what makes them live is an edit to api/openapi.yaml,
+	// and nothing there would tell whoever makes it that a leak switched on.
+	//
+	// Each keeps the status its own path means rather than collapsing to 500.
+	// A request the glue could not bind is the client's mistake and stays a
+	// 400. OapiRequestValidator above catches most of those first, but not all
+	// — it does not enforce every string format the spec can declare, so a
+	// malformed value can still reach the binder. Answering 500 there would
+	// blame the server for a client's typo, and page somebody for it.
+	strict := apigen.NewStrictHandlerWithOptions(si, nil, strictOptions(logger))
+	apigen.RegisterHandlersWithOptions(engine, strict, serverOptions(logger))
 
 	return engine, nil
 }
 
-// errorFunc builds the replacement for every error hook apigen installs by
-// default. Each default writes gin.H{"msg": err.Error()} straight into the
+// strictOptions and serverOptions exist as named functions rather than as
+// literals inline above so that a test can assert every hook is set. Wiring
+// them inline would leave the one thing worth checking — that none was
+// forgotten — visible only by reading.
+func strictOptions(logger log.Logger) apigen.StrictGinServerOptions {
+	onServerError := boundaryErrorFunc(logger, http.StatusInternalServerError)
+
+	return apigen.StrictGinServerOptions{
+		RequestErrorHandlerFunc:  boundaryErrorFunc(logger, http.StatusBadRequest),
+		HandlerErrorFunc:         onServerError,
+		ResponseErrorHandlerFunc: onServerError,
+	}
+}
+
+// serverOptions carries the fourth generated error path, the one the
+// parameter-binding wrappers call.
+func serverOptions(logger log.Logger) apigen.GinServerOptions {
+	return apigen.GinServerOptions{ErrorHandler: bindErrorFunc(logger)}
+}
+
+// boundaryErrorFunc builds the replacement for an error hook that carries no
+// status of its own, so the caller names the one that path means.
+//
+// Each generated default writes gin.H{"msg": err.Error()} straight into the
 // response body — exactly the leak interfaces/doc.go's MUST forbids.
 //
 // This is the backstop, not the normal path. Every handler still returns a
 // typed response and a nil error, so the contract stays compiler-checked; this
 // only fires when one forgets, or when the generated glue fails somewhere no
-// handler can see. It reuses errmap.ToInternalServerError for the body so there
-// is still exactly one place that owns the Problem shape.
-//
-// The body says nothing on purpose, so the record is not optional: it is the
-// only account of a failure that reached the boundary uncategorised, and it is
-// written here because this is the last place the error still exists.
-func errorFunc(logger log.Logger) func(*gin.Context, error) {
+// handler can see.
+func boundaryErrorFunc(logger log.Logger, status int) func(*gin.Context, error) {
 	return func(ctx *gin.Context, err error) {
-		logger.Error("unhandled error at the http boundary", "error", err)
-
-		body, marshalErr := json.Marshal(errmap.ToInternalServerError(err))
-		if marshalErr != nil {
-			ctx.Status(http.StatusInternalServerError)
-			return
-		}
-		ctx.Data(http.StatusInternalServerError, "application/problem+json", body)
+		writeGenericProblem(ctx, logger, err, status)
 	}
+}
+
+// bindErrorFunc is the same replacement for GinServerOptions.ErrorHandler, the
+// one generated error path that is handed the status it should answer with.
+//
+// Taking that status rather than choosing one keeps the generated wrappers'
+// judgement about what a binding failure means, while replacing only their
+// judgement about what to put in the body.
+func bindErrorFunc(logger log.Logger) func(*gin.Context, error, int) {
+	return func(ctx *gin.Context, err error, status int) {
+		writeGenericProblem(ctx, logger, err, status)
+	}
+}
+
+// writeGenericProblem is the body every replaced hook shares: log the error
+// where it still exists, then answer with a document that explains nothing.
+//
+// The two halves are one decision. The body says nothing on purpose, which is
+// what makes the record not optional — it is the only account of a failure that
+// reached the boundary uncategorised, and this is the last place the error is
+// still in hand.
+func writeGenericProblem(ctx *gin.Context, logger log.Logger, err error, status int) {
+	logger.Error("unhandled error at the http boundary", "error", err, "status", status)
+
+	body, marshalErr := json.Marshal(errmap.ToGenericProblem(err, status))
+	if marshalErr != nil {
+		ctx.Status(status)
+		return
+	}
+	ctx.Data(status, "application/problem+json", body)
 }
