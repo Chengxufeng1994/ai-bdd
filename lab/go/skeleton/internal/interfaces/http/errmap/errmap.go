@@ -18,9 +18,11 @@ package errmap
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	apperrors "skeleton/internal/application/errors"
 	"skeleton/internal/interfaces/http/apigen"
+	"skeleton/pkg/i18n"
 )
 
 // unclassifiedProblemType is the RFC 9457 type for a failure with no more
@@ -84,5 +86,40 @@ func StatusFor(err error) int {
 		// Also reached by KindUnclassified, the zero value: an Error nobody
 		// classified is exactly the case this default must not miss.
 		return http.StatusInternalServerError
+	}
+}
+
+// problemTypeBase prefixes a message key to form an RFC 9457 type.
+const problemTypeBase = "https://errors.skeleton.local"
+
+// ToProblem renders err as the status and Problem document this adapter
+// answers with, translating its message into locale.
+//
+// It is the top half of recognise-then-default: an error carrying a
+// classification gets that classification's status and its own message; an
+// error carrying none — including one whose Kind is the zero value,
+// KindUnclassified — gets the same generic 500 ToInternalServerError
+// produces. Reversing that order would leak err.Error() to a client the
+// first time an unclassified error arrived.
+//
+// Only Params crosses into the body. Where, DetailedError and the wrapped
+// cause are the log channel and are deliberately absent from what this
+// returns; the caller is expected to log err itself.
+func ToProblem(err error, locale string, tr i18n.Translator) (int, apigen.Problem) {
+	var e apperrors.Error
+	if !errors.As(err, &e) || e.Kind == apperrors.KindUnclassified {
+		return http.StatusInternalServerError, apigen.Problem{
+			Type:   unclassifiedProblemType,
+			Title:  unclassifiedProblemTitle,
+			Status: http.StatusInternalServerError,
+		}
+	}
+
+	status := StatusFor(e)
+
+	return status, apigen.Problem{
+		Type:   problemTypeBase + "/" + strings.ReplaceAll(e.MessageKey, ".", "-"),
+		Title:  tr.Translate(locale, e.MessageKey, e.Params),
+		Status: int32(status),
 	}
 }

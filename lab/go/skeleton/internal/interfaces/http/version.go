@@ -22,17 +22,32 @@ import (
 func (s *Server) GetVersion(ctx context.Context, request apigen.GetVersionRequestObject) (apigen.GetVersionResponseObject, error) {
 	v, err := s.svc.GetVersion(ctx, mapper.ToGetVersion(request))
 	if err != nil {
+		// The error is logged here and nowhere else: errmap renders only what
+		// a client may see, so this is the one place Where, DetailedError and
+		// the cause are still in hand.
+		s.logger.Error("get version", "error", err)
+
 		// api/openapi.yaml declares only 200 and 500 for this operation, so
 		// oapi-codegen never generated a 404/422/409/... response type for it
 		// to return here — there is nothing errmap.StatusFor's classification
 		// could select among. Every failure at this endpoint is a 500
 		// regardless of kind; an operation whose contract declares more than
-		// one failure response switches on errmap.StatusFor to choose among
-		// its generated response types instead.
+		// one failure response switches on the status ToProblem returns to
+		// choose among its generated response types instead.
+		_, problem := errmap.ToProblem(err, localeOf(ctx), s.tr)
+
 		return apigen.GetVersion500ApplicationProblemPlusJSONResponse{
-			InternalServerErrorApplicationProblemPlusJSONResponse: errmap.ToInternalServerError(err),
+			InternalServerErrorApplicationProblemPlusJSONResponse: apigen.InternalServerErrorApplicationProblemPlusJSONResponse(problem),
 		}, nil
 	}
 
 	return presenter.ToGetVersionResponse(v), nil
 }
+
+// localeOf reports the locale a request asked for.
+//
+// The strict handler hands operations a typed request rather than the HTTP
+// one, so there is no Accept-Language header here to read. Returning a fixed
+// locale keeps the rendering path honest — it still exercises translation —
+// until a middleware puts the negotiated locale in the context.
+func localeOf(_ context.Context) string { return "en" }

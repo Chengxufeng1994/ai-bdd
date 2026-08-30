@@ -3,6 +3,8 @@ package http
 import (
 	"skeleton/internal/application/port/in"
 	"skeleton/internal/interfaces/http/apigen"
+	"skeleton/pkg/i18n"
+	"skeleton/pkg/log"
 )
 
 // Server implements the generated StrictServerInterface.
@@ -12,7 +14,9 @@ import (
 // keeps the web framework at the edge, in router.go and the generated package,
 // where swapping it would touch two files and nothing deeper.
 type Server struct {
-	svc in.VersionService
+	svc    in.VersionService
+	logger log.Logger
+	tr     i18n.Translator
 }
 
 // Compile-time check that Server still satisfies the contract. Without it, a
@@ -29,6 +33,11 @@ var _ apigen.StrictServerInterface = (*Server)(nil)
 // names only capabilities, so holding it grants access to those capabilities
 // and nothing more. A concrete service would bypass that contract and lose the
 // ability to substitute a decorated implementation.
-func NewServer(svc in.VersionService) *Server {
-	return &Server{svc: svc}
+//
+// logger and tr are what rendering a failure needs beyond the port: errmap
+// deliberately drops everything a client must not see, so an error's Where,
+// DetailedError and cause reach logs through logger or they reach nothing at
+// all, and tr is what renders a classified error's message into a locale.
+func NewServer(svc in.VersionService, logger log.Logger, tr i18n.Translator) *Server {
+	return &Server{svc: svc, logger: logger, tr: tr}
 }

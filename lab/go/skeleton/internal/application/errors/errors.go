@@ -46,6 +46,16 @@ import "strings"
 // literal naming each field explicitly, so a mismatch would be a copy-paste
 // mistake visible in the literal, not an invisible argument-order trap.
 // Revisit this if a helper ever takes both as parameters.
+//
+// Do not nest an Error inside another Error's Err field. errors.As stops at
+// the first Error it finds in a chain, so a layer that writes
+// Error{Where: "service.X", Err: innerAppErr} — leaving its own Kind at the
+// zero value — silently downgrades whatever classification innerAppErr
+// carried to KindUnclassified; nothing in the type or the compiler catches
+// it. A layer that wants to add context to a failure it did not itself
+// classify should wrap with fmt.Errorf("...: %w", err) instead: that
+// wrapper has Unwrap but is not an Error, so errors.As passes through it to
+// the classification underneath.
 type Error struct {
 	// Kind classifies the failure. The zero value, KindUnclassified, is
 	// treated by every adapter as an unrecognised error.

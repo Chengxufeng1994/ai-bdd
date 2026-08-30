@@ -10,6 +10,7 @@ import (
 
 	apperrors "skeleton/internal/application/errors"
 	"skeleton/internal/interfaces/http/errmap"
+	"skeleton/pkg/i18n"
 )
 
 func TestToInternalServerErrorReportsStatus500(t *testing.T) {
@@ -106,5 +107,101 @@ func TestStatusFor(t *testing.T) {
 				t.Errorf("StatusFor: want %d, got %d", tc.want, got)
 			}
 		})
+	}
+}
+
+// The two channels must not cross. Params is rendered into the body; Where,
+// DetailedError and the wrapped cause are for logs. This asserts on the
+// marshalled document rather than on one field, so a future field cannot open
+// a second leak silently — the same shape as
+// TestToInternalServerErrorDoesNotLeakTheUnderlyingError above.
+func TestToProblemRendersParamsButNeverTheLogChannel(t *testing.T) {
+	tr := i18n.NewBundle(map[string]map[string]string{
+		"en": {"version.unavailable": "Version {id} is unavailable."},
+	})
+
+	appErr := apperrors.Error{
+		Kind:          apperrors.KindUnavailable,
+		MessageKey:    "version.unavailable",
+		Params:        map[string]any{"id": "01H8X"},
+		Where:         "usecase.GetVersion",
+		DetailedError: "3 retries over 5s",
+	}.Wrap(errors.New(`pq: password authentication failed for user "admin"`))
+
+	status, problem := errmap.ToProblem(appErr, "en", tr)
+
+	if status != http.StatusServiceUnavailable {
+		t.Errorf("status: want 503, got %d", status)
+	}
+	if problem.Title != "Version 01H8X is unavailable." {
+		t.Errorf("Title: want the rendered message, got %q", problem.Title)
+	}
+
+	body, err := json.Marshal(problem)
+	if err != nil {
+		t.Fatalf("marshal problem: %v", err)
+	}
+	for _, secret := range []string{"usecase.GetVersion", "3 retries", "password", "admin"} {
+		if strings.Contains(string(body), secret) {
+			t.Errorf("the body leaks %q from the log channel: %s", secret, body)
+		}
+	}
+}
+
+// An unrecognised error takes the same path an unclassified one does: 500
+// with a generic body. Recognise-then-default is a security property, so it
+// is asserted rather than assumed.
+func TestToProblemDefaultsUnrecognisedErrorsTo500(t *testing.T) {
+	status, problem := errmap.ToProblem(errors.New("something nobody classified"), "en", i18n.NewBundle(nil))
+
+	if status != http.StatusInternalServerError {
+		t.Errorf("status: want 500, got %d", status)
+	}
+
+	body, err := json.Marshal(problem)
+	if err != nil {
+		t.Fatalf("marshal problem: %v", err)
+	}
+	if strings.Contains(string(body), "something nobody classified") {
+		t.Errorf("the body leaks the unrecognised error: %s", body)
+	}
+}
+
+// An apperrors.Error whose Kind was never set — the zero value,
+// KindUnclassified — takes the same default path an unrecognised error does,
+// rather than being treated as some accidental classification.
+func TestToProblemDefaultsZeroKindTo500(t *testing.T) {
+	appErr := apperrors.Error{
+		MessageKey: "whatever",
+		Where:      "usecase.GetVersion",
+	}.Wrap(errors.New("nobody set Kind"))
+
+	status, problem := errmap.ToProblem(appErr, "en", i18n.NewBundle(nil))
+
+	if status != http.StatusInternalServerError {
+		t.Errorf("status: want 500, got %d", status)
+	}
+
+	body, err := json.Marshal(problem)
+	if err != nil {
+		t.Fatalf("marshal problem: %v", err)
+	}
+	if strings.Contains(string(body), "nobody set Kind") {
+		t.Errorf("the body leaks the underlying error: %s", body)
+	}
+}
+
+// A missing translation renders the key. The key is also what the type is
+// derived from, so both stay consistent when a locale is incomplete.
+func TestToProblemRendersTheKeyWhenUntranslated(t *testing.T) {
+	appErr := apperrors.Error{
+		Kind:       apperrors.KindUnavailable,
+		MessageKey: "version.unavailable",
+	}.Wrap(errors.New("boom"))
+
+	_, problem := errmap.ToProblem(appErr, "fr", i18n.NewBundle(nil))
+
+	if problem.Title != "version.unavailable" {
+		t.Errorf("Title: want the key, got %q", problem.Title)
 	}
 }

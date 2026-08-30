@@ -9,6 +9,8 @@ import (
 	"skeleton/internal/application/usecase/query"
 	apihttp "skeleton/internal/interfaces/http"
 	"skeleton/internal/interfaces/http/apigen"
+	"skeleton/pkg/i18n"
+	"skeleton/pkg/log"
 )
 
 // stubVersionService stands in for in.VersionService.
@@ -26,7 +28,7 @@ func (s stubVersionService) GetVersion(context.Context, query.GetVersion) (query
 }
 
 func TestGetVersionReturnsThe200Response(t *testing.T) {
-	s := apihttp.NewServer(stubVersionService{result: query.GetVersionResult{Value: "1.2.3"}})
+	s := apihttp.NewServer(stubVersionService{result: query.GetVersionResult{Value: "1.2.3"}}, log.Discard(), i18n.NewBundle(nil))
 
 	resp, err := s.GetVersion(context.Background(), apigen.GetVersionRequestObject{})
 	if err != nil {
@@ -48,7 +50,7 @@ func TestGetVersionReturnsThe200Response(t *testing.T) {
 // build stamp does not fail in production, and inventing a scenario for it would
 // be inventing a business behaviour.
 func TestGetVersionReturnsThe500ProblemWhenTheUseCaseFails(t *testing.T) {
-	s := apihttp.NewServer(stubVersionService{err: errors.New("provider unavailable")})
+	s := apihttp.NewServer(stubVersionService{err: errors.New("provider unavailable")}, log.Discard(), i18n.NewBundle(nil))
 
 	resp, err := s.GetVersion(context.Background(), apigen.GetVersionRequestObject{})
 	if err != nil {
