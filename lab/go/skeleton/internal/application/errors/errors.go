@@ -8,21 +8,20 @@
 //
 // The package is split by how often each part changes. kind.go holds Kind and
 // its constants: adding a classification is a significant decision, so that
-// file should almost never change. This file holds Error itself — its
-// fields, its methods, and Wrap — which changes only when the type's shape
-// evolves.
+// file should almost never change. This file holds Error itself — its fields
+// and its methods — which changes only when the type's shape evolves.
 //
 // # There is no catalog
 //
 // MessageKey is API surface: an adapter renders it into the RFC 9457 `type`
 // a client branches on, so changing one is a breaking change that looks, at
 // the call site, like renaming a local string constant. A catalog — one file
-// listing every Kind/Code/MessageKey triple a service can produce — is what
-// would make that surface reviewable as a single list instead of scattered
+// listing every Kind/MessageKey pair a service can produce — is what would
+// make that surface reviewable as a single list instead of scattered
 // literals.
 //
 // There isn't one here. The one failure this codebase currently produces
-// sets its Kind, Code and MessageKey inline at the call site that raises it
+// sets its Kind and MessageKey inline at the call site that raises it
 // (see usecase/query.GetVersion), the same way this project has already left
 // assembler/, command/, readmodel/ and a Violations field unbuilt: a
 // container built before there is anything to put in it. That is affordable
@@ -31,69 +30,85 @@
 // this service that needs the list to stay stable.
 package errors
 
-import (
-	// Aliased because this package is itself named errors, and Kind, Error
-	// and the four With* methods below stay unqualified.
-	stderrors "errors"
-	"strings"
-)
+import "strings"
 
 // Error is an application-layer failure classified by Kind.
 //
 // Two channels leave this type and they must not be confused. Params is
-// rendered into the response a client receives; Where, Details and Err go to
-// logs and never to a client. The split is what keeps a 500's body generic
-// while an operator still gets everything.
+// rendered into the response a client receives; Where, DetailedError and Err
+// go to logs and never to a client. The split is what keeps a 500's body
+// generic while an operator still gets everything.
 //
-// Code, MessageKey and Where are all plain string. Nothing but the parameter
-// name stops WithWhere(e.MessageKey) from compiling: the three are adjacent
-// identifier strings with no distinct type keeping them apart. That is
-// acceptable today because no variable flows between them — Code and
-// MessageKey are set together in one literal at whichever call site raises
-// the failure, and Where only ever arrives as WithWhere's argument. Revisit
-// this the day a function needs two of them as parameters at once, where
-// argument order becomes an invisible trap.
+// MessageKey and Where are both plain string. Nothing but the field name in
+// a literal stops one from being given the other's value — they are
+// adjacent identifier strings with no distinct type keeping them apart. That
+// is acceptable today because every call site fills this struct with one
+// literal naming each field explicitly, so a mismatch would be a copy-paste
+// mistake visible in the literal, not an invisible argument-order trap.
+// Revisit this if a helper ever takes both as parameters.
 type Error struct {
 	// Kind classifies the failure. The zero value, KindUnclassified, is
 	// treated by every adapter as an unrecognised error.
 	Kind Kind
 
-	// Code is the stable identifier support tooling quotes. It is set
-	// together with MessageKey and Kind in one literal at the call site
-	// that raises the failure.
-	Code string
-
 	// MessageKey identifies the message this failure renders to. An adapter
 	// uses it both as the translation key and, rendered, as the RFC 9457
-	// type a client branches on — so it is API surface, not an internal
-	// string. It is set together with Code and Kind.
+	// type a client branches on — the machine-readable identity of the
+	// failure and what clients branch on, so it is API surface, not an
+	// internal string. It is set together with Kind in one literal at the
+	// call site that raises the failure.
 	MessageKey string
 
 	// Params are the values a message template interpolates. They reach the
 	// client, so they carry domain values — an identifier, a count, a unit —
 	// and never the text of an underlying error.
+	//
+	// Set by struct literal, this field is stored by reference: writing
+	// Params: m aliases whatever map m names, so a later mutation of m would
+	// silently change what a past failure says it was. That is safe today
+	// because every call site writes an inline map[string]any{...} literal
+	// with no other holder; revisit this the first time a call site builds
+	// Params in a variable before assigning it.
 	Params map[string]any
 
-	// Where names the operation this failure was produced in. It names
-	// internal structure and must never reach a client.
-	Where string
+	// Where names the logical operation this failure was produced in, such
+	// as "usecase.GetVersion". It names a logical operation rather than a
+	// stack frame: that costs nothing at run time and survives refactoring,
+	// where a file:line does not.
+	//
+	// The json:"-" tag is a guard, not an active rule — this type is not
+	// marshalled today, because what reaches a client is the Problem
+	// document errmap renders, never the error itself. The tag is here so
+	// that the day someone does marshal an Error — for structured logging,
+	// or to pass a failure between services — Where is already excluded,
+	// rather than relying on whoever writes that code remembering that it
+	// names internal structure a caller must not see.
+	Where string `json:"-"`
 
-	// Details is context the caller knows that Err does not say: how many
-	// retries, over what timeout, against which upstream. It goes to logs
-	// only. If it would merely restate Err, leave it empty.
-	Details string
+	// DetailedError is internal context the caller knows that Err does not
+	// say: how many retries, over what timeout, against which upstream. The
+	// name is borrowed from Mattermost's AppError.DetailedError, whose own
+	// comment calls it "internal error string to help the developer" —
+	// exactly this field's job. The contract is not borrowed with it: their
+	// field is tagged to reach the client, with an opt-out to clear it
+	// selectively. Here ARCHITECTURE.md §7 requires a 500 body to stay
+	// generic, and errmap_test.go enforces that by scanning the whole
+	// rendered document — so DetailedError stays log-only, unconditionally,
+	// with no tag or opt-out to later "restore." If it would merely restate
+	// Err, leave it empty.
+	DetailedError string
 
 	// Err is the underlying failure this Error classifies.
 	Err error
 }
 
-// Error renders e for logs: where it happened, which code it carries, what the
-// caller observed, and what caused it. It is not what a client sees — see the
-// HTTP adapter's errmap for that — so it deliberately says more.
+// Error renders e for logs: where it happened, what detail the caller
+// attached, and what caused it. It is not what a client sees — see the HTTP
+// adapter's errmap for that — so it deliberately says more.
 func (e Error) Error() string {
 	var b strings.Builder
 
-	for _, part := range []string{e.Where, e.Code, e.Details} {
+	for _, part := range []string{e.Where, e.DetailedError} {
 		if part != "" {
 			b.WriteString(part)
 			b.WriteString(": ")
@@ -115,77 +130,11 @@ func (e Error) Unwrap() error {
 	return e.Err
 }
 
-// WithWhere returns a copy of e naming the operation it happened in.
+// Wrap returns a copy of e with the given failure as its cause.
 //
-// Where composes: each layer that wraps an Error calls WithWhere again with
-// its own name, so unwrapping the chain yields a path — see Where's doc
-// comment above.
-func (e Error) WithWhere(where string) Error {
-	e.Where = where
-	return e
-}
-
-// WithErr returns a copy of e wrapping the given failure.
-//
-// A caller names what generally went wrong; WithErr attaches the specific
-// occurrence, so the result wraps err and errors.As and errors.Unwrap can
-// still reach it.
-func (e Error) WithErr(err error) Error {
+// Wrap pairs with Unwrap: it sets the cause this Error classifies, and
+// Unwrap is what exposes that cause to errors.Is and errors.As.
+func (e Error) Wrap(err error) Error {
 	e.Err = err
 	return e
-}
-
-// WithParams returns a copy of e carrying the values its message interpolates.
-//
-// The map is copied because an Error outlives the call that built it: it is
-// wrapped, returned, and logged after the caller has moved on. Storing the
-// caller's map by reference would let a later mutation there change what a
-// past failure says it was.
-func (e Error) WithParams(params map[string]any) Error {
-	copied := make(map[string]any, len(params))
-	for k, v := range params {
-		copied[k] = v
-	}
-	e.Params = copied
-	return e
-}
-
-// WithDetails returns a copy of e carrying operator context.
-//
-// Details goes to logs only. Say what the caller knows that Err does not; if it
-// would restate Err, leave it empty.
-func (e Error) WithDetails(details string) Error {
-	e.Details = details
-	return e
-}
-
-// Wrap returns err annotated with where, preserving the classification beneath it.
-//
-// Identity travels outward and location does not: the wrapper carries the same
-// Kind, Code, MessageKey and Params as the error it wraps, because it is the same
-// failure seen from one layer further out. Where and Details stay per-layer —
-// each names what that layer knows.
-//
-// Copying the identity is what keeps errors.As correct. As stops at the first
-// Error in the chain, so a wrapper that left Kind at its zero value would make an
-// adapter classify a NotFound as an unclassified 500 — silently, since the inner
-// Error is still there, just never reached.
-func Wrap(err error, where string) error {
-	if err == nil {
-		return nil
-	}
-
-	var e Error
-	if stderrors.As(err, &e) {
-		return Error{
-			Kind:       e.Kind,
-			Code:       e.Code,
-			MessageKey: e.MessageKey,
-			Params:     e.Params,
-			Where:      where,
-			Err:        err,
-		}
-	}
-
-	return Error{Where: where, Err: err}
 }

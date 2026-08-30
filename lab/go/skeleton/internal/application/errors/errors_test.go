@@ -47,31 +47,3 @@ func TestUnwrapReturnsTheWrappedError(t *testing.T) {
 		t.Errorf("Unwrap: want %v, got %v", want, got)
 	}
 }
-
-// TestWithParamsCopiesTheCallersMap guards the aliasing risk that actually
-// matters: an Error is wrapped, returned and logged well after the call site
-// that built it has moved on, so WithParams must not keep the caller's map by
-// reference — a later mutation there must not silently change what a past
-// failure says it was.
-func TestWithParamsCopiesTheCallersMap(t *testing.T) {
-	params := map[string]any{"id": "01H8X"}
-	base := apperrors.Error{Kind: apperrors.KindUnavailable}
-
-	err := base.WithParams(params)
-	params["id"] = "mutated"
-
-	if err.Params["id"] != "01H8X" {
-		t.Errorf("Params: want the value at the time of the call, got %v", err.Params["id"])
-	}
-}
-
-// TestWithDetailsSetsTheField checks that WithDetails attaches the operator
-// context it is given.
-func TestWithDetailsSetsTheField(t *testing.T) {
-	base := apperrors.Error{Kind: apperrors.KindUnavailable}
-	got := base.WithDetails("3 retries over 5s")
-
-	if got.Details != "3 retries over 5s" {
-		t.Errorf("Details: got %q", got.Details)
-	}
-}
