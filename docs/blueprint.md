@@ -29,7 +29,7 @@ BDD 實踐本身的定義（三個實踐、雙迴圈、Gherkin 反模式）見
 
 | 步驟 | 這一步在問什麼 | BDD 作法 | 產物 |
 | --- | --- | --- | --- |
-| **CLARIFY** | 給誰用？要解決什麼？哪些還不知道？ | 識別 actor ＋ INVEST 切分 ＋ Example Mapping | `actor.md`、`example-mapping.md` ＋ 就緒判定 |
+| **CLARIFY** | 給誰用？要解決什麼？哪些還不知道？ | 廣度：PRD 拆解 ＋ 識別 actor；深度：INVEST 切分 ＋ Example Mapping | `brief.md`、`actor.md`、`example-mapping.md` ＋ 就緒判定 |
 | **SPEC** | 業務讀得懂的驗收條件長怎樣？ | Gherkin，反命令式稽核 | `.feature` ＋ 詞彙表 |
 | **PLAN** | 這些情境怎麼做出來？先做哪一條？ | 從 `.feature` 翻譯結構 ＋ 垂直切片排序 | `plan.md`：API／元件／schema／風險／順序 |
 | **IMPLEMENT** | 讓情境從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |

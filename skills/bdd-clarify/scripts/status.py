@@ -5,8 +5,8 @@
     python3 status.py [專案根目錄]        # 預設當前目錄
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自來源：
-規則與例子數自 example-mapping.md，紅卡數自 questions/ 的狀態列，
-就緒判定讀自 map 的檔頭。存一份儀表板的話，同一個數字會有兩份，
+規則與例子數自 example-mapping.md，紅卡數自 questions/ 的狀態列（含根層的
+Pass 1 問題），就緒判定讀自 map 的檔頭。存一份儀表板的話，同一個數字會有兩份，
 而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21 個例子，實際 23）。
 
 只讀不寫。
@@ -15,7 +15,8 @@ import re
 import sys
 from pathlib import Path
 
-DIMS = ["空與零", "邊界", "重複", "時序", "權限", "失敗", "時間", "規模"]
+DIMS = ["空與零", "邊界", "重複", "時序", "權限", "失敗", "時間", "規模",
+        "降級", "時限", "可觀測"]
 
 
 def readiness(text: str) -> str:
@@ -46,6 +47,20 @@ def coverage(text: str) -> str:
     return "".join(out)
 
 
+def count_questions(qdir: Path) -> tuple[int, list[str]]:
+    """回傳（已答數, 待答的檔名）。
+
+    狀態只認檔內的狀態列，不認所在目錄——問題檔不因狀態改變而搬家。
+    """
+    answered, pending = 0, []
+    for c in sorted(qdir.glob("*.md")):
+        if re.search(r"^\*\*狀態\*\*:\s*已答", c.read_text(encoding="utf-8"), re.M):
+            answered += 1
+        else:
+            pending.append(c.stem)
+    return answered, pending
+
+
 def main(root: Path) -> int:
     bdd = root / "docs" / "bdd"
     if not bdd.is_dir():
@@ -58,9 +73,20 @@ def main(root: Path) -> int:
         return 1
 
     print(f"{'feature':30}{'規則':>5}{'例子':>5}{'已答':>5}{'待答':>5}  {'狀態':8} 追問覆蓋")
-    print(f"{'':30}{'':>20}  {'':8} 空邊複序權敗期模")
+    print(f"{'':30}{'':>20}  {'':8} 空邊複序權敗期模降限觀")
     tot = [0, 0, 0, 0]
     blocked = []
+
+    # Pass 1 的問題住在根層，不屬於任何一則 story。漏掉這一列等於漏掉
+    # 跨 feature 的未知，而那正是單看某一個 feature 永遠看不見的部分。
+    root_q = bdd / "questions"
+    if root_q.is_dir():
+        answered, pending = count_questions(root_q)
+        tot[2] += answered
+        tot[3] += len(pending)
+        blocked += [f"questions/{n}" for n in pending]
+        print(f"{'questions/ (Pass 1)':30}{'-':>5}{'-':>5}{answered:>5}{len(pending):>5}"
+              f"  {'跨 feature':8}")
 
     for m in maps:
         slug = m.parent.name
@@ -68,18 +94,12 @@ def main(root: Path) -> int:
         rules = len(re.findall(r"^### Rule ", t, re.M))
         exs = len(re.findall(r"^- Example \d+\.\d+ \S", t, re.M))
 
-        cards = sorted((m.parent / "questions").glob("*.md"))
-        answered = sum(1 for c in cards
-                       if re.search(r"^\*\*狀態\*\*:\s*已答", c.read_text(encoding="utf-8"), re.M))
-        pending = len(cards) - answered
-        if pending:
-            blocked += [f"{slug}/{c.stem}" for c in cards
-                        if not re.search(r"^\*\*狀態\*\*:\s*已答",
-                                         c.read_text(encoding="utf-8"), re.M)]
+        answered, pending = count_questions(m.parent / "questions")
+        blocked += [f"{slug}/{n}" for n in pending]
 
-        for i, v in enumerate((rules, exs, answered, pending)):
+        for i, v in enumerate((rules, exs, answered, len(pending))):
             tot[i] += v
-        print(f"{slug:30}{rules:>5}{exs:>5}{answered:>5}{pending:>5}  "
+        print(f"{slug:30}{rules:>5}{exs:>5}{answered:>5}{len(pending):>5}  "
               f"{readiness(t):8} {coverage(t)}")
 
     print(f"{'合計':28}{tot[0]:>5}{tot[1]:>5}{tot[2]:>5}{tot[3]:>5}")
@@ -92,7 +112,7 @@ def main(root: Path) -> int:
     else:
         print("\n待答：0")
 
-    print("\n追問覆蓋 空與零/邊界/重複/時序/權限/失敗/時間/規模："
+    print("\n追問覆蓋 空與零/邊界/重複/時序/權限/失敗/時間/規模/降級/時限/可觀測："
           "✓ 問過 · — 還沒問 · n 不適用 · ? 沒寫這一段")
     return 0
 

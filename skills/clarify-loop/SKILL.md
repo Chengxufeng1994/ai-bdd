@@ -39,8 +39,9 @@ description: >
 
 Ask user: 若以下不明確，先問清楚。
 
-1. **要收斂哪一疊問題**：`docs/bdd/<feature>/questions/` 底下狀態為「待答」的問題檔。單獨使用時，
-   一段模糊的描述也可以——本 skill 會先把它拆成問題並各自建檔
+1. **要收斂哪一疊問題**：狀態為「待答」的問題檔，兩層都算——`docs/bdd/questions/`
+   （跨 feature）與 `docs/bdd/<feature>/questions/`。單獨使用時，一段模糊的描述
+   也可以——本 skill 會先把它拆成問題並各自建檔
 2. **這一輪想推進到哪**：全部問完，還是先清掉能當場決定的。**先知道範圍，
    才不會把一輪拖成沒有終點的訪談**
 
@@ -71,8 +72,11 @@ IMPORTANT: 阻塞的題目**不要換句話說再問一次**。使用者答不�
 的對象是狀態為「待答」的那些，每個檔都記了跳過的原因；先讀那個原因再決定怎麼問：
 
 ```bash
-grep -L '狀態.*已答' docs/bdd/<feature>/questions/*.md    # 還開著的
+grep -L '狀態.*已答' docs/bdd/questions/*.md docs/bdd/*/questions/*.md   # 還開著的
 ```
+
+根層那些是 CLARIFY 的 Pass 1 留下的跨 feature 問題。**它們最容易被漏掉**——
+逐一處理 feature 時不會走到根層，而它們的答案影響的正是每一則 story。
 
 | 跳過的原因 | 這一輪怎麼處理 |
 | --- | --- |
@@ -198,6 +202,10 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 
 更新原本那份 `docs/bdd/<feature-slug>/example-mapping.md`：已解的問題標
 `✓ 已解 → R<n>`、新發現的問題附加到問題表、規則與例子照編號往下加。
+
+解掉的若是**根層**的問題，落地的地方是 `docs/bdd/brief.md`（範圍邊界、隱含假設）
+或 `glossary.md` 的 `Shared N`，不是任何一份 map——放進某一份 map 等於讓另外幾則
+看不到它。
 
 **不要重排既有編號。** 下游的 Gherkin 情境會回指 `Example 1.1`，重排等於讓那些引用
 靜默指向別的東西。
