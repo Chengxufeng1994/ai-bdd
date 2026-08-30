@@ -1,9 +1,9 @@
-// Package handler implements the driving ports declared in port/in.
+// Package usecase implements the driving ports declared in port/in.
 //
-// A handler orchestrates: it calls the ports it needs and returns a dto. It
+// A use case orchestrates: it calls the ports it needs and returns a dto. It
 // holds no business rules — those live in domain — and it never returns a domain
 // aggregate, because an adapter holding one could mutate it past its invariants.
-package handler
+package usecase
 
 import (
 	"context"

@@ -1,12 +1,12 @@
-package handler_test
+package usecase_test
 
 import (
 	"context"
 	"errors"
 	"testing"
 
-	"skeleton/internal/application/handler"
 	"skeleton/internal/application/query"
+	"skeleton/internal/application/usecase"
 )
 
 // stubProvider stands in for out.VersionProvider.
@@ -29,7 +29,7 @@ func (s stubProvider) Version(context.Context) (string, error) {
 }
 
 func TestGetVersionReportsWhatTheProviderReturns(t *testing.T) {
-	h := handler.NewGetVersion(stubProvider{version: "1.2.3"})
+	h := usecase.NewGetVersion(stubProvider{version: "1.2.3"})
 
 	got, err := h.Handle(context.Background(), query.GetVersion{})
 	if err != nil {
@@ -46,7 +46,7 @@ func TestGetVersionReportsWhatTheProviderReturns(t *testing.T) {
 func TestGetVersionPropagatesProviderFailure(t *testing.T) {
 	want := errors.New("build stamp unreadable")
 
-	h := handler.NewGetVersion(stubProvider{err: want})
+	h := usecase.NewGetVersion(stubProvider{err: want})
 
 	got, err := h.Handle(context.Background(), query.GetVersion{})
 	if !errors.Is(err, want) {
