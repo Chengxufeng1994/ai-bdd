@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 
+	apperrors "skeleton/internal/application/errors"
 	"skeleton/internal/application/port/out"
 	"skeleton/internal/application/usecase"
 )
@@ -50,7 +51,10 @@ func NewGetVersion(versions out.VersionProvider) usecase.QueryHandler[GetVersion
 func (h getVersionHandler) Handle(ctx context.Context, _ GetVersion) (GetVersionResult, error) {
 	v, err := h.versions.Version(ctx)
 	if err != nil {
-		return GetVersionResult{}, fmt.Errorf("read build version: %w", err)
+		return GetVersionResult{}, apperrors.Error{
+			Kind: apperrors.KindUnavailable,
+			Err:  fmt.Errorf("read build version: %w", err),
+		}
 	}
 
 	return GetVersionResult{Value: v}, nil

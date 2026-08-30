@@ -11,6 +11,8 @@
 // gets. An operation whose contract declares more than a 500 combines the
 // two: switch on StatusFor to pick among its generated response types, and
 // fall back to ToInternalServerError for whatever StatusFor could not place.
+// See http/version.go's GetVersion for today's one-operation case, where that
+// combination has no production caller yet.
 package errmap
 
 import (

@@ -69,6 +69,11 @@ apigen.GetVersion200JSONResponse                      interfaces
 
 如果每個 query handler 都是「載入聚合 → 讀欄位」，這個分離只是換了名字。
 
+**這裡的「2 次轉換」是因為 `out.VersionProvider` 直接回傳字串。** 換成由 read model
+支撐的查詢就是 3 次：`port/out` 依規則不能回傳 use case 的 result 型別（見
+`internal/application/doc.go` 的 MUST NOT），所以 use case 還要自己做一次
+`readmodel → result`——第一個真正接 read model 的查詢不該被這第三次轉換嚇到。
+
 ---
 
 ## 依賴方向
@@ -262,11 +267,9 @@ adapter 的順序是**規則，不是風格**：
 presenter。照著 `components/responses/` 把清單「補齊」，只會多出永遠沒有程式碼能設
 定的值。
 
-**目前每個 kind 在 `/version` 都還是 500。** `api/openapi.yaml` 只替這個 operation
-宣告了 200 與 500，而 oapi-codegen 只替 path 有引用到的 response 產型別，所以那裡沒
-有別的 response 型別可回。`errmap.StatusFor` 測試齊全但還沒有正式呼叫者，要等到某個
-operation 宣告多種失敗回應——`internal/interfaces/http/version.go` 的註解就是這麼寫
-的。
+**目前每個 kind 在 `/version` 都還是 500。** 理由與現狀寫在
+`internal/interfaces/http/version.go` 的 `GetVersion` 註解裡，這裡不重複——下一個
+宣告多種失敗回應的 operation 出現時，只有一份說法要改。
 
 ---
 

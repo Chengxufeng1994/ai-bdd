@@ -7,11 +7,11 @@ help:
 
 # Code generation
 #
-# //go:generate directives live in the package that consumes their output, so a
-# deleted package takes its directive with it and never leaves a path pointing
-# at something that no longer exists. This Makefile is the entry point on top of
-# them: `go generate -run` selects one generator at a time, which is what makes
-# per-tool targets possible without moving the directives to one central file.
+# //go:generate directives all live in generate.go at the repository root (see
+# that file's doc comment for why), not beside the package that consumes their
+# output. This Makefile is the entry point on top of them: `go generate -run`
+# selects one generator at a time, which is what makes per-tool targets
+# possible without touching generate.go itself.
 #
 # A future generator fits the same shape. buf and protoc cannot share a single
 # root generate.go — they carry their own config and plugin flags — but they can

@@ -1,8 +1,8 @@
 // Package infrastructure implements the ports declared by application:
 // persistence, clocks, external clients.
 //
-// It depends on domain and application. Nothing imports it except cmd, which
-// wires the concrete implementations in at startup.
+// It depends on domain and application. Nothing imports it except bootstrap,
+// which wires the concrete implementations in at startup.
 //
 // # This is where complete, bidirectional mapping belongs
 //
@@ -18,22 +18,22 @@
 //
 // Because it is private, an aggregate gaining a field touches this one file.
 //
-// Do not put a complete WorkoutDTO in application. It looks like the same idea
-// but does the opposite job:
+// Do not put a complete WorkoutResult in application. It looks like the same
+// idea but does the opposite job:
 //
-//	                 application DTO                persistence model
+//	                 application result             persistence model
 //	completeness     partial — one use case's needs  total — every field
 //	direction        one way in, or an ID out        both ways
 //	count            one per use case                one per aggregate
 //	visibility       public, adapters see it         private to the repository
 //
-// A DTO that mirrors the aggregate changes whenever the aggregate does, which
-// re-creates the coupling the DTO was introduced to break — moved one step out
-// rather than removed. It also forces every use case to handle fields it does
-// not need: recording a workout should not accept an ID the server generates,
-// and "must ignore this field" is a rule that gets forgotten.
+// A result that mirrors the aggregate changes whenever the aggregate does,
+// which re-creates the coupling the result was introduced to break — moved one
+// step out rather than removed. It also forces every use case to handle fields
+// it does not need: recording a workout should not accept an ID the server
+// generates, and "must ignore this field" is a rule that gets forgotten.
 //
-// The slower failure matters more. A complete public DTO becomes the model
+// The slower failure matters more. A complete public result becomes the model
 // everyone actually passes around, and the aggregate degrades into a formality
 // on the way to the database. Anaemic domain models are rarely chosen; they grow
 // from exactly this.

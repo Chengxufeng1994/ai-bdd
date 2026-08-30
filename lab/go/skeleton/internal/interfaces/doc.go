@@ -23,22 +23,23 @@
 // without the adapter noticing. Depending on the concrete service instead would
 // bypass the contract and lose that.
 //
-// The use-case row is not merely discouraged; the application layer makes it
-// unreachable. usecase/query holds a query, its result and the use case
+// The use-case row is not merely discouraged; the application layer keeps it
+// unnameable. usecase/query holds a query, its result and the use case
 // answering it in one package, so an adapter must import that package to name
 // query.GetVersion at all — which would ordinarily expose the use case too. Its
-// type is therefore unexported and NewGetVersion returns usecase.QueryHandler.
-// pkg/log.New returns an interface for the same reason: the interface is the
-// contract and the concrete type has nothing extra to offer, so there is
-// nothing to lose by hiding it.
+// type is therefore unexported: NewGetVersion is exported and returns
+// usecase.QueryHandler, so an adapter can still construct one — it just cannot
+// name the concrete type back. pkg/log.New returns an interface for the same
+// reason: the interface is the contract and the concrete type has nothing
+// extra to offer, so there is nothing to lose by hiding it.
 //
 // Depending on the port rather than the concrete service is what keeps five
 // adapters from growing five different ideas of what the application does; and
 // an adapter that never holds an aggregate cannot mutate one past its
 // invariants. Both are enforced by import, not by review.
 //
-// cmd/ is the exception: as the composition root it constructs the concrete
-// services and hands each adapter the port.
+// bootstrap/ is the exception: as the composition root it constructs the
+// concrete services and hands each adapter the port.
 //
 // # Structure
 //
@@ -162,14 +163,16 @@
 //	MUST: a handler returns a typed response and a nil error, never a
 //	returned error.
 //
-// oapi-codegen's generated strict handler has a default error path, and it
+// oapi-codegen's generated strict handler has a default error path that
 // writes gin.H{"msg": err.Error()} — the HandlerErrorFunc default in
-// apigen/api.gen.go. A handler that returns its error hands the response shape
-// to that default and leaks exactly what errmap's test forbids, while the body
-// stops being the one api/openapi.yaml promises. Rendering the failure into a
-// declared response type and returning nil keeps the contract and the redaction
-// in the same place. Every protocol's generated glue has an equivalent default;
-// the rule is the same in each.
+// apigen/api.gen.go. router.go replaces that default with one that renders
+// errmap's generic Problem body instead, so breaking the MUST no longer leaks;
+// it only costs a less precise status than the handler's own kind would have
+// chosen. That backstop is not a reason to lean on it: rendering the failure
+// into a declared response type and returning nil is still what keeps the
+// contract and the redaction in the same place, and what lets a handler answer
+// with more than a flat 500. Every protocol's generated glue has an equivalent
+// default; the rule and the backstop are the same in each.
 //
 // Three details of the recognising half:
 //
@@ -188,13 +191,10 @@
 //     statuses are not classified at all — 200, 201 and 204 come from the
 //     operation's contract and its presenter.
 //
-// One consequence of the table is visible in http/version.go today. /version declares only
-// 200 and 500, and oapi-codegen emits response types only for responses a path
-// references — so there is no 404 or 422 type that operation could return, and
-// every failure there is a 500 whatever its kind. errmap.StatusFor is fully
-// tested and has no production caller until an operation declares more than one
-// failure response; the first that does switches on it to pick among its own
-// generated response types.
+// http/version.go's GetVersion comment carries today's concrete case: why
+// errmap.StatusFor has no production caller yet, given /version's contract.
+// It is written once there rather than repeated here or in DATAFLOW.md's kind
+// section, so a second failure response only invalidates one copy.
 //
 // # Generated code
 //

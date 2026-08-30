@@ -3,8 +3,10 @@ package query_test
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 
+	apperrors "skeleton/internal/application/errors"
 	"skeleton/internal/application/usecase/query"
 )
 
@@ -42,6 +44,11 @@ func TestGetVersionReportsWhatTheProviderReturns(t *testing.T) {
 // The provider is the only thing in this slice that can fail, so this is the
 // only place the error branch can be reached at all. Without it the branch is
 // written but never executed, which is indistinguishable from not writing it.
+//
+// It also gives application/errors' vocabulary its first producer: KindUnavailable
+// is "precisely what a failing out.VersionProvider — or any other driven port —
+// is" per errors.go's package doc, so this asserts the classification, not just
+// the wrapping.
 func TestGetVersionPropagatesProviderFailure(t *testing.T) {
 	want := errors.New("build stamp unreadable")
 
@@ -53,5 +60,16 @@ func TestGetVersionPropagatesProviderFailure(t *testing.T) {
 	}
 	if got.Value != "" {
 		t.Errorf("Value: want empty on failure, got %q", got.Value)
+	}
+
+	var classified apperrors.Error
+	if !errors.As(err, &classified) {
+		t.Fatalf("want a classified apperrors.Error, got %T: %v", err, err)
+	}
+	if classified.Kind != apperrors.KindUnavailable {
+		t.Errorf("Kind: want KindUnavailable, got %v", classified.Kind)
+	}
+	if !strings.Contains(err.Error(), "read build version: ") {
+		t.Errorf("want the %q context preserved, got %q", "read build version: ", err.Error())
 	}
 }

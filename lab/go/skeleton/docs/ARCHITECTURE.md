@@ -32,7 +32,7 @@ skeleton/
 ├── api/
 │   ├── openapi.yaml          the HTTP contract; source of truth for §3.2
 │   └── cfg.yaml              oapi-codegen configuration
-├── cmd/server/               composition root — wiring only, no decisions
+├── cmd/server/               entry point — wiring only, no decisions
 ├── internal/                 Go enforces this boundary at compile time
 │   ├── domain/               business rules and entities; imports nothing
 │   ├── application/          use-case orchestration; declares ports
@@ -115,6 +115,12 @@ That asymmetry is the whole return on CQRS: the read side is served by its own
 port returning a shape chosen for what the caller displays, so it can later come
 from a denormalised table or a cache without touching the domain. A read path
 that costs the same as a write path means the split is decoration.
+
+The read path costs 2 only because `out.VersionProvider` returns a bare
+string. A read backed by a read model costs 3: `port/out` MUST NOT return a
+use case's result type (`internal/application/doc.go`), so the use case still
+converts `readmodel → result` itself — the first query with an actual read
+model should expect that conversion, not be surprised by it.
 
 A result type is declared beside the query or command it answers, in
 `internal/application/usecase/`; there is no `dto/` package. Why that does not

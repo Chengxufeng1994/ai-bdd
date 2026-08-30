@@ -1,7 +1,7 @@
 // Command server serves the skeleton's HTTP API.
 //
-// This file is the composition root: it is the only place allowed to know about
-// every layer at once. Keep it to wiring — any decision made here is a decision
+// This is the entry point, not the composition root — see bootstrap, which it
+// calls, for that. Keep it to wiring — any decision made here is a decision
 // that cannot be tested without starting a process.
 //
 // Dependencies are wired by hand rather than with a container. The graph is

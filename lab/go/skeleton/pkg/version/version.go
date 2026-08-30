@@ -17,7 +17,7 @@ var value = "dev"
 
 // Build returns the version stamped into this binary.
 //
-// Only the composition root may call it. Every layer below receives the version
+// Only cmd/server may call it. Every layer below receives the version
 // by injection, because the acceptance suite runs concurrent scenarios at
 // different versions inside one process.
 func Build() string { return value }
