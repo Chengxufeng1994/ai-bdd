@@ -108,3 +108,18 @@ func TestStatusFor(t *testing.T) {
 		})
 	}
 }
+
+// TestStatusForSurvivesWrapping is the point of the whole design: an
+// intermediate layer that adds its own Where must not lose the classification
+// underneath it. Before apperrors.Wrap existed, the only way to add a Where
+// was a bare struct literal, which left Kind at its zero value and made this
+// fail with 500 instead of 404.
+func TestStatusForSurvivesWrapping(t *testing.T) {
+	inner := apperrors.Error{Kind: apperrors.KindNotFound, Err: errors.New("workout 42 does not exist")}
+	wrapped := apperrors.Wrap(inner, "service.Something")
+
+	got := errmap.StatusFor(wrapped)
+	if got != http.StatusNotFound {
+		t.Errorf("StatusFor: want %d, got %d", http.StatusNotFound, got)
+	}
+}
