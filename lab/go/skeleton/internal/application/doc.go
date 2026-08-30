@@ -137,9 +137,14 @@
 // passes around. Complete, bidirectional mapping belongs to the persistence
 // model, private to a repository; see ../infrastructure/doc.go.
 //
-// # Not yet populated
+// # What exists
 //
-// No use case exists here. Which commands and queries the tracker needs is a
-// question CLARIFY answers; the types named above are illustrations, not plans.
-// See ../../README.md.
+// One use case: GetVersion, the read side of the walking skeleton. It encodes no
+// business rule — it reads a build stamp through a driven port and returns a
+// dto. Its purpose is structural: it proves the ports, the generic handlers and
+// the service bundle described above actually compile and connect.
+//
+// Which commands and queries the tracker needs is a question CLARIFY answers.
+// Everything named in the structure above beyond GetVersion is an illustration,
+// not a plan.
 package application

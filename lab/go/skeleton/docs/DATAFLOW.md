@@ -40,18 +40,21 @@ apigen.RecordWorkout201JSONResponse                   interfaces
 
 ## 讀取路徑 —— 2 次轉換
 
+**這條鏈是實際存在的程式碼**，不是示意——寫入路徑與聚合名稱仍然是示意的，等 CLARIFY
+決定有哪些聚合。
+
 ```
-apigen.GetWorkoutVolumeParams                         interfaces
-   │  ① mapper
+apigen.GetVersionRequestObject                        interfaces
+   │  ① mapper.ToGetVersion（本例轉換零個欄位）
    ▼
-query.WorkoutVolume{WorkoutID}                        application
-   │  handler.Volume.Handle(ctx, q)
-   │  ── 不轉換 ── out.VolumeReader 直接回傳視圖
+query.GetVersion{}                                    application
+   │  handler.GetVersion.Handle(ctx, q)
+   │  ── 不轉換 ── out.VersionProvider 直接回傳字串
    ▼
-dto.VolumeView                                        application
-   │  ② presenter
+dto.Version{Value}                                    application
+   │  ② presenter.ToGetVersionResponse
    ▼
-apigen.GetWorkoutVolume200JSONResponse                interfaces
+apigen.GetVersion200JSONResponse                      interfaces
 ```
 
 **完全不經過 domain，沒有 assembler。** 這是 CQRS 唯一真正的報酬：讀側可以打去

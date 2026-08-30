@@ -129,7 +129,12 @@
 //
 // # Not yet populated
 //
-// Only http/ exists, serving the version endpoint that keeps the generation
-// pipeline honest. The rest arrive when something needs them — a protocol added
-// before it has a caller is a guess about an interface nobody has asked for.
+// Only http/ exists. It serves the version endpoint and carries the mapper,
+// presenter and errmap packages described above — trivially small for this one
+// operation, but present so that the shape is the one the next protocol and the
+// next endpoint copy. errmap has a single branch today; its kind table arrives
+// with the first domain error kind.
+//
+// The rest arrive when something needs them — a protocol added before it has a
+// caller is a guess about an interface nobody has asked for.
 package interfaces

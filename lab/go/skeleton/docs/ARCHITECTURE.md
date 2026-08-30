@@ -35,15 +35,25 @@ skeleton/
 ├── cmd/server/               composition root — wiring only, no decisions
 ├── internal/                 Go enforces this boundary at compile time
 │   ├── domain/               business rules and entities; imports nothing
-│   ├── application/          use-case orchestration; declares ports
-│   ├── infrastructure/       port implementations (SQL, clients, clocks)
-│   └── interfaces/http/      HTTP adapter
-│       ├── apigen/           generated from openapi.yaml — never edited
-│       ├── server.go         handlers; no gin types in their signatures
-│       └── router.go         engine, spec validation, route registration
+│   ├── application/         use-case orchestration; declares ports
+│   │   ├── port/in|out/     driving and driven ports
+│   │   ├── query/ dto/      read-side input and output types
+│   │   ├── handler/         implements the driving ports
+│   │   └── service/         handler bundles; fields only, no methods
+│   ├── bootstrap/           composition root, shared by cmd and the suite
+│   ├── infrastructure/      port implementations
+│   │   └── buildinfo/       satisfies out.VersionProvider
+│   └── interfaces/http/     HTTP adapter
+│       ├── apigen/          generated from openapi.yaml — never edited
+│       ├── mapper/          request -> query
+│       ├── presenter/       dto -> response
+│       ├── errmap/          error -> status and Problem
+│       ├── server.go        holds the service bundle
+│       └── router.go        engine, spec validation, route registration
 ├── pkg/
 │   ├── config/               the only place that reads os.Getenv
-│   └── log/                  the Logger interface, backed by slog
+│   ├── log/                  the Logger interface, backed by slog
+│   └── version/              the build stamp; the -X target
 ├── features/                 .feature files — specifications, not test code
 ├── test/acceptance/          the godog harness that executes them
 ├── prompts/                  fixed inputs for evaluating the skills
@@ -69,7 +79,7 @@ Runtime — one process, one protocol so far:
                                           │
                                           ▼
                                    [application]  ◀── ports ──▶ [infrastructure]
-                                          │                       (none yet)
+                                          │                       (buildinfo)
                                           ▼
                                      [domain]
 ```
@@ -128,7 +138,7 @@ new question for them to surface.
   generation-and-test chain alive so a break anywhere shows up as a failing test.
 - **Technologies**: Go 1.26, gin, oapi-codegen (contract-first), godog
 - **Deployment**: none — see §6
-- **Entry point**: `cmd/fitness`, configurable via `APP_ADDR` (default `:8080`)
+- **Entry point**: `cmd/server`, configurable via `APP_ADDR` (default `:8080`)
 
 Business endpoints are absent on purpose. See §9.
 
@@ -202,6 +212,7 @@ make gen               # regenerate from api/openapi.yaml
 make test              # unit + acceptance, with -race
 make test-integration  # adds tests behind the `integration` build tag
 make verify            # what CI would run
+make verify-stamp      # prove the ldflags symbol path still reaches the binary
 ```
 
 ### Configuration
@@ -277,25 +288,30 @@ DO NOT EDIT.
 
 ## 9. Future Considerations / Roadmap
 
-**The empty layers are the roadmap, and they are empty by rule.**
+**`domain/` is empty by rule, and stays empty until a CLARIFY run has produced
+an example map.** Every type in `domain/` must trace back to a rule in that map,
+and every scenario in `features/` back to a concrete example. Writing the model
+first would defeat the point of the testbed — it would prove the skills work by
+handing them the answer.
 
-`domain/`, `application/` and `infrastructure/` contain only `doc.go` files
-stating their dependency rules. No business code may be written until a CLARIFY
-run has produced an example map: every type in `domain/` must trace back to a
-rule, and every scenario in `features/` back to a concrete example.
+`application/` and `infrastructure/` hold exactly one thing: the `/version` read
+slice, which **encodes no business rule**. It has the same standing here that
+`/version` has in `api/openapi.yaml` — a **named** exception, listed rather than
+granted, that exists to keep one thin path through the whole chain alive so a
+break anywhere shows up as a failing test.
 
-Writing the model first would defeat the point of the testbed — it would prove
-the skills work by handing them the answer.
+The test is mechanical: **which rule in which example map does this type trace
+back to?** A type that traces to nothing does not belong. `/version` traces to
+the walking skeleton itself, not to a business rule, and it is the only entry on
+that list.
 
 Planned, in order:
 
-1. Run `bdd-clarify` against `prompts/1-fitness-tracker-clarify.md`; produce the first example maps
+1. Run `bdd-clarify` against `prompts/1-fitness-tracker-clarify.md`
 2. SPEC turns those examples into `.feature` files
 3. PLAN assigns each scenario a test level
-4. IMPLEMENT fills `domain/` and `application/` outside-in
-
-Known gaps that are decisions, not oversights: no persistence, no auth, no
-second protocol. Each arrives when a scenario requires it.
+4. IMPLEMENT fills `domain/` outside-in, following the `/version` slice as the
+   structural template
 
 ---
 

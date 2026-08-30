@@ -56,7 +56,9 @@ back to a rule in an example map, and every scenario in `features/` back to a
 concrete example. Writing the model first defeats the entire point of the
 testbed — it would prove the skills work by handing them the answer.
 
-Current state: `domain/`, `application/` and `infrastructure/` are empty. The
+Current state: `domain/` is empty. `application/` and `infrastructure/` hold the
+`/version` read slice and nothing else — it encodes no business rule, and exists
+to keep the walking skeleton's chain honest through every layer. The
 only thing implemented is the walking skeleton below, which carries no domain
 meaning and therefore does not pre-empt CLARIFY.
 

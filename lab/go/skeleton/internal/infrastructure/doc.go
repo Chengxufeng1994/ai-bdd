@@ -44,8 +44,10 @@
 // If a database concept appears in application or domain, the dependency has
 // been inverted somewhere.
 //
-// # Not yet populated
+// # What exists
 //
-// No adapter exists. Ports are declared when a use case needs them, and no use
-// case exists until CLARIFY has run. See ../../README.md.
+// One adapter: buildinfo.Provider, which satisfies out.VersionProvider by
+// returning a version fixed at construction. There is no persistence yet;
+// repositories arrive when a use case needs one, and no use case will until
+// CLARIFY has run. See ../../README.md.
 package infrastructure
