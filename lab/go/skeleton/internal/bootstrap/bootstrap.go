@@ -14,7 +14,7 @@ import (
 	"net/http"
 
 	"skeleton/internal/application/service"
-	"skeleton/internal/application/usecase"
+	"skeleton/internal/application/usecase/query"
 	"skeleton/internal/infrastructure/buildinfo"
 	apihttp "skeleton/internal/interfaces/http"
 )
@@ -29,7 +29,7 @@ import (
 // It returns http.Handler rather than *gin.Engine so that router.go remains the
 // only hand-written file naming gin.
 func NewHandler(version string) (http.Handler, error) {
-	svc := service.NewVersionService(usecase.NewGetVersion(buildinfo.NewProvider(version)))
+	svc := service.NewVersionService(query.NewGetVersion(buildinfo.NewProvider(version)))
 
 	engine, err := apihttp.NewRouter(apihttp.NewServer(svc))
 	if err != nil {

@@ -13,8 +13,8 @@ import (
 	"context"
 
 	"skeleton/internal/application/port/in"
-	"skeleton/internal/application/query"
 	"skeleton/internal/application/usecase"
+	"skeleton/internal/application/usecase/query"
 )
 
 // VersionService implements in.VersionService by delegating to use cases.

@@ -6,7 +6,7 @@
 package presenter
 
 import (
-	"skeleton/internal/application/query"
+	"skeleton/internal/application/usecase/query"
 	"skeleton/internal/interfaces/http/apigen"
 )
 

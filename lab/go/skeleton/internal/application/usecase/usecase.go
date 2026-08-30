@@ -1,3 +1,13 @@
+// Package usecase holds the shape every use case takes.
+//
+// CommandHandler and QueryHandler are declared here, once, generically, for
+// every use case there will ever be. This package holds only that shape; it
+// implements no ports itself. Its subpackages hold the use cases themselves,
+// split by CQRS side: usecase/query for reads, usecase/command for writes.
+//
+// A use case orchestrates: it calls the ports it needs and returns a result. It
+// holds no business rules — those live in domain — and it never returns a domain
+// aggregate, because an adapter holding one could mutate it past its invariants.
 package usecase
 
 import "context"
@@ -14,9 +24,9 @@ type CommandHandler[C, R any] interface {
 
 // QueryHandler is the shape every use case that reads takes.
 //
-// The read side does not go through the aggregate: a query has its own view in
-// dto and its own reader in port/out, shaped for what the caller displays rather
-// than for what the business rules need.
+// The read side does not go through the aggregate: a query has its own result
+// type declared beside it and its own reader in port/out, shaped for what the
+// caller displays rather than for what the business rules need.
 //
 // This pair is also what lets service hold a use case by interface rather than
 // by concrete type: a field typed QueryHandler[Q, R] accepts a decorated use

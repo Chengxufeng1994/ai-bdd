@@ -3,7 +3,7 @@ package in
 import (
 	"context"
 
-	"skeleton/internal/application/query"
+	"skeleton/internal/application/usecase/query"
 )
 
 // VersionService is the application's published API for reporting build

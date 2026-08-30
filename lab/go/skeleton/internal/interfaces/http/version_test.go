@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	"skeleton/internal/application/query"
+	"skeleton/internal/application/usecase/query"
 	apihttp "skeleton/internal/interfaces/http"
 	"skeleton/internal/interfaces/http/apigen"
 )
