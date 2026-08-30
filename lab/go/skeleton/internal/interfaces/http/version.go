@@ -22,6 +22,13 @@ import (
 func (s *Server) GetVersion(ctx context.Context, request apigen.GetVersionRequestObject) (apigen.GetVersionResponseObject, error) {
 	v, err := s.svc.GetVersion(ctx, mapper.ToGetVersion(request))
 	if err != nil {
+		// api/openapi.yaml declares only 200 and 500 for this operation, so
+		// oapi-codegen never generated a 404/422/409/... response type for it
+		// to return here — there is nothing errmap.StatusFor's classification
+		// could select among. Every failure at this endpoint is a 500
+		// regardless of kind; an operation whose contract declares more than
+		// one failure response switches on errmap.StatusFor to choose among
+		// its generated response types instead.
 		return apigen.GetVersion500ApplicationProblemPlusJSONResponse{
 			InternalServerErrorApplicationProblemPlusJSONResponse: errmap.ToInternalServerError(err),
 		}, nil
