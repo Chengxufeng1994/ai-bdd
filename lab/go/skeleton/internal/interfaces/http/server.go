@@ -20,15 +20,15 @@ type Server struct {
 // router.go with a less obvious message.
 var _ apigen.StrictServerInterface = (*Server)(nil)
 
-// NewServer takes the service bundle rather than reading anything from a
+// NewServer takes the driving port rather than reading anything from a
 // package variable, so that a test can run two servers configured differently
 // in the same process — which the acceptance suite does, since scenarios run
 // concurrently.
 //
-// It depends on the bundle rather than on a concrete use case: the bundle lives
-// in port/in, so its fields are driving ports and holding it grants access to
-// contracts and nothing more. A concrete use case would bypass those contracts
-// and lose the ability to decorate.
+// It depends on the port rather than on a concrete service: in.VersionService
+// names only capabilities, so holding it grants access to those capabilities
+// and nothing more. A concrete service would bypass that contract and lose the
+// ability to substitute a decorated implementation.
 func NewServer(svc in.VersionService) *Server {
 	return &Server{svc: svc}
 }

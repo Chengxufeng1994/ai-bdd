@@ -20,7 +20,7 @@ import (
 // oapi-codegen's default handler, and the body would stop being the one
 // api/openapi.yaml promises.
 func (s *Server) GetVersion(ctx context.Context, request apigen.GetVersionRequestObject) (apigen.GetVersionResponseObject, error) {
-	v, err := s.svc.GetVersion.Handle(ctx, mapper.ToGetVersion(request))
+	v, err := s.svc.GetVersion(ctx, mapper.ToGetVersion(request))
 	if err != nil {
 		return apigen.GetVersion500ApplicationProblemPlusJSONResponse{
 			InternalServerErrorApplicationProblemPlusJSONResponse: errmap.ToInternalServerError(err),

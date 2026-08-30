@@ -10,3 +10,9 @@ package query
 // It has no fields. The type exists anyway so that every use case has the same
 // shape, which is what lets one decorator wrap them all.
 type GetVersion struct{}
+
+// GetVersionResult is what the get-version use case returns.
+type GetVersionResult struct {
+	// Value is the version the running service was built from.
+	Value string
+}

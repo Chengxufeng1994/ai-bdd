@@ -6,32 +6,27 @@ import (
 	"net/http"
 	"testing"
 
-	"skeleton/internal/application/dto"
-	"skeleton/internal/application/port/in"
 	"skeleton/internal/application/query"
 	apihttp "skeleton/internal/interfaces/http"
 	"skeleton/internal/interfaces/http/apigen"
 )
 
-// stubUseCase stands in for in.GetVersionUseCase.
+// stubVersionService stands in for in.VersionService.
 //
 // It is hand-written for the same reason stubProvider is: the port has one
-// method. Note that satisfying the alias needs nothing more than the matching
-// Handle signature — that is the known cost of D1 in the design.
-type stubUseCase struct {
-	result dto.Version
+// method.
+type stubVersionService struct {
+	result query.GetVersionResult
 	err    error
 }
 
-// Handle satisfies in.GetVersionUseCase, returning whatever the test set up.
-func (s stubUseCase) Handle(context.Context, query.GetVersion) (dto.Version, error) {
+// GetVersion satisfies in.VersionService, returning whatever the test set up.
+func (s stubVersionService) GetVersion(context.Context, query.GetVersion) (query.GetVersionResult, error) {
 	return s.result, s.err
 }
 
 func TestGetVersionReturnsThe200Response(t *testing.T) {
-	s := apihttp.NewServer(in.VersionService{
-		GetVersion: stubUseCase{result: dto.Version{Value: "1.2.3"}},
-	})
+	s := apihttp.NewServer(stubVersionService{result: query.GetVersionResult{Value: "1.2.3"}})
 
 	resp, err := s.GetVersion(context.Background(), apigen.GetVersionRequestObject{})
 	if err != nil {
@@ -53,9 +48,7 @@ func TestGetVersionReturnsThe200Response(t *testing.T) {
 // build stamp does not fail in production, and inventing a scenario for it would
 // be inventing a business behaviour.
 func TestGetVersionReturnsThe500ProblemWhenTheUseCaseFails(t *testing.T) {
-	s := apihttp.NewServer(in.VersionService{
-		GetVersion: stubUseCase{err: errors.New("provider unavailable")},
-	})
+	s := apihttp.NewServer(stubVersionService{err: errors.New("provider unavailable")})
 
 	resp, err := s.GetVersion(context.Background(), apigen.GetVersionRequestObject{})
 	if err != nil {

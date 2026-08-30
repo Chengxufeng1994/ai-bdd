@@ -6,11 +6,11 @@
 package presenter
 
 import (
-	"skeleton/internal/application/dto"
+	"skeleton/internal/application/query"
 	"skeleton/internal/interfaces/http/apigen"
 )
 
 // ToGetVersionResponse renders the running version as the 200 response.
-func ToGetVersionResponse(d dto.Version) apigen.GetVersion200JSONResponse {
-	return apigen.GetVersion200JSONResponse{Version: d.Value}
+func ToGetVersionResponse(r query.GetVersionResult) apigen.GetVersion200JSONResponse {
+	return apigen.GetVersion200JSONResponse{Version: r.Value}
 }

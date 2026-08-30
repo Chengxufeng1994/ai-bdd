@@ -9,8 +9,6 @@ import (
 	"context"
 	"fmt"
 
-	"skeleton/internal/application/dto"
-	"skeleton/internal/application/port/in"
 	"skeleton/internal/application/port/out"
 	"skeleton/internal/application/query"
 )
@@ -20,10 +18,10 @@ type GetVersion struct {
 	versions out.VersionProvider
 }
 
-// Compile-time check that GetVersion still satisfies the driving port. Without
-// it, a signature drift would surface as a confusing error at the composition
-// root instead of here.
-var _ in.GetVersionUseCase = GetVersion{}
+// Compile-time check that GetVersion still satisfies the generic shape it is
+// held by. Without it, a signature drift would surface as a confusing error at
+// the composition root instead of here.
+var _ QueryHandler[query.GetVersion, query.GetVersionResult] = GetVersion{}
 
 // NewGetVersion returns a GetVersion reading from the given provider.
 func NewGetVersion(versions out.VersionProvider) GetVersion {
@@ -32,11 +30,11 @@ func NewGetVersion(versions out.VersionProvider) GetVersion {
 
 // Handle returns the running version, or the provider's failure with context
 // added.
-func (h GetVersion) Handle(ctx context.Context, _ query.GetVersion) (dto.Version, error) {
+func (h GetVersion) Handle(ctx context.Context, _ query.GetVersion) (query.GetVersionResult, error) {
 	v, err := h.versions.Version(ctx)
 	if err != nil {
-		return dto.Version{}, fmt.Errorf("read build version: %w", err)
+		return query.GetVersionResult{}, fmt.Errorf("read build version: %w", err)
 	}
 
-	return dto.Version{Value: v}, nil
+	return query.GetVersionResult{Value: v}, nil
 }
