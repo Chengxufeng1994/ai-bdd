@@ -112,11 +112,11 @@ lint-fix:
 ## build: Build the server with the version stamped in
 .PHONY: build
 build:
-	go build -ldflags "-X main.version=$$(git describe --tags --always --dirty 2>/dev/null || echo dev)" -o bin/server ./cmd/server
+	go build -ldflags "-X skeleton/pkg/version.value=$$(git describe --tags --always --dirty 2>/dev/null || echo dev)" -o bin/server ./cmd/server
 
 ## verify: Everything CI should run
 .PHONY: verify
-verify: verify-fmt verify-generated lint
+verify: verify-fmt verify-generated verify-stamp lint
 	go vet ./...
 	go test -race ./...
 
@@ -139,6 +139,17 @@ verify-generated:
 		echo "generated code is stale — run 'make gen' and commit the result"; \
 		exit 1; \
 	fi
+
+# `-X` aimed at a symbol that does not exist is not an error: the linker writes
+# nothing and the binary reports its default. Renaming the package or the
+# variable would therefore ship a build reporting "dev" with every test still
+# green, because the acceptance suite injects its own version and never touches
+# this path. This is the only gate that would notice.
+.PHONY: verify-stamp
+verify-stamp:
+	@go build -ldflags "-X skeleton/pkg/version.value=STAMP-PROBE" -o bin/.stamp-probe ./cmd/server
+	@strings bin/.stamp-probe | grep -qx STAMP-PROBE || { rm -f bin/.stamp-probe; echo "ldflags symbol path no longer resolves: skeleton/pkg/version.value"; exit 1; }
+	@rm -f bin/.stamp-probe
 
 ## clean: Remove build output
 .PHONY: clean

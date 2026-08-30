@@ -17,15 +17,8 @@ import (
 	apihttp "skeleton/internal/interfaces/http"
 	"skeleton/pkg/config"
 	"skeleton/pkg/log"
+	"skeleton/pkg/version"
 )
-
-// version is overridden at build time:
-//
-//	go build -ldflags "-X main.version=$(git describe --tags)" ./cmd/server
-//
-// The default is deliberately not a plausible version number: seeing "dev" in a
-// deployed environment should look wrong immediately.
-var version = "dev"
 
 func main() {
 	// Configuration is validated before the logger exists, so a bad value has
@@ -44,13 +37,18 @@ func main() {
 		log.WithFormat(logFormat(cfg.Log.Format)),
 	)
 
-	router, err := apihttp.NewRouter(apihttp.NewServer(version))
+	// Read once here, in the only place allowed to touch the package variable.
+	// Everything below receives it as an argument, because the acceptance suite
+	// runs concurrent servers at different versions in one process.
+	v := version.Build()
+
+	router, err := apihttp.NewRouter(apihttp.NewServer(v))
 	if err != nil {
 		logger.Error("build router", "error", err)
 		os.Exit(1)
 	}
 
-	logger.Info("listening", "addr", cfg.Addr, "version", version)
+	logger.Info("listening", "addr", cfg.Addr, "version", v)
 
 	if err := http.ListenAndServe(cfg.Addr, router); err != nil {
 		logger.Error("server stopped", "error", err)
