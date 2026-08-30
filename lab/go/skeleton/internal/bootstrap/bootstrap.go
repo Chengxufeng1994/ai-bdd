@@ -50,7 +50,7 @@ type Deps struct {
 func NewHandler(deps Deps) (http.Handler, error) {
 	svc := service.NewVersionService(query.NewGetVersion(buildinfo.NewProvider(deps.Version)))
 
-	engine, err := apihttp.NewRouter(apihttp.NewServer(svc, deps.Logger, deps.Translator))
+	engine, err := apihttp.NewRouter(apihttp.NewServer(svc, deps.Logger, deps.Translator), deps.Logger)
 	if err != nil {
 		return nil, err
 	}

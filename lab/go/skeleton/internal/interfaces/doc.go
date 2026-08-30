@@ -163,12 +163,24 @@
 //	MUST: a handler returns a typed response and a nil error, never a
 //	returned error.
 //
-// oapi-codegen's generated strict handler has a default error path that
-// writes gin.H{"msg": err.Error()} — the HandlerErrorFunc default in
-// apigen/api.gen.go. router.go replaces that default with one that renders
-// errmap's generic Problem body instead, so breaking the MUST no longer leaks;
+// oapi-codegen's generated strict handler has three default error paths, and
+// every one of them writes gin.H{"msg": err.Error()}: RequestErrorHandlerFunc,
+// HandlerErrorFunc and ResponseErrorHandlerFunc in apigen/api.gen.go. Only the
+// second is reached by breaking the MUST. The other two are handed failures no
+// handler can see — a request the spec accepted but the glue could not decode,
+// a response that would not serialise, a client that hung up mid-write — and
+// those errors carry socket addresses and internal hostnames. Worse, they are
+// opt-out rather than opt-in: NewStrictHandlerWithOptions fills every hook left
+// nil with the leaking default, so configuring one hook is not "the leak is
+// closed", it is "one of three is closed".
+//
+// router.go therefore sets all three to one handler that logs the error and
+// renders errmap's generic Problem body, so breaking the MUST no longer leaks;
 // it only costs a less precise status than the handler's own kind would have
-// chosen. That backstop is not a reason to lean on it: rendering the failure
+// chosen. The logging half is load-bearing, not decoration: the body that
+// handler writes deliberately says nothing, so the record is the only account
+// of the failure that will ever exist. That backstop is not a reason to lean
+// on it: rendering the failure
 // into a declared response type and returning nil is still what keeps the
 // contract and the redaction in the same place, and what lets a handler answer
 // with more than a flat 500. Every protocol's generated glue has an equivalent
