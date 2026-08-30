@@ -191,10 +191,13 @@
 //     statuses are not classified at all — 200, 201 and 204 come from the
 //     operation's contract and its presenter.
 //
-// http/version.go's GetVersion comment carries today's concrete case: why
-// errmap.StatusFor has no production caller yet, given /version's contract.
-// It is written once there rather than repeated here or in DATAFLOW.md's kind
-// section, so a second failure response only invalidates one copy.
+// http/version.go's GetVersion comment carries today's concrete case:
+// errmap.ToProblem always calls StatusFor, so the function has a production
+// caller now, but /version's contract has only one failure response, so
+// GetVersion coerces the body's status back to 500 regardless of what
+// StatusFor classified rather than switching on it. It is written once there
+// rather than repeated here or in DATAFLOW.md's kind section, so a second
+// failure response only invalidates one copy.
 //
 // # Generated code
 //

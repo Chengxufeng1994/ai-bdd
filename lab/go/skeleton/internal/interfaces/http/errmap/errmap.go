@@ -8,11 +8,15 @@
 //
 // StatusFor classifies an error into the status this adapter would answer
 // with; ToInternalServerError renders the one body every unclassified error
-// gets. An operation whose contract declares more than a 500 combines the
-// two: switch on StatusFor to pick among its generated response types, and
-// fall back to ToInternalServerError for whatever StatusFor could not place.
-// See http/version.go's GetVersion for today's one-operation case, where that
-// combination has no production caller yet.
+// gets. ToProblem is what a handler calls: it combines the two, translating a
+// classified error's message into a Problem document whose Status is
+// StatusFor's classification, and falling back to ToInternalServerError's
+// generic body for anything it does not recognise. An operation whose
+// contract declares more than one failure response switches on the status
+// ToProblem returns to pick among its generated response types; one whose
+// contract declares only 500, like /version, coerces the body's Status back
+// to 500 instead of forwarding it — see http/version.go's GetVersion for that
+// concrete case.
 package errmap
 
 import (

@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"net/http"
 
 	"skeleton/internal/interfaces/http/apigen"
 	"skeleton/internal/interfaces/http/errmap"
@@ -34,7 +35,17 @@ func (s *Server) GetVersion(ctx context.Context, request apigen.GetVersionReques
 		// regardless of kind; an operation whose contract declares more than
 		// one failure response switches on the status ToProblem returns to
 		// choose among its generated response types instead.
-		_, problem := errmap.ToProblem(err, localeOf(ctx), s.tr)
+		status, problem := errmap.ToProblem(err, localeOf(ctx), s.tr)
+
+		// This operation's contract declares one failure response, so whatever
+		// the kind classified to, the wire answer is 500 — and the document has
+		// to say the same number, or it contradicts its own status line (RFC
+		// 9457 §3.1.4 requires the two to match). The classification is not
+		// lost: Type still carries the specific identity, which is what a
+		// client branches on.
+		if status != http.StatusInternalServerError {
+			problem.Status = http.StatusInternalServerError
+		}
 
 		return apigen.GetVersion500ApplicationProblemPlusJSONResponse{
 			InternalServerErrorApplicationProblemPlusJSONResponse: apigen.InternalServerErrorApplicationProblemPlusJSONResponse(problem),
