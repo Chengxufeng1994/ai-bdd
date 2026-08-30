@@ -58,18 +58,37 @@ func (b Bundle) Translate(locale, key string, params map[string]any) string {
 		return key
 	}
 
-	for name, value := range params {
-		template = strings.ReplaceAll(template, "{"+name+"}", toString(value))
-	}
+	// The scan walks the template rather than the rendered result. Checking the
+	// result instead would read a brace that arrived inside a parameter's value
+	// as an unresolved placeholder, discard a correctly rendered message, and
+	// return the key for input that was in fact complete. Walking the template
+	// once also removes any dependence on map iteration order.
+	var out strings.Builder
+	for {
+		open := strings.Index(template, "{")
+		if open < 0 {
+			out.WriteString(template)
+			return out.String()
+		}
 
-	// An unresolved placeholder means the call site supplied fewer params than
-	// the template needs. Returning the key is the same visible-gap rule that
-	// covers a missing translation.
-	if strings.Contains(template, "{") {
-		return key
-	}
+		closeAt := strings.Index(template[open:], "}")
+		if closeAt < 0 {
+			// An unterminated brace is a malformed template, which is a gap in
+			// the message table rather than at the call site — but it is still
+			// a gap, and this package's answer to every gap is the key.
+			return key
+		}
+		closeAt += open
 
-	return template
+		value, ok := params[template[open+1:closeAt]]
+		if !ok {
+			return key
+		}
+
+		out.WriteString(template[:open])
+		out.WriteString(toString(value))
+		template = template[closeAt+1:]
+	}
 }
 
 // toString renders a param value without pulling in fmt's reflection for the

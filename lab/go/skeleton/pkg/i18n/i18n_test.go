@@ -64,3 +64,51 @@ func TestMissingParamRendersAsTheKey(t *testing.T) {
 		t.Errorf("an unresolved placeholder escaped: %q", got)
 	}
 }
+
+// A parameter value that itself contains a brace must not be mistaken for an
+// unresolved placeholder. Scanning the rendered result for "{" would discard a
+// fully-supplied translation and wrongly return the key.
+func TestParamValueContainingBraceRendersCorrectly(t *testing.T) {
+	b := i18n.NewBundle(map[string]map[string]string{
+		"en": {"greet": "Hello {name}!"},
+	})
+
+	got := b.Translate("en", "greet", map[string]any{"name": "{bob}"})
+
+	if got != "Hello {bob}!" {
+		t.Errorf("want the brace in the value preserved, got %q", got)
+	}
+}
+
+// Two params where one's value looks like the other's placeholder must render
+// deterministically regardless of map iteration order. Substituting into the
+// rendered result rather than the original template makes the outcome depend
+// on which param is applied first, so this runs several times in one test.
+func TestParamValueResemblingAnotherPlaceholderIsDeterministic(t *testing.T) {
+	b := i18n.NewBundle(map[string]map[string]string{
+		"en": {"pair": "{a} and {b}"},
+	})
+
+	for i := 0; i < 20; i++ {
+		got := b.Translate("en", "pair", map[string]any{"a": "{b}", "b": "x"})
+
+		if got != "{b} and x" {
+			t.Errorf("run %d: want deterministic rendering, got %q", i, got)
+		}
+	}
+}
+
+// An unterminated brace is a malformed template, which is a gap in the message
+// table rather than at the call site — but it is still a gap, and this
+// package's answer to every gap is the key.
+func TestUnterminatedBraceRendersAsTheKey(t *testing.T) {
+	b := i18n.NewBundle(map[string]map[string]string{
+		"en": {"broken": "Hello {name"},
+	})
+
+	got := b.Translate("en", "broken", map[string]any{"name": "world"})
+
+	if got != "broken" {
+		t.Errorf("want the key for an unterminated brace, got %q", got)
+	}
+}
