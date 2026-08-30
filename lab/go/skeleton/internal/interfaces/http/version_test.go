@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"skeleton/internal/application/dto"
+	"skeleton/internal/application/port/in"
 	"skeleton/internal/application/query"
-	"skeleton/internal/application/service"
 	apihttp "skeleton/internal/interfaces/http"
 	"skeleton/internal/interfaces/http/apigen"
 )
@@ -29,7 +29,7 @@ func (s stubUseCase) Handle(context.Context, query.GetVersion) (dto.Version, err
 }
 
 func TestGetVersionReturnsThe200Response(t *testing.T) {
-	s := apihttp.NewServer(service.VersionService{
+	s := apihttp.NewServer(in.VersionUseCase{
 		GetVersion: stubUseCase{result: dto.Version{Value: "1.2.3"}},
 	})
 
@@ -53,7 +53,7 @@ func TestGetVersionReturnsThe200Response(t *testing.T) {
 // build stamp does not fail in production, and inventing a scenario for it would
 // be inventing a business behaviour.
 func TestGetVersionReturnsThe500ProblemWhenTheUseCaseFails(t *testing.T) {
-	s := apihttp.NewServer(service.VersionService{
+	s := apihttp.NewServer(in.VersionUseCase{
 		GetVersion: stubUseCase{err: errors.New("provider unavailable")},
 	})
 
