@@ -1,7 +1,7 @@
-// Package presenter converts application dto into HTTP responses.
+// Package presenter converts a use case's result into an HTTP response.
 //
 // It is mechanical translation, outbound. A presenter may drop fields — each
-// protocol exposes as little as it likes — but it never reaches past the dto
+// protocol exposes as little as it likes — but it never reaches past the result
 // into the domain.
 package presenter
 

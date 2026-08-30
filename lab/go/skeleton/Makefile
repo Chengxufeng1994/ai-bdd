@@ -145,8 +145,12 @@ verify-generated:
 # variable would therefore ship a build reporting "dev" with every test still
 # green, because the acceptance suite injects its own version and never touches
 # this path. This is the only gate that would notice.
+#
+# Like verify-fmt and verify-generated, this has no `## ` help line: `make help`
+# lists what you would run by hand, and these three are reached through `verify`.
 .PHONY: verify-stamp
 verify-stamp:
+	@command -v strings >/dev/null || { echo "verify-stamp needs 'strings' (binutils)"; exit 1; }
 	@go build -ldflags "-X skeleton/pkg/version.value=STAMP-PROBE" -o bin/.stamp-probe ./cmd/server
 	@strings bin/.stamp-probe | grep -qx STAMP-PROBE || { rm -f bin/.stamp-probe; echo "ldflags symbol path no longer resolves: skeleton/pkg/version.value"; exit 1; }
 	@rm -f bin/.stamp-probe

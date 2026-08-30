@@ -57,10 +57,9 @@ concrete example. Writing the model first defeats the entire point of the
 testbed — it would prove the skills work by handing them the answer.
 
 Current state: `domain/` is empty. `application/` and `infrastructure/` hold the
-`/version` read slice and nothing else — it encodes no business rule, and exists
-to keep the walking skeleton's chain honest through every layer. The
-only thing implemented is the walking skeleton below, which carries no domain
-meaning and therefore does not pre-empt CLARIFY.
+`/version` read slice and nothing else. The only thing implemented is the
+walking skeleton below, which carries no domain meaning and therefore does not
+pre-empt CLARIFY.
 
 ## The walking skeleton
 
@@ -68,8 +67,14 @@ meaning and therefore does not pre-empt CLARIFY.
 path through the whole chain alive from day one:
 
 ```
-api/openapi.yaml → go generate → api.gen.go → server.go → version.feature → godog
+build    api/openapi.yaml → go generate → apigen/
+serve    router.go → version.go → mapper → in.VersionService → usecase/query
+                  → out.VersionProvider → presenter → apigen response
+verify   version.feature → godog → bootstrap.NewHandler → the chain above
 ```
+
+`bootstrap` is what makes the last line honest: the suite and the binary are
+wired by the same function, so a scenario exercises the chain the binary runs.
 
 A break anywhere in that chain then shows up as a failing test, rather than
 being discovered while trying to write the first real feature — when it would be
@@ -81,7 +86,7 @@ tangled up with domain questions and much harder to diagnose.
 make gen-api      # or: go generate -run oapi-codegen ./internal/...
 ```
 
-`make help` lists every target.
+`make help` lists the targets meant to be run by hand.
 
 Every `//go:generate` directive lives in the build-tagged `generate.go` at the
 repository root, and the Makefile sits on top of them. Two reasons: all
@@ -146,16 +151,25 @@ skeleton/
 │   ├── openapi.yaml         HTTP contract; paths derive from scenarios
 │   └── cfg.yaml             oapi-codegen configuration
 ├── generate.go              every //go:generate directive, build-tagged
-├── cmd/fitness/             composition root; wiring only
+├── cmd/server/              the binary; calls bootstrap, then listens
 ├── internal/
 │   ├── domain/              business rules and entities; depends on nothing
-│   ├── application/         use-case orchestration; depends on domain; declares ports
-│   ├── infrastructure/      port implementations; depends on domain + application
+│   ├── application/         use-case orchestration; declares ports
+│   │   ├── errors/          failures classified by kind, never by status
+│   │   ├── port/in|out/     what we offer outward, what we need inward
+│   │   ├── usecase/         the use cases; query/ is the read side
+│   │   └── service/         implements port/in by delegating to them
+│   ├── bootstrap/           composition root, shared by cmd and the suite
+│   ├── infrastructure/      port implementations; depends on application
 │   └── interfaces/http/     HTTP adapter
 │       ├── apigen/          generated — never edited, fully rebuildable
-│       │   └── api.gen.go
-│       ├── server.go        handlers; no gin types in sight
+│       ├── mapper/          request → query
+│       ├── presenter/       result → response
+│       ├── errmap/          error kind → status and Problem document
+│       ├── server.go        holds the driving port; no gin types in sight
+│       ├── version.go       the /version operation, a method on Server
 │       └── router.go        engine, middleware, route registration
+├── pkg/                     belongs to no layer: config, log, version
 ├── docs/
 │   ├── ARCHITECTURE.md      start here for the whole picture
 │   └── DATAFLOW.md          every conversion on the path, and who owns it
@@ -178,6 +192,10 @@ time — no other module can import them. What remains importable from outside i
 exactly the three contracts: the `cmd` binary, `api/openapi.yaml`, and
 `features/`. That makes "nobody reaches past `interfaces/` straight into
 `domain/`" a compiler guarantee rather than a code-review convention.
+
+`pkg/` sits outside `internal/` and is importable, which is the point: nothing
+in it belongs to a layer. `pkg/version` has a second reason — the linker's `-X`
+flag targets a symbol path, so moving it would break the build stamp silently.
 
 `features/` sits at the top level next to `api/openapi.yaml`, not inside
 `test/`. Both are contracts meant to be read by people who do not read Go.

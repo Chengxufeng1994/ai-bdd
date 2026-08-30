@@ -14,7 +14,7 @@ because two copies of a rule drift apart and then nobody knows which is current.
 
 | Document | Read it when | Kept separate because |
 | --- | --- | --- |
-| [DATAFLOW.md](./DATAFLOW.md) | About to write a handler, mapper, assembler or presenter | It is consulted repeatedly while coding; this document is read once on arrival |
+| [DATAFLOW.md](./DATAFLOW.md) | About to write an operation, mapper, use case or presenter | It is consulted repeatedly while coding; this document is read once on arrival |
 | [../README.md](../README.md) | You want to know why this testbed exists and what "done" means for it | It is the testbed's charter, not its architecture |
 | `internal/*/doc.go` | Working inside one layer and unsure what it may import | Rules belong next to the code they constrain, where a compiler error sends you |
 | [../prompts/1-fitness-tracker-clarify.md](../prompts/1-fitness-tracker-clarify.md) | Evaluating the skills | It is a test fixture, not documentation |
@@ -35,21 +35,22 @@ skeleton/
 ├── cmd/server/               composition root — wiring only, no decisions
 ├── internal/                 Go enforces this boundary at compile time
 │   ├── domain/               business rules and entities; imports nothing
-│   ├── application/         use-case orchestration; declares ports
-│   │   ├── port/in|out/     driving and driven ports
-│   │   ├── query/ dto/      read-side input and output types
-│   │   ├── handler/         implements the driving ports
-│   │   └── service/         handler bundles; fields only, no methods
-│   ├── bootstrap/           composition root, shared by cmd and the suite
-│   ├── infrastructure/      port implementations
-│   │   └── buildinfo/       satisfies out.VersionProvider
-│   └── interfaces/http/     HTTP adapter
-│       ├── apigen/          generated from openapi.yaml — never edited
-│       ├── mapper/          request -> query
-│       ├── presenter/       dto -> response
-│       ├── errmap/          error -> status and Problem
-│       ├── server.go        holds the service bundle
-│       └── router.go        engine, spec validation, route registration
+│   ├── application/          use-case orchestration; declares ports
+│   │   ├── errors/           Kind and Error; classification, not statuses
+│   │   ├── port/in|out/      driving and driven ports
+│   │   ├── usecase/          the generic shapes, then query/ beneath them
+│   │   └── service/          implements port/in, one method per capability
+│   ├── bootstrap/            composition root, shared by cmd and the suite
+│   ├── infrastructure/       port implementations
+│   │   └── buildinfo/        satisfies out.VersionProvider
+│   └── interfaces/http/      HTTP adapter
+│       ├── apigen/           generated from openapi.yaml — never edited
+│       ├── mapper/           request -> query
+│       ├── presenter/        result -> response
+│       ├── errmap/           error kind -> status and Problem
+│       ├── server.go         holds the driving port
+│       ├── version.go        the GetVersion operation, a method on Server
+│       └── router.go         engine, spec validation, route registration
 ├── pkg/
 │   ├── config/               the only place that reads os.Getenv
 │   ├── log/                  the Logger interface, backed by slog
@@ -104,16 +105,20 @@ imports application's port interfaces, and application never imports it.
 ### The read and write paths cost different amounts, on purpose
 
 ```
-write   apigen request ─▶ command ─▶ aggregate ─▶ dto ─▶ apigen response   3 conversions
-read    apigen params  ─▶ query   ──────────────▶ dto ─▶ apigen response   2 conversions
+write   apigen request ─▶ command ─▶ aggregate ─▶ result ─▶ apigen response   3 conversions
+read    apigen params  ─▶ query   ──────────────▶ result ─▶ apigen response   2 conversions
                                     ↑
                           reads never load the aggregate
 ```
 
 That asymmetry is the whole return on CQRS: the read side is served by its own
-port returning a view shaped for what the caller displays, so it can later come
+port returning a shape chosen for what the caller displays, so it can later come
 from a denormalised table or a cache without touching the domain. A read path
 that costs the same as a write path means the split is decoration.
+
+A result type is declared beside the query or command it answers, in
+`internal/application/usecase/`; there is no `dto/` package. Why that does not
+close an import cycle is argued in `internal/application/doc.go`.
 
 `docs/DATAFLOW.md` has the full chain: what each conversion is called, where it
 lives, which of them may fail, and the three levels at which input is validated.
@@ -171,15 +176,21 @@ coupling the port was introduced to break; see
 
 **Not deployed.** No cloud provider, no CI pipeline, no monitoring.
 
-`make build` produces `bin/fitness` with the version stamped in via ldflags:
+`make build` produces `bin/server` with the version stamped in via ldflags:
 
 ```bash
-make build   # -X main.version=$(git describe --tags --always --dirty)
+make build   # -X skeleton/pkg/version.value=$(git describe --tags --always --dirty)
 ```
 
+The symbol path is `skeleton/pkg/version.value` and nothing else — the linker's
+`-X` aimed at a symbol that does not exist is silently a no-op, so a build with
+the wrong path ships a binary reporting `dev` while every test stays green.
+The `verify-stamp` target is the only gate that notices, and `make verify` runs
+it.
+
 `make verify` is what a CI job would run today: formatting, generated-code
-staleness, lint, `go vet`, and `go test -race`. Every one of those gates has
-been confirmed to fail when it should.
+staleness, the ldflags stamp, lint, `go vet`, and `go test -race`. Every one of
+those gates has been confirmed to fail when it should.
 
 ---
 
@@ -207,13 +218,16 @@ Two decisions already made that will matter once endpoints arrive:
 ## 8. Development & Testing Environment
 
 ```bash
-make help              # every target
+make help              # the targets meant to be run by hand
 make gen               # regenerate from api/openapi.yaml
 make test              # unit + acceptance, with -race
 make test-integration  # adds tests behind the `integration` build tag
 make verify            # what CI would run
-make verify-stamp      # prove the ldflags symbol path still reaches the binary
 ```
+
+`verify` also runs `verify-fmt`, `verify-generated` and `verify-stamp`. None of
+the three carries a `## ` help line, so `make help` does not list them: they are
+gates reached through `verify`, not commands to run by hand.
 
 ### Configuration
 
@@ -313,6 +327,12 @@ Planned, in order:
 4. IMPLEMENT fills `domain/` outside-in, following the `/version` slice as the
    structural template
 
+The `/version` slice is a template for the **read** side only: it exercises
+`usecase/query`, a driven port and a presenter, while `usecase/command/`, the
+domain leg and every write path remain uncompiled by design — so the first
+feature carrying a business invariant is still breaking new ground, not copying
+a proven path.
+
 ---
 
 ## 10. Project Identification
@@ -323,7 +343,7 @@ Planned, in order:
 | Repository | none — lives inside the `ai-bdd` repo at `lab/go/skeleton` |
 | Module path | `skeleton` |
 | Primary contact | Benny.XF.Cheng |
-| Last updated | 2026-08-17 |
+| Last updated | 2026-08-30 |
 
 ---
 
@@ -348,12 +368,15 @@ themselves `@Example1.1`, so renumbering silently repoints them.
 | Term | Meaning |
 | --- | --- |
 | **Aggregate** | A consistency boundary in `domain/`. Saved or rejected as a whole |
-| **Driving port** (`port/in`) | The application's published API. Adapters depend on it |
+| **Driving port** (`port/in`) | The application's published API — an interface of capabilities. Adapters depend on it |
 | **Driven port** (`port/out`) | What the application needs from outside. Infrastructure implements it |
 | **Command / Query** | Write and read use cases. Reads do not go through the aggregate |
+| **Result** | One use case's output shape, declared beside its command or query |
+| **Read model** | A denormalised projection with its own reader port, independent of any one query |
 | **Mapper** | Protocol request → command/query. Mechanical, in the adapter |
-| **Assembler** | Domain → dto. In application, and rare — see `docs/DATAFLOW.md` |
-| **Presenter** | Dto → protocol response. Mechanical, in the adapter |
+| **Assembler** | Domain → result. In application, rare, and not yet needed — see `docs/DATAFLOW.md` |
+| **Presenter** | Result → protocol response. Mechanical, in the adapter |
+| **Kind** | How the application classifies a failure, with no transport code in it |
 | **Walking skeleton** | `/version` — the thinnest path exercising the whole chain |
 
 ### Acronyms

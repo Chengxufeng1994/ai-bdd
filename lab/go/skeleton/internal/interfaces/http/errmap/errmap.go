@@ -1,9 +1,10 @@
 // Package errmap turns errors into HTTP's vocabulary: a status and an RFC 9457
 // Problem document.
 //
-// Domain errors carry a kind, not a transport code, because the domain does not
-// know which protocol is serving it. The table from kind to status belongs to
-// each adapter, and this is HTTP's copy of it.
+// Application errors carry a kind, not a transport code, because the
+// application does not know which protocol is serving it. The kinds are
+// declared in ../../../application/errors; the table from kind to status
+// belongs to each adapter, and this is HTTP's copy of it.
 //
 // StatusFor classifies an error into the status this adapter would answer
 // with; ToInternalServerError renders the one body every unclassified error
@@ -32,7 +33,15 @@ const unclassifiedProblemTitle = "Internal Server Error"
 // The error is deliberately not copied into Detail. Stack traces, SQL fragments
 // and internal hostnames belong in logs, not in a response body that reaches
 // whoever made the request — and "just this once, to help debugging" is how they
-// get there. The caller is expected to log err itself.
+// get there.
+//
+// It is not logged either, and that is a gap rather than a decision. Nothing in
+// this adapter holds a logger: Server has no field for one, router.go installs
+// only gin.Recovery(), and the handler that calls this discards err. So a 500
+// leaves the process with no trace at all today, and the context a use case
+// attached on its way out — "read build version: %w" — is written nowhere. The
+// parameter stays in the signature so that closing the gap is a change to this
+// function and its callers, not a change to this package's shape.
 func ToInternalServerError(_ error) apigen.InternalServerErrorApplicationProblemPlusJSONResponse {
 	return apigen.InternalServerErrorApplicationProblemPlusJSONResponse{
 		Type:   unclassifiedProblemType,
