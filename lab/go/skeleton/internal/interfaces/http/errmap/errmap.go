@@ -43,13 +43,19 @@ const unclassifiedProblemTitle = "Internal Server Error"
 // whoever made the request — and "just this once, to help debugging" is how they
 // get there.
 //
-// It is not logged either, and that is a gap rather than a decision. Nothing in
-// this adapter holds a logger: Server has no field for one, router.go installs
-// only gin.Recovery(), and the handler that calls this discards err. So a 500
-// leaves the process with no trace at all today, and the context a use case
-// attached on its way out — "read build version: %w" — is written nowhere. The
-// parameter stays in the signature so that closing the gap is a change to this
-// function and its callers, not a change to this package's shape.
+// It is not logged here, and that is a division of labour rather than the gap
+// it once was. Every caller holds err at a point where it still carries the
+// context worth recording, and writes that record itself: router.go's error
+// hooks log before handing this body to the client, and version.go's GetVersion
+// logs before rendering its failure at all. Logging again here would emit each
+// of those failures twice, the second time under a message naming no operation.
+//
+// The parameter is unused and stays anyway. It is what makes a call site read
+// as "render this error" rather than "render the 500", which is the difference
+// between a caller that still has the error in hand and one that has already
+// dropped it — and it keeps a later decision to lift something safe out of err,
+// a correlation id say, a change to this function rather than to every
+// caller's signature.
 func ToInternalServerError(_ error) apigen.InternalServerErrorApplicationProblemPlusJSONResponse {
 	return apigen.InternalServerErrorApplicationProblemPlusJSONResponse{
 		Type:   unclassifiedProblemType,
@@ -106,12 +112,21 @@ const problemTypeBase = "https://errors.skeleton.local"
 // produces. Reversing that order would leak err.Error() to a client the
 // first time an unclassified error arrived.
 //
+// Carrying a classification means both halves of one. Kind selects the status,
+// but MessageKey is what supplies the two fields a client reads: the type it
+// branches on and the title it shows. An Error with a Kind and no MessageKey
+// would render a document that satisfies the schema and identifies nothing —
+// a type that is the base URL and a trailing slash, and an empty title the
+// schema marks required. That is the same "somebody forgot" KindUnclassified
+// stands for reaching this function through the other field, so it takes the
+// same default path.
+//
 // Only Params crosses into the body. Where, DetailedError and the wrapped
 // cause are the log channel and are deliberately absent from what this
 // returns; the caller is expected to log err itself.
 func ToProblem(err error, locale string, tr i18n.Translator) (int, apigen.Problem) {
 	var e apperrors.Error
-	if !errors.As(err, &e) || e.Kind == apperrors.KindUnclassified {
+	if !errors.As(err, &e) || e.Kind == apperrors.KindUnclassified || e.MessageKey == "" {
 		return http.StatusInternalServerError, apigen.Problem{
 			Type:   unclassifiedProblemType,
 			Title:  unclassifiedProblemTitle,

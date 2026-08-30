@@ -11,6 +11,7 @@
 package bootstrap
 
 import (
+	"errors"
 	"net/http"
 
 	"skeleton/internal/application/service"
@@ -47,7 +48,23 @@ type Deps struct {
 //
 // It returns http.Handler rather than *gin.Engine so that router.go remains the
 // only hand-written file naming gin.
+//
+// The two interface dependencies are checked before anything is built. Left
+// nil they assemble cleanly and serve the happy path, and only the first
+// request that *fails* dereferences them — the one path where a diagnosis is
+// wanted. gin.Recovery() would keep the process alive and hand back a bodiless
+// 500, so the failure would not even announce itself; it would just replace the
+// structured record naming the operation and its cause with a panic trace.
+// Version is not checked with them: an empty build version is a real value a
+// binary can be built with, not missing wiring.
 func NewHandler(deps Deps) (http.Handler, error) {
+	if deps.Logger == nil {
+		return nil, errors.New("Deps.Logger is nil: nothing would record why a request failed")
+	}
+	if deps.Translator == nil {
+		return nil, errors.New("Deps.Translator is nil: nothing would render a classified failure's message")
+	}
+
 	svc := service.NewVersionService(query.NewGetVersion(buildinfo.NewProvider(deps.Version)))
 
 	engine, err := apihttp.NewRouter(apihttp.NewServer(svc, deps.Logger, deps.Translator), deps.Logger)

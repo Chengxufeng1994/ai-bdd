@@ -247,3 +247,28 @@ func TestToProblemRendersTheKeyWhenUntranslated(t *testing.T) {
 		t.Errorf("Title: want the key, got %q", problem.Title)
 	}
 }
+
+// A Kind is not enough to describe a failure with. Classification picks the
+// status; MessageKey is what supplies the other two fields a client actually
+// reads — the RFC 9457 type it branches on and the title it shows. An Error
+// carrying a Kind and no MessageKey therefore renders a document that satisfies
+// the schema and says nothing: a type that is the base URL with a trailing
+// slash and nothing after it, and a title that is the empty string, which the
+// schema marks required.
+//
+// So it belongs on the same default path an unclassified error takes. Half a
+// classification is not a classification; it is the same "somebody forgot"
+// KindUnclassified already stands for, arriving through the other field.
+func TestToProblemDefaultsAClassifiedErrorWithNoMessageKeyTo500(t *testing.T) {
+	appErr := apperrors.Error{
+		Kind:  apperrors.KindUnavailable,
+		Where: "usecase.GetVersion",
+	}.Wrap(errors.New("nobody set MessageKey"))
+
+	status, problem := errmap.ToProblem(appErr, "en", i18n.NewBundle(nil))
+
+	if status != http.StatusInternalServerError {
+		t.Errorf("status: want 500, got %d", status)
+	}
+	assertGenericProblem(t, problem)
+}

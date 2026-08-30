@@ -48,3 +48,37 @@ func TestNewHandlerIsIndependentAcrossConcurrentVersions(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+// A Deps missing its Logger or its Translator assembles without complaint and
+// serves the happy path correctly. The gap only opens on the failure path,
+// where GetVersion logs the error and errmap translates it — so the first
+// request that fails nil-panics, gin.Recovery() catches it, and the client gets
+// a bodiless 500 while the process survives.
+//
+// That is worse than a crash, because of what it replaces: the structured
+// record naming the operation and its cause — the thing that branch exists to
+// produce — becomes an unstructured panic trace, at the one moment anybody
+// needed it. And nothing before that moment gives any sign: assembly returned
+// a nil error, the health of the service looked fine, tests of the 200 path
+// passed.
+//
+// Incomplete wiring is a startup failure. NewHandler already returns an error,
+// which is the whole reason it can say so.
+func TestNewHandlerRejectsDepsItCannotServeAFailureWith(t *testing.T) {
+	tests := map[string]bootstrap.Deps{
+		"no logger":     {Version: "1.0.0", Translator: i18n.NewBundle(nil)},
+		"no translator": {Version: "1.0.0", Logger: log.Discard()},
+	}
+
+	for name, deps := range tests {
+		t.Run(name, func(t *testing.T) {
+			handler, err := bootstrap.NewHandler(deps)
+			if err == nil {
+				t.Fatal("want assembly to fail, got a handler that would panic on its first failing request")
+			}
+			if handler != nil {
+				t.Errorf("want no handler alongside the error, got %T", handler)
+			}
+		})
+	}
+}
