@@ -177,12 +177,31 @@ skeleton/
 │   ├── 1-fitness-tracker-clarify.md       casual brief
 │   └── 1-fitness-tracker-clarify-prd.md   the same scenario as an approved PRD
 ├── features/                .feature files — specifications, not test code
-│   └── version.feature      the walking skeleton
+│   ├── version.feature      the walking skeleton — implemented, green
+│   └── <six story files>    @ready — specified, not yet implemented, red
 └── test/acceptance/         the godog harness that executes them
     ├── godogs_test.go       runner, suite and scenario hooks
     ├── world_test.go        per-scenario state, carried in context.Context
     └── steps_test.go        step definitions
 ```
+
+### The acceptance suite is red on purpose
+
+`go test ./...` fails here, and that is the correct state. Eight packages pass;
+`test/acceptance` does not. The six story `.feature` files carry `@ready` —
+clarified and specified, but IMPLEMENT has not run, so no step definitions exist
+and every scenario reports `step is undefined`.
+
+That is what `@ready` means. `bdd-spec` states the rule it follows from: a
+scenario that goes green the moment it is written verified nothing. The plan for
+turning these green is `docs/bdd/workout-tracking/plan.md` — nine tickets, in
+dependency order.
+
+The runner has no tag filter; it takes every file under `features/`. Adding one
+that excludes unimplemented states would make the suite green, and it is
+deliberately not done yet: the filter's design depends on what `bdd-implement`
+does with `@wip`, and choosing now would be guessing. The risk it trades against
+is the worse one — a filter wide enough to hide a scenario nobody ever runs.
 
 Dependencies point inward: everything may import `domain`, and `domain` imports
 nothing. Each layer's `doc.go` states its own rule.
