@@ -469,6 +469,8 @@ feature 層的別則看不到。全部保留，它是決策史，不是暫時檔
 `references/prd-breakdown.md`；`actor.md` → `references/actor-definition.md`；
 `example-mapping.md` 與 `questions/` → `references/map-format.md`。
 
+Pass 3 的技術追問面向 → `references/technical-probes.md`
+
 兩條留在本文，因為它們是**跨 skill 的契約**而不只是格式：
 
 MUST NOT: 重排既有的 Rule 與 Example 編號。下游的 Gherkin 情境回指
