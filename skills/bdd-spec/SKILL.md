@@ -28,7 +28,8 @@ description: >
 - 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
 - 例子還不夠、還有紅卡 → 回 `bdd-clarify`
-- 產出是 `.feature`，**不是** step definition、不是測試程式碼
+- 產出是 `.feature` ＋ `docs/bdd/<slice-slug>/spec.md`，**不是** `openapi.yaml`、migration 或任何可執行的檔案
+- 要把 `spec.md` 拆成可執行的票 → 改用 `bdd-plan`
 
 ---
 
@@ -290,6 +291,8 @@ IMPORTANT: 一個 Outline 涵蓋 Example 3.1 到 3.3 時，**三個 tag 都要�
 
 ### 6. 稽核，然後才算完成
 
+**這一步在步驟 9 之後跑**——它同時稽核 `.feature` 與 `spec.md` 的 Example Mapping 段，兩份都要存在才比對得起來。
+
 ```bash
 python3 <skill>/scripts/check_spec.py <專案根>
 ```
@@ -318,6 +321,52 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 
 同一個 slug 在 `docs/bdd/` 與 `.feature` 之間保持一致——那是這條鏈唯一的接縫，
 換名字就得靠人腦記住對應關係。
+
+### 8. 決定 seam —— 驗收測試打在哪一層
+
+`.feature` 決定驗什麼，seam 決定**打進系統的哪一層**：HTTP handler？
+application service？domain？這個決定會長成 step definition 的形狀，
+所以它屬於規格，不屬於實作。
+
+三條規則：
+
+| 規則 | 為什麼 |
+| --- | --- |
+| 優先用既有 seam | 每多一個 seam 就多一套測試替身與資料建構 |
+| 取**最高**的那一層 | 越高越接近使用者真正做的事，也越不綁實作細節 |
+| 整個變更的理想數量是**一個** | 兩個 seam 代表這批行為的入口不只一個，多半是切分沒切乾淨 |
+
+**Ask user: 把 seam 攤出來確認再寫。** 這是本 skill 唯一一次徵詢——
+其餘全部只綜合已有的答案。之所以是例外：seam 要看過 `.feature` 才推得出來，
+而它推錯的話，底下所有 step definition 都打在錯的高度，改起來是整批重寫。
+
+IMPORTANT: seam 一旦寫進 `spec.md` 就往下傳——IMPLEMENT 照著打，
+REVIEW 把「沒人同意過的 seam」當成 finding。這個綁定是**間接的**，
+穿過 `spec.md` 這份文件；所以這一節寫不寫，決定了後面兩步抓不抓得到。
+
+### 9. 寫 `spec.md`
+
+一批一份，路徑 `docs/bdd/<slice-slug>/spec.md`。骨架照抄
+`references/spec-format.md`。
+
+MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東西。**
+推不出來的寫進 `## Out of Scope` 的「回 CLARIFY 補問」欄，不要順手決定掉。
+
+判準：指著 `spec.md` 的任何一句話，說得出它來自哪個已答的問題、哪條規則、
+或哪個 `.feature` 的哪一段嗎？說不出來的就是憑空長出來的，那是缺陷。
+
+### 10. 增修 `docs/bdd/domain-model.md`
+
+根層一份，跨批次累積。這一批長出來的聚合與不變條件加進去。
+
+MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本是什麼、為什麼改」——
+那張表記錄的是這個領域被理解的過程，而下一批的人靠它判斷某個決定還算不算數。
+
+MUST NOT: 寫進 `spec.md`。`spec.md` 是這一批的快照，實作一開始就會過期；
+domain model 要活得比它久。塞進去等於陪葬。
+
+判準（哪些該進來）：這條規則**跨批次仍然成立**嗎？只在這一批的情境下為真的，
+留在 `spec.md`。
 
 ---
 
@@ -387,11 +436,12 @@ MUST: 只寫 `.feature`，且**不修改專案既有的任何檔案**（含既�
 
 ## 完成後
 
-告訴對方三件事：
+告訴對方四件事：
 
-1. 產了哪些檔、各幾個場景、**幾個不重複步驟樣板**
+1. 產了哪些 `.feature`、各幾個場景、**幾個不重複步驟樣板**
 2. **覆蓋表**——哪些例子還沒有場景，為什麼
-3. 下一步：`bdd-spec-review` 稽核寫法，或 `bdd-plan` 決定分層與順序
+3. **seam 是哪一層**、`domain-model.md` 這一批新增了哪些聚合與不變條件
+4. `spec.md` 的 `## Out of Scope` 裡「回 CLARIFY 補問」有幾條；缺口多 → 回 `clarify-loop`，缺口少 → `bdd-plan` 切票
 
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
 綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。
