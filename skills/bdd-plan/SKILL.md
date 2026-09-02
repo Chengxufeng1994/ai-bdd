@@ -13,7 +13,7 @@ description: >
 # PLAN — SPEC 說要做成什麼，PLAN 說先做哪一塊
 
 一份就緒的 `spec.md` 與它涵蓋的 `.feature` 進來，出去的是 `plan.md`：切成幾張
-tracer-bullet 票、每張穿過哪些層、彼此怎麼 block、先做哪一張。
+tracer-bullet 票、每張穿過所有層、彼此怎麼 block、先做哪一張。
 
 不設計。API、domain 型別、schema、seam 都已經在 `spec.md` 裡定案——那是
 `bdd-spec` 的工作。
