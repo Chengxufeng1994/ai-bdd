@@ -413,3 +413,10 @@ Always-on: ~1,620 tok  每個 session 都付
     標籤不會噴任何錯誤，只會讓答案悄悄變成錯的；一支腳本靠比對內文裡剛好加粗
     的文字去解析一行已經壞掉的狀態列，照樣跑得動。四個都是 exit 0、看起來健康。
     這條鏈要不要為這一類錯誤加一層系統性的檢查，還沒有答案。
+
+11. **`feature` 這個字還有九處用在退休的舊義上。** 這一輪把 `feature` 收窄成
+    「Gherkin 的 `.feature` 檔，一則 story 一個」，把交付批次改叫 `slice`。但
+    `clarify-loop/SKILL.md` 有四處、`bdd-clarify/SKILL.md` 有五處仍寫「跨 feature
+    問題」「換 feature 時」，那裡的 `feature` 指的是 story。最終審查判定不要把
+    這個掃描併進 merge 前的修復波——散在兩個當時範圍外的檔案，只修一半比不修
+    更容易誤導。它需要自己一次變更，連同 `story` 與 `slice` 的用法一起校準。
