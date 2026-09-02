@@ -412,7 +412,7 @@ git commit -m "feat(bdd-spec): add the seam decision, spec.md and domain-model.m
 **Files:**
 - Create: `lab/go/skeleton/docs/bdd/workout-tracking/spec.md`
 - Move: `lab/go/skeleton/docs/bdd/<六個 story 目錄>/questions/*.md` → `lab/go/skeleton/docs/bdd/workout-tracking/questions/`
-- Create: `/tmp/claude-1000/-home-benny-Workspace-vivotek-ai-bdd/cfe2d8e3-7ecc-4246-9f8a-9b137e4e99bd/scratchpad/gaps.md`（缺口清單，Task 5 的輸入，不進 repo）
+- Create: `.superpowers/sdd/2026-09-02-replan-three-steps/gaps.md`（缺口清單，Task 5 的唯一原料。放 SDD workspace 而非 session scratchpad——它要活過好幾個任務，git-ignored 但穩定）
 
 **Interfaces:**
 - Consumes: Task 1 的骨架；實測場現有的六份 `example-mapping.md`、六個 `.feature`、`plan.md` §1–5
@@ -480,7 +480,7 @@ MUST NOT: 改任何 Rule 或 Example 的編號與敘述。這一步是搬家，�
 | Implementation Decisions · **介面** | 只有 `port/out` 那一小塊 |
 | Implementation Decisions · **互動** | 沒有 |
 
-**填不出來的每一格寫進 scratchpad 的 `gaps.md`**，格式：
+**填不出來的每一格寫進 `.superpowers/sdd/2026-09-02-replan-three-steps/gaps.md`**，格式：
 
 ```markdown
 | 欄位 | 為什麼填不出來 | 該問誰 | 這是哪一類技術問題 |
@@ -511,7 +511,7 @@ Expected: `lab/go/skeleton/docs/bdd/domain-model.md` 存在，且**不在**
 Run: `python3 skills/bdd-clarify/scripts/status.py lab/go/skeleton`
 Expected: 這一步**會壞**——`status.py` 現在找 `*/example-mapping.md`，而問題檔已經搬走。預期輸出是各 story 的「已答／待答」歸零或整列消失。
 
-把實際輸出貼進 `gaps.md`。**這是預期中的失敗，Task 8 修它。** 不要在這裡順手改腳本。
+把實際輸出貼進那份 `gaps.md`。**這是預期中的失敗，Task 8 修它。** 不要在這裡順手改腳本。
 
 - [ ] **Step 7: Commit**
 
