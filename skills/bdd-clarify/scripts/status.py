@@ -5,14 +5,18 @@
     python3 status.py [專案根目錄]        # 預設當前目錄
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
-`questions/` 底下每個問題檔的狀態列：已答／待答數自狀態欄，story 歸屬數自
-story 欄，追問覆蓋（業務面向＋Pass 3 的技術面向）數自面向欄。`example-mapping.md`
-已經不存在，規則數、例子數、map 檔頭的就緒判定也一併拿掉——沒有來源的欄位
-留著只會印出永遠不變的空白，讀的人會誤以為那代表什麼。存一份儀表板的話，
-同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫
-21 個例子，實際 23）；追問覆蓋改成從問題檔算，就是為了不讓它也走上同一條路。
+`questions/` 底下每個問題檔的狀態列：已答／n/a／待答數自狀態欄，story 歸屬
+數自 story 欄，追問覆蓋（業務面向＋Pass 3 的技術面向）數自面向欄。
+`example-mapping.md` 已經不存在，規則數、例子數、map 檔頭的就緒判定也一併
+拿掉——沒有來源的欄位留著只會印出永遠不變的空白，讀的人會誤以為那代表
+什麼。存一份儀表板的話，同一個數字會有兩份，而它們遲早不一樣——這個 repo
+已經發生過（map 檔頭寫 21 個例子，實際 23）；追問覆蓋改成從問題檔算，就是
+為了不讓它也走上同一條路。
 
-找不到資料時不猜、不印出「已就緒」——找不到就說找不到，離開碼非 0。
+找不到資料時不猜、不印出「已就緒」——目錄不存在、目錄底下沒有問題檔、或
+問題檔解析不出任何欄位（狀態／story／面向都缺，代表格式跑掉或檔案壞了），
+三種都算「找不到」，說清楚是哪一種、離開碼非 0，不拿看得懂的那一部分硬撐
+出一張表。
 
 只讀不寫。
 """
@@ -56,12 +60,19 @@ def parse_status(text: str) -> dict[str, str]:
             re.findall(r"\*\*(.+?)\*\*:\s*([^·\n]+)", text)}
 
 
-def scan_questions(qdir: Path) -> dict[str, dict]:
-    """走一遍問題檔，依 story 分組。
+def scan_questions(qdir: Path) -> tuple[dict[str, dict], list[str]]:
+    """走一遍問題檔，依 story 分組；順便回報解析不出任何欄位的檔名。
 
-    回傳 {story: {"answered": int, "pending": [檔名], "dims": {面向}}}。
+    回傳 (groups, unparseable)。
+    groups: {story: {"answered": int, "na": int, "pending": [檔名], "dims": {面向}}}
     `story` 欄缺席時歸到 `全部`——判斷不了時放共通層，代價不對稱：
     共通的問題每則 story 都看得到，掛錯 story 的別則看不到。
+
+    unparseable：`狀態`／`story`／`面向` 三欄一個都讀不到的檔名。這種檔案
+    不能套「story 缺席就歸到全部」的規則——那條規則假設的是「有欄位、只是
+    沒填 story」，這裡是整份都讀不出東西，通常代表狀態列格式跑掉、檔案被
+    手動改壞，或編碼出了問題。呼叫端要能分辨「這批問題真的還沒問」跟「這
+    份資料讀不出來」，不能讓後者悄悄併入前者、印出一張看起來正常的表。
 
     `面向` 只要出現就算進 dims，不管狀態是已答、待答還是 n/a。n/a 的問題檔
     一樣帶著 `面向`，代表這個面向有人問過、也有人給了「不適用」的理由，跟
@@ -69,17 +80,28 @@ def scan_questions(qdir: Path) -> dict[str, dict]:
     適用」跟「沒人問」混成同一個 `—`，那正是這欄本來要讓人看見的東西。
     """
     out: dict[str, dict] = {}
+    bad: list[str] = []
     for c in sorted(qdir.glob("*.md")):
         st = parse_status(c.read_text(encoding="utf-8"))
+        if not (st.get("狀態") or st.get("story") or st.get("面向")):
+            bad.append(c.stem)
+            continue
         story = st.get("story", "全部")
-        g = out.setdefault(story, {"answered": 0, "pending": [], "dims": set()})
+        g = out.setdefault(story, {"answered": 0, "na": 0, "pending": [], "dims": set()})
         if dim := st.get("面向"):
             g["dims"].add(dim)
-        if st.get("狀態", "").startswith("已答"):
+        status = st.get("狀態", "")
+        if status.startswith("已答"):
             g["answered"] += 1
+        elif status.startswith("n/a"):
+            # n/a 是「問過、判定不適用」的結論，不是還沒處理。待答數與待答
+            # 清單存在的目的是讓讀者知道還要去追誰要答案——n/a 沒有答案可
+            # 追，跟真正卡住的問題混在一起算，會讓一批問題永遠有消不掉的
+            # 紅卡、看起來比實際更沒準備好。獨立開一欄，不計入待答。
+            g["na"] += 1
         else:
             g["pending"].append(c.stem)
-    return out
+    return out, bad
 
 
 def coverage(dims: set[str]) -> str:
@@ -105,37 +127,50 @@ def main(root: Path) -> int:
         return 1
 
     scans = {qdir: scan_questions(qdir) for qdir in qdirs}
-    empty = [qdir for qdir, groups in scans.items() if not groups]
-    if empty:
-        # 目錄在，但一個問題檔都掃不出來——可能是空的，也可能檔案被搬走或
-        # 改了副檔名。這種情況絕不能往下印表：一份「已答/待答 = 0」的表跟
-        # 「這則 story 沒有問題要問」長得一模一樣，但實情是資料不見了，不是
-        # 進度真的是零。
-        for qdir in empty:
-            print(f"{qdir} 底下沒有可解析的狀態列（沒有 .md 檔，或內容沒有狀態列）")
+
+    # 兩種情況都不能往下印表：目錄底下一個 .md 都沒有，或者有 .md 卻解析不
+    # 出狀態列（哪怕只有一個檔案解析不出來）。後者尤其不能只印看得懂的那
+    # 部分——20/31 個檔案算出來的覆蓋表看起來完全正常，但算漏的那 11 個
+    # 不會留下任何痕跡，這種「看起來對」的錯比整個失敗更難發現。
+    problems = []
+    for qdir, (groups, bad) in scans.items():
+        if bad:
+            problems.append((qdir, bad))
+        elif not groups:
+            problems.append((qdir, None))
+    if problems:
+        for qdir, bad in problems:
+            if bad is None:
+                print(f"{qdir} 底下沒有可解析的狀態列（沒有 .md 檔）")
+            else:
+                print(f"{qdir} 有 {len(bad)} 個問題檔解析不出狀態列"
+                      f"（狀態／story／面向都缺）：")
+                for name in bad:
+                    print(f"  {name}")
         return 1
 
-    print(f"{_field('story', 42)}{'已答':>6}{'待答':>6}  追問覆蓋")
-    print(f"{'':42}{'':>12}  {BIZ_ABBR}{TECH_ABBR}")
-    tot = [0, 0]
+    print(f"{_field('story', 42)}{'已答':>6}{'n/a':>6}{'待答':>6}  追問覆蓋")
+    print(f"{'':42}{'':>18}  {BIZ_ABBR}{TECH_ABBR}")
+    tot = [0, 0, 0]
     blocked = []
 
     for qdir in qdirs:
         slug = qdir.parent.name
-        groups = scans[qdir]
+        groups = scans[qdir][0]
         # 全部（跨 story 的問題）排最前面：這批問題每則 story 都看得到，
         # 排最前面才不會被誤讀成只屬於表上緊接著的那一則 story。
         for story in sorted(groups, key=lambda s: (s != "全部", s)):
             g = groups[story]
-            answered, pending = g["answered"], len(g["pending"])
+            answered, na, pending = g["answered"], g["na"], len(g["pending"])
             tot[0] += answered
-            tot[1] += pending
+            tot[1] += na
+            tot[2] += pending
             blocked += [f"{slug}/{n}" for n in g["pending"]]
             label = f"{slug}/{story}"
-            print(f"{_field(label, 42)}{answered:>6}{pending:>6}  "
+            print(f"{_field(label, 42)}{answered:>6}{na:>6}{pending:>6}  "
                   f"{coverage(g['dims'])}")
 
-    print(f"{_field('合計', 42)}{tot[0]:>6}{tot[1]:>6}")
+    print(f"{_field('合計', 42)}{tot[0]:>6}{tot[1]:>6}{tot[2]:>6}")
 
     # 待答的問題就是紅卡。列出來，因為「還剩什麼」比「已經做了多少」有用。
     if blocked:
