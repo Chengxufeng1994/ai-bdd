@@ -323,6 +323,14 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 
 ## 產物格式
 
+本步驟產兩份東西，格式各有一份參考檔：
+
+| 產物 | 格式 |
+| --- | --- |
+| `.feature` | 本節（關鍵字、狀態 tag、型別 tag、方言陷阱） |
+| `docs/bdd/<slice-slug>/spec.md` | `references/spec-format.md` |
+| `docs/bdd/domain-model.md`（增修） | `references/spec-format.md` 末節 |
+
 **關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
 
 完整骨架見步驟 4 的範例。`Feature:` 底下那段敘述直接用 map 的 Story 句
