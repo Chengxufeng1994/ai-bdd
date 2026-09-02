@@ -3,7 +3,7 @@
 這份文件記錄 BDD 這套方法**本身**是什麼：三個實踐、雙迴圈、常見反模式。
 它是設計依據，不是使用說明。
 
-要建什麼、怎麼切、什麼順序，見 [blueprint.md](./blueprint.md)。
+要建什麼、怎麼切、什麼順序，見 [PLAN.md](../PLAN.md)。
 
 > 前提：BDD 的核心是 **Discovery → Formulation → Automation** 三個實踐，
 > 測試自動化只是最後一段。若 plugin 只做最後一段，它就只是測試產生器，不是
@@ -135,4 +135,4 @@ Automation 之後進入實作，這是 BDD 與 TDD 接合的地方：
 ---
 
 階段如何對應到 plugin 元件、分期順序、以及尚未拍板的事項，見
-[blueprint.md](./blueprint.md)。
+[PLAN.md](../PLAN.md)。

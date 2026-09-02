@@ -4,9 +4,10 @@ A Claude Code plugin for AI-assisted BDD (Behavior-Driven Development): turning
 requirements into Gherkin feature files, generating step definitions, running BDD
 suites, and keeping scenarios in sync with the code they describe.
 
-> **Status: early.** The CLARIFY step (`bdd-clarify`) is implemented. The
-> remaining steps are planned but not built — see
-> [docs/blueprint.md](docs/blueprint.md).
+> **Status: early.** CLARIFY, SPEC and PLAN are implemented; IMPLEMENT,
+> VERIFY and REVIEW are not. The division of labour between the first three
+> was re-cut on 2026-09-02 and the skills have not caught up yet — see
+> [PLAN.md](PLAN.md).
 
 The workflow is six steps, with BDD as the method inside each:
 
@@ -18,21 +19,23 @@ The workflow is six steps, with BDD as the method inside each:
 ai-bdd/
 ├── .claude-plugin/
 │   └── plugin.json    # manifest: name, description, version, author
+├── PLAN.md            # what to build, in what order
 ├── docs/
-│   ├── blueprint.md   # what to build, in what order
 │   └── bdd-workflow.md # BDD practice reference
 ├── skills/
 │   ├── bdd-clarify/
+│   ├── bdd-spec/
+│   ├── bdd-plan/
 │   ├── clarify-loop/
 │   ├── story-splitting/
 │   └── skill-rules/
 ├── lab/
-│   └── golang/
-│       └── skeleton/     # Go + godog skeleton; hosts one scenario at a time
+│   └── go/
+│       └── skeleton/     # Go + godog dogfooding ground
 └── README.md
 ```
 
-Skill directories are flat; the step grouping lives in the blueprint's table,
+Skill directories are flat; the step grouping lives in the roadmap's table,
 not in the filesystem — skill names are global and flat at runtime, and
 `claude plugin validate` does not recurse into nested directories.
 

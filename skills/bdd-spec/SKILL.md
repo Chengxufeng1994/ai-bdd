@@ -28,7 +28,8 @@ description: >
 - 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
 - 例子還不夠、還有紅卡 → 回 `bdd-clarify`
-- 產出是 `.feature`，**不是** step definition、不是測試程式碼
+- 產出是 `.feature` ＋ `docs/bdd/<slice-slug>/spec.md`，**不是** `openapi.yaml`、migration 或任何可執行的檔案
+- 要把 `spec.md` 拆成可執行的票 → 改用 `bdd-plan`
 
 ---
 
@@ -92,10 +93,13 @@ MUST: 未就緒的 feature 跳過，並明講跳過的理由與該回哪個 skil
 
 | 讀什麼 | 為了什麼 |
 | --- | --- |
-| `example-mapping.md` | 規則、例子、編號——這是規格的唯一來源 |
-| `glossary.md` | 詞彙與跨 story 共用規則，實體名稱與屬性名要跟它一致 |
+| `<slice>/questions/*.md` | 已答的問題與答案——**規則與例子從這裡抽**，這是規格的唯一來源 |
+| `glossary.md` | 詞彙，實體名稱與屬性名要跟它一致 |
 | `actor.md` | 角色。`前置（狀態）` 規則的主詞要用這裡的角色名 |
 | 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
+
+IMPORTANT: 只讀狀態列標 `已答` 的。待答的問題代表那一塊還沒有結論，
+把它寫成場景等於**把不確定性從一個顯眼的問題檔搬進一份看起來已完成的規格**。
 
 第三項最容易被跳過，代價最貴，而且**在封閉文法下更貴**：文法的價值全在重用，
 另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
@@ -110,7 +114,7 @@ IMPORTANT: `docs/bdd/` 根層的 `brief.md`、`glossary.md` 與 `actor.md` 由 C
 ### 3. 規則對應 Rule，例子對應 Example
 
 ```
-example-mapping.md                    .feature
+spec.md 的 Example Mapping 段          .feature
 ─────────────────────────────────────────────────────────────
 Story 敘述                       →    Feature: 與其下的敘述
 ### Rule 2. 影片進度必須單調遞增  →    Rule: 影片進度必須單調遞增
@@ -144,6 +148,11 @@ Example: 進度回退時操作失敗
 兩個 tag 都要。`@example-2.1` 讓你機械稽核「哪個例子還沒有場景」，
 `@rule-2` 讓你一次跑完某條規則的所有場景（實測：`--tags @rule-2` 會選到該規則
 底下全部場景，含 Scenario Outline 展開的每一列）。
+
+MUST NOT: 事後重排已經寫定的 Rule 與 Example 編號。這批編號在這一步（`spec.md`
+的 `## Example Mapping` 段）誕生，`.feature` 的 tag 只是鏡射它——下游（`bdd-plan`、
+之後新增的場景）回指的是 `@example-2.2` 這個 tag，不是那句規則的文字本身；重排
+編號等於讓那些引用**靜默**指向別的東西——不會報錯，只會對錯。
 
 #### 規則歸到四個象限
 
@@ -290,6 +299,8 @@ IMPORTANT: 一個 Outline 涵蓋 Example 3.1 到 3.3 時，**三個 tag 都要�
 
 ### 6. 稽核，然後才算完成
 
+**這一步在步驟 9 之後跑**——它同時稽核 `.feature` 與 `spec.md` 的 Example Mapping 段，兩份都要存在才比對得起來。
+
 ```bash
 python3 <skill>/scripts/check_spec.py <專案根>
 ```
@@ -319,9 +330,63 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 同一個 slug 在 `docs/bdd/` 與 `.feature` 之間保持一致——那是這條鏈唯一的接縫，
 換名字就得靠人腦記住對應關係。
 
+### 8. 決定 seam —— 驗收測試打在哪一層
+
+`.feature` 決定驗什麼，seam 決定**打進系統的哪一層**：HTTP handler？
+application service？domain？這個決定會長成 step definition 的形狀，
+所以它屬於規格，不屬於實作。
+
+三條規則：
+
+| 規則 | 為什麼 |
+| --- | --- |
+| 優先用既有 seam | 每多一個 seam 就多一套測試替身與資料建構 |
+| 取**最高**的那一層 | 越高越接近使用者真正做的事，也越不綁實作細節 |
+| 整個變更的理想數量是**一個** | 兩個 seam 代表這批行為的入口不只一個，多半是切分沒切乾淨 |
+
+**Ask user: 把 seam 攤出來確認再寫。** 這是本 skill 唯一一次徵詢——
+其餘全部只綜合已有的答案。之所以是例外：seam 要看過 `.feature` 才推得出來，
+而它推錯的話，底下所有 step definition 都打在錯的高度，改起來是整批重寫。
+
+IMPORTANT: seam 一旦寫進 `spec.md` 就往下傳——IMPLEMENT 照著打，
+REVIEW 把「沒人同意過的 seam」當成 finding。這個綁定是**間接的**，
+穿過 `spec.md` 這份文件；所以這一節寫不寫，決定了後面兩步抓不抓得到。
+
+### 9. 寫 `spec.md`
+
+一批一份，路徑 `docs/bdd/<slice-slug>/spec.md`。骨架照抄
+`references/spec-format.md`。
+
+MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東西。**
+推不出來的寫進 `## Out of Scope` 的「回 CLARIFY 補問」欄，不要順手決定掉。
+
+判準：指著 `spec.md` 的任何一句話，說得出它來自哪個已答的問題、哪條規則、
+或哪個 `.feature` 的哪一段嗎？說不出來的就是憑空長出來的，那是缺陷。
+
+### 10. 增修 `docs/bdd/domain-model.md`
+
+根層一份，跨批次累積。這一批長出來的聚合與不變條件加進去。
+
+MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本是什麼、為什麼改」——
+那張表記錄的是這個領域被理解的過程，而下一批的人靠它判斷某個決定還算不算數。
+
+MUST NOT: 寫進 `spec.md`。`spec.md` 是這一批的快照，實作一開始就會過期；
+domain model 要活得比它久。塞進去等於陪葬。
+
+判準（哪些該進來）：這條規則**跨批次仍然成立**嗎？只在這一批的情境下為真的，
+留在 `spec.md`。
+
 ---
 
 ## 產物格式
+
+本步驟產三份東西，格式各有一份參考檔：
+
+| 產物 | 格式 |
+| --- | --- |
+| `.feature` | 本節（關鍵字、狀態 tag、型別 tag、方言陷阱） |
+| `docs/bdd/<slice-slug>/spec.md` | `references/spec-format.md` |
+| `docs/bdd/domain-model.md`（增修） | `references/spec-format.md` 末節 |
 
 **關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
 
@@ -379,11 +444,12 @@ MUST: 只寫 `.feature`，且**不修改專案既有的任何檔案**（含既�
 
 ## 完成後
 
-告訴對方三件事：
+告訴對方四件事：
 
-1. 產了哪些檔、各幾個場景、**幾個不重複步驟樣板**
+1. 產了哪些 `.feature`、各幾個場景、**幾個不重複步驟樣板**
 2. **覆蓋表**——哪些例子還沒有場景，為什麼
-3. 下一步：`bdd-spec-review` 稽核寫法，或 `bdd-plan` 決定分層與順序
+3. **seam 是哪一層**、`domain-model.md` 這一批新增了哪些聚合與不變條件
+4. `spec.md` 的 `## Out of Scope` 裡「回 CLARIFY 補問」有幾條；缺口多 → 回 `clarify-loop`，缺口少 → `bdd-plan` 切票
 
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
 綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。
