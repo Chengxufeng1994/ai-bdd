@@ -34,9 +34,23 @@ def find_features(root: Path) -> Path:
     return sorted(hits, key=lambda p: len(p.parts))[0] if hits else None
 
 
-def examples_in_map(text: str) -> set[str]:
-    """map 的例子。備註區回指例子的句子不算，所以要求編號後面接空白再接內容。"""
-    return set(re.findall(r"^- Example (\d+\.\d+) \S", text, re.M))
+def stories_in_spec(text: str) -> dict[str, set[str]]:
+    """spec.md 的 Example Mapping 段：story-slug -> 例子編號集合。
+
+    一份 spec.md 涵蓋一批 story，每則一個 `### <story-slug>` 區塊。
+
+    只掃 `## Example Mapping` 這一段。其他章節也會出現 `Example N.M`
+    （Testing Decisions 的測試分層表就整欄都是），掃全檔會把測試分層表
+    誤當成規格來源——而那張表本來就是從規格抄過去的，比對它等於自己跟自己比。
+    """
+    m = re.search(r"^## Example Mapping\s*\n(.*?)(?=\n## |\Z)", text, re.M | re.S)
+    if not m:
+        return {}
+    out: dict[str, set[str]] = {}
+    for blk in re.split(r"^### ", m.group(1), flags=re.M)[1:]:
+        slug = blk.splitlines()[0].strip()
+        out[slug] = set(re.findall(r"^- Example (\d+\.\d+) \S", blk, re.M))
+    return out
 
 
 def step_templates(texts: list[str]) -> tuple[int, int, int]:
@@ -89,55 +103,67 @@ def check(root: Path) -> int:
     problems = 0
     print(f"map: {bdd}    feature: {feat_dir}\n")
 
-    for map_path in sorted(bdd.glob("*/example-mapping.md")):
-        slug = map_path.parent.name
-        fpath = feat_dir / f"{slug}.feature"
-        if not fpath.exists():
-            print(f"{slug:30} —— 還沒寫成 .feature")
+    specs = sorted(bdd.glob("*/spec.md"))
+    if not specs:
+        print(f"{bdd} 底下沒有 spec.md —— 先跑 bdd-spec")
+        return 1
+
+    covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
+    for spec_path in specs:
+        stories = stories_in_spec(spec_path.read_text(encoding="utf-8"))
+        if not stories:
+            print(f"{spec_path.parent.name:30} —— spec.md 缺 `## Example Mapping` 段")
+            problems += 1
             continue
 
-        mtext = map_path.read_text(encoding="utf-8")
-        ftext = fpath.read_text(encoding="utf-8")
+        for slug, exs in sorted(stories.items()):
+            covered.add(slug)
+            fpath = feat_dir / f"{slug}.feature"
+            if not fpath.exists():
+                print(f"{slug:30} —— 還沒寫成 .feature")
+                continue
 
-        exs = examples_in_map(mtext)
-        tags = set(re.findall(r"@example-(\d+\.\d+)", ftext))
-        key = lambda s: tuple(map(int, s.split(".")))
-        missing = sorted(exs - tags, key=key)
-        invented = sorted(tags - exs, key=key)
+            ftext = fpath.read_text(encoding="utf-8")
+            # ↓ 以下沿用原本的 tags/missing/invented/states/zh_rule 那一整段，
+            #   只把 `exs` 的來源換掉，其餘一字不動。
+            tags = set(re.findall(r"@example-(\d+\.\d+)", ftext))
+            key = lambda s: tuple(map(int, s.split(".")))
+            missing = sorted(exs - tags, key=key)
+            invented = sorted(tags - exs, key=key)
 
-        states = [s for s in STATES if re.search(rf"^{s}\b", ftext, re.M)]
-        zh_rule = re.findall(r"^\s*規則:", ftext, re.M)
+            states = [s for s in STATES if re.search(rf"^{s}\b", ftext, re.M)]
+            zh_rule = re.findall(r"^\s*規則:", ftext, re.M)
 
-        issues = []
-        # 發明優先於漏做：憑空的驗收條件比缺一條更難發現，因為它看起來很完整。
-        if invented:
-            issues.append(f"指向 map 裡不存在的例子 {invented}")
-        if len(states) != 1:
-            issues.append(f"狀態 tag {states or '缺'} —— 每個檔恰好要一個")
-        if zh_rule:
-            issues.append(f"用了中文「規則:」{len(zh_rule)} 處 —— 會被解析成散文，不會報錯")
+            issues = []
+            # 發明優先於漏做：憑空的驗收條件比缺一條更難發現，因為它看起來很完整。
+            if invented:
+                issues.append(f"指向 map 裡不存在的例子 {invented}")
+            if len(states) != 1:
+                issues.append(f"狀態 tag {states or '缺'} —— 每個檔恰好要一個")
+            if zh_rule:
+                issues.append(f"用了中文「規則:」{len(zh_rule)} 處 —— 會被解析成散文，不會報錯")
 
-        # 漏做不一定是錯：標「暫定」的例子本來就不該寫成場景。要求就地留註解交代。
-        unexplained = [e for e in missing
-                       if not re.search(rf"^\s*#.*Example {re.escape(e)}", ftext, re.M)]
-        if unexplained:
-            issues.append(f"漏了 {unexplained} 且檔案裡沒有註解說明")
+            # 漏做不一定是錯：標「暫定」的例子本來就不該寫成場景。要求就地留註解交代。
+            unexplained = [e for e in missing
+                           if not re.search(rf"^\s*#.*Example {re.escape(e)}", ftext, re.M)]
+            if unexplained:
+                issues.append(f"漏了 {unexplained} 且檔案裡沒有註解說明")
 
-        # 一條規則只走過一種結果不是錯，但要看得見——多數時候它代表沒問過
-        # 「這條規則被違反時會怎樣」。邊界機器判不了，所以只報成功／失敗。
-        lop = [n for n, ok, ng in outcome_coverage(ftext) if bool(ok) != bool(ng)]
+            # 一條規則只走過一種結果不是錯，但要看得見——多數時候它代表沒問過
+            # 「這條規則被違反時會怎樣」。邊界機器判不了，所以只報成功／失敗。
+            lop = [n for n, ok, ng in outcome_coverage(ftext) if bool(ok) != bool(ng)]
 
-        explained = sorted(set(missing) - set(unexplained), key=key)
-        status = "✗" if issues else "✓"
-        print(f"{status} {slug:30} {len(exs & tags):>3}/{len(exs)} 例子 · {states[0] if len(states)==1 else '?':7}"
-              + (f" · 已交代不寫 {explained}" if explained else "")
-              + (f" · 單一結果的規則 {len(lop)}" if lop else ""))
-        for i in issues:
-            print(f"    ✗ {i}")
-            problems += 1
+            explained = sorted(set(missing) - set(unexplained), key=key)
+            status = "✗" if issues else "✓"
+            print(f"{status} {slug:30} {len(exs & tags):>3}/{len(exs)} 例子 · {states[0] if len(states)==1 else '?':7}"
+                  + (f" · 已交代不寫 {explained}" if explained else "")
+                  + (f" · 單一結果的規則 {len(lop)}" if lop else ""))
+            for i in issues:
+                print(f"    ✗ {i}")
+                problems += 1
 
     written = [p.read_text(encoding="utf-8") for p in feat_dir.glob("*.feature")
-               if (bdd / p.stem / "example-mapping.md").exists()]
+               if p.stem in covered]
     if written:
         n_steps, n_tpl, n_once = step_templates(written)
         n_scen = sum(len(re.findall(r"^\s*(?:Scenario|Scenario Outline|Example):", t, re.M))
@@ -150,7 +176,7 @@ def check(root: Path) -> int:
                   f"封閉文法可能沒真的套上，step definition 會比場景還多")
 
     orphans = [p.name for p in feat_dir.glob("*.feature")
-               if not (bdd / p.stem / "example-mapping.md").exists()]
+               if p.stem not in covered]
     if orphans:
         print(f"\n沒有對應 map 的 .feature（不在本檢查範圍）：{orphans}")
 
