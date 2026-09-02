@@ -55,9 +55,17 @@ def parse_status(text: str) -> dict[str, str]:
     格式是 `**狀態**: 已答 · **輪次**: 2 · **story**: log-a-workout · **面向**: 邊界`。
     分隔符是全形間隔號，欄名用 `**...**` 包住——兩者都固定，所以一條 regex 掃完
     比逐欄寫 pattern 好維護。
+
+    只解析第三行，不掃整份檔案：問題檔的本文常常也會用 `**粗體**: 值` 這種
+    寫法討論理由、引用選項，如果對整份文字掃，本文裡湊巧長得像欄位的句子
+    會冒充成狀態列，讓一份第三行本身壞掉（被改壞、被清空）的檔案看起來還
+    是解析得出東西。不到三行的檔案沒有第三行可言，視同解析不到任何欄位，
+    交給呼叫端當成壞檔案處理，不在這裡假設格式、也不丟例外。
     """
+    lines = text.splitlines()
+    status_line = lines[2] if len(lines) >= 3 else ""
     return {k: v.strip() for k, v in
-            re.findall(r"\*\*(.+?)\*\*:\s*([^·\n]+)", text)}
+            re.findall(r"\*\*(.+?)\*\*:\s*([^·\n]+)", status_line)}
 
 
 def scan_questions(qdir: Path) -> tuple[dict[str, dict], list[str]]:
