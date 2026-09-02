@@ -104,6 +104,7 @@ features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 | --- | --- | --- |
 | Problem Statement／Solution | 從使用者角度描述問題與解法 | `brief.md` |
 | User Stories | 這一批的 story，定版句子 | CLARIFY Pass 1 切出來的 |
+| Example Mapping | Rule／Example 的**定版編號**與敘述 | 已答的問題 |
 | Implementation Decisions | 動哪些模組、介面長怎樣、API 契約、schema、架構決定 | 技術問題的答案 |
 | Testing Decisions | **seam** ＋ 每個 Example 的測試層級 ＋ 既有測試的 prior art | 技術問題的答案 |
 | Risks | 規格沒說但實作一定撞到的（併發、冪等、交易邊界） | 從規則推出來 |
@@ -113,6 +114,16 @@ features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 `references/plan-format.md` 記錄過「每 feature 一份 ＋ 共用檔」試過並且壞掉——
 共用檔把實質吸走，各檔退化成「見共用檔」；而且節號互撞，部分對齊比完全不對齊
 更危險。API 契約與 schema 天生跨 story，只有並排才看得見衝突。
+
+**Example Mapping 與 `.feature` 的重複是刻意的——重複就是那個檢查。**
+`check_spec.py` 的雙向覆蓋稽核（漏做／**發明**）靠比對兩份獨立的表述工作：
+map 有而 `.feature` 沒有 ＝ 漏做，`.feature` 有而 map 沒有 ＝ 憑空發明。
+把它們併成一份，這個檢查就變成拿檔案跟自己比，恆真。而「發明」正是最沒有人
+會懷疑的那種錯——漏一條會被數字抓到，多一條看起來只是很完整。
+
+這是本專案「同一個數字不要兩個地方」原則的例外，而例外要說得出理由：
+那條原則防的是**同一個事實**被抄兩份然後漂移；這裡是**兩種不同的表述**
+（結構化的規則清單 vs 可執行的場景），漂移本身就是要被偵測的訊號。
 
 **MUST NOT 寫具體檔案路徑與程式碼片段。** 它們過期得比什麼都快。
 例外：prototype 產出的、比散文更精確地編碼了某個決定的片段（狀態機、reducer、
@@ -182,7 +193,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | CLARIFY | `clarify-loop` | 多輪把問題問到收斂 | **已實作，不動**。地位從配角變主角——它就是 CLARIFY 的主體 |
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**。觸發訊號要改（見下） |
 | | `bdd-clarify` | 三個 pass 的總入口 ＋ 就緒判定 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
-| SPEC | `bdd-spec` | 答案 → `.feature` ＋ `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 六節、seam 決定、`domain-model.md` 維護 |
+| SPEC | `bdd-spec` | 答案 → `.feature` ＋ `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護；`check_spec.py` 的覆蓋來源從 `example-mapping.md` 改成 `spec.md` |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
 | PLAN | `bdd-plan` | `.feature` → tracer bullet ＋ blocking edges | **已實作，幾乎重寫（大）**：現在的 §1–5（API／domain／schema／測試分層／風險）全部搬進 `spec.md` |
 | IMPLEMENT | `bdd-implement` | 實作流程總入口 | 未實作 |
