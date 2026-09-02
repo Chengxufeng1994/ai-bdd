@@ -25,4 +25,4 @@
 是看得見的。
 
 ## 影響的規則
-`Shared 6`；`session-training-volume` Rule 3
+`session-training-volume` Rule 3

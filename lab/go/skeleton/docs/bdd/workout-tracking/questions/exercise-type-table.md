@@ -27,4 +27,4 @@
 代價：需要知道使用者的體重，而需求完全沒提到體重 → `bodyweight-source.md`
 
 ## 影響的規則
-`Shared 4`；`session-training-volume` Rule 2；`custom-exercise-library` Rule 2
+`session-training-volume` Rule 2；`custom-exercise-library` Rule 2

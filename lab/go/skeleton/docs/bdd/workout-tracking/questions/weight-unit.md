@@ -23,4 +23,4 @@
 反覆切換單位不該讓數字漂移，這一點要寫進規則。
 
 ## 影響的規則
-`Shared 3`；`session-training-volume` Rule 7
+`session-training-volume` Rule 7

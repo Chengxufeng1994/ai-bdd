@@ -23,4 +23,4 @@
 而使用者完全不知道為什麼數字變了。
 
 ## 影響的規則
-`Shared 2`；`log-a-workout` Rule 6
+`log-a-workout` Rule 6

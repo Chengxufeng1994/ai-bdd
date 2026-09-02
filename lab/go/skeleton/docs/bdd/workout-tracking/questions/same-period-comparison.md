@@ -29,4 +29,4 @@
 上標明比較的區間。
 
 ## 影響的規則
-`Shared 8`；`week-over-week-progress` Rule 2
+`week-over-week-progress` Rule 2

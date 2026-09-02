@@ -24,4 +24,4 @@
 自己的計算機。
 
 ## 影響的規則
-`Shared 1`；`session-training-volume` Rule 1
+`session-training-volume` Rule 1

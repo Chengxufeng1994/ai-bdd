@@ -26,4 +26,4 @@
 週對週比較仍然成立。
 
 ## 影響的規則
-`Shared 5`；`log-a-workout` Rule 4
+`log-a-workout` Rule 4

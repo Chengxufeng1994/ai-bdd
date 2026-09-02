@@ -25,7 +25,7 @@
 | 記錄動作、組、重量、次數 | `log-a-workout` Rule 3 |
 | 標記某一組為熱身 | `log-a-workout` Rule 4 |
 | 看到這次訓練的總容量 | `session-training-volume` Rule 1 |
-| 設定體重與顯示單位 | `session-training-volume` Rule 6、`Shared 3` |
+| 設定體重與顯示單位 | `session-training-volume` Rule 6、Rule 7 |
 | 修改／刪除已記錄的訓練 | `edit-a-logged-workout` Rule 1、Rule 3 |
 | 翻閱歷史紀錄 | `workout-history` Rule 1 |
 | 看本週與上週同期的比較 | `week-over-week-progress` Rule 2 |

@@ -23,4 +23,4 @@
 週一起算而非週日：課表以週一為起點是台灣健身房的常態。
 
 ## 影響的規則
-`Shared 7`；`week-over-week-progress` Rule 1
+`week-over-week-progress` Rule 1

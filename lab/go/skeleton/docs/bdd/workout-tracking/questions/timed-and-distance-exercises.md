@@ -2,7 +2,7 @@
 
 **狀態**: 已答 · **輪次**: 4 · **信心**: 低（代答，見下） · **story**: session-training-volume · **面向**: 降級
 
-抽完規則後稽核 `Shared 4` 的型別表時發現的：原本四種型別**全部以「次數」計量**。
+抽完規則後稽核 `session-training-volume` Rule 2、Rule 8 的型別表時發現的：原本四種型別**全部以「次數」計量**。
 棒式是 60 秒，沒有次數；農夫走路是 40 公斤走 30 公尺；跑步機是時間與距離。
 三種都放不進任何一格。
 
@@ -43,5 +43,5 @@
 但「重訓 App 要不要收有氧」本身是產品範圍的問題。
 
 ## 影響的規則
-`Shared 4`（型別表擴為六種，移除「已知不窮盡」的警告）；
+`session-training-volume` Rule 2、Rule 8（型別表擴為六種，移除「已知不窮盡」的警告）；
 `session-training-volume` Rule 8（新增）；`custom-exercise-library` Rule 2（型別選單）
