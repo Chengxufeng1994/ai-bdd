@@ -251,8 +251,8 @@
   操作的 handler，沿用既有的 mapper／presenter／errmap 三段式。
   infrastructure 依 §3 的建議先只新增 in-memory adapter（訓練、動作、體重
   的讀寫，Clock、IDGenerator），因為 82 個場景中有 80 個不需要真的資料庫。
-  以上模組切分是把 API 契約、domain 型別與既有分層（見 doc.go）三者對齊
-  推出來的，不是新決定。
+  以上模組切分是把 API 契約、domain 型別與既有分層（沿用各層既有的套件文件慣例）
+  三者對齊推出來的，不是新決定。
 
 - **介面**：domain 層的行為已經有明確的方法形狀（來自既有規則推導，非新決定）：
 
@@ -319,6 +319,12 @@
   | POST | `/exercises/{exerciseId}/archive` | custom-exercise-library |
   | DELETE | `/exercises/{exerciseId}/archive` | custom-exercise-library |
 
+  `plan.md` 對「改名與改型別是一個 `PATCH` 還是兩個端點」自相矛盾：§1 把上面這行
+  當已決定，§7「留給 IMPLEMENT」卻把同一題列成未決（「規格只說『改名』『改型別』，
+  沒說資源怎麼切」）。這裡保留 §1 的框架——失敗條件不同是 domain 的兩條規則，不是
+  兩個資源，兩個可選欄位仍分得清——但把分歧本身寫下來：§7 的顧慮沒有被反駁，
+  只是沒有被採用；如果之後要拆成兩個端點，改的地方在這裡。
+
   `session-training-volume` 沒有自己的端點，它貢獻的是 `GET /workouts/{workoutId}`
   回應裡的欄位（`totalVolumeKgReps`、`totalVolumeDisplay`、
   `uncountedExerciseCount`、`notice`）。
@@ -383,7 +389,7 @@
   week-over-week-progress）都只讀上面的表，不新增資料表。
 
 - **架構決定**：分層沿用專案既有的 `domain ← application（port/in、
-  port/out）← infrastructure／interfaces`（見各層 `doc.go`），這一批不改動
+  port/out）← infrastructure／interfaces`（沿用各層既有的套件文件慣例），這一批不改動
   分層本身。是否需要交易邊界（例如「刪除未被引用的動作」與「用同一個動作
   記一組」同時發生時如何一致）規格沒有講清楚該用交易還是接受並補償，屬於
   未解的風險，見 Risks；因為六份 feature 沒有任何「應寄出」「應通知」等
@@ -610,13 +616,13 @@ Scope。
 
 | 缺口 | 影響什麼定不下來 |
 | --- | --- |
-| 失敗場景整批缺（bdd-spec 的「三種結果」檢查抓到的）：43 條規則裡 37 條只走了單一結果 | 修改／刪除／查詢一筆不存在的訓練回什麼？在進行中的訓練上做 edit 的操作可以嗎？刪除進行中的訓練之後 log Rule 1 的唯一性怎麼算？三題都沒問過 |
+| 失敗場景整批缺（bdd-spec 的「三種結果」檢查抓到的）：43 條 `Rule:` 區塊（`.feature` 裡的，含各 Shared 規則自成一塊；example map 的 `#### Rule` 是 39 條）裡 37 條只走了單一結果 | 修改／刪除／查詢一筆不存在的訓練回什麼？在進行中的訓練上做 edit 的操作可以嗎？刪除進行中的訓練之後 log Rule 1 的唯一性怎麼算？三題都沒問過 |
 | 以磅輸入的換算沒有任何場景覆蓋 | volume Rule 7 只驗到顯示端（已存的 20.4 kg 在兩種單位下怎麼顯示）。「使用者以磅輸入 45」沒有任何已就緒的命令場景，log 的重訓者播種表一律是公斤。輸入端的換算與捨入完全沒被驗到 |
 | 封存的動作還能不能被記錄引用？ | custom Rule 4.2 只說它不出現在挑選清單，沒說 `POST /sets` 帶那個 ID 會怎樣。清單是 UI，API 擋不擋是另一回事 |
 | `WorkoutStatus` 只看得到「進行中」「已結束」 | 沒有證據說還有沒有別的（放棄？取消？）。狀態轉移表可能缺一格 |
 | history 的頁碼超出範圍（第 99 頁）回什麼？ | Rule 3 只有「有下一頁」與「不滿一頁」兩個例子，兩個都在範圍內 |
 | history 的排序在開始時間完全相同時怎麼辦？ | 沒有次鍵。兩筆同秒開始順序就不決定，而「動作區塊應依序恰好為」這類斷言會間歇性紅（godog `Concurrency: 4`） |
-| 體重、時區、顯示單位怎麼被設定？ | 三個都在播種表裡，也都有規則用到它們（volume Rule 6、7；log Rule 6），但沒有任何 `When` 建立或修改它們。這跟 `actor.md` 裡「怎麼取得這個身分」空著是同一個洞 |
+| 體重、時區、顯示單位怎麼被設定？ | 三個都在播種表裡，也都有規則用到它們（volume Rule 6、7；log Rule 6），但沒有任何 `When` 建立或修改它們。這跟 `actor.md` 裡「怎麼取得這個身分」空著是同一個洞。**與 `actor.md` 矛盾**：`actor.md`「能做什麼」表卻把「設定體重與顯示單位」列成已確立的能力（引 session-training-volume Rule 6、Shared 3），但這兩個來源都只消費已播種的值，沒有任何 `When` 驅動的設定動作——`actor.md` 這一格讀起來像已經答過，其實沒有；此處不改 `actor.md`，只記下矛盾 |
 | log Example 8.1／8.3／8.4 只斷言「操作失敗」，沒有訊息；8.5／8.6 有 | 不一致，是刻意的還是漏了不定下來，IMPLEMENT 會自己編三條訊息 |
 | 負重型動作的重量填 0 該成立還是該擋？ | log Rule 8 說「0 到 1000」，但沒有例子用 0。「不帶重量」（Example 3.4）跟「重量 0」不是同一件事 |
 | 開始訓練時 `startedAt` 由誰決定？ | 所有場景都用「現在時間為」播種，看不出是伺服器時鐘還是客戶端送的。離線補記會直接撞到這裡 |
