@@ -60,7 +60,7 @@ MUST NOT: 在這一步決定任何 API、型別、欄位、資料表或 seam。
 先切出**最薄的完整路徑**當第一張票：碰到每一層、邏輯最少。它證明的是接線，
 不是行為。專案已經有骨架就跳過。
 
-其餘依 `spec.md` 的 Example Mapping 切，一張票一組相關的 `@example-N.M`。
+其餘依 `clarify.md` 的 Business Rules 切，一張票一組相關的 `@example-N.M`。
 每張票問一次「做完之後我能 demo 什麼」，答不出來就是切錯了。
 
 三條規則與 wide refactor 的例外 → `references/plan-format.md`。

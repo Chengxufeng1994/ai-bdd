@@ -17,6 +17,7 @@
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。
 
 只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
+規則與例子讀自 specs/<slice>/clarify.md 的 `## Business Rules` 段。
 """
 import re
 import sys
@@ -34,16 +35,20 @@ def find_features(root: Path) -> Path:
     return sorted(hits, key=lambda p: len(p.parts))[0] if hits else None
 
 
-def stories_in_spec(text: str) -> dict[str, set[str]]:
-    """spec.md 的 Example Mapping 段：story-slug -> 例子編號集合。
+def stories_in_clarify(text: str) -> dict[str, set[str]]:
+    """clarify.md 的 Business Rules 段：story-slug -> 例子編號集合。
 
-    一份 spec.md 涵蓋一批 story，每則一個 `### <story-slug>` 區塊。
+    一份 clarify.md 涵蓋一批 story，每則一個 `### <story-slug>` 區塊。
 
-    只掃 `## Example Mapping` 這一段。其他章節也會出現 `Example N.M`
-    （Testing Decisions 的測試分層表就整欄都是），掃全檔會把測試分層表
-    誤當成規格來源——而那張表本來就是從規格抄過去的，比對它等於自己跟自己比。
+    只掃 `## Business Rules` 這一段。其他章節也會出現 `Example N.M`
+    （Open Questions 與 Assumptions 都可能引用某個例子），掃全檔會把那些
+    引用當成規格來源——而它們是指回這一段的，比對它們等於自己跟自己比。
+
+    來源是 clarify.md 而不是 spec.md：規則與例子的定版編號誕生在 CLARIFY，
+    spec.md 不再重述它們。稽核要成立需要兩份**獨立**的表述（規則清單與
+    可執行場景）；第三份只會製造兩個可能來源，然後各自漂移。
     """
-    m = re.search(r"^## Example Mapping\s*\n(.*?)(?=\n## |\Z)", text, re.M | re.S)
+    m = re.search(r"^## Business Rules\s*\n(.*?)(?=\n## |\Z)", text, re.M | re.S)
     if not m:
         return {}
     out: dict[str, set[str]] = {}
@@ -103,16 +108,16 @@ def check(root: Path) -> int:
     problems = 0
     print(f"map: {specs_dir}    feature: {feat_dir}\n")
 
-    specs = sorted(specs_dir.glob("*/spec.md"))
-    if not specs:
-        print(f"{specs_dir} 底下沒有 spec.md —— 先跑 bdd-spec")
+    clarifies = sorted(specs_dir.glob("*/clarify.md"))
+    if not clarifies:
+        print(f"{specs_dir} 底下沒有 clarify.md —— 先跑 bdd-clarify")
         return 1
 
-    covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
-    for spec_path in specs:
-        stories = stories_in_spec(spec_path.read_text(encoding="utf-8"))
+    covered: set[str] = set()      # 有出現在某份 clarify.md 裡的 story slug
+    for clarify_path in clarifies:
+        stories = stories_in_clarify(clarify_path.read_text(encoding="utf-8"))
         if not stories:
-            print(f"{spec_path.parent.name:30} —— spec.md 缺 `## Example Mapping` 段")
+            print(f"{clarify_path.parent.name:30} —— clarify.md 缺 `## Business Rules` 段")
             problems += 1
             continue
 

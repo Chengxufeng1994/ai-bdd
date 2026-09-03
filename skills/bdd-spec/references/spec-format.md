@@ -1,6 +1,6 @@
 # `spec.md` 的骨架
 
-照抄即可。讀這份的時機：步驟 9，準備寫 `spec.md` 的時候。
+照抄即可。讀這份的時機：步驟 4，準備寫 `spec.md` 的時候。
 
 一批一份，路徑 `specs/<slice-slug>/spec.md`。一個 slice ＝ 一次可交付的價值，
 裡面裝好幾則 story。
@@ -34,26 +34,19 @@
 
 角色名用 `actor.md` 的，不另創同義詞。
 
-## Example Mapping
+## Acceptance Criteria
 
-規則與例子的**定版編號**。編號在這裡誕生，`.feature` 的 tag 回指它們。
+規則與例子**不在這裡**。它們的定版編號住在 `specs/<slice>/clarify.md` 的
+`## Business Rules`，`.feature` 的 tag 回指那些編號——這一節只寫 Gherkin
+表達不了的驗收面向。
 
-MUST: 每則 story 一個 `### <story-slug>` 區塊，slug 與 `features/<slug>.feature`
-一致——那是這條鏈唯一的接縫，也是 `check_spec.py` 比對的鍵。
+| 面向 | 這一批怎麼處理 |
+| --- | --- |
+| 邊界值 | ← `clarify.md` Rule N |
+| 錯誤行為 | 失敗時回什麼、訊息從哪來 |
+| 非功能 | 時限、降級、可觀測性——如果它們有驗收條件的話 |
 
-MUST: 例子一律寫成 `- Example N.M <一句話>`。編號在 story 內從 1 開始，
-不跨 story 連號。
-
-### <story-slug>
-
-**Story**: 作為 <角色>，我要 <能力>，以便 <價值>
-
-#### Rule 1. <規則敘述>
-- Example 1.1 <具體例子，含實際資料>
-- Example 1.2 <具體例子>
-
-#### Rule 2. <規則敘述>
-- Example 2.1 <具體例子>
+沒有就寫「沒有——這一批的驗收條件全部表達得進 Gherkin」，不要刪掉這一節。
 
 ## Implementation Decisions
 
@@ -139,13 +132,19 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 
 ---
 
-## 為什麼 Example Mapping 要跟 `.feature` 重複
+## 為什麼規則不寫在這裡
 
-`check_spec.py` 的雙向覆蓋稽核靠比對兩份獨立的表述工作：這裡有而 `.feature`
-沒有 ＝ 漏做；`.feature` 有而這裡沒有 ＝ **憑空發明**。併成一份，這個檢查就變成
-拿檔案跟自己比，恆真。
+`check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`clarify.md` 的
+規則清單，與 `.feature` 的可執行場景。clarify 有而 feature 沒有 ＝ 漏做；
+feature 有而 clarify 沒有 ＝ 憑空發明。
 
-而「發明」是最沒有人會懷疑的那種錯：漏一條會被數字抓到，多一條看起來只是很完整。
+`spec.md` 若也抄一份規則，就變成三份表述——稽核有兩個可能來源，而它們遲早
+不一樣。「發明」是最沒有人會懷疑的那種錯：漏一條會被數字抓到，多一條看起來
+只是很完整。
+
+規則的家在 CLARIFY，因為那是它們被決定的地方。`spec.md` 記的是**規則決定
+之後**的事：怎麼驗、動哪些模組、有什麼風險、什麼不做。
+
 
 ## 為什麼一批一份，不是一則 story 一份
 

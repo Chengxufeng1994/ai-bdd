@@ -327,7 +327,7 @@ MUST: 一輪問完就把**這一輪能抽的規則抽出來**，不要累積到�
 
 抽出來的規則**不另存檔**——只是判斷「還有什麼沒問」的工作手法，留在對話與問題
 檔的答案理由裡就夠了。定版編號要等 SPEC 綜合已答問題、寫進 `spec.md` 的
-`## Example Mapping` 段才誕生：那時 story 邊界已穩定，tag 也真的要引用它們了。
+`## Business Rules` 段才誕生：那時 story 邊界已穩定，tag 也真的要引用它們了。
 
 跨多則 story 都成立的規則，一樣不寫進 `glossary.md`——那裡只放詞彙、不放規則，
 講出來讓對方知道這是共用的即可，答案仍記在各自的問題檔裡。
@@ -404,7 +404,7 @@ MUST: 抽完規則後，把問答裡浮現的每一張**列舉型的表**（型�
 「當初為什麼不選第二個選項？」
 
 IMPORTANT: 問題檔保留不等於它是規則的定案來源——**CLARIFY 不定案規則**，那件
-事發生在 SPEC 把已答問題寫進 `spec.md` 的 `## Example Mapping` 段那一刻。
+事發生在 SPEC 把已答問題寫進 `clarify.md` 的 `## Business Rules` 段那一刻。
 
 ---
 
@@ -429,33 +429,38 @@ IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只綜合已經有�
 
 ```
 specs/
-├── brief.md            CLARIFY  PRD 拆解、批次清單與順序、切分依據、隱含假設
-├── actor.md            CLARIFY  角色
-├── glossary.md         CLARIFY  ubiquitous language（只有詞彙，不含規則）
-├── domain-model.md     SPEC     聚合、不變條件
+├── brief.md            CLARIFY  PRD 拆解、批次清單與順序、切分依據   ┐
+├── actor.md            CLARIFY  角色                                │ 跨批次
+├── glossary.md         CLARIFY  ubiquitous language（只有詞彙）      │ 累積
+├── domain-model.md     SPEC     聚合、不變條件                       ┘
 ├── questions/          CLARIFY  跨批次的問題（影響分批的）
 └── <slice-slug>/                          一批 ＝ 一次可交付的價值
-    ├── questions/      CLARIFY  這一批的問題＋答案
+    ├── clarify.md      CLARIFY  ★ 主文件——Problem／Goal／Scope／Rules／
+    │                            Examples／Open Questions／Assumptions／Constraints
+    ├── questions/      CLARIFY  這一批的問題＋答案（決策史）
     ├── spec.md         SPEC     Gherkin 表達不了的決定
     └── plan.md         PLAN     tracer bullet ＋ blocking edges
 
 features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 ```
 
-本 skill 只寫標 `CLARIFY` 的那幾列：`brief.md`／`actor.md`／`glossary.md`／
-根層與 slice 層的 `questions/`。其餘是後面幾步的產物，本 skill **不得寫入**。
+本 skill 只寫標 `CLARIFY` 的那幾列。其餘是後面幾步的產物，**不得寫入**。
+
+`clarify.md` 是主文件，規則與例子的**定版編號在這裡誕生**——`.feature` 的
+`@example-N.M` tag 回指它們，`spec.md` 不重述。`glossary.md` 與 `actor.md`
+在根層累積，`clarify.md` 的對應兩節只寫這一批的差異，收尾時合併上去：
+一個詞的定義要活得比任何一批久。格式 → `references/clarify-format.md`。
 
 根層是跨批次的共用區，由 Pass 1 產出；`glossary.md` 只放詞彙，不放規則。
 **下游不得寫入根層**——偷偷加一個詞彙或角色，等於繞過定義它的那場對話。
 
-`questions/` 有兩層，分法在 Pass 1 已經定過：**答案會改變切分方式、角色清單、
-或範圍邊界的放根層**；只影響這一批的放 slice 層，用狀態列的 `story` 欄位標出
-屬於哪一則 story。判斷不了時放根層——根層每個 slice 都看得到，代價比漏看小。
-全部保留，它是決策史，不是暫時檔。
+`questions/` 兩層的分法與狀態列格式 → `references/map-format.md`。全部保留，
+它是決策史，不是暫時檔。
 
-每個產物的格式各有一份參考檔，本文不重複：`brief.md` →
-`references/prd-breakdown.md`；`actor.md` → `references/actor-definition.md`；
-`questions/` → `references/map-format.md`。
+每個產物的格式各有一份參考檔，本文不重複：`clarify.md` →
+`references/clarify-format.md`；`brief.md` → `references/prd-breakdown.md`；
+`actor.md` → `references/actor-definition.md`；`questions/` →
+`references/map-format.md`。
 
 Pass 3 的技術追問面向 → `references/technical-probes.md`
 

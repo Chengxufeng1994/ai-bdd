@@ -82,7 +82,8 @@ specs/
 ├── domain-model.md     SPEC     聚合、不變條件
 ├── questions/          CLARIFY  跨批次的問題（影響分批的）
 └── <slice-slug>/                          一批 ＝ 一次可交付的價值
-    ├── questions/      CLARIFY  這一批的問題＋答案
+    ├── clarify.md      CLARIFY  主文件——問題、目標、範圍、規則與例子、假設、限制
+    ├── questions/      CLARIFY  這一批的問題＋答案（決策史）
     ├── spec.md         SPEC     Gherkin 表達不了的決定
     └── plan.md         PLAN     tracer bullet ＋ blocking edges
 
@@ -107,8 +108,8 @@ features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 | 節 | 內容 | 來源 |
 | --- | --- | --- |
 | Problem Statement／Solution | 從使用者角度描述問題與解法 | `brief.md` |
-| User Stories | 這一批的 story，定版句子 | CLARIFY Pass 1 切出來的 |
-| Example Mapping | Rule／Example 的**定版編號**與敘述 | 已答的問題 |
+| User Stories | 這一批的 story，定版句子 | `clarify.md` |
+| Acceptance Criteria | Gherkin 表達不了的驗收面向（錯誤行為、非功能） | `clarify.md` 的規則 |
 | Implementation Decisions | 動哪些模組、介面長怎樣、API 契約、schema、架構決定 | 技術問題的答案 |
 | Testing Decisions | **seam** ＋ 每個 Example 的測試層級 ＋ 既有測試的 prior art | 技術問題的答案 |
 | Risks | 規格沒說但實作一定撞到的（併發、冪等、交易邊界） | 從規則推出來 |
@@ -119,15 +120,11 @@ features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 共用檔把實質吸走，各檔退化成「見共用檔」；而且節號互撞，部分對齊比完全不對齊
 更危險。API 契約與 schema 天生跨 story，只有並排才看得見衝突。
 
-**Example Mapping 與 `.feature` 的重複是刻意的——重複就是那個檢查。**
-`check_spec.py` 的雙向覆蓋稽核（漏做／**發明**）靠比對兩份獨立的表述工作：
-map 有而 `.feature` 沒有 ＝ 漏做，`.feature` 有而 map 沒有 ＝ 憑空發明。
-把它們併成一份，這個檢查就變成拿檔案跟自己比，恆真。而「發明」正是最沒有人
-會懷疑的那種錯——漏一條會被數字抓到，多一條看起來只是很完整。
-
-這是本專案「同一個數字不要兩個地方」原則的例外，而例外要說得出理由：
-那條原則防的是**同一個事實**被抄兩份然後漂移；這裡是**兩種不同的表述**
-（結構化的規則清單 vs 可執行的場景），漂移本身就是要被偵測的訊號。
+**規則與例子不在 `spec.md` 裡。** 它們的定版編號住在 `clarify.md` 的
+`## Business Rules`，因為那是它們被決定的地方。`check_spec.py` 的雙向稽核
+比對的是 `clarify.md` 的規則清單與 `.feature` 的可執行場景——**兩份獨立的
+表述，重複就是那個檢查**。`spec.md` 若也抄一份就成了三份，稽核會有兩個
+可能來源然後各自漂移。
 
 **MUST NOT 寫具體檔案路徑與程式碼片段。** 它們過期得比什麼都快。
 例外：prototype 產出的、比散文更精確地編碼了某個決定的片段（狀態機、reducer、
@@ -213,18 +210,19 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 子 skill 是否真的需要，等步驟 skill 跑過真實案例、發現它太長時再拆。
 現在拆是猜的。
 
-### 拿掉抽規則之後，兩個訊號怎麼保住
+### Example Mapping 的兩個訊號在哪裡看
 
-CLARIFY 不再產出 `example-mapping.md`，Example Mapping 原本靠數卡片的兩個訊號
-要換來源：
+規則與例子住在 `clarify.md` 的 `## Business Rules`，所以 Example Mapping
+原本靠數卡片的兩個訊號都還在，只是各有兩個來源：
 
-| 訊號 | 原本 | 改成 |
+| 訊號 | 卡片 | 現在看哪裡 |
 | --- | --- | --- |
-| story 太大 → 該切 | 藍卡（規則）太多 | **已答問題數**太多（答案多 ≈ 規則多） |
-| 不確定性高 → 未就緒 | 紅卡（問題）太多 | **未答問題數**太多（不變） |
+| story 太大 → 該切 | 藍卡（規則）太多 | `clarify.md` 該 story 區塊的 `#### Rule` 數，或 `status.py` 的已答問題數 |
+| 不確定性高 → 未就緒 | 紅卡（問題）太多 | `## Open Questions` 的列數，等於 `status.py` 的未答數 |
 
-兩個都是 `status.py` 現在就在數的東西。而 `references/map-format.md` 自己寫過
-「澄清的進展看已答／待答，不是看規則數」——所以這個換法跟它自己的說法一致。
+兩個訊號都不是硬門檻——實測中 `visitor-fee-and-exit` 觸發了「story 太大」
+（10 條規則、三則裡最高）而**被有理由地否決**：那些規則是同一個行為的不同分支，
+拆開會產生半條規則的 story。訊號亮了要看，不是要照做。
 
 ### 追問覆蓋改成算出來的
 
@@ -445,3 +443,10 @@ Always-on: ~1,620 tok  每個 session 都付
     問題」「換 feature 時」，那裡的 `feature` 指的是 story。最終審查判定不要把
     這個掃描併進 merge 前的修復波——散在兩個當時範圍外的檔案，只修一半比不修
     更容易誤導。它需要自己一次變更，連同 `story` 與 `slice` 的用法一起校準。
+
+12. **`bdd-clarify/SKILL.md` 需要一次結構性的下放，不是再刮幾行。** 它連續三輪
+    卡在 500 行的天花板上：每加一樣東西（Pass 3、分批、`clarify.md`）就得回頭
+    刮掉幾行別的，現在是 504 行。逐行刮是在對付症狀——S10 這個訊號要講的正是
+    「該把只有特定情況才需要讀的段落下放了」。候選是 Pass 2 的追問手法與 Pass 3
+    的技術面向細節，兩者都只有真的在問那一輪時才需要讀。這件事跟第 11 項可以
+    一起做，因為兩者都要通篇改一遍。
