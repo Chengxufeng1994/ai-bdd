@@ -35,6 +35,18 @@ def find_features(root: Path) -> Path:
     return sorted(hits, key=lambda p: len(p.parts))[0] if hits else None
 
 
+def readiness(text: str) -> str:
+    """clarify.md 檔頭的就緒判定。找不到就回空字串，不猜。
+
+    稽核需要它來分辨兩種「沒有規則」：**還沒澄清**與**澄清完但漏寫**。
+    前者是流程的正常中間狀態，後者是缺陷。把它們算成同一件事，
+    等於讓每一個還沒輪到的批次都變成一個假警報——而假警報多了，
+    真警報就沒人看。
+    """
+    m = re.search(r"^\*\*就緒判定\*\*[：:]\s*(.+)$", text, re.M)
+    return m.group(1).strip() if m else ""
+
+
 def stories_in_clarify(text: str) -> dict[str, set[str]]:
     """clarify.md 的 Business Rules 段：story-slug -> 例子編號集合。
 
@@ -113,12 +125,18 @@ def check(root: Path) -> int:
         print(f"{specs_dir} 底下沒有 clarify.md —— 先跑 bdd-clarify")
         return 1
 
+    deferred: list[str] = []       # 還沒澄清完的批次，不算問題
     covered: set[str] = set()      # 有出現在某份 clarify.md 裡的 story slug
     for clarify_path in clarifies:
-        stories = stories_in_clarify(clarify_path.read_text(encoding="utf-8"))
+        ctext = clarify_path.read_text(encoding="utf-8")
+        stories = stories_in_clarify(ctext)
         if not stories:
-            print(f"{clarify_path.parent.name:30} —— clarify.md 缺 `## Business Rules` 段")
-            problems += 1
+            verdict = readiness(ctext)
+            if "已就緒" in verdict:
+                print(f"✗ {clarify_path.parent.name:30} —— 判定已就緒，卻沒有 `## Business Rules`")
+                problems += 1
+            else:
+                deferred.append(f"{clarify_path.parent.name}（{verdict or '就緒判定未寫'}）")
             continue
 
         for slug, exs in sorted(stories.items()):
@@ -184,6 +202,9 @@ def check(root: Path) -> int:
                if p.stem not in covered]
     if orphans:
         print(f"\n沒有對應 map 的 .feature（不在本檢查範圍）：{orphans}")
+
+    if deferred:
+        print(f"\n尚未澄清完、本次不稽核的批次：{deferred}")
 
     print(f"\n{'全部通過' if not problems else f'{problems} 個問題'}")
     return 1 if problems else 0
