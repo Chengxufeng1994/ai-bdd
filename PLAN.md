@@ -355,10 +355,22 @@ Always-on: ~1,620 tok  每個 session 都付
 熱身組算不算、dropset 是幾組。詳見該目錄的 README，那裡也寫明了
 `bdd-clarify` 的及格標準：**沒問到自體重與單邊動作，就算失敗**。
 
-**現存產物與新佈局不一致。** `lab/go/skeleton/specs/` 底下的六個目錄
-（`log-a-workout`、`session-training-volume`⋯⋯）是**六則 story，不是六個 slice**。
-照新佈局它們會併成一到兩個 slice，六則 story 變成 `spec.md` 裡的小節、
-`features/` 裡的六個 `.feature`。這個遷移就是驗證新分工的那次實跑。
+**現在骨架是空的。** 訓練追蹤那一批的產物（`specs/workout-tracking/` 與六個
+`.feature`）在 2026-09-03 的 `110819e` 被清掉了，只留 `version.feature` 這條走路
+骨架。它們仍在 git 歷史裡，`git show 9e154b9^:` 取得回來。
+
+因此 `status.py` 與 `check_spec.py` 對這個目錄跑會 exit 1 並指名說找不到產物——
+那是正確行為，不是壞掉。
+
+`prompts/` 現在有兩份固定輸入，測互補的失敗模式：
+
+| 情境 | 測什麼 |
+| --- | --- |
+| `1-fitness-tracker-clarify.md` | 需求裡**沒提到的東西**問不問得出來（自體重、單邊動作） |
+| `2-parking-billing-clarify.md` | 需求裡**寫得像已經定案的數字**，敢不敢當成未定案來問 |
+
+停車場那份的模糊點清單是**跑完才寫的**，不是事先猜的；它分三層，最後一層
+（推導才浮現的矛盾、以及 CLARIFY 漏掉而 SPEC 補抓的那一格）才是有診斷力的部分。
 
 > `lab/` 不是 plugin 的慣例目錄，不會被載入，對 plugin 行為零影響。
 
@@ -375,10 +387,19 @@ Always-on: ~1,620 tok  每個 session 都付
 3. ~~**SPEC 與 PLAN 的分界。**~~ 已定（2026-09-02）：技術設計歸 SPEC，
    拆解歸 PLAN。見「三條紀律」。
 
-4. **一批到底多大。** 判準已定（一次可交付的價值），已有第一個數字：實測場
-   `workout-tracking` 這一批是 6 則 story、39 條規則、93 個場景（`@example`
-   標籤數）、`spec.md` 649 行，切成 9 張票。這只是一個數字，不是上限——第二個
-   數量級不同的實測場出現之前，先當經驗值用，不當硬性天花板。
+4. **一批到底多大。** 判準已定（一次可交付的價值），已有兩個數字：
+
+   | 批次 | story | 規則 | 例子 | `spec.md` | 票 |
+   | --- | --- | --- | --- | --- | --- |
+   | `workout-tracking` | 6 | 39 | 93 | 649 行 | 9 |
+   | `parking-fee-collection` | 3 | 14 | 21 | 187 行 | 未跑 PLAN |
+
+   兩者相差三到四倍，而兩批都通過了「一次可交付的價值」這個判準——所以那個
+   判準**不決定大小**，只決定邊界切在哪。真正的上限訊號還是「`spec.md` 大到
+   沒人讀得完」，而 649 行那一批當時已經被評為在邊緣。
+
+   （`workout-tracking` 的產物已於 `110819e` 刪除，數字取自當時的稽核輸出，
+   檔案在 git 歷史裡。）
 
 5. ~~**技術問題的追問面向。**~~ 已定：Pass 3 的技術面向清單見
    `skills/bdd-clarify/references/technical-probes.md`，目前有五個面向
