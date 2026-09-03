@@ -4,8 +4,12 @@
 > 它**不是**本流程的產物——流程產出的計畫叫 `specs/<slice>/plan.md`，
 > 那是使用端 repo 裡的東西。看到「plan」先分清楚是哪一個。
 
-BDD 實踐本身的定義（三個實踐、雙迴圈、Gherkin 反模式）見
-[docs/bdd-workflow.md](./docs/bdd-workflow.md)。
+兩份背景筆記，分工不同：
+
+| 文件 | 回答 | 什麼時候會改 |
+| --- | --- | --- |
+| [docs/bdd-workflow.md](./docs/bdd-workflow.md) | BDD 這套方法本身是什麼（三個實踐、雙迴圈、Gherkin 反模式） | Cucumber 改了定義，或我們讀錯了 |
+| [docs/ai-sdlc.md](./docs/ai-sdlc.md) | 這條流程為什麼長這樣——六步各自的理由、哪幾段不是 BDD、AI 特有的約束 | 隨實跑演進 |
 
 > **這份文件是假設，不是定案。** 六步框架與底下的 skill 清單目前只有三步有實作，
 > 而這三步的職責在 2026-09-02 這次重規劃中被重新切過。它應該被下一批真實產物

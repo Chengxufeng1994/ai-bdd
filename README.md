@@ -21,7 +21,8 @@ ai-bdd/
 │   └── plugin.json    # manifest: name, description, version, author
 ├── PLAN.md            # what to build, in what order
 ├── docs/
-│   └── bdd-workflow.md # BDD practice reference
+│   ├── bdd-workflow.md # what BDD itself is — external reference
+│   └── ai-sdlc.md      # why this pipeline looks the way it does
 ├── skills/
 │   ├── bdd-clarify/
 │   ├── bdd-spec/
