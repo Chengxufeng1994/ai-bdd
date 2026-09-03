@@ -1,6 +1,6 @@
 # 怎麼把 PRD 拆成 brief
 
-`docs/bdd/brief.md` 的寫法與拆解手法。讀這份的時機：Pass 1，手上有一份 PRD 或
+`specs/brief.md` 的寫法與拆解手法。讀這份的時機：Pass 1，手上有一份 PRD 或
 一段需求敘述，還沒切 story 之前。
 
 `actor.md` 的寫法在 `actor-definition.md`，兩份一起用——角色是 brief 的一個區塊，

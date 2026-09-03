@@ -124,14 +124,14 @@ def coverage(dims: set[str]) -> str:
 
 
 def main(root: Path) -> int:
-    bdd = root / "docs" / "bdd"
-    if not bdd.is_dir():
-        print(f"找不到 {bdd}")
+    specs = root / "specs"
+    if not specs.is_dir():
+        print(f"找不到 {specs}")
         return 1
 
-    qdirs = sorted(p for p in bdd.glob("*/questions") if p.is_dir())
+    qdirs = sorted(p for p in specs.glob("*/questions") if p.is_dir())
     if not qdirs:
-        print(f"{bdd} 底下沒有任何 slice 帶 questions/ 目錄")
+        print(f"{specs} 底下沒有任何 slice 帶 questions/ 目錄")
         return 1
 
     scans = {qdir: scan_questions(qdir) for qdir in qdirs}

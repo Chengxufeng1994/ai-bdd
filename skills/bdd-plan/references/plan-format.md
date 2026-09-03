@@ -2,7 +2,7 @@
 
 照抄即可。讀這份的時機：步驟 3 之後，準備寫檔的時候。
 
-一批一份，路徑 `docs/bdd/<slice-slug>/plan.md`。
+一批一份，路徑 `specs/<slice-slug>/plan.md`。
 
 ```markdown
 # 實作計畫

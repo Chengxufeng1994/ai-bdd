@@ -2,7 +2,7 @@
 
 照抄即可。讀這份的時機：步驟 9，準備寫 `spec.md` 的時候。
 
-一批一份，路徑 `docs/bdd/<slice-slug>/spec.md`。一個 slice ＝ 一次可交付的價值，
+一批一份，路徑 `specs/<slice-slug>/spec.md`。一個 slice ＝ 一次可交付的價值，
 裡面裝好幾則 story。
 
 沒有內容的節**保留標題並寫為什麼空**，不要刪掉。空著的節跟被刪掉的節在檔案上
@@ -159,7 +159,7 @@ API 契約與 schema 天生跨 story，只有並排才看得見衝突。
 
 ## `domain-model.md` 的骨架
 
-路徑 `docs/bdd/domain-model.md`——**根層，跨批次**。它比 `spec.md` 活得久：
+路徑 `specs/domain-model.md`——**根層，跨批次**。它比 `spec.md` 活得久：
 spec 是拋棄式的快照，實作一開始就會過期；domain model 要留下來。
 
 每一批只**增修**，不重寫。改了既有條目要寫「原本是什麼、為什麼改」。

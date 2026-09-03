@@ -28,7 +28,7 @@ description: >
 - 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
 - 例子還不夠、還有紅卡 → 回 `bdd-clarify`
-- 產出是 `.feature` ＋ `docs/bdd/<slice-slug>/spec.md`，**不是** `openapi.yaml`、migration 或任何可執行的檔案
+- 產出是 `.feature` ＋ `specs/<slice-slug>/spec.md`，**不是** `openapi.yaml`、migration 或任何可執行的檔案
 - 要把 `spec.md` 拆成可執行的票 → 改用 `bdd-plan`
 
 ---
@@ -104,7 +104,7 @@ IMPORTANT: 只讀狀態列標 `已答` 的。待答的問題代表那一塊還�
 第三項最容易被跳過，代價最貴，而且**在封閉文法下更貴**：文法的價值全在重用，
 另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
 
-IMPORTANT: `docs/bdd/` 根層的 `brief.md`、`glossary.md` 與 `actor.md` 由 CLARIFY
+IMPORTANT: `specs/` 根層的 `brief.md`、`glossary.md` 與 `actor.md` 由 CLARIFY
 維護，本 skill **不得寫入**。詞彙、角色與範圍邊界都是澄清對話的產物，在寫規格時
 偷偷加一個，等於繞過了當初定義它的那場對話。
 
@@ -327,7 +327,7 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 
 一則 story 一個 `.feature`，檔名用 feature slug：`video-progress.feature`。
 
-同一個 slug 在 `docs/bdd/` 與 `.feature` 之間保持一致——那是這條鏈唯一的接縫，
+同一個 slug 在 `specs/` 與 `.feature` 之間保持一致——那是這條鏈唯一的接縫，
 換名字就得靠人腦記住對應關係。
 
 ### 8. 決定 seam —— 驗收測試打在哪一層
@@ -354,7 +354,7 @@ REVIEW 把「沒人同意過的 seam」當成 finding。這個綁定是**間接�
 
 ### 9. 寫 `spec.md`
 
-一批一份，路徑 `docs/bdd/<slice-slug>/spec.md`。骨架照抄
+一批一份，路徑 `specs/<slice-slug>/spec.md`。骨架照抄
 `references/spec-format.md`。
 
 MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東西。**
@@ -363,7 +363,7 @@ MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東�
 判準：指著 `spec.md` 的任何一句話，說得出它來自哪個已答的問題、哪條規則、
 或哪個 `.feature` 的哪一段嗎？說不出來的就是憑空長出來的，那是缺陷。
 
-### 10. 增修 `docs/bdd/domain-model.md`
+### 10. 增修 `specs/domain-model.md`
 
 根層一份，跨批次累積。這一批長出來的聚合與不變條件加進去。
 
@@ -385,8 +385,8 @@ domain model 要活得比它久。塞進去等於陪葬。
 | 產物 | 格式 |
 | --- | --- |
 | `.feature` | 本節（關鍵字、狀態 tag、型別 tag、方言陷阱） |
-| `docs/bdd/<slice-slug>/spec.md` | `references/spec-format.md` |
-| `docs/bdd/domain-model.md`（增修） | `references/spec-format.md` 末節 |
+| `specs/<slice-slug>/spec.md` | `references/spec-format.md` |
+| `specs/domain-model.md`（增修） | `references/spec-format.md` 末節 |
 
 **關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
 

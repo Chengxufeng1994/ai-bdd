@@ -39,8 +39,8 @@ description: >
 
 Ask user: 若以下不明確，先問清楚。
 
-1. **要收斂哪一疊問題**：狀態為「待答」的問題檔，兩層都算——`docs/bdd/questions/`
-   （跨 feature）與 `docs/bdd/<feature>/questions/`。單獨使用時，一段模糊的描述
+1. **要收斂哪一疊問題**：狀態為「待答」的問題檔，兩層都算——`specs/questions/`
+   （跨 feature）與 `specs/<feature>/questions/`。單獨使用時，一段模糊的描述
    也可以——本 skill 會先把它拆成問題並各自建檔
 2. **這一輪想推進到哪**：全部問完，還是先清掉能當場決定的。**先知道範圍，
    才不會把一輪拖成沒有終點的訪談**
@@ -72,7 +72,7 @@ IMPORTANT: 阻塞的題目**不要換句話說再問一次**。使用者答不�
 的對象是狀態為「待答」的那些，每個檔都記了跳過的原因；先讀那個原因再決定怎麼問：
 
 ```bash
-grep -L '狀態.*已答' docs/bdd/questions/*.md docs/bdd/*/questions/*.md   # 還開著的
+grep -L '狀態.*已答' specs/questions/*.md specs/*/questions/*.md   # 還開著的
 ```
 
 根層那些是 CLARIFY 的 Pass 1 留下的跨 feature 問題。**它們最容易被漏掉**——
@@ -200,7 +200,7 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 
 ### 單獨使用時
 
-寫入 `docs/bdd/<topic-slug>/clarify-log.md`：
+寫入 `specs/<topic-slug>/clarify-log.md`：
 
 ```markdown
 # Clarify Log: <主題>
@@ -226,7 +226,7 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 「被推翻的提案」那一段值得特別保留：它記錄的是**慣例在這個專案不適用的地方**，
 而那正是外人最容易踩錯、文件最少提及的部分。
 
-產物一律寫在 `docs/bdd/` 底下，不修改專案既有的任何檔案。
+產物一律寫在 `specs/` 底下，不修改專案既有的任何檔案。
 
 ---
 

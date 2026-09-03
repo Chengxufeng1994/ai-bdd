@@ -66,7 +66,7 @@ Pass 1 · 廣度 —— 對整份需求，還沒切                （跳過 Pas
        → brief.md                                  ↓
   2. 識別角色 → actor.md                           ↓
   3. 只問「會改變切分方式」的題目                  ↓
-       → docs/bdd/questions/（根層，跨 feature）    ↓
+       → specs/questions/（根層，跨 feature）    ↓
   4. 切 story —— 依據來自上面三步                  ↓
   5. 分批 —— 一批一次可交付的價值 → brief.md       ↓
         ↓                                          ↓
@@ -128,7 +128,7 @@ MUST: Pass 1 刻意淺。**判準是「切得出 story 且講得出依據」，�
 
 ### 1. 拆成 brief
 
-先不碰技術，拆成四塊寫進 `docs/bdd/brief.md`：業務目標、成功指標、範圍邊界、
+先不碰技術，拆成四塊寫進 `specs/brief.md`：業務目標、成功指標、範圍邊界、
 **隱含假設**——沒寫下來、但整份文件預設它成立的那些，是這一步存在的理由。
 
 MUST: brief 每一行都標來源——`PRD §x`、`questions/<名>`、或 `推論`。
@@ -138,7 +138,7 @@ MUST: brief 每一行都標來源——`PRD §x`、`questions/<名>`、或 `推�
 
 story 句型（`作為 <角色>，我要 <能力>，以便 <價值>`）開頭就要角色，所以要在切分之前定下來。
 
-MUST: 每個角色記**是誰**／**怎麼取得**／**跟誰不同**，寫進 `docs/bdd/actor.md`；
+MUST: 每個角色記**是誰**／**怎麼取得**／**跟誰不同**，寫進 `specs/actor.md`；
 且至少一條規則只約束它，沒有就合併——這一條 Pass 1 驗不完，先記下待驗證，
 Pass 2 抽完規則再回來判（見「收尾」）。
 判準、寫法與範例、別漏掉哪些角色、跟 `glossary.md` 的分工 → `references/actor-definition.md`。
@@ -154,7 +154,7 @@ Pass 1 的判準不一樣，而且更窄：
 五入、熱身組算不算）不管答案是什麼，story 都切在同一個地方。
 
 問法一樣是 **4 ＋ 1**（格式見 Pass 2 的「一題長什麼樣」），答與跳過的處理也一樣。
-差別只有檔案放哪：Pass 1 的問題寫進 **`docs/bdd/questions/`**——根層，
+差別只有檔案放哪：Pass 1 的問題寫進 **`specs/questions/`**——根層，
 不屬於任何一則 feature。
 
 跨 feature 的問題必須有自己的家。塞進某一則 story 的 `questions/` 之後，另外四則
@@ -428,7 +428,7 @@ IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只綜合已經有�
 ## 產物
 
 ```
-docs/bdd/
+specs/
 ├── brief.md            CLARIFY  PRD 拆解、批次清單與順序、切分依據、隱含假設
 ├── actor.md            CLARIFY  角色
 ├── glossary.md         CLARIFY  ubiquitous language（只有詞彙，不含規則）
@@ -475,11 +475,11 @@ python3 <skill>/scripts/status.py <專案根>
 
 ## 產物隔離
 
-文件型產物**全部住在 `docs/bdd/`**，一個目錄裝完。專案的其他地方不會多出東西。
+文件型產物**全部住在 `specs/`**，一個目錄裝完。專案的其他地方不會多出東西。
 
 | 規則 | 強度 |
 | --- | --- |
-| 只寫入 `docs/bdd/` 底下 | `MUST` |
+| 只寫入 `specs/` 底下 | `MUST` |
 | 不修改專案既有的任何檔案 | `MUST` |
 | 沒有 `docs/` 就建一個 | `SHOULD` |
 | 專案明文用別的文件根目錄就跟隨，仍加 `bdd/` 這層 | `SHOULD` |

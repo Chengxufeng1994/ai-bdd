@@ -16,7 +16,7 @@
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。
 
-只讀不寫。找不到 docs/bdd/ 或 .feature 時直接說找不到，不猜。
+只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
 """
 import re
 import sys
@@ -91,21 +91,21 @@ def outcome_coverage(text: str) -> list[tuple[str, int, int]]:
 
 
 def check(root: Path) -> int:
-    bdd = root / "docs" / "bdd"
+    specs_dir = root / "specs"
     feat_dir = find_features(root)
-    if not bdd.is_dir():
-        print(f"找不到 {bdd} —— 沒有 CLARIFY 的產物可以比對")
+    if not specs_dir.is_dir():
+        print(f"找不到 {specs_dir} —— 沒有 CLARIFY 的產物可以比對")
         return 1
     if feat_dir is None:
         print("找不到任何 .feature")
         return 1
 
     problems = 0
-    print(f"map: {bdd}    feature: {feat_dir}\n")
+    print(f"map: {specs_dir}    feature: {feat_dir}\n")
 
-    specs = sorted(bdd.glob("*/spec.md"))
+    specs = sorted(specs_dir.glob("*/spec.md"))
     if not specs:
-        print(f"{bdd} 底下沒有 spec.md —— 先跑 bdd-spec")
+        print(f"{specs_dir} 底下沒有 spec.md —— 先跑 bdd-spec")
         return 1
 
     covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug

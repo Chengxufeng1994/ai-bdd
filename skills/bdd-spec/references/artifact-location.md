@@ -4,7 +4,7 @@
 
 ## 規則
 
-BDD 流程的**文件型產物住在 `docs/bdd/`**，但 `.feature` 是唯一的例外——
+BDD 流程的**文件型產物住在 `specs/`**，但 `.feature` 是唯一的例外——
 它同時是規格與可執行測試，**位置由測試框架決定**，不由本流程決定。
 
 | 規則 | 強度 |
@@ -14,6 +14,6 @@ BDD 流程的**文件型產物住在 `docs/bdd/`**，但 `.feature` 是唯一的
 | 已經有 `.feature` 就跟隨它們的位置 | `SHOULD` |
 | 沒有任何 `.feature`，也還沒有框架 → 專案根的 `features/` | `SHOULD` |
 
-技術上可以用 godog 的 `Paths` 把 `.feature` 也塞進 `docs/bdd/`，但那會讓
+技術上可以用 godog 的 `Paths` 把 `.feature` 也塞進 `specs/`，但那會讓
 Go 開發者在預期的地方找不到它。**鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。**
 

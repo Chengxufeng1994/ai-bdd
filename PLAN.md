@@ -1,7 +1,7 @@
 # ai-bdd 路線圖
 
 > **這份是 ai-bdd 這個 plugin 自己**要建什麼、怎麼切、什麼順序。
-> 它**不是**本流程的產物——流程產出的計畫叫 `docs/bdd/<slice>/plan.md`，
+> 它**不是**本流程的產物——流程產出的計畫叫 `specs/<slice>/plan.md`，
 > 那是使用端 repo 裡的東西。看到「plan」先分清楚是哪一個。
 
 BDD 實踐本身的定義（三個實踐、雙迴圈、Gherkin 反模式）見
@@ -71,7 +71,7 @@ IMPLEMENT／VERIFY 需要綁定技術棧；REVIEW 部分需要。
 一步一個產物槽，`ls` 就看得出這一批走到哪：
 
 ```
-docs/bdd/
+specs/
 ├── brief.md            CLARIFY  PRD 拆解、批次清單與順序、切分依據、隱含假設
 ├── actor.md            CLARIFY  角色
 ├── glossary.md         CLARIFY  ubiquitous language（只有詞彙，不含規則）
@@ -89,7 +89,7 @@ features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 根層的四份繼續長。這條線的判準是 `to-spec` 自己說的：spec 是拋棄式的快照，
 實作一開始就會過期；domain model 與詞彙表要活得比它久，塞進 spec 等於陪葬。
 
-`.feature` 是唯一不進 `docs/bdd/` 的產物——它同時是規格與可執行測試，
+`.feature` 是唯一不進 `specs/` 的產物——它同時是規格與可執行測試，
 **位置由測試框架決定**。鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。
 
 **`glossary.md` 只放詞彙，不放規則。** 它現在（實測場）同時裝了詞彙與
@@ -257,12 +257,12 @@ CLARIFY 不再產出 `example-mapping.md`，Example Mapping 原本靠數卡片�
 條件**，否則會在非 BDD 情境被誤觸發。
 
 **`slice` 與 `feature` 是兩個粒度，不共用同一個字。**
-`docs/bdd/<slice-slug>/` 裝的是一批（好幾則 story）；`features/*.feature` 是
+`specs/<slice-slug>/` 裝的是一批（好幾則 story）；`features/*.feature` 是
 一則 story 一個檔。用同一個字會製造「部分對齊」——讀的人會假設兩邊指同一件事，
 然後在其中幾處讀錯。`feature` 這個字純粹留給 `.feature`。
 
 **三個 plan。** 根層 `PLAN.md`（這個 repo 要建什麼）、步驟 PLAN、產物
-`docs/bdd/<slice>/plan.md`。後兩者保留，因為「PLAN ＝ 把 spec 拆成可逐條執行的
+`specs/<slice>/plan.md`。後兩者保留，因為「PLAN ＝ 把 spec 拆成可逐條執行的
 任務、寫進 `plan.md`」是既有慣例；歧義靠這份文件開頭那段話消解。
 
 ---
@@ -355,7 +355,7 @@ Always-on: ~1,620 tok  每個 session 都付
 熱身組算不算、dropset 是幾組。詳見該目錄的 README，那裡也寫明了
 `bdd-clarify` 的及格標準：**沒問到自體重與單邊動作，就算失敗**。
 
-**現存產物與新佈局不一致。** `lab/go/skeleton/docs/bdd/` 底下的六個目錄
+**現存產物與新佈局不一致。** `lab/go/skeleton/specs/` 底下的六個目錄
 （`log-a-workout`、`session-training-volume`⋯⋯）是**六則 story，不是六個 slice**。
 照新佈局它們會併成一到兩個 slice，六則 story 變成 `spec.md` 裡的小節、
 `features/` 裡的六個 `.feature`。這個遷移就是驗證新分工的那次實跑。
@@ -366,11 +366,11 @@ Always-on: ~1,620 tok  每個 session 都付
 
 ## 未決事項
 
-1. ~~**產物存放路徑。**~~ 已定：文件型產物一律寫入使用端 repo 的 `docs/bdd/`，
+1. ~~**產物存放路徑。**~~ 已定：文件型產物一律寫入使用端 repo 的 `specs/`，
    一個目錄裝完，刪掉即乾淨。skill 不得寫入其他位置、不得修改專案既有檔案。
 
 2. ~~**`.feature` 的位置。**~~ 已定：留在測試框架的慣例位置（Cucumber 系是專案根
-   的 `features/`），是唯一不進 `docs/bdd/` 的產物——它的位置由 runner 決定。
+   的 `features/`），是唯一不進 `specs/` 的產物——它的位置由 runner 決定。
 
 3. ~~**SPEC 與 PLAN 的分界。**~~ 已定（2026-09-02）：技術設計歸 SPEC，
    拆解歸 PLAN。見「三條紀律」。
