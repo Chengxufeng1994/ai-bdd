@@ -4,11 +4,13 @@
 > 它**不是**本流程的產物——流程產出的計畫叫 `specs/<slice>/plan.md`，
 > 那是使用端 repo 裡的東西。看到「plan」先分清楚是哪一個。
 
-兩份背景筆記，分工不同：
+四份背景筆記，分工不同：
 
 | 文件 | 回答 | 什麼時候會改 |
 | --- | --- | --- |
 | [docs/bdd.md](./docs/bdd.md) | BDD 這套方法本身是什麼（三個實踐、雙迴圈、Gherkin 反模式） | Cucumber 改了定義，或我們讀錯了 |
+| [docs/tdd.md](./docs/tdd.md) | TDD 這套方法本身是什麼（Canon TDD、三律、兩個學派、BDD 從哪裡分出去） | 來源改了定義，或我們讀錯了 |
+| [docs/sdd.md](./docs/sdd.md) | SDD 這套方法本身是什麼（spec-first/anchored/as-source 三層、Kiro/Spec Kit/Tessl、EARS） | 來源改了定義，或我們讀錯了 |
 | [docs/ai-sdlc.md](./docs/ai-sdlc.md) | 這條流程為什麼長這樣——六步各自的理由、哪幾段不是 BDD、AI 特有的約束 | 隨實跑演進 |
 
 > **這份文件是假設，不是定案。** 六步框架與底下的 skill 清單目前只有三步有實作，

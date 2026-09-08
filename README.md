@@ -22,6 +22,8 @@ ai-bdd/
 ├── PLAN.md            # what to build, in what order
 ├── docs/
 │   ├── bdd.md          # what BDD itself is — external reference
+│   ├── tdd.md          # what TDD itself is — external reference
+│   ├── sdd.md          # what spec-driven development is — external reference
 │   └── ai-sdlc.md      # why this pipeline looks the way it does
 ├── skills/
 │   ├── bdd-clarify/
