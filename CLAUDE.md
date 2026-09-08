@@ -20,11 +20,18 @@ BDD's practices and which are this project's own additions.
 ### Plugin
 
 ```bash
-claude plugin validate . --strict     # the gate; fails on unrecognised fields
+claude plugin validate .              # the gate
 python3 skills/skill-rules/scripts/audit_skill.py skills/<name>   # mechanical skill audit
 ```
 
 There is no CI configuration — `validate` and the testbed's `make verify` are run by hand.
+
+**`--strict` cannot pass here, and that is a deliberate trade.** It fails on one
+warning: a `CLAUDE.md` at the plugin root is not loaded when the plugin is *installed*,
+so the validator treats shipping one as a mistake. This repo is both the plugin and the
+place the plugin is developed, and the file earns its place in the second role. Use plain
+`validate` as the gate; run `--strict` when you want to see everything, expecting that
+one warning and nothing else.
 
 ### Testbed (`benchmark/skeleton/go/`)
 
