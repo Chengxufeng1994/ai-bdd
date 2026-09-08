@@ -32,13 +32,13 @@ polished its output looks.
 ## One scenario at a time
 
 This is a *skeleton*, not a fitness app. It hosts whichever scenario is being
-used to evaluate the skills; `prompts/` names them:
+used to evaluate the skills; `lab/prompts/` names them:
 
 ```
-prompts/1-fitness-tracker-clarify.md      a casual brief
-prompts/1-fitness-tracker-clarify-prd.md  the same scenario as an approved PRD
-docs/bdd/                                 that run's example maps and questions
-features/                               the scenarios it produced
+lab/prompts/1-fitness-tracker-clarify.md      a casual brief
+lab/prompts/1-fitness-tracker-clarify-prd.md  the same scenario as an approved PRD
+docs/bdd/                                     that run's example maps and questions
+features/                                     the scenarios it produced
 ```
 
 Only CLARIFY, SPEC and PLAN are language-agnostic enough to be swapped freely.
@@ -173,9 +173,6 @@ skeleton/
 ├── docs/
 │   ├── ARCHITECTURE.md      start here for the whole picture
 │   └── DATAFLOW.md          every conversion on the path, and who owns it
-├── prompts/                 fixed inputs for evaluating the skills
-│   ├── 1-fitness-tracker-clarify.md       casual brief
-│   └── 1-fitness-tracker-clarify-prd.md   the same scenario as an approved PRD
 ├── features/                .feature files — specifications, not test code
 │   ├── version.feature      the walking skeleton — implemented, green
 │   └── <six story files>    @ready — specified, not yet implemented, red

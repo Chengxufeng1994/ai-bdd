@@ -33,8 +33,9 @@ ai-bdd/
 │   ├── story-splitting/
 │   └── skill-rules/
 ├── lab/
+│   ├── prompts/        # fixed inputs — language-agnostic, shared
 │   └── go/
-│       └── skeleton/     # Go + godog dogfooding ground
+│       └── skeleton/   # Go + godog dogfooding ground
 └── README.md
 ```
 

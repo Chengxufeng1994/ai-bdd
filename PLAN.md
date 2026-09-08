@@ -366,7 +366,7 @@ Always-on: ~1,620 tok  每個 session 都付
 因此 `status.py` 與 `check_spec.py` 對這個目錄跑會 exit 1 並指名說找不到產物——
 那是正確行為，不是壞掉。
 
-`prompts/` 現在有兩份固定輸入，測互補的失敗模式：
+`lab/prompts/` 現在有兩份固定輸入，測互補的失敗模式：
 
 | 情境 | 測什麼 |
 | --- | --- |
