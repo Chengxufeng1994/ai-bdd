@@ -3,7 +3,7 @@
 這份文件記錄**本專案的主張**：一條給 AI 協作用的開發生命週期，為什麼需要
 六步、每一步為什麼存在、哪幾段是 BDD、哪幾段不是。
 
-它跟 [bdd-workflow.md](./bdd-workflow.md) 的分工：那份轉述 BDD 這套方法本身，
+它跟 [bdd.md](./bdd.md) 的分工：那份轉述 BDD 這套方法本身，
 不提本專案；這份是本專案的立場，會隨實跑演進。要建什麼、什麼順序見
 [PLAN.md](../PLAN.md)。
 
@@ -31,22 +31,28 @@ BDD 談的是人跟人之間怎麼建立共識，這裡多出來的問題是**�
 ## 六步，以及哪幾段是 BDD
 
 ```
-CLARIFY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW
-└ Discovery ┘  └Formu-┘         └ Automation ┘
-               └lation┘
+CLARIFY  →  SPEC  →  PLAN  →  IMPLEMENT  →  VERIFY  →  REVIEW
+└──── BDD ─────┘      ✗       └─ BDD ─┘       ✗          ✗
 ```
+
+**帶 BDD 的那三格不等於 BDD。** CLARIFY 的前半在對齊業務目標、切出 story——
+Discovery 的輸入就是一則 story，長出 story 在它的上游；SPEC 除了 `.feature`，
+還要產出讓整份東西成為 live document 的其餘產物。只有 IMPLEMENT 跟 Automation
+重合，因為 Automation 的產物本來就是程式碼而不是膠水層（見
+[bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是夾在中間的洞。**
 
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
-| **CLARIFY** | 需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery |
-| **SPEC** | 兩件事：把例子寫成可執行規格（BDD 的 Formulation）＋**把技術決定記下來**（不是 BDD） | Formulation ＋ 額外 |
+| **CLARIFY** | 兩件事：**對齊業務目標、切出 story**（不是 BDD）＋把 story 逼成規則與例子（BDD 的 Discovery）。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
+| **SPEC** | 兩件事：把例子寫成可執行規格（BDD 的 Formulation）＋**把技術決定記下來**（不是 BDD——它讓 `.feature` 以外的產物一起構成 live document） | Formulation ＋ 額外 |
 | **PLAN** | 把工作切到一個 fresh session 做得完，並宣告誰卡誰 | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來 | Automation |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | **無**——治理不在三個實踐裡 |
 
-**三塊不屬於 BDD 的東西（PLAN、REVIEW、SPEC 的技術決定那半）都不是補丁。**
-它們回答的是「協作對象會失憶」帶來的問題，而 BDD 從來沒有那個問題要解。
+**四塊不屬於 BDD 的東西（PLAN、REVIEW、CLARIFY 的業務對齊那半、SPEC 的技術
+決定那半）都不是補丁。** 它們回答的是「協作對象會失憶」帶來的問題，而 BDD
+從來沒有那個問題要解。
 
 ---
 
@@ -153,4 +159,4 @@ PLAN 要獨立的理由不同：它是唯一一個**不需要領域知識**的�
 上面每一條都有實跑依據，但依據只有一到兩次。**它是主張，不是定論**——
 第二個技術棧、第二種規模的專案跑過之後，該修就修。
 
-`bdd-workflow.md` 不一樣：那份除非 Cucumber 改了定義，否則不動。
+`bdd.md` 不一樣：那份除非 Cucumber 改了定義，否則不動。

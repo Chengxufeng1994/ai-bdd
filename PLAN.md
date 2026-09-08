@@ -8,7 +8,7 @@
 
 | 文件 | 回答 | 什麼時候會改 |
 | --- | --- | --- |
-| [docs/bdd-workflow.md](./docs/bdd-workflow.md) | BDD 這套方法本身是什麼（三個實踐、雙迴圈、Gherkin 反模式） | Cucumber 改了定義，或我們讀錯了 |
+| [docs/bdd.md](./docs/bdd.md) | BDD 這套方法本身是什麼（三個實踐、雙迴圈、Gherkin 反模式） | Cucumber 改了定義，或我們讀錯了 |
 | [docs/ai-sdlc.md](./docs/ai-sdlc.md) | 這條流程為什麼長這樣——六步各自的理由、哪幾段不是 BDD、AI 特有的約束 | 隨實跑演進 |
 
 > **這份文件是假設，不是定案。** 六步框架與底下的 skill 清單目前只有三步有實作，

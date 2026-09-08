@@ -1,6 +1,6 @@
 //go:build generate
 
-// Package fitnesstracker exists only to hold the code-generation directives for
+// Package skeleton exists only to hold the code-generation directives for
 // the whole module.
 //
 // Every generator is listed here rather than beside the package it writes into,
@@ -25,7 +25,7 @@
 // The build tag keeps this file out of every build, so the module root stays a
 // package with no compiled contents. `go generate` ignores build constraints, so
 // the directives still run under a plain `go generate ./...`.
-package fitnesstracker
+package skeleton
 
 //go:generate go tool oapi-codegen -config api/cfg.yaml api/openapi.yaml
 
