@@ -6,29 +6,6 @@ A Go + godog project used to dogfood the `ai-bdd` skills end to end:
 It is not a product. Its job is to make the skills fail visibly when they are
 weak.
 
-## Why this domain
-
-A training log looks like CRUD, so the interesting part is deliberately **total
-training volume**, not record-keeping. Volume is where the rules live, and the
-rules are genuinely ambiguous:
-
-- Pull-ups carry no external weight — is the volume zero, or bodyweight × reps?
-- Assisted pull-ups at −20 kg — negative volume, or (bodyweight − 20) × reps?
-- A single-arm row at 20 kg × 8, done per side — 160 or 320?
-- Does a 20 kg empty-bar warm-up count toward volume?
-- A set targeting 10 reps that reached 7 — recorded as 7, or as "10, failed"?
-- A dropset of 60 kg × 8 straight into 40 kg × 6 — one set or two?
-- kg and lb mixed in one session
-- Smith machine 60 kg versus barbell 60 kg — can they be summed?
-- A 60-second plank has neither reps nor load — what is its volume?
-- "Total volume" over what — one session, one exercise, one week, one muscle group?
-
-Most people think of three or four of these unprompted.
-
-**This is the bar for `bdd-clarify`:** a run that does not surface the
-bodyweight and per-side questions is a run that failed, regardless of how
-polished its output looks.
-
 ## Ground rule
 
 **No business code until CLARIFY has run.** Every type in `domain/` must trace
