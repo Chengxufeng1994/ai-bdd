@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A Claude Code **plugin** (`ai-bdd`) whose product is the `skills/` directory. Everything
 else either explains why those skills look the way they do (`docs/`, `PLAN.md`) or exists
-to make them fail visibly when they are weak (`lab/`).
+to make them fail visibly when they are weak (`benchmark/`).
 
 The plugin's subject is a six-step pipeline:
 
@@ -26,7 +26,7 @@ python3 skills/skill-rules/scripts/audit_skill.py skills/<name>   # mechanical s
 
 There is no CI configuration — `validate` and the testbed's `make verify` are run by hand.
 
-### Testbed (`lab/go/skeleton/`)
+### Testbed (`benchmark/skeleton/go/`)
 
 ```bash
 make help              # authoritative target list
@@ -112,9 +112,9 @@ adding or editing any skill.
 
 ### The testbed
 
-`lab/go/skeleton/` is a Go + godog project used to dogfood the pipeline: layered
+`benchmark/skeleton/go/` is a Go + godog project used to dogfood the pipeline: layered
 architecture (cmd / domain / application / infrastructure / interfaces), three test levels,
-and `api/openapi.yaml`. `lab/` is not a plugin convention directory, so nothing in it is
+and `api/openapi.yaml`. `benchmark/` is not a plugin convention directory, so nothing in it is
 loaded and it cannot affect plugin behaviour.
 
 Two things about it that look like breakage but are not:

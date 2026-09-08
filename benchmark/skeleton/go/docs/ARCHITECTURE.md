@@ -17,7 +17,7 @@ because two copies of a rule drift apart and then nobody knows which is current.
 | [DATAFLOW.md](./DATAFLOW.md) | About to write an operation, mapper, use case or presenter | It is consulted repeatedly while coding; this document is read once on arrival |
 | [../README.md](../README.md) | You want to know why this testbed exists and what "done" means for it | It is the testbed's charter, not its architecture |
 | `internal/*/doc.go` | Working inside one layer and unsure what it may import | Rules belong next to the code they constrain, where a compiler error sends you |
-| [../../../prompts/1-fitness-tracker-clarify.md](../../../prompts/1-fitness-tracker-clarify.md) | Evaluating the skills | It is a test fixture, not documentation |
+| [../../../cases/fitness-tracker-clarify.md](../../../cases/fitness-tracker-clarify.md) | Evaluating the skills | It is a test fixture, not documentation |
 | `make help` | Looking for a command | The Makefile is the authoritative list; a copy here would go stale |
 
 The `doc.go` files are authoritative for their own layer. Where this document and
@@ -87,7 +87,7 @@ Runtime — one process, one protocol so far:
 Development — the chain the testbed exists to exercise:
 
 ```
-lab/prompts/ ──▶ CLARIFY ──▶ docs/bdd/*/example-mapping.md
+benchmark/cases/ ──▶ CLARIFY ──▶ docs/bdd/*/example-mapping.md
                               │
                               ▼
                             SPEC ──▶ features/*.feature
@@ -326,7 +326,7 @@ that list.
 
 Planned, in order:
 
-1. Run `bdd-clarify` against `../../prompts/1-fitness-tracker-clarify.md`
+1. Run `bdd-clarify` against `../../cases/fitness-tracker-clarify.md`
 2. SPEC turns those examples into `.feature` files
 3. PLAN assigns each scenario a test level
 4. IMPLEMENT fills `domain/` outside-in, following the `/version` slice as the
@@ -345,7 +345,7 @@ a proven path.
 | | |
 | --- | --- |
 | Project name | skeleton — the Go lab for the `ai-bdd` plugin |
-| Repository | none — lives inside the `ai-bdd` repo at `lab/go/skeleton` |
+| Repository | none — lives inside the `ai-bdd` repo at `benchmark/skeleton/go` |
 | Module path | `skeleton` |
 | Primary contact | Benny.XF.Cheng |
 | Last updated | 2026-08-30 |

@@ -1,4 +1,4 @@
-# lab/go/skeleton
+# benchmark/skeleton/go
 
 A Go + godog project used to dogfood the `ai-bdd` skills end to end:
 **CLARIFY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**.
@@ -28,26 +28,6 @@ Most people think of three or four of these unprompted.
 **This is the bar for `bdd-clarify`:** a run that does not surface the
 bodyweight and per-side questions is a run that failed, regardless of how
 polished its output looks.
-
-## One scenario at a time
-
-This is a *skeleton*, not a fitness app. It hosts whichever scenario is being
-used to evaluate the skills; `lab/prompts/` names them:
-
-```
-lab/prompts/1-fitness-tracker-clarify.md      a casual brief
-lab/prompts/1-fitness-tracker-clarify-prd.md  the same scenario as an approved PRD
-docs/bdd/                                     that run's example maps and questions
-features/                                     the scenarios it produced
-```
-
-Only CLARIFY, SPEC and PLAN are language-agnostic enough to be swapped freely.
-Once IMPLEMENT fills `internal/`, the code belongs to one scenario — so archive
-a completed run before starting another rather than trying to keep two live.
-
-Other languages get their own skeleton beside this one: `lab/python/skeleton`,
-`lab/typescript/skeleton`. Everything upstream of IMPLEMENT is shared; only the
-harness differs.
 
 ## Ground rule
 

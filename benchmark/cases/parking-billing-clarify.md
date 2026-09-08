@@ -1,6 +1,6 @@
 # CLARIFY 的固定測試提示 — 停車場計費（口語 brief 版）
 
-第二個評估情境。與[健身追蹤](./1-fitness-tracker-clarify.md)測的不完全一樣：
+第二個評估情境。與[健身追蹤](./fitness-tracker-clarify.md)測的不完全一樣：
 
 | 情境 | 主要測什麼 |
 | --- | --- |

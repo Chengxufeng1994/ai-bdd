@@ -32,10 +32,9 @@ ai-bdd/
 │   ├── clarify-loop/
 │   ├── story-splitting/
 │   └── skill-rules/
-├── lab/
-│   ├── prompts/        # fixed inputs — language-agnostic, shared
-│   └── go/
-│       └── skeleton/   # Go + godog dogfooding ground
+├── benchmark/
+│   ├── cases/          # fixed inputs + marking scheme, language-agnostic
+│   └── skeleton/go/    # the Go + godog template, copied per run
 └── README.md
 ```
 

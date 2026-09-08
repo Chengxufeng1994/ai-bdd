@@ -1,6 +1,6 @@
 # CLARIFY 的固定測試提示 — PRD 版
 
-與 [`1-fitness-tracker-clarify.md`](./1-fitness-tracker-clarify.md) 同一個情境、
+與 [`fitness-tracker-clarify.md`](./fitness-tracker-clarify.md) 同一個情境、
 同一批模糊點，但輸入寫成**已核准的 PRD**。
 
 兩份分別測不同的失敗模式：
@@ -92,7 +92,7 @@
 
 **十個模糊點一個都沒寫進去**：自體重、單邊、熱身組、失敗組、dropset、單位、
 器材、等長動作、總容量的範圍。及格標準與觀察項完全沿用口語版，見
-[`1-fitness-tracker-clarify.md`](./1-fitness-tracker-clarify.md)。
+[`fitness-tracker-clarify.md`](./fitness-tracker-clarify.md)。
 
 ## 額外的觀察項
 

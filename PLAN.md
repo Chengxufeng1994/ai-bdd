@@ -327,7 +327,7 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] `bdd-clarify`
 - [x] `clarify-loop`
 - [x] `story-splitting`
-- [x] `lab/go/skeleton` — Go ＋ godog 實測場（骨架綠，零業務）
+- [x] `benchmark/skeleton/go` — Go ＋ godog 實測場（骨架綠，零業務）
 - [x] 拿健身追蹤需求跑一次 `bdd-clarify`，依實跑結果修正格式
 - [x] `bdd-spec` — 依 11 份真實 `.feature` 反覆修正，封閉文法把
       76 個場景的步驟樣板從 208 降到 41
@@ -350,7 +350,7 @@ Always-on: ~1,620 tok  每個 session 都付
 
 ## 實測場
 
-`lab/go/skeleton/` 是六步流程的 dogfooding 對象：Go ＋ godog ＋ 分層
+`benchmark/skeleton/go/` 是六步流程的 dogfooding 對象：Go ＋ godog ＋ 分層
 架構（cmd／domain／application／infrastructure／interfaces）＋ 三層測試
 （unit／integration／acceptance）＋ `api/openapi.yaml`。
 
@@ -366,7 +366,7 @@ Always-on: ~1,620 tok  每個 session 都付
 因此 `status.py` 與 `check_spec.py` 對這個目錄跑會 exit 1 並指名說找不到產物——
 那是正確行為，不是壞掉。
 
-`lab/prompts/` 現在有兩份固定輸入，測互補的失敗模式：
+`benchmark/cases/` 現在有兩份固定輸入，測互補的失敗模式：
 
 | 情境 | 測什麼 |
 | --- | --- |
@@ -376,7 +376,8 @@ Always-on: ~1,620 tok  每個 session 都付
 停車場那份的模糊點清單是**跑完才寫的**，不是事先猜的；它分三層，最後一層
 （推導才浮現的矛盾、以及 CLARIFY 漏掉而 SPEC 補抓的那一格）才是有診斷力的部分。
 
-> `lab/` 不是 plugin 的慣例目錄，不會被載入，對 plugin 行為零影響。
+> `benchmark/` 與 `runs/` 都不是 plugin 的慣例目錄（只有 `skills/`、`commands/`、
+> `agents/`、`hooks/` 是），不會被載入，對 plugin 行為零影響。
 
 ---
 
