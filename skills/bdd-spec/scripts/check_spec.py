@@ -1,23 +1,27 @@
 #!/usr/bin/env python3
-"""稽核 .feature 與 example map 的一致性。
+"""稽核 .feature 與 prd.md／spec.md 的一致性。
 
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查五件事，全部是機械性的：
+檢查六件事，全部是機械性的：
 
-  1. 覆蓋——雙向。map 有而 feature 沒有的（漏做），
-     以及 feature 指向 map 裡不存在的例子（發明出來的驗收條件）。
+  1. 覆蓋——雙向。prd.md 有例子而 feature 沒有的（漏做），
+     以及 feature 指向 prd.md 裡不存在的例子（發明出來的驗收條件）。
   2. 缺口——漏掉的例子有沒有在 .feature 裡就地留註解交代。
-  3. 狀態 tag——每個有 map 的 .feature 恰好一個。
+  3. 狀態 tag——每個有對應 story 的 .feature 恰好一個。
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
+  6. FR 完整性——prd.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
+     SPEC 就無從寫出場景，只能發明。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。
 
 只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
-規則與例子讀自 specs/<slice>/clarify.md 的 `## Business Rules` 段。
+例子的目錄讀自 specs/<slice>/prd.md 的 `## Functional Requirements` 段
+（FR 編號在那裡定版）；story 由哪些 FR 組成讀自 specs/<slice>/spec.md 的
+`## Stories` 段——切 story 是 SPEC 的事，不再是 CLARIFY 的事。
 """
 import re
 import sys
@@ -35,38 +39,46 @@ def find_features(root: Path) -> Path:
     return sorted(hits, key=lambda p: len(p.parts))[0] if hits else None
 
 
-def readiness(text: str) -> str:
-    """clarify.md 檔頭的就緒判定。找不到就回空字串，不猜。
+def frs_in_prd(text: str) -> dict[str, set[str]]:
+    """prd.md 的 `## Functional Requirements` 段：FR 編號 -> EX 編號集合。
 
-    稽核需要它來分辨兩種「沒有規則」：**還沒澄清**與**澄清完但漏寫**。
-    前者是流程的正常中間狀態，後者是缺陷。把它們算成同一件事，
-    等於讓每一個還沒輪到的批次都變成一個假警報——而假警報多了，
-    真警報就沒人看。
+    來源是 prd.md 而不是 spec.md：例子的定版編號誕生在 CLARIFY，
+    spec.md 只記哪些 FR 湊成一則 story，不重述例子。
     """
-    m = re.search(r"^\*\*就緒判定\*\*[：:]\s*(.+)$", text, re.M)
-    return m.group(1).strip() if m else ""
-
-
-def stories_in_clarify(text: str) -> dict[str, set[str]]:
-    """clarify.md 的 Business Rules 段：story-slug -> 例子編號集合。
-
-    一份 clarify.md 涵蓋一批 story，每則一個 `### <story-slug>` 區塊。
-
-    只掃 `## Business Rules` 這一段。其他章節也會出現 `Example N.M`
-    （Open Questions 與 Assumptions 都可能引用某個例子），掃全檔會把那些
-    引用當成規格來源——而它們是指回這一段的，比對它們等於自己跟自己比。
-
-    來源是 clarify.md 而不是 spec.md：規則與例子的定版編號誕生在 CLARIFY，
-    spec.md 不再重述它們。稽核要成立需要兩份**獨立**的表述（規則清單與
-    可執行場景）；第三份只會製造兩個可能來源，然後各自漂移。
-    """
-    m = re.search(r"^## Business Rules\s*\n(.*?)(?=\n## |\Z)", text, re.M | re.S)
-    if not m:
+    section = re.search(
+        r"^## Functional Requirements\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    if not section:
         return {}
     out: dict[str, set[str]] = {}
-    for blk in re.split(r"^### ", m.group(1), flags=re.M)[1:]:
-        slug = blk.splitlines()[0].strip()
-        out[slug] = set(re.findall(r"^- Example (\d+\.\d+) \S", blk, re.M))
+    current = None
+    for line in section.group(1).splitlines():
+        fr = re.match(r"^### FR-(\d+)\b", line)
+        if fr:
+            current = fr.group(1)
+            out.setdefault(current, set())
+            continue
+        if current:
+            for ex in re.findall(r"\bEX-(\d+\.\d+)\b", line):
+                out[current].add(ex)
+    return out
+
+
+def stories_in_spec(text: str) -> dict[str, set[str]]:
+    """spec.md 的 `## Stories` 段：story-slug -> 它涵蓋的 FR 編號集合。"""
+    section = re.search(r"^## Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    if not section:
+        return {}
+    out: dict[str, set[str]] = {}
+    current = None
+    for line in section.group(1).splitlines():
+        st = re.match(r"^### (\S+)\s*$", line)
+        if st:
+            current = st.group(1)
+            out.setdefault(current, set())
+            continue
+        if current:
+            for fr in re.findall(r"\bFR-(\d+)\b", line):
+                out[current].add(fr)
     return out
 
 
@@ -120,39 +132,46 @@ def check(root: Path) -> int:
     problems = 0
     print(f"map: {specs_dir}    feature: {feat_dir}\n")
 
-    clarifies = sorted(specs_dir.glob("*/clarify.md"))
-    if not clarifies:
-        print(f"{specs_dir} 底下沒有 clarify.md —— 先跑 bdd-clarify")
+    prds = sorted(specs_dir.glob("*/prd.md"))
+    if not prds:
+        print(f"{specs_dir} 底下沒有 prd.md —— 先跑 bdd-clarify")
         return 1
 
-    deferred: list[str] = []       # 還沒澄清完的批次，不算問題
-    covered: set[str] = set()      # 有出現在某份 clarify.md 裡的 story slug
-    for clarify_path in clarifies:
-        ctext = clarify_path.read_text(encoding="utf-8")
-        stories = stories_in_clarify(ctext)
-        if not stories:
-            verdict = readiness(ctext)
-            if "已就緒" in verdict:
-                print(f"✗ {clarify_path.parent.name:30} —— 判定已就緒，卻沒有 `## Business Rules`")
-                problems += 1
-            else:
-                deferred.append(f"{clarify_path.parent.name}（{verdict or '就緒判定未寫'}）")
+    covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
+    for prd_path in prds:
+        ptext = prd_path.read_text(encoding="utf-8")
+        frs = frs_in_prd(ptext)
+        if not frs:
+            print(f"✗ {prd_path.parent.name} 的 prd.md 沒有 `## Functional Requirements` "
+                  f"一節、或該節底下沒有任何 FR —— 先跑 bdd-clarify")
+            problems += 1
             continue
 
-        for slug, exs in sorted(stories.items()):
-            covered.add(slug)
-            fpath = feat_dir / f"{slug}.feature"
-            if not fpath.exists():
-                print(f"{slug:30} —— 還沒寫成 .feature")
-                continue
+        # 這是 D3 兩層結構唯一的機械防線：完全沒有例子的 FR，SPEC 無從寫出場景，
+        # 只能發明——而發明的驗收條件正是這支腳本要抓的另一個方向。
+        barren = sorted(fr for fr, exs in frs.items() if not exs)
+        if barren:
+            print(f"✗ 這些 FR 沒有任何 EX，SPEC 無從寫出場景：{', '.join('FR-' + b for b in barren)}")
+            problems += 1
 
-            ftext = fpath.read_text(encoding="utf-8")
-            # ↓ 以下沿用原本的 tags/missing/invented/states/zh_rule 那一整段，
-            #   只把 `exs` 的來源換掉，其餘一字不動。
+        spec_path = prd_path.parent / "spec.md"
+        if not spec_path.exists():
+            print(f"✗ {prd_path.parent.name} 有 prd.md 但沒有 spec.md —— 先跑 bdd-spec")
+            return 1
+        stories = stories_in_spec(spec_path.read_text(encoding="utf-8"))
+
+        # 逐 story 比，不可把所有 story 的例子聯集起來跟單一 .feature 比：
+        # 一則 story 一個 .feature，聯集會讓 A 的例子出現在 B 檔裡也算通過。
+        for slug, fr_ids in sorted(stories.items()):
+            covered.add(slug)
+            expected = {ex for fr in fr_ids for ex in frs.get(fr, set())}
+            fpath = feat_dir / f"{slug}.feature"
+            ftext = fpath.read_text(encoding="utf-8") if fpath.exists() else ""
+
             tags = set(re.findall(r"@example-(\d+\.\d+)", ftext))
             key = lambda s: tuple(map(int, s.split(".")))
-            missing = sorted(exs - tags, key=key)
-            invented = sorted(tags - exs, key=key)
+            missing = sorted(expected - tags, key=key)
+            invented = sorted(tags - expected, key=key)
 
             states = [s for s in STATES if re.search(rf"^{s}\b", ftext, re.M)]
             zh_rule = re.findall(r"^\s*規則:", ftext, re.M)
@@ -178,7 +197,7 @@ def check(root: Path) -> int:
 
             explained = sorted(set(missing) - set(unexplained), key=key)
             status = "✗" if issues else "✓"
-            print(f"{status} {slug:30} {len(exs & tags):>3}/{len(exs)} 例子 · {states[0] if len(states)==1 else '?':7}"
+            print(f"{status} {slug:30} {len(expected & tags):>3}/{len(expected)} 例子 · {states[0] if len(states)==1 else '?':7}"
                   + (f" · 已交代不寫 {explained}" if explained else "")
                   + (f" · 單一結果的規則 {len(lop)}" if lop else ""))
             for i in issues:
@@ -202,9 +221,6 @@ def check(root: Path) -> int:
                if p.stem not in covered]
     if orphans:
         print(f"\n沒有對應 map 的 .feature（不在本檢查範圍）：{orphans}")
-
-    if deferred:
-        print(f"\n尚未澄清完、本次不稽核的批次：{deferred}")
 
     print(f"\n{'全部通過' if not problems else f'{problems} 個問題'}")
     return 1 if problems else 0
