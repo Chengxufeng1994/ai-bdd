@@ -1,2 +1,4 @@
 .superpowers/
 runs/
+__pycache__/
+*.pyc

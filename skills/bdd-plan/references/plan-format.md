@@ -2,12 +2,12 @@
 
 照抄即可。讀這份的時機：步驟 3 之後，準備寫檔的時候。
 
-一批一份，路徑 `specs/<slice-slug>/plan.md`。
+一個 feature 一份，路徑 `specs/<date>-<feature>/plan.md`，跟同目錄的 `spec.md`
+配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
 
 ```markdown
 # 實作計畫
 
-**Slice**: <slice-slug>
 **來源**: `spec.md`（<日期>）＋ `features/` 底下標 `@ready` 的 <N> 個檔
 **日期**: <YYYY-MM-DD>
 **seam**: <照抄 spec.md 的 Testing Decisions>
