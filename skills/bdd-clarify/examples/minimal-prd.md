@@ -13,33 +13,37 @@
 
 ## Scope — In / Out
 
-**In**：訪客計費、出場放行
-**Out**：月租費線上收款
+**In**
+- 訪客計費 ← PRD §2
+- 出場放行 ← PRD §2
+
+**Out**
+- 月租費線上收款 ← PRD §2
 
 ## Functional Requirements
 
-### FR-1  When 訪客車出場, the system shall 依停留時長計費，前 30 分鐘免費。
+### FR-1  When 訪客車出場, the system shall 依停留時長計費，前 30 分鐘免費。 ← PRD §3
 
 #### AC
-- AC-1.1  訪客在繳費機看得到金額與停留時長
-- AC-1.2  付款完成前柵欄不開
+- AC-1.1  訪客在繳費機看得到金額與停留時長 ← PRD §3
+- AC-1.2  付款完成前柵欄不開 ← 推論
 
 #### Examples
-- EX-1.1  停 29 分 → 收 0 元
-- EX-1.2  停剛好 30 分 → 收 0 元
-- EX-1.3  停 31 分 → 收 30 元
+- EX-1.1  停 29 分 → 收 0 元 ← PRD §3
+- EX-1.2  停剛好 30 分 → 收 0 元 ← Q4
+- EX-1.3  停 31 分 → 收 30 元 ← PRD §3
 
-### FR-2  When 月租戶刷卡出場, the system shall 直接開啟柵欄，不計費。
+### FR-2  When 月租戶刷卡出場, the system shall 直接開啟柵欄，不計費。 ← PRD §4
 
 #### AC
-- AC-2.1  月租戶出場不需經過繳費機
+- AC-2.1  月租戶出場不需經過繳費機 ← PRD §4
 
 #### Examples
-- EX-2.1  名單內且未到期 → 開柵欄，金額 0
+- EX-2.1  名單內且未到期 → 開柵欄，金額 0 ← PRD §4
 
 ## Non-Functional Requirements
 
-- NFR-1  出場柵欄自刷卡到開啟不超過 2 秒
+- NFR-1  出場柵欄自刷卡到開啟不超過 2 秒 ← PRD §5
 
 ## Open Questions
 
@@ -60,4 +64,4 @@
 
 ## Assumptions / Constraints
 
-- 沒有車牌辨識，去年區權會否決
+- 沒有車牌辨識，去年區權會否決 ← 推論

@@ -156,6 +156,16 @@ MUST: PRD 裡標題叫「假設」的那一段，**每一條都當成沒問過**
 `references/prd-format.md` 的「Non-Functional Requirements 與 Constraints：
 怎麼分邊」一節。
 
+MUST: 這裡、以及後面兩個 Pass 寫進 `prd.md` 的每一行實質內容都要標來源，
+三選一——`PRD §x`（PRD 原文有這段）、`Q<n>`（來自 `## Open Questions` 某一題
+的答案）、`推論`（兩者都不是，是推導出來的）。範圍：`## Scope — In / Out` 的
+每條邊界、`## Assumptions / Constraints` 的每條，以及 Pass 2 的每條
+FR／AC／EX、Pass 3 的每條 NFR。寫法與範例 → `references/prd-format.md`。
+
+沒有這個標記，**「CLARIFY 真的逼問過 PRD」跟「CLARIFY 只是把 PRD 換句話抄
+一遍」在 `prd.md` 上長得一模一樣**——整份文件的來源欄全是 `PRD §x` 時，代表
+這一步沒有真的發生，那正是這一步存在的理由。
+
 ### 2. 識別角色
 
 規則的敘述（EARS 的 `When <trigger>`）常常以角色當主詞，角色名稱不統一，
@@ -300,7 +310,8 @@ MUST: 一輪問完就把**這一輪能抽的規則抽出來**，不要累積到�
 MUST: 新規則直接寫進 `## Functional Requirements`——`### FR-<n>`（EARS 句式，
 見 `references/prd-format.md`），底下掛 `#### AC`（PM 讀，畫面與感受）與
 `#### Examples`（SPEC 讀，含實際數字）。**編號在這裡定版**，寫出去就不重排；
-刪掉一條規則就留空號，不遞補——空號看得出來，重排看不出來。
+刪掉一條規則就留空號，不遞補——空號看得出來，重排看不出來。FR／AC／EX 三者
+都要標來源（`PRD §x`／`Q<n>`／`推論`，規則見「拆成骨架」一節）。
 
 #### 什麼時候停
 
@@ -391,6 +402,7 @@ Requirements`；不可協商的外部限制（既有硬體、法規、已發包�
 `## Assumptions / Constraints`。答不出來的一律進 `## Open Questions`，跟業務
 面的紅卡同一張表，不勉強塞進 NFR 或 Constraints 湊數——這兩節怎麼分邊見
 `references/prd-format.md`。標 `n/a` 的要寫理由，否則它跟「懶得問」分不出來。
+每條 NFR 一樣要標來源（多半是 `Q<n>`，因為它來自這一輪技術追問）。
 
 IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只讀 `prd.md` 已經有答案的
 東西。所以這一趟漏掉的面向，不會在下游被補起來——它會在 `prd.md` 裡留下一個

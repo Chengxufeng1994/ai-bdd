@@ -34,6 +34,35 @@ fixture。
 
 ---
 
+## 來源標記：三選一
+
+`## Functional Requirements` 的每條 FR／AC／EX、`## Non-Functional
+Requirements` 的每條 NFR、`## Scope — In / Out` 的每條邊界、`## Assumptions /
+Constraints` 的每條，行尾都要標來源，三選一：
+
+| 標記 | 意思 |
+| --- | --- |
+| `PRD §x` | PRD 原文這樣寫（引用章節或段落） |
+| `Q<n>` | 來自 `## Open Questions` 某一題的答案，`<n>` 對應那一列的 `Q` 欄 |
+| `推論` | 兩者都不是，是從別的地方推導出來的 |
+
+寫法：行尾加 `← <標記>`，例如：
+
+```markdown
+### FR-2  When 月租戶刷卡出場, the system shall 直接開啟柵欄，不計費。 ← PRD §4
+```
+
+MUST: 這個標記不是裝飾。少了它，「這一行是真的逼問過 PRD 才寫下來的」跟
+「這一行只是把 PRD 換句話抄一遍」在 `prd.md` 上長得一模一樣——完整範例見
+[`../examples/minimal-prd.md`](../examples/minimal-prd.md)：整份文件的來源欄
+全是 `PRD §x` 時，代表 CLARIFY 沒有真的發生。
+
+`## Actors` 與 `## Open Questions` 不在這條規則的範圍內——角色的來源已經是
+表格自己的「怎麼取得」欄，問題本身就是在記錄還沒有答案的東西，兩者不需要
+再疊一層來源標記。
+
+---
+
 ## 編號規則：FR 平鋪，AC／EX 掛在底下
 
 `FR-<n>` 不分組、不巢狀，從 1 往下編到底。這個 feature 不再切 story，所以沒有
