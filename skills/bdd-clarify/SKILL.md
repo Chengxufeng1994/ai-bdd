@@ -98,7 +98,7 @@ Pass 3 · 技術 —— 逐項掃過 technical-probes.md
 問題還算數，不必為續跑重新掃一遍 `references/technical-probes.md`。
 
 開始每一個 feature 之前讀 `prd.md`：`## Problem / Goal / Success Metrics` 與
-`## Scope` 判斷這個 feature 要交付什麼，`## Open Questions` 看問過什麼、已經
+`## Scope — In / Out` 判斷這個 feature 要交付什麼，`## Open Questions` 看問過什麼、已經
 確定什麼、哪些還待答——已答的問題就是目前確定的規則。還開著的：
 `python3 scripts/status.py`。
 
@@ -351,7 +351,7 @@ MUST: 訊號觸發但你判定不適用時，**在判定裡寫出來**，連同�
 2. **核對 actor**：`## Actors` 的每個角色都有問答或規則約束它；規則裡講出來
    的主詞都在 `## Actors` 裡。兩個方向都要對得上——只對一邊會漏掉憑空的角色。
    Pass 1 記下的「目前沒有規則區分它與 X」在這裡結案：仍然沒有就合併
-3. **核對 Scope**：`## Scope — Out` 明確排除的項目**不該有任何 `FR-<n>`**；
+3. **核對 Scope**：`## Scope — In / Out` 的 Out 段明確排除的項目**不該有任何 `FR-<n>`**；
    每一條隱含假設都已經有答案收進 `## Assumptions / Constraints`，或還是
    `## Open Questions` 裡待答的一列。前者是範圍悄悄擴張，後者是假設被當成
    前提收下了
@@ -413,7 +413,7 @@ IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只讀 `prd.md` 已�
 ## 產物
 
 ```
-specs/<date>-<feature-name>/
+specs/<date>-<feature>/
 └── prd.md          CLARIFY  ★ 唯一產物，完整自足
 
 （spec.md 與 plan.md 是 SPEC 與 PLAN 的產物，本 skill 不得寫入）

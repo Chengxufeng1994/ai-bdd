@@ -89,7 +89,7 @@ Each step reads what the previous step actually emitted: SPEC reads answered que
 PLAN reads `spec.md` and the `.feature` files, REVIEW audits the whole chain.
 
 ```
-商業目標 → 批次 → Story → 規則 → 例子 → Scenario → Ticket → Step → 程式碼
+商業目標 → FR → 例子 → Story → Scenario → Ticket → Step → 程式碼
 ```
 
 Every arrow is a place intent can be lost. Changing an artifact's format breaks the chain,

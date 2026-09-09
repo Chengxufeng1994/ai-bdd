@@ -74,6 +74,17 @@ MUST NOT: 切出 `prd.md` `## Scope — In / Out` 的 Out 段明確排除的東�
 **只轉錄，不裁決。** 詞義有爭議時不要自己定一個——那是訪談，SPEC 不訪談。
 回 `bdd-clarify` 把它變成一題。
 
+### 條目格式
+
+欄位固定，這樣不同 feature 各自執行的 SPEC 才接得上同一份文件：
+
+| 詞 | 定義 | 來源 feature | 為什麼要定義 |
+| --- | --- | --- | --- |
+| 訪客 | 沒有月租證的臨停車輛 | 2026-09-09-parking-fee-collection | 跟「月租戶」對照才看得出計費規則分岔在哪 |
+
+第四欄不是裝飾——一個不需要解釋為什麼要定義的詞，通常本來就沒有歧義，
+列進來只是雜訊。
+
 MUST: 只得建立 `docs/CONTEXT.md`，或在其中**追加**條目。
 MUST NOT: 改寫該檔既有的任何段落；寫入 `docs/` 底下其他任何檔案。
 
@@ -539,9 +550,10 @@ zh-TW 方言**沒有**「規則」這個字（`zh-CN` 有「规则」、`ja` 有
 
 ## 產物隔離
 
-MUST: 只寫 `.feature`，且**不修改專案既有的任何檔案**（含既有的 `.feature`）。
-位置由測試框架決定——有 `.feature` 就跟隨，沒有就用專案根的 `features/`。
-理由與例外 → `references/artifact-location.md`。
+MUST: 只新增本節列出的四種產物，**不修改專案既有的任何檔案**（含既有的
+`.feature`、`docs/CONTEXT.md` 既有段落）。`.feature` 的位置由測試框架決定
+——有 `.feature` 就跟隨，沒有就用專案根的 `features/`。理由與例外 →
+`references/artifact-location.md`。
 
 ## 完成後
 

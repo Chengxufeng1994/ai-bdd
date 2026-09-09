@@ -1,6 +1,6 @@
 # `prd.md` 的格式
 
-`specs/<date>-<feature-name>/prd.md` 的寫法。CLARIFY 的**唯一產物**，一個
+`specs/<date>-<feature>/prd.md` 的寫法。CLARIFY 的**唯一產物**，一個
 feature 一份，自足到可以單獨拿給 PM 對焦、單獨拿給 SPEC 讀，不必再開別的檔案。
 
 三個 Pass 都對同一份文件寫：Pass 1 開骨架（Problem／Actors／Scope），
@@ -31,6 +31,10 @@ fixture。
 | `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 |
 
 順序固定，不因為某節內容少而調換或省略標題。
+
+**Out 要分辨兩類：明確排除的能力，跟因此接受的風險。** 「不做名單管理」是範圍
+決定；「因此擋不住已作廢的卡繼續使用」是風險——兩者寫在一起，風險會消失在
+「這次不做」四個字裡。
 
 ---
 

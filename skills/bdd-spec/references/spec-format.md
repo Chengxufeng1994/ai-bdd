@@ -166,15 +166,15 @@ API 契約與 schema 天生跨 story，只有並排才看得見衝突。切 stor
 
 ## `domain-model.md` 的骨架
 
-路徑 `specs/domain-model.md`——**根層，跨批次**。它比 `spec.md` 活得久：
+路徑 `specs/domain-model.md`——**根層，跨 feature**。它比 `spec.md` 活得久：
 spec 是拋棄式的快照，實作一開始就會過期；domain model 要留下來。
 
-每一批只**增修**，不重寫。改了既有條目要寫「原本是什麼、為什麼改」。
+每個 feature 只**增修**，不重寫。改了既有條目要寫「原本是什麼、為什麼改」。
 
 ```markdown
 # Domain Model
 
-**更新於**: <YYYY-MM-DD> · **最後一批**: <date>-<feature>
+**更新於**: <YYYY-MM-DD> · **最後更新 feature**: <date>-<feature>
 
 ## 聚合
 
@@ -196,7 +196,7 @@ spec 是拋棄式的快照，實作一開始就會過期；domain model 要留�
 
 ## 修訂紀錄
 
-| 日期 | 批次 | 改了什麼 | 為什麼 |
+| 日期 | feature | 改了什麼 | 為什麼 |
 | --- | --- | --- | --- |
 ```
 

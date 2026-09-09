@@ -4,16 +4,30 @@
 
 ## 規則
 
-BDD 流程的**文件型產物住在 `specs/`**，但 `.feature` 是唯一的例外——
+BDD 流程的**文件型產物住在 `specs/`**，有兩個例外：`.feature` 與
+`docs/CONTEXT.md`。
+
+### `.feature`
+
 它同時是規格與可執行測試，**位置由測試框架決定**，不由本流程決定。
 
 | 規則 | 強度 |
 | --- | --- |
 | `.feature` 放測試框架找得到的地方 | `MUST` |
-| 不修改專案既有的任何檔案（含既有的 `.feature`） | `MUST` |
+| 不修改專案既有的任何 `.feature` | `MUST` |
 | 已經有 `.feature` 就跟隨它們的位置 | `SHOULD` |
 | 沒有任何 `.feature`，也還沒有框架 → 專案根的 `features/` | `SHOULD` |
 
 技術上可以用 godog 的 `Paths` 把 `.feature` 也塞進 `specs/`，但那會讓
 Go 開發者在預期的地方找不到它。**鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。**
+
+### `docs/CONTEXT.md`
+
+理由是壽命：刪掉某個 feature 的 spec 目錄之後，詞彙定義應該還在。
+
+| 規則 | 強度 |
+| --- | --- |
+| 只得建立這個檔案，或在其中追加條目 | `MUST` |
+| 不改寫該檔既有的任何段落 | `MUST NOT` |
+| 不寫入 `docs/` 底下其他任何檔案 | `MUST NOT` |
 

@@ -130,7 +130,7 @@ def check(root: Path) -> int:
         return 1
 
     problems = 0
-    print(f"map: {specs_dir}    feature: {feat_dir}\n")
+    print(f"specs: {specs_dir}    feature: {feat_dir}\n")
 
     prds = sorted(specs_dir.glob("*/prd.md"))
     if not prds:
