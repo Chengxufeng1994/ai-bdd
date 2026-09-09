@@ -148,17 +148,30 @@ def check(root: Path) -> int:
             continue
 
         # 這是 D3 兩層結構唯一的機械防線：完全沒有例子的 FR，SPEC 無從寫出場景，
-        # 只能發明——而發明的驗收條件正是這支腳本要抓的另一個方向。
+        # 只能發明——而發明的驗收條件正是這支腳本要抓的另一個方向。FR 編號是
+        # 每個 feature 各自從 1 編起，「FR-3」在多 feature 的 repo 裡定位不到是
+        # 哪一份，所以訊息要帶上是哪個 feature 目錄。
         barren = sorted(fr for fr, exs in frs.items() if not exs)
         if barren:
-            print(f"✗ 這些 FR 沒有任何 EX，SPEC 無從寫出場景：{', '.join('FR-' + b for b in barren)}")
+            print(f"✗ {prd_path.parent.name} 這些 FR 沒有任何 EX，SPEC 無從寫出場景："
+                  f"{', '.join('FR-' + b for b in barren)}")
             problems += 1
 
         spec_path = prd_path.parent / "spec.md"
         if not spec_path.exists():
             print(f"✗ {prd_path.parent.name} 有 prd.md 但沒有 spec.md —— 先跑 bdd-spec")
             return 1
-        stories = stories_in_spec(spec_path.read_text(encoding="utf-8"))
+        stext = spec_path.read_text(encoding="utf-8")
+        if not re.search(r"^## Stories\s*$", stext, re.M):
+            print(f"✗ {prd_path.parent.name} 的 spec.md 找不到 `## Stories` 一節 —— 檔案格式損壞")
+            problems += 1
+            continue
+        stories = stories_in_spec(stext)
+        if not stories:
+            print(f"✗ {prd_path.parent.name} 的 spec.md `## Stories` 一節底下沒有任何 story "
+                  f"—— SPEC 還沒切 story")
+            problems += 1
+            continue
 
         # 逐 story 比，不可把所有 story 的例子聯集起來跟單一 .feature 比：
         # 一則 story 一個 .feature，聯集會讓 A 的例子出現在 B 檔裡也算通過。
