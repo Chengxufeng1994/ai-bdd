@@ -160,7 +160,8 @@ def check(root: Path) -> int:
         spec_path = prd_path.parent / "spec.md"
         if not spec_path.exists():
             print(f"✗ {prd_path.parent.name} 有 prd.md 但沒有 spec.md —— 先跑 bdd-spec")
-            return 1
+            problems += 1
+            continue
         stext = spec_path.read_text(encoding="utf-8")
         if not re.search(r"^## Stories\s*$", stext, re.M):
             print(f"✗ {prd_path.parent.name} 的 spec.md 找不到 `## Stories` 一節 —— 檔案格式損壞")
