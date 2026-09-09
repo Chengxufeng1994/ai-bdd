@@ -2,8 +2,9 @@
 
 照抄即可。讀這份的時機：步驟 4，準備寫 `spec.md` 的時候。
 
-一批一份，路徑 `specs/<slice-slug>/spec.md`。一個 slice ＝ 一次可交付的價值，
-裡面裝好幾則 story。
+一個 feature 一份，路徑 `specs/<date>-<feature>/spec.md`，跟同目錄的 `prd.md`
+配對。一份 `spec.md` 裡面裝這個 feature 切出來的好幾則 story——切法本身寫在
+`## Stories`，見 `SKILL.md`「切 story」一節。
 
 沒有內容的節**保留標題並寫為什麼空**，不要刪掉。空著的節跟被刪掉的節在檔案上
 長得一樣，而它們的意思完全不同。
@@ -11,12 +12,10 @@
 ---
 
 ```markdown
-# <slice 名稱>
+# <feature 名稱>
 
-**Slice**: <slice-slug>
 **日期**: <YYYY-MM-DD>
-**涵蓋**: <story-slug>、<story-slug>⋯（N 則）
-**跳過**: <story-slug> —— <理由>（未就緒，或這一批不做）
+**跳過**: FR-<n> —— <理由>（未就緒，或這個 feature 這一輪不切）
 
 ## Problem Statement
 
@@ -26,27 +25,32 @@
 
 解法，一樣從使用者的角度。不寫技術。
 
-## User Stories
+## Stories
 
-編號清單，每則一句：
+`prd.md` 的 FR 是平鋪的，這裡切出哪幾條湊成一則可獨立驗收的 story，
+沿規則切、不沿使用者旅程切。每則要有自己的 `.feature`，slug 就是檔名。
 
-1. 作為 <角色>，我要 <能力>，以便 <價值>
+角色名用 `prd.md` `## Actors` 的，不另創同義詞。
 
-角色名用 `actor.md` 的，不另創同義詞。
+### <story-slug>
+涵蓋 FR-<n>、FR-<n>。<為什麼是這個切法>
+
+### <story-slug>
+涵蓋 FR-<n>。
 
 ## Acceptance Criteria
 
-規則與例子**不在這裡**。它們的定版編號住在 `specs/<slice>/clarify.md` 的
-`## Business Rules`，`.feature` 的 tag 回指那些編號——這一節只寫 Gherkin
-表達不了的驗收面向。
+規則與例子**不在這裡**。它們的定版編號住在同目錄 `prd.md` 的
+`## Functional Requirements`，`.feature` 的 tag 回指那些編號——這一節只寫
+Gherkin 表達不了的驗收面向。
 
-| 面向 | 這一批怎麼處理 |
+| 面向 | 這個 feature 怎麼處理 |
 | --- | --- |
-| 邊界值 | ← `clarify.md` Rule N |
+| 邊界值 | ← `prd.md` EX-N.M（已經是具體數字，可以直接抄） |
 | 錯誤行為 | 失敗時回什麼、訊息從哪來 |
-| 非功能 | 時限、降級、可觀測性——如果它們有驗收條件的話 |
+| 非功能 | ← `prd.md` `## Non-Functional Requirements` 的 NFR-N；這裡只補 Gherkin 表達不了的部分（怎麼量測、驗收門檻怎麼判） |
 
-沒有就寫「沒有——這一批的驗收條件全部表達得進 Gherkin」，不要刪掉這一節。
+沒有就寫「沒有——這個 feature 的驗收條件全部表達得進 Gherkin」，不要刪掉這一節。
 
 ## Implementation Decisions
 
@@ -104,7 +108,7 @@ seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人�
 
 | 風險 | 從哪條規則長出來 | 影響什麼 |
 | --- | --- | --- |
-| 併發：兩個請求同時通過「最多一筆進行中」 | log Rule 1 | schema（唯一索引）、實作順序 |
+| 併發：兩個請求同時通過「最多一筆進行中」 | log-a-workout FR-1 | schema（唯一索引）、實作順序 |
 
 SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際流量與既有基礎
 設施，而那些不在規格裡。寫「兩種都可以，看部署形態」比寫「用 Redis」有用——
@@ -134,25 +138,29 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 
 ## 為什麼規則不寫在這裡
 
-`check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`clarify.md` 的
-規則清單，與 `.feature` 的可執行場景。clarify 有而 feature 沒有 ＝ 漏做；
-feature 有而 clarify 沒有 ＝ 憑空發明。
+`check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`prd.md` 的
+FR／EX 清單，與 `.feature` 的可執行場景。`spec.md` 的 `## Stories` 只多插
+一條——哪些 FR 歸哪則 story，決定該去哪個 `.feature` 找對應的例子；它不重述
+FR 或 EX 本身。`prd.md` 有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature`
+指向 `prd.md` 沒有的例子 ＝ 憑空發明。
 
-`spec.md` 若也抄一份規則，就變成三份表述——稽核有兩個可能來源，而它們遲早
-不一樣。「發明」是最沒有人會懷疑的那種錯：漏一條會被數字抓到，多一條看起來
-只是很完整。
+`spec.md` 若連 FR 或 EX 的內容也抄一份，就變成三份表述——稽核有兩個可能
+來源，而它們遲早不一樣。「發明」是最沒有人會懷疑的那種錯：漏一條會被數字
+抓到，多一條看起來只是很完整。
 
 規則的家在 CLARIFY，因為那是它們被決定的地方。`spec.md` 記的是**規則決定
-之後**的事：怎麼驗、動哪些模組、有什麼風險、什麼不做。
+之後**的事：切出哪些 story、怎麼驗、動哪些模組、有什麼風險、什麼不做。
 
 
-## 為什麼一批一份，不是一則 story 一份
+## 為什麼一個 feature 一份，不是一則 story 一份
 
-試過「每 feature 一份 ＋ 一份共用檔」，壞成兩種：共用檔把實質吸走（各檔的
+試過「每則 story 一份 ＋ 一份共用檔」，壞成兩種：共用檔把實質吸走（各檔的
 schema 一節全退化成「見共用檔」），而且兩種檔案各用一套節號、意思只對得上一半
 ——**部分對齊比完全不對齊更危險**，讀的人會假設對齊然後在三個節上讀錯。
 
-API 契約與 schema 天生跨 story，只有並排才看得見衝突。
+API 契約與 schema 天生跨 story，只有並排才看得見衝突。切 story 搬到這一步
+之後，`spec.md` 仍然一個 feature 一份，不是切完就跟著拆成好幾份——story
+是切分單位，不是檔案邊界。
 
 ---
 
@@ -166,7 +174,7 @@ spec 是拋棄式的快照，實作一開始就會過期；domain model 要留�
 ```markdown
 # Domain Model
 
-**更新於**: <YYYY-MM-DD> · **最後一批**: <slice-slug>
+**更新於**: <YYYY-MM-DD> · **最後一批**: <date>-<feature>
 
 ## 聚合
 
@@ -174,13 +182,13 @@ spec 是拋棄式的快照，實作一開始就會過期；domain model 要留�
 
 **是什麼**: 一句話
 **邊界**: 哪些東西跟它一起變更、哪些不是
-**來源**: <slice-slug> Rule N
+**來源**: <date>-<feature> FR-N
 
 **不變條件**（任何時刻都必須為真）
 
 | 條件 | 來源 | 被誰保證 |
 | --- | --- | --- |
-| 一個使用者最多一筆進行中的訓練 | log-a-workout Rule 1 | Workout 聚合 ＋ DB 唯一索引 |
+| 一個使用者最多一筆進行中的訓練 | 2026-09-09-log-a-workout FR-1 | Workout 聚合 ＋ DB 唯一索引 |
 
 ## 跨聚合的規則
 
