@@ -11,8 +11,8 @@
 
 | tag | 由誰寫入 | 意義 |
 | --- | --- | --- |
-| `@draft` | `bdd-spec` | 來源 map 未就緒。可用來對齊理解，**不是**講定的驗收條件 |
-| `@ready` | `bdd-spec` | 來源 map 已就緒，三方講定，等實作 |
+| `@draft` | `bdd-spec` | 來源 `prd.md` 未就緒。可用來對齊理解，**不是**講定的驗收條件 |
+| `@ready` | `bdd-spec` | 來源 `prd.md` 已就緒，三方講定，等實作 |
 | `@wip` | `bdd-implement` 開工時 | 正在實作這則 |
 | `@review` | `bdd-implement` 全綠後 | 等 REVIEW |
 | `@done` | `bdd-review` 通過後 | 六步走完 |

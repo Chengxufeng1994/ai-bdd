@@ -63,7 +63,7 @@ EX 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加
 MUST: 寫下**為什麼是這個切法**。半年後有人要加一則 story 時，第一個該讀的
 就是這一段。
 
-MUST NOT: 切出 `prd.md` 的 `## Scope — Out` 明確排除的東西。範圍要擴張就回
+MUST NOT: 切出 `prd.md` `## Scope — In / Out` 的 Out 段明確排除的東西。範圍要擴張就回
 `bdd-clarify` 公開改範圍——悄悄擴張比公開改糟，因為沒有人有機會反對。
 
 ## 詞彙表 —— `docs/CONTEXT.md`
@@ -499,7 +499,7 @@ story 涵蓋的那幾條 FR 濃縮而來（`## Stories` 裡的切法說明就是
 
 MUST: 每個 `.feature` 在 `Feature:` 上掛**恰好一個**狀態 tag。本 skill 只寫兩個：
 
-| map 的就緒判定 | 寫入 |
+| story 的就緒判定 | 寫入 |
 | --- | --- |
 | 已就緒 | `@ready` |
 | 未就緒（使用者仍要求先寫） | `@draft` ＋ 一段說明它建立在哪些未定的答案上 |
