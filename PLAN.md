@@ -266,8 +266,8 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 然後在其中幾處讀錯。`feature` 這個字純粹留給 `.feature`。
 
 **三個 plan。** 根層 `PLAN.md`（這個 repo 要建什麼）、步驟 PLAN、產物
-`specs/<slice>/plan.md`。後兩者保留，因為「PLAN ＝ 把 spec 拆成可逐條執行的
-任務、寫進 `plan.md`」是既有慣例；歧義靠這份文件開頭那段話消解。
+`specs/<date>-<feature>/plan.md`。後兩者保留，因為「PLAN ＝ 把 spec 拆成可逐條
+執行的任務、寫進 `plan.md`」是既有慣例；歧義靠這份文件開頭那段話消解。
 
 ---
 

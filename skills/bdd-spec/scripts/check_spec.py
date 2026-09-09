@@ -19,8 +19,8 @@
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。
 
 只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
-例子的目錄讀自 specs/<slice>/prd.md 的 `## Functional Requirements` 段
-（FR 編號在那裡定版）；story 由哪些 FR 組成讀自 specs/<slice>/spec.md 的
+例子的目錄讀自 specs/<date>-<feature>/prd.md 的 `## Functional Requirements` 段
+（FR 編號在那裡定版）；story 由哪些 FR 組成讀自 specs/<date>-<feature>/spec.md 的
 `## Stories` 段——切 story 是 SPEC 的事，不再是 CLARIFY 的事。
 """
 import re
