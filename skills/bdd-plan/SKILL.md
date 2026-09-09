@@ -48,7 +48,7 @@ MUST NOT: 在這一步決定任何 API、型別、欄位、資料表或 seam。
 
 ### 1. 讀
 
-`specs/<slice-slug>/spec.md` 全部，加上它涵蓋的每個 `.feature`。
+`specs/<date>-<feature>/spec.md` 全部，加上它涵蓋的每個 `.feature`。
 
 **一次讀完整批。** 票之間的依賴只有並排時才看得見；分批切會各自長出一套順序，
 然後在實作時發現它們互相卡住。
@@ -84,7 +84,7 @@ IMPORTANT: **切太細是這一步最常見的失效**，而且它不會自己�
 
 ## 產物
 
-一批一份 `specs/<slice-slug>/plan.md`。骨架照抄 `references/plan-format.md`。
+一個 feature 一份 `specs/<date>-<feature>/plan.md`。骨架照抄 `references/plan-format.md`。
 
 MUST: 只寫入 `specs/`，**不修改專案既有的任何檔案**。
 
