@@ -9,8 +9,8 @@ weak.
 ## Ground rule
 
 **No business code until CLARIFY has run.** Every type in `domain/` must trace
-back to a rule in an example map, and every scenario in `features/` back to a
-concrete example. Writing the model first defeats the entire point of the
+back to an `FR-<n>` in `prd.md`, and every scenario in `features/` back to an
+`EX-<n>.<m>`. Writing the model first defeats the entire point of the
 testbed — it would prove the skills work by handing them the answer.
 
 Current state: `domain/` is empty. `application/` and `infrastructure/` hold the
@@ -207,46 +207,53 @@ are ignored.
 
 **Do not mirror features with step files.** One `steps_x_test.go` per
 `x.feature` looks tidy and guarantees duplication, because a phrase like
-`a workout with 3 sets` is naturally shared. The two hierarchies are organised
+`a catalogue with 3 items` is naturally shared. The two hierarchies are organised
 on different axes on purpose:
 
 | | Grouped by | Example |
 | --- | --- | --- |
-| `features/` | capability | `features/volume/total_volume.feature` |
-| step definitions | domain noun | `steps_workout_test.go`, `steps_volume_test.go` |
+| `features/` | capability | `features/pricing/discount_tiers.feature` |
+| step definitions | domain noun | `steps_catalogue_test.go`, `steps_pricing_test.go` |
+
+The examples above are illustrative. This skeleton carries no domain of its
+own — whichever scenario is being run supplies the nouns.
 
 **Search before writing a step.** Duplicate definitions that differ only in
 wording are the beginning of a glue layer nobody can safely change.
 
 ### Keeping the chain machine-checkable
 
-Gherkin's `Rule:` keyword maps onto Example Mapping's cards, so the specification
-can be checked against the example map mechanically rather than by reading:
+Gherkin's `Rule:` keyword maps onto `prd.md`'s requirements, so the specification
+can be checked against it mechanically rather than by reading:
 
-| Example map | Gherkin | What can be checked |
+| `prd.md` / `spec.md` | Gherkin | What can be checked |
 | --- | --- | --- |
-| Story | `Feature:` | — |
-| Rule Rule 1 (blue card) | `Rule:` | every rule has a `Rule:` block |
-| Example Example 1.1 (green card) | `@Example1.1` on a `Scenario` | every example has a scenario; no orphan scenarios |
+| a story (sliced in SPEC, listed in `spec.md`'s `## Stories`) | `Feature:` | — |
+| `FR-1` | `Rule:` | every requirement the story covers has a `Rule:` block |
+| `EX-1.1` | `@example-1.1` on a `Scenario` | every example has a scenario; no orphan scenarios |
+
+**The tag is lowercase with a hyphen.** `check_spec.py` matches
+`@example-<n>.<m>`; `@Example1.1` parses as nothing and the scenario silently
+drops out of the coverage check.
 
 ```gherkin
-Feature: Total training volume
+Feature: Discount tiers
 
-  Rule: Volume is the sum of load times reps across working sets
+  Rule: A tier applies only above its threshold
 
-    @Example1.1
-    Scenario: A single barbell set
+    @example-1.1
+    Scenario: An order just below the first threshold
       ...
 ```
 
-This is why example-map numbering must never be renumbered — the tags are
+This is why `prd.md`'s numbering must never be renumbered — the tags are
 references, and renumbering silently repoints them.
 
 ### Tags
 
 | Tag | Meaning |
 | --- | --- |
-| `@Example1.1` | traces to an example map entry |
+| `@example-1.1` | traces to an `EX-1.1` in `prd.md` |
 | `@wip` | being worked on right now |
 | `@smoke` | must pass before anything else is trusted |
 | `@slow` | excluded from the fast loop (`-godog.tags="~@slow"`) |
