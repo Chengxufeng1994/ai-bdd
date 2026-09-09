@@ -10,9 +10,13 @@
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
 
-找不到資料時不猜、不印出「已就緒」——`specs/` 不存在、或底下沒有任何
-`prd.md`，兩種都算「找不到」，說清楚是哪一種、離開碼非 0，不拿看得懂的那一
-部分硬撐出一張表。
+找不到資料時不猜、不印出「已就緒」。`specs/` 不存在、或底下沒有任何
+`prd.md`，兩種都算「找不到」。單一 `prd.md` 也有三種算「壞」的情況，訊息
+分開講因為修法不同：`## Open Questions` 一節整個缺席（標題缺漏或打錯）是
+檔案格式損壞；一節存在但零列，代表 CLARIFY 沒問過任何問題，不是需求沒有
+疑點；表格裡有列的欄數不是 5，是那一列本身壞了。三種都指名是哪個檔案、
+離開碼非 0，但不因為某一份壞掉就把其他份、或同一份裡還解析得出來的列藏
+起來不印——安靜的「一切正常」比看得出來的「壞掉」更危險。
 
 只讀不寫。
 """
@@ -45,31 +49,41 @@ def _field(label: str, width: int) -> str:
     return f"{label:<{max(width - wide, 0)}}"
 
 
-def parse_open_questions(text: str) -> list[dict[str, str]]:
-    """prd.md 的 `## Open Questions` 表 -> 每題一個欄位字典。
+def parse_open_questions(
+    text: str,
+) -> tuple[bool, list[dict[str, str]], list[str]]:
+    """prd.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
 
     只讀那一節的表格列，不掃整份檔案：prd.md 的其他章節也有表格
     （Actors、NFR），對整份掃會把它們算成問題。
 
-    表頭固定五欄 `| Q | 問題 | 面向 | 狀態 | 答案 |`；欄數不符的列
-    直接丟進 unparseable，不猜。
+    第一個回傳值分開「這一節根本不存在」跟「存在但零列」——前者是標題
+    缺漏或打錯，檔案格式跑掉；後者是 CLARIFY 沒問過任何問題。呼叫端要能
+    分開講，不能都印成同一種「沒有」。
+
+    表頭固定五欄 `| Q | 問題 | 面向 | 狀態 | 答案 |`；表頭列與分隔列
+    （純 `-`／空白組成）之外，欄數不是 5 的列收進第三個回傳值，不猜、不
+    硬套進五欄格式——呼叫端要能報數，不能讓這種列悄悄從統計裡消失，看起
+    來只是「題目比較少」。
     """
     section = re.search(
         r"^## Open Questions\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     if not section:
-        return []
+        return False, [], []
     rows = []
+    unparseable = []
     for line in section.group(1).splitlines():
         line = line.strip()
         if not line.startswith("|"):
             continue
         cells = [c.strip() for c in line.strip("|").split("|")]
-        if len(cells) != 5 or cells[0] in ("Q", "---"):
+        if cells[0] in ("Q", "---") or set(cells[0]) <= {"-", " "}:
             continue
-        if set(cells[0]) <= {"-", " "}:
+        if len(cells) != 5:
+            unparseable.append(line)
             continue
         rows.append(dict(zip(("q", "問題", "面向", "狀態", "答案"), cells)))
-    return rows
+    return True, rows, unparseable
 
 
 def coverage(dims: set[str]) -> str:
@@ -94,6 +108,29 @@ def main(root: Path) -> int:
         print(f"{specs} 底下沒有任何 prd.md —— 先跑 bdd-clarify")
         return 1
 
+    # 逐份先解析、逐份先報壞——三種壞法訊息分開講，因為修法不同：
+    # 一節缺席是檔案格式跑掉，一節存在但零列是 CLARIFY 沒問過問題，欄數
+    # 不對的列是那一列本身壞了。任何一份壞掉都不能把其他份藏起來，或把
+    # 同一份裡還解析得出來的列也一起蓋掉——那正是「看起來正常」的來源。
+    parsed = {}
+    broken = False
+    for prd in prds:
+        found, rows, unparseable = parse_open_questions(
+            prd.read_text(encoding="utf-8"))
+        parsed[prd] = rows
+        if not found:
+            print(f"{prd} 找不到 `## Open Questions` 一節 —— 檔案格式損壞")
+            broken = True
+        elif not rows and not unparseable:
+            print(f"{prd} 的 `## Open Questions` 表零列 —— "
+                  f"CLARIFY 還沒問過任何問題，不是需求沒有疑點")
+            broken = True
+        if unparseable:
+            print(f"{prd} 有 {len(unparseable)} 列解析不出欄位（欄數不是 5）：")
+            for line in unparseable:
+                print(f"  {line}")
+            broken = True
+
     print(f"{_field('feature', 42)}{'已答':>6}{'n/a':>6}{'待答':>6}  追問覆蓋")
     print(f"{'':42}{'':>18}  {BIZ_ABBR}{TECH_ABBR}")
     tot = [0, 0, 0]
@@ -101,7 +138,7 @@ def main(root: Path) -> int:
 
     for prd in prds:
         slug = prd.parent.name
-        rows = parse_open_questions(prd.read_text(encoding="utf-8"))
+        rows = parsed[prd]
         answered = na = pending = 0
         dims: set[str] = set()
         pending_qs = []
@@ -147,7 +184,7 @@ def main(root: Path) -> int:
     print("追問覆蓋 · 技術面向（Pass 3）"
           "seam/模組邊界/介面與型別契約/排序契約／決定性/既有資產／測試慣例："
           "✓ 問過（含 n/a）· — 還沒問")
-    return 0
+    return 1 if broken else 0
 
 
 if __name__ == "__main__":
