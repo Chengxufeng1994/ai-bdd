@@ -35,24 +35,25 @@ CLARIFY  →  SPEC  →  PLAN  →  IMPLEMENT  →  VERIFY  →  REVIEW
 └──── BDD ─────┘      ✗       └─ BDD ─┘       ✗          ✗
 ```
 
-**帶 BDD 的那三格不等於 BDD。** CLARIFY 的前半在對齊業務目標、切出 story——
-Discovery 的輸入就是一則 story，長出 story 在它的上游；SPEC 除了 `.feature`，
-還要產出讓整份東西成為 live document 的其餘產物。只有 IMPLEMENT 跟 Automation
+**帶 BDD 的那三格不等於 BDD。** CLARIFY 的前半在對齊業務目標、產出一份對焦
+用的 PRD——這件事本身不是 Discovery，卻是 Discovery（把需求逼成規則與例子）
+真正要用的輸入；SPEC 除了 `.feature`，還要切 story、把技術決定記下來，一起
+構成讓整份東西成為 live document 的其餘產物。只有 IMPLEMENT 跟 Automation
 重合，因為 Automation 的產物本來就是程式碼而不是膠水層（見
 [bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是夾在中間的洞。**
 
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
-| **CLARIFY** | 兩件事：**對齊業務目標、切出 story**（不是 BDD）＋把 story 逼成規則與例子（BDD 的 Discovery）。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | 兩件事：把例子寫成可執行規格（BDD 的 Formulation）＋**把技術決定記下來**（不是 BDD——它讓 `.feature` 以外的產物一起構成 live document） | Formulation ＋ 額外 |
+| **CLARIFY** | 兩件事：**對齊業務目標、產出一份對焦用的 PRD**（不是 BDD）＋把需求逼成規則與例子（BDD 的 Discovery）。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
+| **SPEC** | 三件事：切 story（不是 BDD）＋把例子寫成可執行規格（BDD 的 Formulation）＋把技術決定記下來（不是 BDD——它讓 `.feature` 以外的產物一起構成 live document） | Formulation ＋ 額外 |
 | **PLAN** | 把工作切到一個 fresh session 做得完，並宣告誰卡誰 | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來 | Automation |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | **無**——治理不在三個實踐裡 |
 
-**四塊不屬於 BDD 的東西（PLAN、REVIEW、CLARIFY 的業務對齊那半、SPEC 的技術
-決定那半）都不是補丁。** 它們回答的是「協作對象會失憶」帶來的問題，而 BDD
-從來沒有那個問題要解。
+**五塊不屬於 BDD 的東西（PLAN、REVIEW、CLARIFY 的業務對齊那半、SPEC 的切
+story、SPEC 的技術決定那半）都不是補丁。** 它們回答的是「協作對象會失憶」帶來
+的問題，而 BDD 從來沒有那個問題要解。
 
 ---
 
@@ -62,8 +63,8 @@ Discovery 的輸入就是一則 story，長出 story 在它的上游；SPEC 除�
 
 | 步驟 | 只做 | 不做 |
 | --- | --- | --- |
-| **CLARIFY** | 問問題，問到收斂 | 不寫規格 |
-| **SPEC** | 綜合已經有答案的東西 | **不訪談**——憑空長出來的內容是缺陷 |
+| **CLARIFY** | 問問題，問到收斂 | 不寫規格；不切 story——那是 SPEC 的事 |
+| **SPEC** | 切 story ＋ 綜合已經有答案的東西 | **不訪談**——憑空長出來的內容是缺陷 |
 | **PLAN** | 切 tracer bullet | 不設計——API、schema、seam 在 SPEC 就定完了 |
 
 三條互相支撐：SPEC 能「不訪談」是因為 CLARIFY 做完了決定；PLAN 能「不設計」

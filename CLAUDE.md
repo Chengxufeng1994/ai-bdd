@@ -58,8 +58,8 @@ Both take a project root and default to `.`; both exit 1 and name what is missin
 than inferring anything from zero input.
 
 ```bash
-python3 skills/bdd-clarify/scripts/status.py [root]      # clarification progress per slice
-python3 skills/bdd-spec/scripts/check_spec.py [root]     # .feature ↔ example map consistency
+python3 skills/bdd-clarify/scripts/status.py [root]      # clarification progress per feature
+python3 skills/bdd-spec/scripts/check_spec.py [root]     # .feature ↔ prd.md/spec.md consistency
 ```
 
 ## Architecture
@@ -99,9 +99,10 @@ so formats are settled before downstream work starts.
 
 The first three steps hold because each does exactly one thing:
 
-- **CLARIFY** asks questions until they converge — it does not write specs.
-- **SPEC** synthesises what already has answers — **it does not interview.** Content that
-  appears from nowhere is a defect.
+- **CLARIFY** asks questions until they converge — it does not write specs, and it does not
+  slice stories; that is SPEC's job.
+- **SPEC** slices stories and synthesises what already has answers — **it does not
+  interview.** Content that appears from nowhere is a defect.
 - **PLAN** slices tracer bullets — it does not design. APIs, schema and seams were settled
   in SPEC.
 
@@ -132,7 +133,7 @@ Two things about it that look like breakage but are not:
   behaviour: a dashboard that quietly reports "all fine" gets believed.
 
 Its ground rule: **no business code until CLARIFY has run.** Every type in `domain/` must
-trace back to a rule in an example map. `internal/domain/` currently holds only `doc.go` —
+trace back to a rule in `prd.md`. `internal/domain/` currently holds only `doc.go` —
 the `/version` walking skeleton is the sole implemented slice and carries no domain meaning.
 
 ## Conventions
@@ -140,7 +141,10 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
 - **Prose documents are written in Traditional Chinese; commit messages and PR text are
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
-- Documentation artifacts the skills produce go to the consuming repo's `specs/`, one
-  directory that can be deleted whole. `.feature` files are the exception — they stay where
-  the runner expects them (`features/` for Cucumber-family tools).
+- Documentation artifacts the skills produce go to the consuming repo's
+  `specs/<date>-<feature>/` (e.g. `prd.md`), one directory that can be deleted whole. Two
+  exceptions: `.feature` files stay where the runner expects them (`features/` for
+  Cucumber-family tools); `docs/CONTEXT.md` outlives any single feature, so SPEC may create
+  it or append entries but must not rewrite its existing sections or write to anything else
+  under `docs/`.
 - Renames use `git mv` so `git log --follow` keeps working; the testbed's history depends on it.

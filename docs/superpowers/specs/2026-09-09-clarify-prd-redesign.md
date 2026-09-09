@@ -58,7 +58,7 @@ CLARIFY 現在在 Pass 1 就切 story 並分批，而**切分的依據那時還�
 
 **Pass 3 的產出落在哪**：技術追問問出來的東西分兩類——量得出來的（延遲、併發、
 資料量、可用性）進 `## Non-Functional Requirements`；不可協商的外部限制（既有硬體、
-法規、已發包的規格）進 `## Constraints`。答不出來的一律進 `## Open Questions`，
+法規、已發包的規格）進 `## Assumptions / Constraints`。答不出來的一律進 `## Open Questions`，
 跟業務面的紅卡同一張表。Pass 3 不新增 `FR-N`。
 
 ### D3 — AC 與 Examples 分兩層，編號同源

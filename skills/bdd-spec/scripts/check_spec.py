@@ -193,7 +193,7 @@ def check(root: Path) -> int:
             issues = []
             # 發明優先於漏做：憑空的驗收條件比缺一條更難發現，因為它看起來很完整。
             if invented:
-                issues.append(f"指向 map 裡不存在的例子 {invented}")
+                issues.append(f"指向 prd.md 裡不存在的例子 {invented}")
             if len(states) != 1:
                 issues.append(f"狀態 tag {states or '缺'} —— 每個檔恰好要一個")
             if zh_rule:
@@ -234,7 +234,7 @@ def check(root: Path) -> int:
     orphans = [p.name for p in feat_dir.glob("*.feature")
                if p.stem not in covered]
     if orphans:
-        print(f"\n沒有對應 map 的 .feature（不在本檢查範圍）：{orphans}")
+        print(f"\n沒有對應 story 的 .feature（不在本檢查範圍）：{orphans}")
 
     print(f"\n{'全部通過' if not problems else f'{problems} 個問題'}")
     return 1 if problems else 0
