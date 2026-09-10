@@ -33,7 +33,7 @@ ai-bdd/
 │   ├── story-splitting/
 │   └── skill-rules/
 ├── benchmark/
-│   ├── cases/          # fixed inputs + marking scheme, language-agnostic
+│   ├── cases/          # one dir per scenario: input-*.md + grading.md
 │   └── skeleton/go/    # the Go + godog template, copied per run
 └── README.md
 ```

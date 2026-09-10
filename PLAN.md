@@ -371,7 +371,7 @@ Always-on: ~1,620 tok  每個 session 都付
 因此 `status.py` 與 `check_spec.py` 對這個目錄跑會 exit 1 並指名說找不到產物——
 那是正確行為，不是壞掉。
 
-`benchmark/cases/` 現在有兩份固定輸入，測互補的失敗模式：
+`benchmark/cases/` 現在有兩個情境目錄，測互補的失敗模式：
 
 | 情境 | 測什麼 |
 | --- | --- |
