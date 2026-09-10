@@ -240,13 +240,13 @@ MUST NOT: 重排既有的 FR／AC／EX 編號。重排會讓那些引用**靜默
 
 ## 用 EARS 寫規則
 
-`### FR-<n>` 的敘述用 EARS 句式寫，六個 pattern 見
+`#### FR-<n>` 的敘述用 EARS 句式寫，六個 pattern 見
 [`docs/sdd.md`](../../../docs/sdd.md) 的 `## EARS`，這裡不重述。
 
 一個 Event-driven 的例子：
 
 ```
-### FR-2  When 月租戶刷卡出場, the system shall 直接開啟柵欄，不計費。
+#### FR-2  When 月租戶刷卡出場, the system shall 直接開啟柵欄，不計費。
 ```
 
 ---
@@ -261,10 +261,10 @@ MUST NOT: 重排既有的 FR／AC／EX 編號。重排會讓那些引用**靜默
 同一條 FR-1（訪客計費）：
 
 ```markdown
-#### AC
+##### AC
 - AC-1.1  訪客在繳費機看得到金額與停留時長
 
-#### Examples
+##### Examples
 - EX-1.1  停 29 分 → 收 0 元
 - EX-1.3  停 31 分 → 收 30 元
 ```
