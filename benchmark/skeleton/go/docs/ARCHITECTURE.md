@@ -17,7 +17,7 @@ because two copies of a rule drift apart and then nobody knows which is current.
 | [DATAFLOW.md](./DATAFLOW.md) | About to write an operation, mapper, use case or presenter | It is consulted repeatedly while coding; this document is read once on arrival |
 | [../README.md](../README.md) | You want to know why this testbed exists and what "done" means for it | It is the testbed's charter, not its architecture |
 | `internal/*/doc.go` | Working inside one layer and unsure what it may import | Rules belong next to the code they constrain, where a compiler error sends you |
-| [../../../cases/fitness-tracker/input-brief.md](../../../cases/fitness-tracker/input-brief.md) | Evaluating the skills | It is a test fixture, not documentation |
+| [../../../cases/personal-memo/input-brief.md](../../../cases/personal-memo/input-brief.md) | Evaluating the skills | It is a test fixture, not documentation |
 | `make help` | Looking for a command | The Makefile is the authoritative list; a copy here would go stale |
 
 The `doc.go` files are authoritative for their own layer. Where this document and
@@ -326,7 +326,7 @@ that list.
 
 Planned, in order:
 
-1. Run `bdd-clarify` against `../../cases/fitness-tracker/input-brief.md`
+1. Run `bdd-clarify` against `../../cases/personal-memo/input-brief.md`
 2. SPEC turns those examples into `.feature` files
 3. PLAN assigns each scenario a test level
 4. IMPLEMENT fills `domain/` outside-in, following the `/version` slice as the

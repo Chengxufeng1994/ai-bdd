@@ -12,7 +12,7 @@ cases/parking-billing/
 └── grading.md        ← 答案卷：模糊點、及格標準、怎麼比較、實測基準
 ```
 
-一個情境可以有多份輸入（`fitness-tracker/` 有 `input-brief.md` 與 `input-prd.md`
+一個情境可以有多份輸入（`personal-memo/` 有 `input-brief.md` 與 `input-prd.md`
 兩種形式），共用同一份 `grading.md`。
 
 **輸入檔是純酬載——沒有標題、沒有說明、沒有圍欄。** 任何「這是評估用的固定輸入、
@@ -36,7 +36,7 @@ cases/parking-billing/
 
 ```bash
 mkdir -p runs
-cp -r benchmark/skeleton/go runs/go-fitness-tracker
+cp -r benchmark/skeleton/go runs/go-personal-memo
 ```
 
 `runs/` 是 gitignored，所以新 clone 上不存在——`mkdir -p` 不能省。
@@ -44,7 +44,7 @@ cp -r benchmark/skeleton/go runs/go-fitness-tracker
 然後把該 case 的輸入檔**整份**交給 `bdd-clarify`：
 
 ```bash
-cat benchmark/cases/fitness-tracker/input-brief.md
+cat benchmark/cases/personal-memo/input-brief.md
 ```
 
 那個檔案裡沒有答案，所以整份給是安全的——這正是它跟 `grading.md` 分開的理由。
