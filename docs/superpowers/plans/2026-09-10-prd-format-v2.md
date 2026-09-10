@@ -764,6 +764,17 @@ python3 skills/bdd-clarify/scripts/status.py /tmp/v2
 
 Expected：audit exit 0；grep 只剩刻意保留的歷史敘述；`status.py` 仍是 **已答 2／n/a 1／待答 1**。
 
+標題深度也要驗，不能只驗章節名——v2 同時改了名稱與深度，而**名稱式的 grep 對
+深度變化結構性失明**（Task 1 就是這樣讓兩節維持 v1 深度通過全部驗證的）：
+
+```bash
+grep -rn "^#\+ \(FR-\|NFR-\|AC$\|Examples$\|US-\|P-\)" skills/ --include="*.md"
+```
+
+Expected：`US-` 與 `P-` 恰好三個井號，`FR-` 與 `NFR-` 四個，`AC` 與 `Examples`
+五個，無例外。
+
+
 - [ ] **Step 8: Commit**
 
 ```bash
@@ -862,6 +873,17 @@ EOF
 ```
 
 Expected：兩個 audit exit 0；`plugin validate` exit 0（`--strict` 仍有 CLAUDE.md 那則已知警告）；grep 只剩刻意保留的歷史敘述；連結全解得到。
+
+標題深度也要驗，不能只驗章節名——v2 同時改了名稱與深度，而**名稱式的 grep 對
+深度變化結構性失明**（Task 1 就是這樣讓兩節維持 v1 深度通過全部驗證的）：
+
+```bash
+grep -rn "^#\+ \(FR-\|NFR-\|AC$\|Examples$\|US-\|P-\)" skills/ --include="*.md"
+```
+
+Expected：`US-` 與 `P-` 恰好三個井號，`FR-` 與 `NFR-` 四個，`AC` 與 `Examples`
+五個，無例外。
+
 
 - [ ] **Step 6: Commit**
 
