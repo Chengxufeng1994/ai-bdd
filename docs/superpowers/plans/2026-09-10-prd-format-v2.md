@@ -642,7 +642,119 @@ grep -n "## Functional Requirements\|## Actors\|Problem / Goal" skills/bdd-clari
 
 每一處逐一判斷：`## Actors` → `## Personas`；`## Functional Requirements` → `## User Stories` 底下的 `#### FR-<n>`；`Problem / Goal / Success Metrics` → 拆成的三節。**逐處判讀語意再改，不要無差別取代**——有些句子講的是「功能需求」這個概念而不是那個章節名。
 
-- [ ] **Step 4: 驗證**
+- [ ] **Step 4: 把 `actor-definition.md` 改名**
+
+```bash
+git mv skills/bdd-clarify/references/actor-definition.md \
+       skills/bdd-clarify/references/persona-definition.md
+```
+
+用 `git mv` 而不是刪了重建，`git log --follow` 才追得到——這是 repo 慣例。
+
+- [ ] **Step 5: 改寫 `persona-definition.md`**
+
+這份是**被改名那一節的專屬 reference**，從標題到範例整份都在講 v1。逐處改：
+
+**標題**：`# 怎麼定義 Actor` → `# 怎麼定義 Persona`
+
+**第一段**：`` `prd.md` 的 `## Actors` 節的寫法 `` → `` `prd.md` 的 `## Personas` 節的寫法 ``
+
+**第三段開頭**：`Actor 是**角色**，不是帳號。` → `Persona 是**角色**，不是帳號。`
+（該段其餘不動）
+
+**`## 每個角色三件事` 整節**（標題到 `那是正常的。` 止）換成：
+
+````markdown
+## 每個角色五件事
+
+| 欄位 | 內容 | 為什麼必填 |
+| --- | --- | --- |
+| **是誰** | 一句話，用業務語言 | 沒有這句，角色名稱會被各自解讀 |
+| **怎麼取得這個身分** | 具體條件 ＋ 來源 | **最常漏的一格**，見下 |
+| **跟誰容易混** | 區分它的那條規則 ＋ 來源 | 沒有區分的兩個角色是同一個角色 |
+| **他要什麼** | 這個角色想達成什麼 | story 掛在 persona 底下，**沒有目標的 persona 會長出沒有理由的 story** |
+| **現在什麼讓他痛** | 現況哪裡不好 | 沒有痛點的角色，通常是從組織圖抄來的，不是從需求長出來的 |
+
+v1 問的是「跟誰不同」，v2 問「跟誰容易混」——**答案的內容契約沒變**，仍然要
+講出區分它們的那條規則與來源。換問法是因為「跟誰不同」會得到「他們不一樣」
+這種同義反覆，「跟誰容易混」會逼出實際會混淆的那一組。
+
+**最後兩欄允許寫「（無資料）」，而且比編一個好。** 需求方常常在轉述別人的痛
+（主委轉述住戶、住戶轉述他的客人）。標「無資料」讓那件事在文件上看得見；
+填「訪客希望流程順暢」則讓它消失。
+
+v1 有一個選填的 **能做什麼** 欄（每條回指 `FR-<n>`），v2 拿掉了：FR 現在住在
+`### US-<n>` 底下，而每則 story 都寫明服務哪個 `P-<n>`——**這個角色能做什麼，
+讀 story 就有了**。手抄一份等於兩個真相來源，遲早不一樣。
+
+**「沒問過」與「（無資料）」本身就說明了來源狀態**，不再疊 `←` 標記。其餘每
+一欄都要標，規則見 `prd-format.md` 的「來源標記：三選一」。
+````
+
+**中段的程式碼範例**（```markdown 圍籬包住、`## 旅程購買` 到 `## 旅程老師` 那塊）
+換成 v2 的形狀：
+
+````markdown
+### P-1  旅程購買者
+
+**是誰**：已買下某趟旅程、可永久存取其內容的學員 ← `pay-order` Rule 5
+**怎麼取得這個身分**：付款成功後依商品的方案項目授予 ← `pay-order` Rule 5
+**跟誰容易混**：跟「旅程訂閱狀態」容易混——訂閱會過期，這個不會 ← `query-user-roles` Rule 2
+**他要什麼**：買過的內容隨時看得到，不必擔心過期 ← 推論
+**現在什麼讓他痛**：（無資料）
+
+### P-2  旅程老師
+
+**是誰**：能維護某趟旅程內容的人 ← 推論
+**怎麼取得這個身分**：**沒問過** → 開一題進 `## Open Questions`，狀態待答
+**跟誰容易混**：目前沒有任何一條規則區分它與學員——見下方「兩個角色沒有規則區分」
+**他要什麼**：（無資料）
+**現在什麼讓他痛**：（無資料）
+````
+
+**`## 寫進 `prd.md` 的 `## Actors`` 一節**（標題到 `有需要時再開一題」。` 止）換成：
+
+````markdown
+## 寫進 `prd.md` 的 `## Personas`
+
+一個 persona 一個 `### P-<n>` 小節，不是表格的一列。**因為 `## User Stories`
+的每一則都要寫「身為 P-<n>」，而表格的一列給不出可引用的識別碼。** 欄位與完整
+範例見 [`../examples/minimal-prd.md`](../examples/minimal-prd.md)，本文不重複
+格式，只講前面幾節那些判準怎麼落進欄位：**是誰**與**怎麼取得這個身分**照抄；
+**跟誰容易混**同時是欄位也是收尾時的核對項（見「兩個角色沒有規則區分，就是
+同一個角色」）；**他要什麼**是 story 的來源，寫不出來就代表這個角色還沒有
+存在的理由。
+
+MUST: `P-<n>` 的編號全域唯一，而且**不重排**——`## User Stories` 用 `P-<n>`
+回指，重排會讓那些引用靜默指向別的角色。刪掉一個角色就留空號。
+
+考慮過但判定不是角色的，附一句理由寫在同一節——否則下一輪會有人再提一次，
+例如「管理員——需求裡沒有任何一條規則提到它，有需要時再開一題」。
+````
+
+**`## 下游怎麼用它` 一節**：把三處 `` `## Actors` `` 全改成 `` `## Personas` ``，
+其餘文字不動。
+
+改完自查：
+
+```bash
+grep -n "Actor\|## Actors" skills/bdd-clarify/references/persona-definition.md
+```
+
+Expected：零筆。標題、內文、範例都不該再出現 `Actor`。
+
+- [ ] **Step 6: 更新唯一的入站連結**
+
+`skills/bdd-clarify/SKILL.md:177` 現在寫 `` → `references/actor-definition.md`。``
+改成 `` → `references/persona-definition.md`。``
+
+```bash
+grep -rn "actor-definition" skills/
+```
+
+Expected：零筆（`docs/superpowers/plans/2026-09-09-*.md` 的兩處是歷史文件，**不要動**）。
+
+- [ ] **Step 7: 驗證**
 
 ```bash
 python3 skills/skill-rules/scripts/audit_skill.py skills/bdd-clarify; echo "exit=$?"
@@ -652,7 +764,7 @@ python3 skills/bdd-clarify/scripts/status.py /tmp/v2
 
 Expected：audit exit 0；grep 只剩刻意保留的歷史敘述；`status.py` 仍是 **已答 2／n/a 1／待答 1**。
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add skills/bdd-clarify/SKILL.md
@@ -720,7 +832,17 @@ grep -n "## Functional Requirements\|## Actors" skills/bdd-spec/
 
 PLAN 的職責與它讀的檔（`spec.md` ＋ `.feature`）都不變，這是純引用更新。
 
-- [ ] **Step 4: 驗證**
+- [ ] **Step 4: 改 `story-splitting/SKILL.md` 第 36 行**
+
+```
+- 1. **要切的 story**：一句話，或 `prd.md` 的 `## Functional Requirements`
++ 1. **要切的 story**：一句話，或 `prd.md` 的某幾條 `FR-<n>`
+```
+
+同一節第 37 行已經寫著「有 `prd.md` 就直接用它的 `FR-<n>`」，所以這行本來就在
+講 FR，只是用了一個已經不存在的章節名指它。
+
+- [ ] **Step 5: 驗證**
 
 ```bash
 python3 skills/skill-rules/scripts/audit_skill.py skills/bdd-spec; echo "exit=$?"
@@ -741,7 +863,7 @@ EOF
 
 Expected：兩個 audit exit 0；`plugin validate` exit 0（`--strict` 仍有 CLAUDE.md 那則已知警告）；grep 只剩刻意保留的歷史敘述；連結全解得到。
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add skills/bdd-spec/SKILL.md skills/bdd-plan/SKILL.md
