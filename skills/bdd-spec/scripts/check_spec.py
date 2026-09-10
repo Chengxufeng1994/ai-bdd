@@ -19,7 +19,7 @@
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。
 
 只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
-例子的目錄讀自 specs/<date>-<feature>/prd.md 的 `## Functional Requirements` 段
+例子的目錄讀自 specs/<date>-<feature>/prd.md 的 `## User Stories` 段
 （FR 編號在那裡定版）；story 由哪些 FR 組成讀自 specs/<date>-<feature>/spec.md 的
 `## Stories` 段——切 story 是 SPEC 的事，不再是 CLARIFY 的事。
 """
@@ -40,19 +40,30 @@ def find_features(root: Path) -> Path:
 
 
 def frs_in_prd(text: str) -> dict[str, set[str]]:
-    """prd.md 的 `## Functional Requirements` 段：FR 編號 -> EX 編號集合。
+    """prd.md 的 `## User Stories` 段：FR 編號 -> EX 編號集合。
+
+    FR 掛在 `### US-<n>` 底下，所以標題層級是 `#### FR-<n>` 而不是 `###`。
 
     來源是 prd.md 而不是 spec.md：例子的定版編號誕生在 CLARIFY，
     spec.md 只記哪些 FR 湊成一則 story，不重述例子。
+
+    FR 編號全域唯一，不是每則 story 各自從 1 起算——否則 EX-1.1 會指向
+    兩個地方，`.feature` 的 @example-1.1 就失去意義。
+
+    碰到新的 `### US-` 就把 current 清掉：story 標題與第一條 FR 之間的散文
+    （例如「另外依賴：FR-3」）不該被算成上一則 story 最後一條 FR 的例子。
     """
     section = re.search(
-        r"^## Functional Requirements\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+        r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     if not section:
         return {}
     out: dict[str, set[str]] = {}
     current = None
     for line in section.group(1).splitlines():
-        fr = re.match(r"^### FR-(\d+)\b", line)
+        if re.match(r"^### US-", line):
+            current = None
+            continue
+        fr = re.match(r"^#### FR-(\d+)\b", line)
         if fr:
             current = fr.group(1)
             out.setdefault(current, set())
@@ -142,7 +153,7 @@ def check(root: Path) -> int:
         ptext = prd_path.read_text(encoding="utf-8")
         frs = frs_in_prd(ptext)
         if not frs:
-            print(f"✗ {prd_path.parent.name} 的 prd.md 沒有 `## Functional Requirements` "
+            print(f"✗ {prd_path.parent.name} 的 prd.md 沒有 `## User Stories` "
                   f"一節、或該節底下沒有任何 FR —— 先跑 bdd-clarify")
             problems += 1
             continue
