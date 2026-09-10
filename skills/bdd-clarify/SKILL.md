@@ -172,9 +172,9 @@ FR／AC／EX、Pass 3 的每條 NFR。寫法與範例 → `references/prd-format
 同一題會被問兩次、同一條規則會被記成兩種主詞，所以在深度追問前先定下來。
 
 MUST: 每個角色記**是誰**／**怎麼取得**／**跟誰不同**，寫進 `prd.md` 的
-`## Actors`；且至少一條規則只約束它，沒有就合併——這一條 Pass 1 驗不完，
+`## Personas`；且至少一條規則只約束它，沒有就合併——這一條 Pass 1 驗不完，
 先記下待驗證，Pass 2 抽完規則再回來判（見「收尾」）。
-判準、寫法與範例、別漏掉哪些角色 → `references/actor-definition.md`。
+判準、寫法與範例、別漏掉哪些角色 → `references/persona-definition.md`。
 
 ### 3. 只問「會改變範圍」的題目
 
