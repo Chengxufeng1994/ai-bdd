@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 把 `prd.md` 從八節擴成十一節，加入 Document Overview／Background／Goal／Success Metrics／Personas／User Stories，並把 FR 從平鋪的 `## Functional Requirements` 改成掛在 `### US-<n>` 底下的 `#### FR-<n>`。
+**Goal:** 把 `prd.md` 從七節擴成十節，加入 Document Overview／Background／Goal／Success Metrics／Personas／User Stories，並把 FR 從平鋪的 `## Functional Requirements` 改成掛在 `### US-<n>` 底下的 `#### FR-<n>`。
 
 **Architecture:** 契約、canonical fixture、解析器三者是同一個原子單位——分開改會留下「腳本解析不到任何 FR 卻不報錯」的中間狀態，那正是這個 repo 反覆在防的靜默失敗。所以 Task 1 三個一起改、一起驗；Task 2、3 只改描述它的 skill 文件。
 
@@ -25,7 +25,7 @@
 
 | 檔案 | 責任 | Task |
 | --- | --- | --- |
-| `skills/bdd-clarify/references/prd-format.md` | 格式契約：十一節的順序與各節內容、三條參照完整性規則、已知弱點 | 1 |
+| `skills/bdd-clarify/references/prd-format.md` | 格式契約：十節的順序與各節內容、三條參照完整性規則、已知弱點 | 1 |
 | `skills/bdd-clarify/examples/minimal-prd.md` | **canonical 解析對象**，兩支腳本唯一的驗證基準 | 1 |
 | `skills/bdd-spec/scripts/check_spec.py` | `frs_in_prd()` 改讀 `## User Stories` 段的 `#### FR-<n>` | 1 |
 | `skills/bdd-clarify/SKILL.md` | 產物一節、流程圖的 Pass 3 路由、各處章節名引用 | 2 |
@@ -60,7 +60,7 @@ print(check_spec.frs_in_prd(io.open('skills/bdd-clarify/examples/minimal-prd.md'
 "
 ```
 
-Expected：`status.py` 印出 **已答 2／n/a 1／待答 1**，覆蓋為 `邊界` ＋ `降級`；`frs_in_prd` 印出 `{'1': {'1.1','1.2','1.3'}, '2': {'2.1'}}`。**把這兩個結果抄下來——Step 6 要逐字比對。**
+Expected：`status.py` 印出 **已答 2／n/a 1／待答 1**，覆蓋為 `邊界` ＋ `降級`；`frs_in_prd` 印出 `{'1': {'1.1','1.2','1.3'}, '2': {'2.1'}}`。**把這兩個結果抄下來——Step 8 要逐字比對。**
 
 - [ ] **Step 2: 改寫 `prd-format.md` 的「章節順序」表**
 
@@ -211,7 +211,121 @@ PRD 不一樣**；但如果它照抄 PRD 的分組，要說得出為什麼那個
 「SPEC 被現成的分組綁住」，由這條規則管。
 ````
 
-- [ ] **Step 4: 遷移 `examples/minimal-prd.md` 到 v2**
+- [ ] **Step 4: 遷移 `prd-format.md` 其餘各處的舊章節名**
+
+舊名稱織在全文，不只在那張表裡。逐處改：
+
+**開頭「三個 Pass」那段**（`Pass 1 開骨架（Problem／Actors／Scope）` 起到
+`## Assumptions / Constraints`。止）整段換成：
+
+```
+三個 Pass 都對同一份文件寫：Pass 1 開骨架（Document Overview／Background／
+Goal／Success Metrics／Scope／Personas），Pass 2 把 `## User Stories` 填滿
+——先寫 `### US-<n>`，再把 `#### FR-<n>` 掛進去，Pass 3 把量得出來的品質屬性
+填成 NFR（只服務一則 story 的掛在那則底下，跨 story 的進
+`## Non-Functional Requirements`）、把不可協商的外部限制填進
+`## Assumptions / Constraints`。
+```
+
+**「來源標記：三選一」的適用範圍**（`## Functional Requirements` 的每條 FR／AC／EX
+那句起，到 `行尾都要標來源，三選一：` 止）換成：
+
+```
+`## User Stories` 底下的每條 FR／AC／EX 與 story 專屬的 NFR、
+`## Non-Functional Requirements` 的每條 NFR、`## Scope — In / Out` 的每條邊界、
+`## Assumptions / Constraints` 的每條，行尾都要標來源，三選一：
+```
+
+同一節的程式碼範例 `### FR-2  When 月租戶刷卡出場, …` 井號改成四個：
+`#### FR-2  When 月租戶刷卡出場, the system shall 直接開啟柵欄，不計費。 ← PRD §4`
+
+**該節末尾的豁免段**（`## Actors` 與 `## Open Questions` 不在這條規則的範圍內
+那段）整段換成：
+
+```
+`## Open Questions` 不在這條規則的範圍內——問題本身就是在記錄還沒有答案的
+東西，不需要再疊一層來源標記。
+
+`## Personas` **在**範圍內。v1 的角色只有「是誰／怎麼取得／跟誰容易混」，
+來源就是表格自己的欄位；v2 多了「他要什麼」與「現在什麼讓他痛」，而那兩件事
+可以是問出來的，也可以是編出來的——正是這個標記存在的理由。
+```
+
+**「Non-Functional Requirements 與 Constraints：怎麼分邊」的第一句**：
+`一件事該進 `## Functional Requirements` 底下的某條 FR` 改成
+`一件事該進 `## User Stories` 底下的某條 FR`。
+
+**同節的 NFR 程式碼範例**改成跨 story 的那個家，並在範例後補一段：
+
+````markdown
+## Non-Functional Requirements
+
+- NFR-2  車輛進出紀錄保存至少一年
+````
+
+**只服務一則 story 的 NFR 不寫在這裡**，寫成那則 story 底下的 `#### NFR-<n>`。
+判準是跨不跨 story，不是重不重要——「柵欄兩秒內開啟」只跟出場那則有關，
+「紀錄保存一年」對每一則都成立。
+
+**「角色與詞義：兩條界線」的第一句**：`角色留在 `prd.md` 的 `## Actors`` 改成
+`角色留在 `prd.md` 的 `## Personas``。
+
+改完自查：
+
+```bash
+grep -n "Functional Requirements\|## Actors\|Problem／Actors" skills/bdd-clarify/references/prd-format.md
+```
+
+Expected：只剩 `## Non-Functional Requirements` 的各處（含「與 Constraints：
+怎麼分邊」那個標題），`## Functional Requirements` 與 `## Actors` 一個都不剩。
+
+- [ ] **Step 5: 改寫「編號規則」一節——標題與內文都還在講 v1**
+
+`## 編號規則：FR 平鋪，AC／EX 掛在底下` 從標題到內文都跟 v2 相反，內文還寫著
+「這個 feature 不再切 story」。整節（標題到 `沒有從具體情境長出來。` 止）換成：
+
+`````markdown
+## 編號規則：FR 掛在 story 底下，AC／EX 掛在 FR 底下
+
+`FR-<n>` 住在它服務的 `### US-<n>` 底下，但**編號全域唯一**——不是每則 story
+各自從 1 起算。`FR-1` 在 US-1 底下、`FR-4` 在 US-2 底下都可以，但不得有兩個
+`FR-1`，否則 `EX-1.1` 指向兩個地方。
+
+NFR 的編號同樣全域唯一，而且跨越它的兩個家：story 專屬的 `#### NFR-<n>` 與
+跨 story 的 `## Non-Functional Requirements`。
+
+`AC-<n>.<m>` 與 `EX-<n>.<m>` 掛在各自的 `FR-<n>` 底下，`<n>` 跟著父層的 FR：
+
+````markdown
+### US-1  身為 P-1（訪客），我想在出場前知道要付多少，以便付完就能開走
+
+#### FR-1  When 訪客車出場, the system shall 依停留時長計費，前 30 分鐘免費。
+
+##### AC
+- AC-1.1  訪客在繳費機看得到金額與停留時長
+
+##### Examples
+- EX-1.1  停 29 分 → 收 0 元
+- EX-1.2  停剛好 30 分 → 收 0 元
+- EX-1.3  停 31 分 → 收 30 元
+````
+
+**編號在這裡定版**——不是在 SPEC。`.feature` 的 `@example-<n>.<m>` tag 回指
+`EX-<n>.<m>`，這是這條鏈唯一的接縫。
+
+MUST NOT: 重排既有的 FR／AC／EX 編號。重排會讓那些引用**靜默**指向別的東西
+——不會報錯，只會對錯。刪掉一條規則就留下空號（例如只剩 `FR-1`、`FR-3`，
+沒有 `FR-2`），不要把後面的號碼往前遞補：**空號看得出來，重排看不出來。**
+
+**把一條 FR 從一則 story 搬到另一則，編號不變。** 巢狀是給人讀的分組，編號是
+給機器追的身分——搬家換分組，不換身分。搬完在版本修訂歷史留一列，因為 SPEC
+可能已經照著舊分組切過 story 了。
+
+每條 FR 底下至少要有一個 EX——完全沒有例子的 FR，通常是規則還停在想像階段，
+沒有從具體情境長出來。
+`````
+
+- [ ] **Step 6: 遷移 `examples/minimal-prd.md` 到 v2**
 
 整份換成（逐字，這是兩支腳本的 canonical 解析對象）：
 
@@ -330,7 +444,7 @@ PRD 不一樣**；但如果它照抄 PRD 的分組，要說得出為什麼那個
 
 **三個不可破壞的東西**：`## Open Questions` 的五欄表（`status.py` 用 `len(cells) != 5` 篩）、`#### FR-<n>` 的層級、`EX-<n>.<m>` 的寫法。
 
-- [ ] **Step 5: 改 `check_spec.py` 的 `frs_in_prd()`**
+- [ ] **Step 7: 改 `check_spec.py` 的 `frs_in_prd()`**
 
 整個函式換成：
 
@@ -374,7 +488,7 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
 - 檔頭 docstring 第 22 行的「`## Functional Requirements` 段」→「`## User Stories` 段」
 - 第 145 行的錯誤訊息「沒有 `## Functional Requirements`」→「沒有 `## User Stories`」
 
-- [ ] **Step 6: 回歸——兩個結果必須跟 Step 1 逐字相同**
+- [ ] **Step 8: 回歸——兩個結果必須跟 Step 1 逐字相同**
 
 ```bash
 rm -rf /tmp/v2 && mkdir -p /tmp/v2/specs/2026-09-09-x
@@ -389,7 +503,7 @@ print(check_spec.frs_in_prd(io.open('skills/bdd-clarify/examples/minimal-prd.md'
 
 Expected：**已答 2／n/a 1／待答 1、覆蓋 `邊界`＋`降級`**（與 Step 1 相同——`## Open Questions` 沒動，變了就是改壞了）；`{'1': {'1.1','1.2','1.3'}, '2': {'2.1'}}`（與 Step 1 相同）。
 
-- [ ] **Step 7: 端到端——`check_spec.py` 對完整 fixture 跑一次**
+- [ ] **Step 9: 端到端——`check_spec.py` 對完整 fixture 跑一次**
 
 ```bash
 mkdir -p /tmp/v2/features
@@ -420,7 +534,7 @@ python3 skills/bdd-spec/scripts/check_spec.py /tmp/v2; echo "exit=$?"
 
 Expected：非零離開，且輸出指出 `visitor-billing` 漏了 `EX-1.2`、`EX-1.3`，`monthly-pass-exit` 漏了 `EX-2.1`。**這證明 FR→EX 的對應在新層級下真的被抓到了**，不是回傳空 dict 之後「什麼都沒漏」。
 
-- [ ] **Step 8: 缺 `## User Stories` 要大聲失敗**
+- [ ] **Step 10: 缺 `## User Stories` 要大聲失敗**
 
 ```bash
 rm -rf /tmp/v2bad && mkdir -p /tmp/v2bad/specs/2026-09-09-y /tmp/v2bad/features
@@ -431,7 +545,7 @@ python3 skills/bdd-spec/scripts/check_spec.py /tmp/v2bad; echo "exit=$?"
 
 Expected：`exit=1`，訊息指名該 feature 目錄與「沒有 `## User Stories`」。
 
-- [ ] **Step 9: fail loud 沒退化**
+- [ ] **Step 11: fail loud 沒退化**
 
 ```bash
 python3 skills/bdd-spec/scripts/check_spec.py /tmp/nonexistent-v2; echo "exit=$?"
@@ -440,7 +554,7 @@ python3 skills/bdd-clarify/scripts/status.py /tmp/nonexistent-v2; echo "exit=$?"
 
 Expected：兩次都 `exit=1` 並指名缺什麼。
 
-- [ ] **Step 10: 稽核與 diff 範圍確認**
+- [ ] **Step 12: 稽核與 diff 範圍確認**
 
 ```bash
 python3 skills/skill-rules/scripts/audit_skill.py skills/bdd-clarify; echo "exit=$?"
@@ -450,7 +564,7 @@ git diff --stat -- skills/bdd-clarify/scripts/status.py
 
 Expected：兩個 audit exit 0；`status.py` 的 diff **為空**（Global Constraints 明訂不得改動）。
 
-- [ ] **Step 11: Commit**
+- [ ] **Step 13: Commit**
 
 ```bash
 git add skills/bdd-clarify/references/prd-format.md \
@@ -518,7 +632,7 @@ Pass 3 · 技術 —— 逐項掃過 technical-probes.md
 
 - [ ] **Step 2: 改 `## 產物` 一節裡的章節清單**
 
-該節若列出 `prd.md` 的章節，換成 Task 1 的十一節；若只寫「格式 → `references/prd-format.md`」則不動。**先讀再改，不要憑印象。**
+該節若列出 `prd.md` 的章節，換成 Task 1 的十節；若只寫「格式 → `references/prd-format.md`」則不動。**先讀再改，不要憑印象。**
 
 - [ ] **Step 3: 全檔掃一次章節名引用**
 
@@ -528,7 +642,119 @@ grep -n "## Functional Requirements\|## Actors\|Problem / Goal" skills/bdd-clari
 
 每一處逐一判斷：`## Actors` → `## Personas`；`## Functional Requirements` → `## User Stories` 底下的 `#### FR-<n>`；`Problem / Goal / Success Metrics` → 拆成的三節。**逐處判讀語意再改，不要無差別取代**——有些句子講的是「功能需求」這個概念而不是那個章節名。
 
-- [ ] **Step 4: 驗證**
+- [ ] **Step 4: 把 `actor-definition.md` 改名**
+
+```bash
+git mv skills/bdd-clarify/references/actor-definition.md \
+       skills/bdd-clarify/references/persona-definition.md
+```
+
+用 `git mv` 而不是刪了重建，`git log --follow` 才追得到——這是 repo 慣例。
+
+- [ ] **Step 5: 改寫 `persona-definition.md`**
+
+這份是**被改名那一節的專屬 reference**，從標題到範例整份都在講 v1。逐處改：
+
+**標題**：`# 怎麼定義 Actor` → `# 怎麼定義 Persona`
+
+**第一段**：`` `prd.md` 的 `## Actors` 節的寫法 `` → `` `prd.md` 的 `## Personas` 節的寫法 ``
+
+**第三段開頭**：`Actor 是**角色**，不是帳號。` → `Persona 是**角色**，不是帳號。`
+（該段其餘不動）
+
+**`## 每個角色三件事` 整節**（標題到 `那是正常的。` 止）換成：
+
+````markdown
+## 每個角色五件事
+
+| 欄位 | 內容 | 為什麼必填 |
+| --- | --- | --- |
+| **是誰** | 一句話，用業務語言 | 沒有這句，角色名稱會被各自解讀 |
+| **怎麼取得這個身分** | 具體條件 ＋ 來源 | **最常漏的一格**，見下 |
+| **跟誰容易混** | 區分它的那條規則 ＋ 來源 | 沒有區分的兩個角色是同一個角色 |
+| **他要什麼** | 這個角色想達成什麼 | story 掛在 persona 底下，**沒有目標的 persona 會長出沒有理由的 story** |
+| **現在什麼讓他痛** | 現況哪裡不好 | 沒有痛點的角色，通常是從組織圖抄來的，不是從需求長出來的 |
+
+v1 問的是「跟誰不同」，v2 問「跟誰容易混」——**答案的內容契約沒變**，仍然要
+講出區分它們的那條規則與來源。換問法是因為「跟誰不同」會得到「他們不一樣」
+這種同義反覆，「跟誰容易混」會逼出實際會混淆的那一組。
+
+**最後兩欄允許寫「（無資料）」，而且比編一個好。** 需求方常常在轉述別人的痛
+（主委轉述住戶、住戶轉述他的客人）。標「無資料」讓那件事在文件上看得見；
+填「訪客希望流程順暢」則讓它消失。
+
+v1 有一個選填的 **能做什麼** 欄（每條回指 `FR-<n>`），v2 拿掉了：FR 現在住在
+`### US-<n>` 底下，而每則 story 都寫明服務哪個 `P-<n>`——**這個角色能做什麼，
+讀 story 就有了**。手抄一份等於兩個真相來源，遲早不一樣。
+
+**「沒問過」與「（無資料）」本身就說明了來源狀態**，不再疊 `←` 標記。其餘每
+一欄都要標，規則見 `prd-format.md` 的「來源標記：三選一」。
+````
+
+**中段的程式碼範例**（```markdown 圍籬包住、`## 旅程購買` 到 `## 旅程老師` 那塊）
+換成 v2 的形狀：
+
+````markdown
+### P-1  旅程購買者
+
+**是誰**：已買下某趟旅程、可永久存取其內容的學員 ← `pay-order` Rule 5
+**怎麼取得這個身分**：付款成功後依商品的方案項目授予 ← `pay-order` Rule 5
+**跟誰容易混**：跟「旅程訂閱狀態」容易混——訂閱會過期，這個不會 ← `query-user-roles` Rule 2
+**他要什麼**：買過的內容隨時看得到，不必擔心過期 ← 推論
+**現在什麼讓他痛**：（無資料）
+
+### P-2  旅程老師
+
+**是誰**：能維護某趟旅程內容的人 ← 推論
+**怎麼取得這個身分**：**沒問過** → 開一題進 `## Open Questions`，狀態待答
+**跟誰容易混**：目前沒有任何一條規則區分它與學員——見下方「兩個角色沒有規則區分」
+**他要什麼**：（無資料）
+**現在什麼讓他痛**：（無資料）
+````
+
+**`## 寫進 `prd.md` 的 `## Actors`` 一節**（標題到 `有需要時再開一題」。` 止）換成：
+
+````markdown
+## 寫進 `prd.md` 的 `## Personas`
+
+一個 persona 一個 `### P-<n>` 小節，不是表格的一列。**因為 `## User Stories`
+的每一則都要寫「身為 P-<n>」，而表格的一列給不出可引用的識別碼。** 欄位與完整
+範例見 [`../examples/minimal-prd.md`](../examples/minimal-prd.md)，本文不重複
+格式，只講前面幾節那些判準怎麼落進欄位：**是誰**與**怎麼取得這個身分**照抄；
+**跟誰容易混**同時是欄位也是收尾時的核對項（見「兩個角色沒有規則區分，就是
+同一個角色」）；**他要什麼**是 story 的來源，寫不出來就代表這個角色還沒有
+存在的理由。
+
+MUST: `P-<n>` 的編號全域唯一，而且**不重排**——`## User Stories` 用 `P-<n>`
+回指，重排會讓那些引用靜默指向別的角色。刪掉一個角色就留空號。
+
+考慮過但判定不是角色的，附一句理由寫在同一節——否則下一輪會有人再提一次，
+例如「管理員——需求裡沒有任何一條規則提到它，有需要時再開一題」。
+````
+
+**`## 下游怎麼用它` 一節**：把三處 `` `## Actors` `` 全改成 `` `## Personas` ``，
+其餘文字不動。
+
+改完自查：
+
+```bash
+grep -n "Actor\|## Actors" skills/bdd-clarify/references/persona-definition.md
+```
+
+Expected：零筆。標題、內文、範例都不該再出現 `Actor`。
+
+- [ ] **Step 6: 更新唯一的入站連結**
+
+`skills/bdd-clarify/SKILL.md:177` 現在寫 `` → `references/actor-definition.md`。``
+改成 `` → `references/persona-definition.md`。``
+
+```bash
+grep -rn "actor-definition" skills/
+```
+
+Expected：零筆（`docs/superpowers/plans/2026-09-09-*.md` 的兩處是歷史文件，**不要動**）。
+
+- [ ] **Step 7: 驗證**
 
 ```bash
 python3 skills/skill-rules/scripts/audit_skill.py skills/bdd-clarify; echo "exit=$?"
@@ -538,7 +764,18 @@ python3 skills/bdd-clarify/scripts/status.py /tmp/v2
 
 Expected：audit exit 0；grep 只剩刻意保留的歷史敘述；`status.py` 仍是 **已答 2／n/a 1／待答 1**。
 
-- [ ] **Step 5: Commit**
+標題深度也要驗，不能只驗章節名——v2 同時改了名稱與深度，而**名稱式的 grep 對
+深度變化結構性失明**（Task 1 就是這樣讓兩節維持 v1 深度通過全部驗證的）：
+
+```bash
+grep -rn "^#\+ \(FR-\|NFR-\|AC$\|Examples$\|US-\|P-\)" skills/ --include="*.md"
+```
+
+Expected：`US-` 與 `P-` 恰好三個井號，`FR-` 與 `NFR-` 四個，`AC` 與 `Examples`
+五個，無例外。
+
+
+- [ ] **Step 8: Commit**
 
 ```bash
 git add skills/bdd-clarify/SKILL.md
@@ -606,7 +843,17 @@ grep -n "## Functional Requirements\|## Actors" skills/bdd-spec/
 
 PLAN 的職責與它讀的檔（`spec.md` ＋ `.feature`）都不變，這是純引用更新。
 
-- [ ] **Step 4: 驗證**
+- [ ] **Step 4: 改 `story-splitting/SKILL.md` 第 36 行**
+
+```
+- 1. **要切的 story**：一句話，或 `prd.md` 的 `## Functional Requirements`
++ 1. **要切的 story**：一句話，或 `prd.md` 的某幾條 `FR-<n>`
+```
+
+同一節第 37 行已經寫著「有 `prd.md` 就直接用它的 `FR-<n>`」，所以這行本來就在
+講 FR，只是用了一個已經不存在的章節名指它。
+
+- [ ] **Step 5: 驗證**
 
 ```bash
 python3 skills/skill-rules/scripts/audit_skill.py skills/bdd-spec; echo "exit=$?"
@@ -627,7 +874,18 @@ EOF
 
 Expected：兩個 audit exit 0；`plugin validate` exit 0（`--strict` 仍有 CLAUDE.md 那則已知警告）；grep 只剩刻意保留的歷史敘述；連結全解得到。
 
-- [ ] **Step 5: Commit**
+標題深度也要驗，不能只驗章節名——v2 同時改了名稱與深度，而**名稱式的 grep 對
+深度變化結構性失明**（Task 1 就是這樣讓兩節維持 v1 深度通過全部驗證的）：
+
+```bash
+grep -rn "^#\+ \(FR-\|NFR-\|AC$\|Examples$\|US-\|P-\)" skills/ --include="*.md"
+```
+
+Expected：`US-` 與 `P-` 恰好三個井號，`FR-` 與 `NFR-` 四個，`AC` 與 `Examples`
+五個，無例外。
+
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add skills/bdd-spec/SKILL.md skills/bdd-plan/SKILL.md

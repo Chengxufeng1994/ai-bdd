@@ -8,7 +8,7 @@
 
 ## 要解的問題
 
-v1 的 `prd.md`（2026-09-09 上線）只有八節：Problem/Goal/Success Metrics、Actors、
+v1 的 `prd.md`（2026-09-09 上線）只有七節：Problem/Goal/Success Metrics、Actors、
 Scope、Functional Requirements、NFR、Open Questions、Assumptions/Constraints。
 
 它**能被解析、能驅動 SPEC**，但它不像一份可以拿去跟 PM 對焦的 PRD。2026-09-10 的

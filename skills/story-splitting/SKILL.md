@@ -33,7 +33,7 @@ description: >
 
 Ask user: 若以下不明確，先問清楚。
 
-1. **要切的 story**：一句話，或 `prd.md` 的 `## Functional Requirements`
+1. **要切的 story**：一句話，或 `prd.md` 的某幾條 `FR-<n>`
 2. **已知的規則**：有 `prd.md` 就直接用它的 `FR-<n>`。沒有的話，先問對方知道哪些
    規則——**規則是最好用的切割線，沒有規則就只能靠猜**
 

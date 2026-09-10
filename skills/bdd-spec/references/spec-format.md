@@ -27,10 +27,11 @@
 
 ## Stories
 
-`prd.md` 的 FR 是平鋪的，這裡切出哪幾條湊成一則可獨立驗收的 story，
+`prd.md` 已經把 FR 分在 `### US-<n>` 底下了，但那是需求方視角的敘事分組——
+這裡要重新分成交付切片：哪幾條 FR 湊成一則可獨立驗收的 story。
 沿規則切、不沿使用者旅程切。每則要有自己的 `.feature`，slug 就是檔名。
 
-角色名用 `prd.md` `## Actors` 的，不另創同義詞。
+角色名用 `prd.md` `## Personas` 的，不另創同義詞。
 
 ### <story-slug>
 涵蓋 FR-<n>、FR-<n>。<為什麼是這個切法>
@@ -41,7 +42,7 @@
 ## Acceptance Criteria
 
 規則與例子**不在這裡**。它們的定版編號住在同目錄 `prd.md` 的
-`## Functional Requirements`，`.feature` 的 tag 回指那些編號——這一節只寫
+`## User Stories`，`.feature` 的 tag 回指那些編號——這一節只寫
 Gherkin 表達不了的驗收面向。
 
 | 面向 | 這個 feature 怎麼處理 |

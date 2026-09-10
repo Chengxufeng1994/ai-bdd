@@ -75,7 +75,8 @@ Pass 2 · 深度 —— 對整個 feature ←───────────�
   6. 收尾：標記完成
         ↓
 Pass 3 · 技術 —— 逐項掃過 technical-probes.md
-  量得出來的 → ## Non-Functional Requirements
+  量得出來的 → NFR：只服務一則 story 的掛在那則底下，
+              跨 story 的進 ## Non-Functional Requirements
   不可協商的外部限制 → ## Assumptions / Constraints
         ↓
 一份 specs/<date>-<feature>/prd.md
@@ -97,8 +98,9 @@ Pass 3 · 技術 —— 逐項掃過 technical-probes.md
 再問一次，而那正是最傷信任的一種重複。Pass 3 一樣：規則沒變，已經答過的技術
 問題還算數，不必為續跑重新掃一遍 `references/technical-probes.md`。
 
-開始每一個 feature 之前讀 `prd.md`：`## Problem / Goal / Success Metrics` 與
-`## Scope — In / Out` 判斷這個 feature 要交付什麼，`## Open Questions` 看問過什麼、已經
+開始每一個 feature 之前讀 `prd.md`：`## Background`、`## Goal`、
+`## Success Metrics` 與 `## Scope — In / Out` 判斷這個 feature 要交付什麼，
+`## Open Questions` 看問過什麼、已經
 確定什麼、哪些還待答——已答的問題就是目前確定的規則。還開著的：
 `python3 scripts/status.py`。
 
@@ -132,10 +134,10 @@ MUST: Pass 1 刻意淺。**判準是「範圍講得出依據」，不是「問�
 
 ### 1. 拆成骨架
 
-先不碰技術，把資訊分進 `prd.md` 三處：`## Problem / Goal / Success Metrics`
-（業務目標、成功指標）、`## Scope — In / Out`（範圍邊界），以及
-`## Assumptions / Constraints`（**隱含假設**——沒寫下來、但整份文件預設它成立
-的那些，是這一步存在的理由）。
+先不碰技術，把資訊分進 `prd.md` 五處：`## Background`、`## Goal`、
+`## Success Metrics`（業務目標、成功指標）、`## Scope — In / Out`（範圍邊界），
+以及 `## Assumptions / Constraints`（**隱含假設**——沒寫下來、但整份文件預設
+它成立的那些，是這一步存在的理由）。
 
 MUST: PRD 裡標題叫「假設」的那一段，**每一條都當成沒問過**，不要照抄成既定
 事實——它是未驗證的斷言，不是前提。開一題進 `## Open Questions`，狀態待答，
@@ -171,10 +173,11 @@ FR／AC／EX、Pass 3 的每條 NFR。寫法與範例 → `references/prd-format
 規則的敘述（EARS 的 `When <trigger>`）常常以角色當主詞，角色名稱不統一，
 同一題會被問兩次、同一條規則會被記成兩種主詞，所以在深度追問前先定下來。
 
-MUST: 每個角色記**是誰**／**怎麼取得**／**跟誰不同**，寫進 `prd.md` 的
-`## Actors`；且至少一條規則只約束它，沒有就合併——這一條 Pass 1 驗不完，
-先記下待驗證，Pass 2 抽完規則再回來判（見「收尾」）。
-判準、寫法與範例、別漏掉哪些角色 → `references/actor-definition.md`。
+MUST: 每個角色記**是誰**／**怎麼取得這個身分**／**跟誰容易混**／**他要什麼**／
+**現在什麼讓他痛**，寫進 `prd.md` 的 `## Personas`；最後兩項答不出來就寫
+「（無資料）」，不要編。且至少一條規則只約束它，沒有就合併——這一條 Pass 1
+驗不完，先記下待驗證，Pass 2 抽完規則再回來判（見「收尾」）。
+判準、寫法與範例、別漏掉哪些角色 → `references/persona-definition.md`。
 
 ### 3. 只問「會改變範圍」的題目
 
@@ -307,9 +310,9 @@ MUST: 一輪問完就把**這一輪能抽的規則抽出來**，不要累積到�
 - ✗「一個無效的使用者」—— 這是規則換句話說
 - ✓「一個 token 在 3 秒前過期的使用者」
 
-MUST: 新規則直接寫進 `## Functional Requirements`——`### FR-<n>`（EARS 句式，
-見 `references/prd-format.md`），底下掛 `#### AC`（PM 讀，畫面與感受）與
-`#### Examples`（SPEC 讀，含實際數字）。**編號在這裡定版**，寫出去就不重排；
+MUST: 新規則直接寫進所屬 `### US-<n>` 底下的 `#### FR-<n>`（EARS 句式，
+見 `references/prd-format.md`），底下掛 `##### AC`（PM 讀，畫面與感受）與
+`##### Examples`（SPEC 讀，含實際數字）。**編號在這裡定版**，寫出去就不重排；
 刪掉一條規則就留空號，不遞補——空號看得出來，重排看不出來。FR／AC／EX 三者
 都要標來源（`PRD §x`／`Q<n>`／`推論`，規則見「拆成骨架」一節）。
 
@@ -348,8 +351,8 @@ MUST: 訊號觸發但你判定不適用時，**在判定裡寫出來**，連同�
 
 1. **核對覆蓋**：十一個業務面向（Pass 3 再加五個技術面向）每一個都有對應的
    一列，包含標 `n/a` 的——`scripts/status.py` 的追問覆蓋欄不該印出 `?`
-2. **核對 actor**：`## Actors` 的每個角色都有問答或規則約束它；規則裡講出來
-   的主詞都在 `## Actors` 裡。兩個方向都要對得上——只對一邊會漏掉憑空的角色。
+2. **核對 persona**：`## Personas` 的每個角色都有問答或規則約束它；規則裡講出來
+   的主詞都在 `## Personas` 裡。兩個方向都要對得上——只對一邊會漏掉憑空的角色。
    Pass 1 記下的「目前沒有規則區分它與 X」在這裡結案：仍然沒有就合併
 3. **核對 Scope**：`## Scope — In / Out` 的 Out 段明確排除的項目**不該有任何 `FR-<n>`**；
    每一條隱含假設都已經有答案收進 `## Assumptions / Constraints`，或還是
@@ -383,7 +386,7 @@ MUST: 抽完規則後，把問答裡浮現的每一張**列舉型的表**（型�
 第一個會問的那件事：「當初為什麼不選第二個選項？」
 
 IMPORTANT: 保留不等於它是規則的定案來源——一題答完那一刻，結論已經寫進
-`## Functional Requirements` 的某條 `FR-<n>`／`AC`／`Examples`，或
+`## User Stories` 底下的某條 `FR-<n>`／`AC`／`Examples`，或
 `## Assumptions / Constraints`；小節留著的是**為什麼**，不是規則本身。
 
 ---
