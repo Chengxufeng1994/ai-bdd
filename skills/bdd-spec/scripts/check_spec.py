@@ -50,8 +50,10 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
     FR 編號全域唯一，不是每則 story 各自從 1 起算——否則 EX-1.1 會指向
     兩個地方，`.feature` 的 @example-1.1 就失去意義。
 
-    碰到新的 `### US-` 就把 current 清掉：story 標題與第一條 FR 之間的散文
-    （例如「另外依賴：FR-3」）不該被算成上一則 story 最後一條 FR 的例子。
+    碰到 `### US-` 或 `#### NFR-` 就把 current 清掉：兩者都是 FR 的兄弟節點，
+    它們底下的文字不屬於上一條 FR。NFR 尤其要緊——story 專屬的 NFR 排在
+    最後一條 FR 之後，它的敘述若提到某個 EX 編號，不清掉 current 就會把
+    那個例子靜默地記到上一條 FR 頭上。
     """
     section = re.search(
         r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
@@ -60,7 +62,7 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
     out: dict[str, set[str]] = {}
     current = None
     for line in section.group(1).splitlines():
-        if re.match(r"^### US-", line):
+        if re.match(r"^### US-|^#### NFR-", line):
             current = None
             continue
         fr = re.match(r"^#### FR-(\d+)\b", line)
@@ -184,6 +186,17 @@ def check(root: Path) -> int:
                   f"—— SPEC 還沒切 story")
             problems += 1
             continue
+
+        # spec.md 點名的 FR 必須真的在 prd.md 裡。少了這一步，下面
+        # `frs.get(fr, set())` 的預設值會把「這條 FR 沒有例子」跟「這條 FR
+        # 根本不存在」混成同一件事：一條留在 v1 深度的 `### FR-` 對解析器
+        # 而言是不存在，於是它的例子一個都不會被期待，整份文件安靜地全過。
+        unknown = sorted({f for ids in stories.values() for f in ids} - set(frs),
+                         key=int)
+        if unknown:
+            print(f"✗ {prd_path.parent.name} 的 spec.md 點名了 prd.md 裡沒有的 FR："
+                  f"{', '.join('FR-' + u for u in unknown)}")
+            problems += 1
 
         # 逐 story 比，不可把所有 story 的例子聯集起來跟單一 .feature 比：
         # 一則 story 一個 .feature，聯集會讓 A 的例子出現在 B 檔裡也算通過。
