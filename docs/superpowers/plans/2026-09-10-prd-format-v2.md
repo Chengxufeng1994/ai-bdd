@@ -60,7 +60,7 @@ print(check_spec.frs_in_prd(io.open('skills/bdd-clarify/examples/minimal-prd.md'
 "
 ```
 
-Expected：`status.py` 印出 **已答 2／n/a 1／待答 1**，覆蓋為 `邊界` ＋ `降級`；`frs_in_prd` 印出 `{'1': {'1.1','1.2','1.3'}, '2': {'2.1'}}`。**把這兩個結果抄下來——Step 6 要逐字比對。**
+Expected：`status.py` 印出 **已答 2／n/a 1／待答 1**，覆蓋為 `邊界` ＋ `降級`；`frs_in_prd` 印出 `{'1': {'1.1','1.2','1.3'}, '2': {'2.1'}}`。**把這兩個結果抄下來——Step 8 要逐字比對。**
 
 - [ ] **Step 2: 改寫 `prd-format.md` 的「章節順序」表**
 
@@ -211,7 +211,121 @@ PRD 不一樣**；但如果它照抄 PRD 的分組，要說得出為什麼那個
 「SPEC 被現成的分組綁住」，由這條規則管。
 ````
 
-- [ ] **Step 4: 遷移 `examples/minimal-prd.md` 到 v2**
+- [ ] **Step 4: 遷移 `prd-format.md` 其餘各處的舊章節名**
+
+舊名稱織在全文，不只在那張表裡。逐處改：
+
+**開頭「三個 Pass」那段**（`Pass 1 開骨架（Problem／Actors／Scope）` 起到
+`## Assumptions / Constraints`。止）整段換成：
+
+```
+三個 Pass 都對同一份文件寫：Pass 1 開骨架（Document Overview／Background／
+Goal／Success Metrics／Scope／Personas），Pass 2 把 `## User Stories` 填滿
+——先寫 `### US-<n>`，再把 `#### FR-<n>` 掛進去，Pass 3 把量得出來的品質屬性
+填成 NFR（只服務一則 story 的掛在那則底下，跨 story 的進
+`## Non-Functional Requirements`）、把不可協商的外部限制填進
+`## Assumptions / Constraints`。
+```
+
+**「來源標記：三選一」的適用範圍**（`## Functional Requirements` 的每條 FR／AC／EX
+那句起，到 `行尾都要標來源，三選一：` 止）換成：
+
+```
+`## User Stories` 底下的每條 FR／AC／EX 與 story 專屬的 NFR、
+`## Non-Functional Requirements` 的每條 NFR、`## Scope — In / Out` 的每條邊界、
+`## Assumptions / Constraints` 的每條，行尾都要標來源，三選一：
+```
+
+同一節的程式碼範例 `### FR-2  When 月租戶刷卡出場, …` 井號改成四個：
+`#### FR-2  When 月租戶刷卡出場, the system shall 直接開啟柵欄，不計費。 ← PRD §4`
+
+**該節末尾的豁免段**（`## Actors` 與 `## Open Questions` 不在這條規則的範圍內
+那段）整段換成：
+
+```
+`## Open Questions` 不在這條規則的範圍內——問題本身就是在記錄還沒有答案的
+東西，不需要再疊一層來源標記。
+
+`## Personas` **在**範圍內。v1 的角色只有「是誰／怎麼取得／跟誰容易混」，
+來源就是表格自己的欄位；v2 多了「他要什麼」與「現在什麼讓他痛」，而那兩件事
+可以是問出來的，也可以是編出來的——正是這個標記存在的理由。
+```
+
+**「Non-Functional Requirements 與 Constraints：怎麼分邊」的第一句**：
+`一件事該進 `## Functional Requirements` 底下的某條 FR` 改成
+`一件事該進 `## User Stories` 底下的某條 FR`。
+
+**同節的 NFR 程式碼範例**改成跨 story 的那個家，並在範例後補一段：
+
+````markdown
+## Non-Functional Requirements
+
+- NFR-2  車輛進出紀錄保存至少一年
+````
+
+**只服務一則 story 的 NFR 不寫在這裡**，寫成那則 story 底下的 `#### NFR-<n>`。
+判準是跨不跨 story，不是重不重要——「柵欄兩秒內開啟」只跟出場那則有關，
+「紀錄保存一年」對每一則都成立。
+
+**「角色與詞義：兩條界線」的第一句**：`角色留在 `prd.md` 的 `## Actors`` 改成
+`角色留在 `prd.md` 的 `## Personas``。
+
+改完自查：
+
+```bash
+grep -n "Functional Requirements\|## Actors\|Problem／Actors" skills/bdd-clarify/references/prd-format.md
+```
+
+Expected：只剩 `## Non-Functional Requirements` 的各處（含「與 Constraints：
+怎麼分邊」那個標題），`## Functional Requirements` 與 `## Actors` 一個都不剩。
+
+- [ ] **Step 5: 改寫「編號規則」一節——標題與內文都還在講 v1**
+
+`## 編號規則：FR 平鋪，AC／EX 掛在底下` 從標題到內文都跟 v2 相反，內文還寫著
+「這個 feature 不再切 story」。整節（標題到 `沒有從具體情境長出來。` 止）換成：
+
+`````markdown
+## 編號規則：FR 掛在 story 底下，AC／EX 掛在 FR 底下
+
+`FR-<n>` 住在它服務的 `### US-<n>` 底下，但**編號全域唯一**——不是每則 story
+各自從 1 起算。`FR-1` 在 US-1 底下、`FR-4` 在 US-2 底下都可以，但不得有兩個
+`FR-1`，否則 `EX-1.1` 指向兩個地方。
+
+NFR 的編號同樣全域唯一，而且跨越它的兩個家：story 專屬的 `#### NFR-<n>` 與
+跨 story 的 `## Non-Functional Requirements`。
+
+`AC-<n>.<m>` 與 `EX-<n>.<m>` 掛在各自的 `FR-<n>` 底下，`<n>` 跟著父層的 FR：
+
+````markdown
+### US-1  身為 P-1（訪客），我想在出場前知道要付多少，以便付完就能開走
+
+#### FR-1  When 訪客車出場, the system shall 依停留時長計費，前 30 分鐘免費。
+
+##### AC
+- AC-1.1  訪客在繳費機看得到金額與停留時長
+
+##### Examples
+- EX-1.1  停 29 分 → 收 0 元
+- EX-1.2  停剛好 30 分 → 收 0 元
+- EX-1.3  停 31 分 → 收 30 元
+````
+
+**編號在這裡定版**——不是在 SPEC。`.feature` 的 `@example-<n>.<m>` tag 回指
+`EX-<n>.<m>`，這是這條鏈唯一的接縫。
+
+MUST NOT: 重排既有的 FR／AC／EX 編號。重排會讓那些引用**靜默**指向別的東西
+——不會報錯，只會對錯。刪掉一條規則就留下空號（例如只剩 `FR-1`、`FR-3`，
+沒有 `FR-2`），不要把後面的號碼往前遞補：**空號看得出來，重排看不出來。**
+
+**把一條 FR 從一則 story 搬到另一則，編號不變。** 巢狀是給人讀的分組，編號是
+給機器追的身分——搬家換分組，不換身分。搬完在版本修訂歷史留一列，因為 SPEC
+可能已經照著舊分組切過 story 了。
+
+每條 FR 底下至少要有一個 EX——完全沒有例子的 FR，通常是規則還停在想像階段，
+沒有從具體情境長出來。
+`````
+
+- [ ] **Step 6: 遷移 `examples/minimal-prd.md` 到 v2**
 
 整份換成（逐字，這是兩支腳本的 canonical 解析對象）：
 
@@ -330,7 +444,7 @@ PRD 不一樣**；但如果它照抄 PRD 的分組，要說得出為什麼那個
 
 **三個不可破壞的東西**：`## Open Questions` 的五欄表（`status.py` 用 `len(cells) != 5` 篩）、`#### FR-<n>` 的層級、`EX-<n>.<m>` 的寫法。
 
-- [ ] **Step 5: 改 `check_spec.py` 的 `frs_in_prd()`**
+- [ ] **Step 7: 改 `check_spec.py` 的 `frs_in_prd()`**
 
 整個函式換成：
 
@@ -374,7 +488,7 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
 - 檔頭 docstring 第 22 行的「`## Functional Requirements` 段」→「`## User Stories` 段」
 - 第 145 行的錯誤訊息「沒有 `## Functional Requirements`」→「沒有 `## User Stories`」
 
-- [ ] **Step 6: 回歸——兩個結果必須跟 Step 1 逐字相同**
+- [ ] **Step 8: 回歸——兩個結果必須跟 Step 1 逐字相同**
 
 ```bash
 rm -rf /tmp/v2 && mkdir -p /tmp/v2/specs/2026-09-09-x
@@ -389,7 +503,7 @@ print(check_spec.frs_in_prd(io.open('skills/bdd-clarify/examples/minimal-prd.md'
 
 Expected：**已答 2／n/a 1／待答 1、覆蓋 `邊界`＋`降級`**（與 Step 1 相同——`## Open Questions` 沒動，變了就是改壞了）；`{'1': {'1.1','1.2','1.3'}, '2': {'2.1'}}`（與 Step 1 相同）。
 
-- [ ] **Step 7: 端到端——`check_spec.py` 對完整 fixture 跑一次**
+- [ ] **Step 9: 端到端——`check_spec.py` 對完整 fixture 跑一次**
 
 ```bash
 mkdir -p /tmp/v2/features
@@ -420,7 +534,7 @@ python3 skills/bdd-spec/scripts/check_spec.py /tmp/v2; echo "exit=$?"
 
 Expected：非零離開，且輸出指出 `visitor-billing` 漏了 `EX-1.2`、`EX-1.3`，`monthly-pass-exit` 漏了 `EX-2.1`。**這證明 FR→EX 的對應在新層級下真的被抓到了**，不是回傳空 dict 之後「什麼都沒漏」。
 
-- [ ] **Step 8: 缺 `## User Stories` 要大聲失敗**
+- [ ] **Step 10: 缺 `## User Stories` 要大聲失敗**
 
 ```bash
 rm -rf /tmp/v2bad && mkdir -p /tmp/v2bad/specs/2026-09-09-y /tmp/v2bad/features
@@ -431,7 +545,7 @@ python3 skills/bdd-spec/scripts/check_spec.py /tmp/v2bad; echo "exit=$?"
 
 Expected：`exit=1`，訊息指名該 feature 目錄與「沒有 `## User Stories`」。
 
-- [ ] **Step 9: fail loud 沒退化**
+- [ ] **Step 11: fail loud 沒退化**
 
 ```bash
 python3 skills/bdd-spec/scripts/check_spec.py /tmp/nonexistent-v2; echo "exit=$?"
@@ -440,7 +554,7 @@ python3 skills/bdd-clarify/scripts/status.py /tmp/nonexistent-v2; echo "exit=$?"
 
 Expected：兩次都 `exit=1` 並指名缺什麼。
 
-- [ ] **Step 10: 稽核與 diff 範圍確認**
+- [ ] **Step 12: 稽核與 diff 範圍確認**
 
 ```bash
 python3 skills/skill-rules/scripts/audit_skill.py skills/bdd-clarify; echo "exit=$?"
@@ -450,7 +564,7 @@ git diff --stat -- skills/bdd-clarify/scripts/status.py
 
 Expected：兩個 audit exit 0；`status.py` 的 diff **為空**（Global Constraints 明訂不得改動）。
 
-- [ ] **Step 11: Commit**
+- [ ] **Step 13: Commit**
 
 ```bash
 git add skills/bdd-clarify/references/prd-format.md \
