@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 把 `prd.md` 從八節擴成十一節，加入 Document Overview／Background／Goal／Success Metrics／Personas／User Stories，並把 FR 從平鋪的 `## Functional Requirements` 改成掛在 `### US-<n>` 底下的 `#### FR-<n>`。
+**Goal:** 把 `prd.md` 從七節擴成十節，加入 Document Overview／Background／Goal／Success Metrics／Personas／User Stories，並把 FR 從平鋪的 `## Functional Requirements` 改成掛在 `### US-<n>` 底下的 `#### FR-<n>`。
 
 **Architecture:** 契約、canonical fixture、解析器三者是同一個原子單位——分開改會留下「腳本解析不到任何 FR 卻不報錯」的中間狀態，那正是這個 repo 反覆在防的靜默失敗。所以 Task 1 三個一起改、一起驗；Task 2、3 只改描述它的 skill 文件。
 
@@ -25,7 +25,7 @@
 
 | 檔案 | 責任 | Task |
 | --- | --- | --- |
-| `skills/bdd-clarify/references/prd-format.md` | 格式契約：十一節的順序與各節內容、三條參照完整性規則、已知弱點 | 1 |
+| `skills/bdd-clarify/references/prd-format.md` | 格式契約：十節的順序與各節內容、三條參照完整性規則、已知弱點 | 1 |
 | `skills/bdd-clarify/examples/minimal-prd.md` | **canonical 解析對象**，兩支腳本唯一的驗證基準 | 1 |
 | `skills/bdd-spec/scripts/check_spec.py` | `frs_in_prd()` 改讀 `## User Stories` 段的 `#### FR-<n>` | 1 |
 | `skills/bdd-clarify/SKILL.md` | 產物一節、流程圖的 Pass 3 路由、各處章節名引用 | 2 |
@@ -632,7 +632,7 @@ Pass 3 · 技術 —— 逐項掃過 technical-probes.md
 
 - [ ] **Step 2: 改 `## 產物` 一節裡的章節清單**
 
-該節若列出 `prd.md` 的章節，換成 Task 1 的十一節；若只寫「格式 → `references/prd-format.md`」則不動。**先讀再改，不要憑印象。**
+該節若列出 `prd.md` 的章節，換成 Task 1 的十節；若只寫「格式 → `references/prd-format.md`」則不動。**先讀再改，不要憑印象。**
 
 - [ ] **Step 3: 全檔掃一次章節名引用**
 
