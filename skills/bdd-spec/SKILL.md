@@ -185,8 +185,8 @@ MUST NOT: 把 `prd.md` `## Open Questions` 裡**待答**的列當成已經有答
 看起來已完成的規格，之後沒有人會回頭質疑它。**只有「已答」的列可以用**——
 這也是「詞彙表」一節「只轉錄，不裁決」的同一條界線。
 
-角色要雙向對得上：`前置（狀態）` 出現 `prd.md` `## Actors` 沒有的角色 → CLARIFY
-漏了一個；`## Actors` 有但沒有任何規則提到 → 那個角色是憑空的。兩種都寫進
+角色要雙向對得上：`前置（狀態）` 出現 `prd.md` `## Personas` 沒有的角色 → CLARIFY
+漏了一個；`## Personas` 有但沒有任何規則提到 → 那個角色是憑空的。兩種都寫進
 覆蓋表回報。
 
 ### 3. 決定 seam —— 驗收測試打在哪一層
@@ -228,7 +228,7 @@ MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東�
 prd.md 的 Functional Requirements 段     .feature
 ─────────────────────────────────────────────────────────────
 `## Stories` 這則 story 的切法說明   →    Feature: 與其下的敘述
-### FR-2  影片進度不可回退           →    Rule: 影片進度必須單調遞增
+#### FR-2  影片進度不可回退           →    Rule: 影片進度必須單調遞增
 - EX-2.2 進度 70% 想改 60%           →    @rule-2 @example-2.2
                                           Example: 進度回退時操作失敗
 ```
@@ -261,7 +261,7 @@ Example: 進度回退時操作失敗
 底下全部場景，含 Scenario Outline 展開的每一列）。
 
 MUST NOT: 事後重排已經寫定的 FR 與 EX 編號。**這批編號在 CLARIFY（`prd.md` 的
-`## Functional Requirements` 段）誕生，不是在這一步**——本 skill 只把 EX 編號
+`## User Stories` 段）誕生，不是在這一步**——本 skill 只把 EX 編號
 原封不動地搬進 `.feature` 的 tag。下游（`bdd-plan`、之後新增的場景）回指的是
 `@example-2.2` 這個 tag，不是那句規則的文字本身；重排編號等於讓那些引用
 **靜默**指向別的東西——不會報錯，只會對錯。
@@ -462,7 +462,7 @@ domain model 要活得比它久。塞進去等於陪葬。
 
 ### 10. 稽核，然後才算完成
 
-**這一步跑在最後**——它比對 `prd.md` 的 `## Functional Requirements`、
+**這一步跑在最後**——它比對 `prd.md` 的 `## User Stories`、
 `spec.md` 的 `## Stories`，與寫好的 `.feature`，三份都要存在才對得起來。
 
 `spec.md` 不重述 FR 或 EX 的內容——那仍然只在 `prd.md` 定版一份。`spec.md`
@@ -510,7 +510,7 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 **關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
 
 完整骨架見步驟 6 的範例。`Feature:` 底下那段敘述寫的是這則 story 的
-「作為⋯我要⋯以便⋯」——角色抄 `prd.md` 的 `## Actors`，能力與價值從這則
+「作為⋯我要⋯以便⋯」——角色抄 `prd.md` 的 `## Personas`，能力與價值從這則
 story 涵蓋的那幾條 FR 濃縮而來（`## Stories` 裡的切法說明就是濃縮的起點）。
 它是這份規格存在的理由，而讀 `.feature` 的人不會同時開著 `prd.md`。
 
