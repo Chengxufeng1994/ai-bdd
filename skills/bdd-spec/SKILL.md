@@ -229,9 +229,17 @@ prd.md 的 Functional Requirements 段     .feature
 ─────────────────────────────────────────────────────────────
 `## Stories` 這則 story 的切法說明   →    Feature: 與其下的敘述
 #### FR-2  影片進度不可回退           →    Rule: 影片進度必須單調遞增
-- EX-2.2 進度 70% 想改 60%           →    @rule-2 @example-2.2
+- AC-2.2 進度 70% 想改 60%           →    @rule-2 @example-2.2
                                           Example: 進度回退時操作失敗
 ```
+
+| `prd.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
+| --- | --- |
+| `FR-<n>` | `@rule-<n>` |
+| `AC-<n>.<m>` | `@example-<n>.<m>` |
+
+**tag 不跟著 `prd.md` 改名。** `.feature` 是 Gherkin 的產物，`@example` 是 Gherkin
+的字；`prd.md` 是 PRD，`AC` 是 PRD 的字。接縫寫明對應就夠了。
 
 用 `Example:` 不用 `Scenario:`（Gherkin 的同義字）。`prd.md` 裡叫 Example，這裡
 也叫 Example——同一個東西在鏈上換名字，讀的人就得自己對應。
