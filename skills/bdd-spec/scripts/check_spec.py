@@ -40,20 +40,21 @@ def find_features(root: Path) -> Path:
 
 
 def frs_in_prd(text: str) -> dict[str, set[str]]:
-    """prd.md 的 `## User Stories` 段：FR 編號 -> EX 編號集合。
+    """prd.md 的 `## User Stories` 段：FR 編號 -> AC 編號集合。
 
-    FR 掛在 `### US-<n>` 底下，所以標題層級是 `#### FR-<n>` 而不是 `###`。
+    v3 把 FR 從標題改成 `#### FR` 分組底下的粗體項目，AC 則是掛在它底下的
+    清單項。理由是 AC 還要再往下掛 Given/When/Then 三行，用標題會走到 H6。
 
     來源是 prd.md 而不是 spec.md：例子的定版編號誕生在 CLARIFY，
     spec.md 只記哪些 FR 湊成一則 story，不重述例子。
 
-    FR 編號全域唯一，不是每則 story 各自從 1 起算——否則 EX-1.1 會指向
+    FR 編號全域唯一，不是每則 story 各自從 1 起算——否則 AC-1.1 會指向
     兩個地方，`.feature` 的 @example-1.1 就失去意義。
 
-    碰到 `### US-` 或 `#### NFR-` 就把 current 清掉：兩者都是 FR 的兄弟節點，
-    它們底下的文字不屬於上一條 FR。NFR 尤其要緊——story 專屬的 NFR 排在
-    最後一條 FR 之後，它的敘述若提到某個 EX 編號，不清掉 current 就會把
-    那個例子靜默地記到上一條 FR 頭上。
+    碰到任何標題就把 current 清掉。`#### FR`／`#### NFR`／`#### Q` 三個分組
+    與 `### US-` 都是 FR 的祖先或兄弟，它們底下的散文不屬於上一條 FR——
+    `#### Q` 尤其要緊，紅卡的敘述提到某個 AC 編號時，不清掉 current 就會
+    把那個例子靜默地記到上一則 story 最後一條 FR 頭上。
     """
     section = re.search(
         r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
@@ -62,17 +63,59 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
     out: dict[str, set[str]] = {}
     current = None
     for line in section.group(1).splitlines():
-        if re.match(r"^### US-|^#### NFR-", line):
+        if line.startswith("#"):
             current = None
             continue
-        fr = re.match(r"^#### FR-(\d+)\b", line)
+        fr = re.match(r"^\*\*FR-(\d+)\*\*", line)
         if fr:
             current = fr.group(1)
             out.setdefault(current, set())
             continue
         if current:
-            for ex in re.findall(r"\bEX-(\d+\.\d+)\b", line):
-                out[current].add(ex)
+            for ac in re.findall(r"\bAC-(\d+\.\d+)\b", line):
+                out[current].add(ac)
+    return out
+
+
+def qs_in_stories(text: str) -> set[str]:
+    """`## User Stories` 段的 `#### Q` 分組底下引用的 Q 編號。
+
+    story 底下的紅卡只是指標——狀態、面向、答案、決策史都住在
+    `## Open Questions`。這裡只收編號，好跟那張表對帳。
+    """
+    section = re.search(
+        r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    if not section:
+        return set()
+    out: set[str] = set()
+    in_q = False
+    for line in section.group(1).splitlines():
+        if line.startswith("#"):
+            in_q = re.match(r"^#### Q\s*$", line) is not None
+            continue
+        if in_q:
+            out.update(re.findall(r"\*\*Q-(\d+)\*\*", line))
+    return out
+
+
+def qs_in_table(text: str) -> set[str]:
+    """`## Open Questions` 表第一欄的 Q 編號。
+
+    只讀那一節：`## Document Overview` 底下的版本修訂歷史也是五欄表，
+    對整份掃會把它的每一列都當成一題。
+    """
+    section = re.search(
+        r"^## Open Questions\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    if not section:
+        return set()
+    out: set[str] = set()
+    for line in section.group(1).splitlines():
+        if not line.strip().startswith("|"):
+            continue
+        first = line.strip().strip("|").split("|")[0].strip()
+        m = re.fullmatch(r"Q-(\d+)", first)
+        if m:
+            out.add(m.group(1))
     return out
 
 
@@ -166,8 +209,29 @@ def check(root: Path) -> int:
         # 哪一份，所以訊息要帶上是哪個 feature 目錄。
         barren = sorted(fr for fr, exs in frs.items() if not exs)
         if barren:
-            print(f"✗ {prd_path.parent.name} 這些 FR 沒有任何 EX，SPEC 無從寫出場景："
+            print(f"✗ {prd_path.parent.name} 這些 FR 沒有任何 AC，SPEC 無從寫出場景："
                   f"{', '.join('FR-' + b for b in barren)}")
+            problems += 1
+
+        # story 底下的紅卡是指標，指到 `## Open Questions` 沒有的題號就是
+        # 斷掉的引用——通常是題目被刪了卻沒回頭清 story，或編號打錯。
+        # v2 的結構做不到這個檢查（紅卡不掛在 story 上），v3 才有。
+        dangling = sorted(qs_in_stories(ptext) - qs_in_table(ptext), key=int)
+        if dangling:
+            print(f"✗ {prd_path.parent.name} 的 story 引用了 `## Open Questions` "
+                  f"裡沒有的問題：{', '.join('Q-' + d for d in dangling)}")
+            problems += 1
+
+        # AC 的 <n> 必須等於它掛在底下的那條 FR。巢狀讓這件事在寫的時候
+        # 不容易弄錯，但打字錯不會被結構擋下來——`AC-9.1` 打在 `**FR-1**`
+        # 底下會被記成 FR-1 的例子，然後在下面的覆蓋比對裡變成一則
+        # 「@example-9.1 不見了」的訊息，指著 .feature 說它漏寫，而錯在 prd.md。
+        mismatched = sorted(
+            (fr, ac) for fr, acs in frs.items() for ac in acs
+            if ac.split(".")[0] != fr)
+        if mismatched:
+            print(f"✗ {prd_path.parent.name} 這些 AC 的編號對不上它所屬的 FR："
+                  f"{', '.join(f'AC-{ac} 掛在 FR-{fr} 底下' for fr, ac in mismatched)}")
             problems += 1
 
         spec_path = prd_path.parent / "spec.md"
