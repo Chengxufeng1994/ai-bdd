@@ -14,7 +14,7 @@ description: >
 
 一份就緒的 `prd.md` 進來，出去的是 `.feature` 與 `spec.md`：**先切 story——
 決定哪幾條 FR 湊成一則可獨立驗收的 story——再把 FR 變成 `Rule:` 區塊、
-EX 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加一張覆蓋表。
+AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加一張覆蓋表。
 
 不寫 step definition。不決定情境跑在哪一層。不發明新的例子。
 
@@ -166,12 +166,12 @@ MUST: 未就緒的 story 跳過，並明講跳過的理由與該回哪個 skill�
 
 | 讀什麼 | 為了什麼 |
 | --- | --- |
-| `specs/<date>-<feature>/prd.md` | **規則與例子的唯一來源**——FR／AC／EX 的定版編號、角色、假設、限制、範圍邊界、已答的詞義全在裡面 |
+| `specs/<date>-<feature>/prd.md` | **規則與例子的唯一來源**——FR／AC 的定版編號、角色、假設、限制、範圍邊界、已答的詞義全在裡面 |
 | 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
 
 `prd.md` 是規則與例子的唯一來源，但 story 由哪些 FR 組成不是——那是這一步
 自己切出來、寫進 `spec.md` `## Stories` 的。`check_spec.py` 之後靠這兩份一起
-比對：`prd.md` 定義每條 FR 有哪些 EX，`spec.md` 定義每則 story 涵蓋哪些 FR。
+比對：`prd.md` 定義每條 FR 有哪些 AC，`spec.md` 定義每則 story 涵蓋哪些 FR。
 
 第二項最容易被跳過，代價最貴，而且**在封閉文法下更貴**：文法的價值全在重用，
 另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
@@ -268,8 +268,8 @@ Example: 進度回退時操作失敗
 `@rule-2` 讓你一次跑完某條規則的所有場景（實測：`--tags @rule-2` 會選到該規則
 底下全部場景，含 Scenario Outline 展開的每一列）。
 
-MUST NOT: 事後重排已經寫定的 FR 與 EX 編號。**這批編號在 CLARIFY（`prd.md` 的
-`## User Stories` 段）誕生，不是在這一步**——本 skill 只把 EX 編號
+MUST NOT: 事後重排已經寫定的 FR 與 AC 編號。**這批編號在 CLARIFY（`prd.md` 的
+`## User Stories` 段）誕生，不是在這一步**——本 skill 只把 AC 編號
 原封不動地搬進 `.feature` 的 tag。下游（`bdd-plan`、之後新增的場景）回指的是
 `@example-2.2` 這個 tag，不是那句規則的文字本身；重排編號等於讓那些引用
 **靜默**指向別的東西——不會報錯，只會對錯。
@@ -473,7 +473,7 @@ domain model 要活得比它久。塞進去等於陪葬。
 **這一步跑在最後**——它比對 `prd.md` 的 `## User Stories`、
 `spec.md` 的 `## Stories`，與寫好的 `.feature`，三份都要存在才對得起來。
 
-`spec.md` 不重述 FR 或 EX 的內容——那仍然只在 `prd.md` 定版一份。`spec.md`
+`spec.md` 不重述 FR 或 AC 的內容——那仍然只在 `prd.md` 定版一份。`spec.md`
 只多記一件事：**這則 story 涵蓋哪些 FR**，而那正是這一步自己切出來的，不是
 複製別處的表述。兩份各自負責不同的資訊，合起來才拼得出「這個 `.feature`
 該有哪些 `@example` tag」——這不是「三份表述各自漂移」的風險，因為兩者本來
@@ -485,7 +485,7 @@ python3 <skill>/scripts/check_spec.py <專案根>
 
 檢查六件事：雙向覆蓋比對（漏做／發明）、每個檔恰好一個狀態 tag、
 中文「規則:」誤用、缺口有沒有就地註解、**步驟樣板重用率**、`prd.md` 裡有沒有
-FR 完全沒掛任何 EX（沒有例子，SPEC 就無從寫出場景，只能發明）。只讀不寫，
+FR 完全沒掛任何 AC（沒有例子，SPEC 就無從寫出場景，只能發明）。只讀不寫，
 退出碼可直接進 CI。
 
 **發明比漏做更該優先看。** 漏一條會被覆蓋數字抓到；憑空多一條看起來很完整，

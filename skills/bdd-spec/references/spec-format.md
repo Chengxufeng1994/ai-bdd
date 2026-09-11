@@ -47,7 +47,7 @@ Gherkin 表達不了的驗收面向。
 
 | 面向 | 這個 feature 怎麼處理 |
 | --- | --- |
-| 邊界值 | ← `prd.md` EX-N.M（已經是具體數字，可以直接抄） |
+| 邊界值 | ← `prd.md` AC-N.M（已經是具體數字，可以直接抄） |
 | 錯誤行為 | 失敗時回什麼、訊息從哪來 |
 | 非功能 | ← `prd.md` `## Non-Functional Requirements` 的 NFR-N；這裡只補 Gherkin 表達不了的部分（怎麼量測、驗收門檻怎麼判） |
 
@@ -140,12 +140,12 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 ## 為什麼規則不寫在這裡
 
 `check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`prd.md` 的
-FR／EX 清單，與 `.feature` 的可執行場景。`spec.md` 的 `## Stories` 只多插
+FR／AC 清單，與 `.feature` 的可執行場景。`spec.md` 的 `## Stories` 只多插
 一條——哪些 FR 歸哪則 story，決定該去哪個 `.feature` 找對應的例子；它不重述
-FR 或 EX 本身。`prd.md` 有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature`
+FR 或 AC 本身。`prd.md` 有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature`
 指向 `prd.md` 沒有的例子 ＝ 憑空發明。
 
-`spec.md` 若連 FR 或 EX 的內容也抄一份，就變成三份表述——稽核有兩個可能
+`spec.md` 若連 FR 或 AC 的內容也抄一份，就變成三份表述——稽核有兩個可能
 來源，而它們遲早不一樣。「發明」是最沒有人會懷疑的那種錯：漏一條會被數字
 抓到，多一條看起來只是很完整。
 
