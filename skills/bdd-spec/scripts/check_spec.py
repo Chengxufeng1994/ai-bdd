@@ -4,7 +4,7 @@
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查六件事，全部是機械性的：
+檢查十二件事，全部是機械性的：
 
   1. 覆蓋——雙向。prd.md 有例子而 feature 沒有的（漏做），
      以及 feature 指向 prd.md 裡不存在的例子（發明出來的驗收條件）。
@@ -13,10 +13,22 @@
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
+     十二項裡只有這一項不會把退出碼變成 1。
   6. FR 完整性——prd.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      SPEC 就無從寫出場景，只能發明。
+  7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
+     對 v3 的解析器而言那是「不存在」不是「錯」，會安靜地掉出覆蓋率。
+  8. 紅卡群組的形式——`#### Q` 與 `**Q-<n>**` 都是精確形式；偏掉的行會讓
+     第 9、10 項一張紅卡都收不到，於是那兩項無法失敗。
+  9. 懸空的紅卡指標——`#### Q` 指向 `## Open Questions` 表裡沒有的題號。
+ 10. 紅卡只列待答——`#### Q` 指向表裡狀態不是「待答」的題號。已答的答案
+     已經長成某條 FR 或 AC，留著會讓地圖上的紅卡數量永遠不歸零。
+ 11. AC 編號對帳——`AC-<n>.<m>` 的 `<n>` 必須等於它掛在底下的那條 FR。
+ 12. spec.md 點名的 FR 必須真的存在於 prd.md。
 
-退出碼 0 = 全過，1 = 有問題。適合放進 CI。
+退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、找不到 .feature、
+沒有 prd.md、沒有 spec.md、`## Stories` 損壞也各自退出 1——那些是「先跑上
+一步」，不算在上面十二項一致性檢查裡。
 
 只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
 例子的目錄讀自 specs/<date>-<feature>/prd.md 的 `## User Stories` 段
@@ -52,9 +64,12 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
     兩個地方，`.feature` 的 @example-1.1 就失去意義。
 
     碰到任何標題就把 current 清掉。`#### FR`／`#### NFR`／`#### Q` 三個分組
-    與 `### US-` 都是 FR 的祖先或兄弟，它們底下的散文不屬於上一條 FR——
-    `#### Q` 尤其要緊，紅卡的敘述提到某個 AC 編號時，不清掉 current 就會
-    把那個例子靜默地記到上一則 story 最後一條 FR 頭上。
+    與 `### US-` 都是 FR 的祖先或兄弟，它們底下的項目不屬於上一條 FR。
+
+    AC 只認契約宣告的 `- **AC-<n>.<m>**` 項目形式。用自由文字掃會把散文裡
+    合法的交叉引用（「此規則與 AC-2.1 的計時起點相同」）記成這條 FR 的例子，
+    然後對著 `.feature` 報一則假的「漏了 AC-2.1」——叫作者去修一個沒有錯的
+    句子，而契約從來沒有禁止在散文裡引用 AC。
     """
     section = re.search(
         r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
@@ -72,50 +87,91 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
             out.setdefault(current, set())
             continue
         if current:
-            for ac in re.findall(r"\bAC-(\d+\.\d+)\b", line):
-                out[current].add(ac)
+            ac = re.match(r"^\s*-\s*\*\*AC-(\d+\.\d+)\*\*", line)
+            if ac:
+                out[current].add(ac.group(1))
     return out
 
 
-def qs_in_stories(text: str) -> set[str]:
-    """`## User Stories` 段的 `#### Q` 分組底下引用的 Q 編號。
+def v2_forms_in_prd(text: str) -> list[str]:
+    """`## User Stories` 段裡殘留的 v2 標題形式。
 
-    story 底下的紅卡只是指標——狀態、面向、答案、決策史都住在
-    `## Open Questions`。這裡只收編號，好跟那張表對帳。
+    v3 把 FR／NFR 從標題改成粗體項目，所以 `#### FR-2` 這種寫法對
+    `frs_in_prd()` 而言是「不存在」而不是「錯」——它會安靜地連同它的例子
+    一起掉出覆蓋率計算，而整份文件印出「全部通過」。
+
+    這個檢查是唯一能把那個缺席變回錯誤的東西。半遷移的文件才是暴露面：
+    整份 v2 已經會在「沒有 `## User Stories` 一節」那裡大聲失敗。
     """
     section = re.search(
         r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     if not section:
-        return set()
+        return []
+    return [line.strip() for line in section.group(1).splitlines()
+            if re.match(r"^#+\s*(FR|NFR|AC|EX)-\d", line)]
+
+
+def qs_in_stories(text: str) -> tuple[set[str], list[str]]:
+    """`## User Stories` 段的 `#### Q` 分組：引用的 Q 編號，以及形式不對的行。
+
+    story 底下的紅卡只是指標——狀態、面向、答案、決策史都住在
+    `## Open Questions`。這裡只收編號，好跟那張表對帳。
+
+    形式稍偏就回傳空集合是這個檢查最危險的失敗方式：`#### Q（待答）` 不是
+    `#### Q`，`- Q-77  …` 不是 `- **Q-77**  …`，兩者都讓底下的紅卡一張都收
+    不到，於是懸空指標檢查**無法失敗**。契約寫的是精確形式，所以偏掉的行要
+    報錯，不是被容納。
+
+    形式與編號一起回傳，是因為「哪幾行算在這個分組裡」只有這一份狀態機。
+    拆成兩支函式就會有兩份，而它們遲早對分組的邊界有不同意見——那時形式
+    檢查會安靜地掃錯範圍。
+    """
+    section = re.search(
+        r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    if not section:
+        return set(), []
     out: set[str] = set()
+    malformed: list[str] = []
     in_q = False
     for line in section.group(1).splitlines():
         if line.startswith("#"):
             in_q = re.match(r"^#### Q\s*$", line) is not None
+            if not in_q and line.startswith("#### Q"):
+                malformed.append(line.strip())
             continue
         if in_q:
-            out.update(re.findall(r"\*\*Q-(\d+)\*\*", line))
-    return out
+            found = re.findall(r"\*\*Q-(\d+)\*\*", line)
+            if found:
+                out.update(found)
+            elif re.search(r"Q-\d", line):
+                malformed.append(line.strip())
+    return out, malformed
 
 
-def qs_in_table(text: str) -> set[str]:
-    """`## Open Questions` 表第一欄的 Q 編號。
+def qs_in_table(text: str) -> dict[str, str]:
+    """`## Open Questions` 表：Q 編號 -> 「狀態」欄。
 
     只讀那一節：`## Document Overview` 底下的版本修訂歷史也是五欄表，
     對整份掃會把它的每一列都當成一題。
+
+    狀態一起讀出來，是因為契約要求 `#### Q` 只列「待答」的題目——已答的
+    答案已經長成某條 FR 或 AC，留在紅卡群組裡會讓地圖上的紅卡數量永遠
+    不歸零。欄序固定 `| Q | 問題 | 面向 | 狀態 | 答案 |`，跟 `status.py`
+    讀的是同一張表的同一欄。
     """
     section = re.search(
         r"^## Open Questions\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     if not section:
-        return set()
-    out: set[str] = set()
+        return {}
+    out: dict[str, str] = {}
     for line in section.group(1).splitlines():
-        if not line.strip().startswith("|"):
+        line = line.strip()
+        if not line.startswith("|"):
             continue
-        first = line.strip().strip("|").split("|")[0].strip()
-        m = re.fullmatch(r"Q-(\d+)", first)
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        m = re.fullmatch(r"Q-(\d+)", cells[0])
         if m:
-            out.add(m.group(1))
+            out[m.group(1)] = cells[3] if len(cells) > 3 else ""
     return out
 
 
@@ -197,29 +253,58 @@ def check(root: Path) -> int:
     for prd_path in prds:
         ptext = prd_path.read_text(encoding="utf-8")
         frs = frs_in_prd(ptext)
+
+        # 要先於 barren 檢查：v2 形式的標題會讓那條 FR 連同它的例子一起
+        # 從 frs 消失，barren 於是對著一份殘缺的 dict 發出誤導訊息。
+        stale = v2_forms_in_prd(ptext)
+        if stale:
+            print(f"✗ {prd_path.parent.name} 的 `## User Stories` 底下有 v2 形式的"
+                  f"標題，v3 要用粗體項目：{', '.join(stale)}")
+            problems += 1
+
         if not frs:
             print(f"✗ {prd_path.parent.name} 的 prd.md 沒有 `## User Stories` "
                   f"一節、或該節底下沒有任何 FR —— 先跑 bdd-clarify")
             problems += 1
             continue
 
-        # 這是 D3 兩層結構唯一的機械防線：完全沒有例子的 FR，SPEC 無從寫出場景，
-        # 只能發明——而發明的驗收條件正是這支腳本要抓的另一個方向。FR 編號是
-        # 每個 feature 各自從 1 編起，「FR-3」在多 feature 的 repo 裡定位不到是
-        # 哪一份，所以訊息要帶上是哪個 feature 目錄。
+        # 完全沒有 AC 的 FR，SPEC 無從寫出場景，只能發明——而發明的驗收條件
+        # 正是這支腳本要抓的另一個方向。FR 編號是每個 feature 各自從 1 編起，
+        # 「FR-3」在多 feature 的 repo 裡定位不到是哪一份，所以訊息要帶上是
+        # 哪個 feature 目錄。
         barren = sorted(fr for fr, exs in frs.items() if not exs)
         if barren:
             print(f"✗ {prd_path.parent.name} 這些 FR 沒有任何 AC，SPEC 無從寫出場景："
                   f"{', '.join('FR-' + b for b in barren)}")
             problems += 1
 
+        # 形式不對的紅卡群組收不到任何編號，下面兩個檢查因此無法失敗——
+        # 所以形式本身要先報錯，不能被容納成「這則 story 沒有紅卡」。
+        q_ids, q_malformed = qs_in_stories(ptext)
+        q_table = qs_in_table(ptext)
+        if q_malformed:
+            print(f"✗ {prd_path.parent.name} 的 `#### Q` 形式不對，紅卡收不到："
+                  f"{', '.join(q_malformed)}")
+            problems += 1
+
         # story 底下的紅卡是指標，指到 `## Open Questions` 沒有的題號就是
         # 斷掉的引用——通常是題目被刪了卻沒回頭清 story，或編號打錯。
         # v2 的結構做不到這個檢查（紅卡不掛在 story 上），v3 才有。
-        dangling = sorted(qs_in_stories(ptext) - qs_in_table(ptext), key=int)
+        dangling = sorted(q_ids - set(q_table), key=int)
         if dangling:
             print(f"✗ {prd_path.parent.name} 的 story 引用了 `## Open Questions` "
                   f"裡沒有的問題：{', '.join('Q-' + d for d in dangling)}")
+            problems += 1
+
+        # 已答的不是紅卡了——它的答案已經長成某條 FR 或 AC。留在 `#### Q`
+        # 會讓地圖上的紅卡數量永遠不歸零，而那正是就緒判定要數的東西。
+        # 懸空的題號在上面報過了，這裡不重複報。
+        answered = sorted((q for q in q_ids if q_table.get(q, "待答") != "待答"),
+                          key=int)
+        if answered:
+            named = ", ".join(f"Q-{q}（{q_table[q] or '表缺狀態欄'}）" for q in answered)
+            print(f"✗ {prd_path.parent.name} 的 `#### Q` 列了狀態不是「待答」的"
+                  f"問題：{named}")
             problems += 1
 
         # AC 的 <n> 必須等於它掛在底下的那條 FR。巢狀讓這件事在寫的時候
