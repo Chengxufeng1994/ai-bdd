@@ -195,7 +195,8 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | --- | --- | --- | --- |
 | CLARIFY | `clarify-loop` | 多輪把問題問到收斂 | **已實作，不動**。地位從配角變主角——它就是 CLARIFY 的主體 |
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**。觸發訊號要改（見下） |
-| | `bdd-clarify` | 三個 pass 的總入口 ＋ 就緒判定 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
+| | `bdd-clarify` | 三個 pass 的總入口 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
+| | `example-mapping` | 四色卡、四條診斷、就緒判定 | **已實作**。Pass 2 的手法與就緒判定從 `bdd-clarify` 搬進來 |
 | SPEC | `bdd-spec` | 答案 → `.feature` ＋ `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護；`check_spec.py` 的覆蓋來源從 `example-mapping.md` 改成 `spec.md` |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
 | PLAN | `bdd-plan` | `.feature` → tracer bullet ＋ blocking edges | **已實作，幾乎重寫（大）**：現在的 §1–5（API／domain／schema／測試分層／風險）全部搬進 `spec.md` |
@@ -305,7 +306,7 @@ Always-on: ~1,620 tok  每個 session 都付
 - **2026-09-02**：編號從 CLARIFY 移到 SPEC 定版。理由是「凍在 CLARIFY 等於在最
   不確定的時候做最不可逆的事」。
 - **2026-09-09**：**移回 CLARIFY**。CLARIFY 的產物變成一份自足的 `prd.md`，
-  `FR-<n>` 與 `EX-<n>.<m>` 在那裡誕生，`.feature` 的 `@example-<n>.<m>` 回指它們。
+  `FR-<n>` 與 `AC-<n>.<m>` 在那裡誕生，`.feature` 的 `@example-<n>.<m>` 回指它們。
   上面那個顧慮改用別的方式解掉：**不確定的東西根本不會拿到編號**——它留在
   `## Open Questions` 當一列待答，而不是先變成 FR 再回頭改。
 

@@ -10,7 +10,7 @@ weak.
 
 **No business code until CLARIFY has run.** Every type in `domain/` must trace
 back to an `FR-<n>` in `prd.md`, and every scenario in `features/` back to an
-`EX-<n>.<m>`. Writing the model first defeats the entire point of the
+`AC-<n>.<m>`. Writing the model first defeats the entire point of the
 testbed — it would prove the skills work by handing them the answer.
 
 Current state: `domain/` is empty. `application/` and `infrastructure/` hold the
@@ -230,7 +230,7 @@ can be checked against it mechanically rather than by reading:
 | --- | --- | --- |
 | a story (sliced in SPEC, listed in `spec.md`'s `## Stories`) | `Feature:` | — |
 | `FR-1` | `Rule:` | every requirement the story covers has a `Rule:` block |
-| `EX-1.1` | `@example-1.1` on a `Scenario` | every example has a scenario; no orphan scenarios |
+| `AC-1.1` | `@example-1.1` on a `Scenario` | every example has a scenario; no orphan scenarios |
 
 **The tag is lowercase with a hyphen.** `check_spec.py` matches
 `@example-<n>.<m>`; `@Example1.1` parses as nothing and the scenario silently
@@ -253,7 +253,7 @@ references, and renumbering silently repoints them.
 
 | Tag | Meaning |
 | --- | --- |
-| `@example-1.1` | traces to an `EX-1.1` in `prd.md` |
+| `@example-1.1` | traces to an `AC-1.1` in `prd.md` |
 | `@wip` | being worked on right now |
 | `@smoke` | must pass before anything else is trusted |
 | `@slow` | excluded from the fast loop (`-godog.tags="~@slow"`) |
