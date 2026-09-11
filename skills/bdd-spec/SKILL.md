@@ -225,11 +225,11 @@ MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東�
 ### 5. 規則對應 Rule，例子對應 Example
 
 ```
-prd.md 的 Functional Requirements 段     .feature
+prd.md 的 `## User Stories` 段           .feature
 ─────────────────────────────────────────────────────────────
 `## Stories` 這則 story 的切法說明   →    Feature: 與其下的敘述
-#### FR-2  影片進度不可回退           →    Rule: 影片進度必須單調遞增
-- AC-2.2 進度 70% 想改 60%           →    @rule-2 @example-2.2
+**FR-2**  影片進度不可回退            →    Rule: 影片進度必須單調遞增
+- **AC-2.2** 進度 70% 想改 60%        →    @rule-2 @example-2.2
                                           Example: 進度回退時操作失敗
 ```
 
