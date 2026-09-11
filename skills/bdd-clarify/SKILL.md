@@ -3,22 +3,22 @@ name: bdd-clarify
 description: >
   把 PRD 或一段模糊的需求逼成具體的規則與例子——先拆出業務目標、成功指標與範圍邊界，
   揪出 PRD 沒寫的隱含假設，識別角色，
-  再逐題四選項問到不確定收斂，從答案抽出規則，並判定能不能開工。
+  再逐題四選項問到不確定收斂，從答案抽出規則。就緒判定交給 `example-mapping`。
   BDD 六步流程的 CLARIFY 步驟。
-  觸發詞：「這個需求要怎麼拆」「需求講不清楚」「幫我釐清需求」「example mapping」
+  觸發詞：「這個需求要怎麼拆」「需求講不清楚」「幫我釐清需求」
   「這份 PRD 有什麼沒寫清楚」「PRD 的隱含假設」「這份需求哪裡有洞」「PRD 怎麼拆解」
   「有哪些角色」「actor 要怎麼定義」「這份 PRD 要怎麼變成 story」
-  「這個 story 能不能開工」「這功能有哪些規則」「驗收條件有哪些」
+  「這功能有哪些規則」「驗收條件有哪些」
   「寫規格前先釐清」「需求有什麼漏掉的」。
   English: clarify this requirement, break down a PRD, find the unstated
-  assumptions, example mapping, what are the rules for this story, acceptance
-  criteria discovery, is this story ready to start.
+  assumptions, what are the rules for this story, acceptance
+  criteria discovery.
 ---
 
 # CLARIFY — 把需求逼成具體例子
 
-一份 PRD 或一段模糊的敘述進來，出去的是：**規則**、每條規則的**具體例子**、
-答不出來的**問題**，以及一句「能不能開工」的判定。
+一份 PRD 或一段模糊的敘述進來，出去的是一份 `prd.md`：**規則**、每條規則的
+**具體例子**，以及答不出來的**問題**。就緒判定交給 `example-mapping`。
 
 **分兩段跑。** Pass 1 對整個 feature，把它拆成目標／指標／邊界並揪出沒寫下來的假設；
 Pass 2 對整個 feature，逐題問到規則浮現。
@@ -39,6 +39,8 @@ Pass 2 對整個 feature，逐題問到規則浮現。
 - 已經有一疊跳過的問題要再收斂 → 改用 `clarify-loop`
 - 要把例子寫成 Gherkin → 改用 `bdd-spec`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
+- 要跑四色卡技巧、或判定這則 story 就不就緒 → 改用 `example-mapping`——它攤地圖、
+  跑四條診斷，也是唯一寫 `## Document Overview` 的 `狀態` 欄的 skill；本 skill 不寫
 - 產出是一份 `prd.md`，**不是**規格、程式碼或資料模型
 
 ---
@@ -69,9 +71,9 @@ Pass 1 · 廣度 —— 對整個 feature                    （跳過 Pass 1）
 Pass 2 · 深度 —— 對整個 feature ←──────────────────┘
   4. 澄清循環（每輪）
        ├─ 逐題問：一題一列進 ## Open Questions，狀態記已答／待答
-       ├─ 抽出本輪能抽的 FR 與 EX
+       ├─ 抽出本輪能抽的 FR 與 AC
        └─ 還有未知？ → 下一輪
-  5. 就緒判定（提案）
+  5. 就緒判定（呼叫 example-mapping）
   6. 收尾：標記完成
         ↓
 Pass 3 · 技術 —— 逐項掃過 technical-probes.md
