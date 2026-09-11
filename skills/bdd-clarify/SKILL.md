@@ -3,22 +3,22 @@ name: bdd-clarify
 description: >
   把 PRD 或一段模糊的需求逼成具體的規則與例子——先拆出業務目標、成功指標與範圍邊界，
   揪出 PRD 沒寫的隱含假設，識別角色，
-  再逐題四選項問到不確定收斂，從答案抽出規則，並判定能不能開工。
+  再逐題四選項問到不確定收斂，從答案抽出規則。就緒判定交給 `example-mapping`。
   BDD 六步流程的 CLARIFY 步驟。
-  觸發詞：「這個需求要怎麼拆」「需求講不清楚」「幫我釐清需求」「example mapping」
+  觸發詞：「這個需求要怎麼拆」「需求講不清楚」「幫我釐清需求」
   「這份 PRD 有什麼沒寫清楚」「PRD 的隱含假設」「這份需求哪裡有洞」「PRD 怎麼拆解」
   「有哪些角色」「actor 要怎麼定義」「這份 PRD 要怎麼變成 story」
-  「這個 story 能不能開工」「這功能有哪些規則」「驗收條件有哪些」
+  「這功能有哪些規則」「驗收條件有哪些」
   「寫規格前先釐清」「需求有什麼漏掉的」。
   English: clarify this requirement, break down a PRD, find the unstated
-  assumptions, example mapping, what are the rules for this story, acceptance
-  criteria discovery, is this story ready to start.
+  assumptions, what are the rules for this story, acceptance
+  criteria discovery.
 ---
 
 # CLARIFY — 把需求逼成具體例子
 
-一份 PRD 或一段模糊的敘述進來，出去的是：**規則**、每條規則的**具體例子**、
-答不出來的**問題**，以及一句「能不能開工」的判定。
+一份 PRD 或一段模糊的敘述進來，出去的是一份 `prd.md`：**規則**、每條規則的
+**具體例子**，以及答不出來的**問題**。就緒判定交給 `example-mapping`。
 
 **分兩段跑。** Pass 1 對整個 feature，把它拆成目標／指標／邊界並揪出沒寫下來的假設；
 Pass 2 對整個 feature，逐題問到規則浮現。
@@ -39,6 +39,9 @@ Pass 2 對整個 feature，逐題問到規則浮現。
 - 已經有一疊跳過的問題要再收斂 → 改用 `clarify-loop`
 - 要把例子寫成 Gherkin → 改用 `bdd-spec`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
+- 要跑四色卡技巧、或判定這則 story 就不就緒 → 改用 `example-mapping`——它攤地圖、
+  跑四條診斷，也是唯一寫 `## Document Overview` `狀態` 欄**就緒值**的 skill；本
+  skill 只在 Pass 1 開檔時把那一格寫成 `澄清中`
 - 產出是一份 `prd.md`，**不是**規格、程式碼或資料模型
 
 ---
@@ -69,9 +72,9 @@ Pass 1 · 廣度 —— 對整個 feature                    （跳過 Pass 1）
 Pass 2 · 深度 —— 對整個 feature ←──────────────────┘
   4. 澄清循環（每輪）
        ├─ 逐題問：一題一列進 ## Open Questions，狀態記已答／待答
-       ├─ 抽出本輪能抽的 FR 與 EX
+       ├─ 抽出本輪能抽的 FR 與 AC
        └─ 還有未知？ → 下一輪
-  5. 就緒判定（提案）
+  5. 就緒判定（呼叫 example-mapping）
   6. 收尾：標記完成
         ↓
 Pass 3 · 技術 —— 逐項掃過 technical-probes.md
@@ -134,9 +137,11 @@ MUST: Pass 1 刻意淺。**判準是「範圍講得出依據」，不是「問�
 
 ### 1. 拆成骨架
 
-先不碰技術，把資訊分進 `prd.md` 五處：`## Background`、`## Goal`、
-`## Success Metrics`（業務目標、成功指標）、`## Scope — In / Out`（範圍邊界），
-以及 `## Assumptions / Constraints`（**隱含假設**——沒寫下來、但整份文件預設
+先不碰技術，把資訊分進 `prd.md` 六處：`## Document Overview`（`狀態` 開成
+`澄清中`、最後更新、核心關係人——**這一格只有這裡寫得出來**，往後的就緒值由
+`example-mapping` 改）、`## Background`、`## Goal`、`## Success Metrics`
+（業務目標、成功指標）、`## Scope — In / Out`（範圍邊界），以及
+`## Assumptions / Constraints`（**隱含假設**——沒寫下來、但整份文件預設
 它成立的那些，是這一步存在的理由）。
 
 MUST: PRD 裡標題叫「假設」的那一段，**每一條都當成沒問過**，不要照抄成既定
@@ -159,10 +164,10 @@ MUST: PRD 裡標題叫「假設」的那一段，**每一條都當成沒問過**
 怎麼分邊」一節。
 
 MUST: 這裡、以及後面兩個 Pass 寫進 `prd.md` 的每一行實質內容都要標來源，
-三選一——`PRD §x`（PRD 原文有這段）、`Q<n>`（來自 `## Open Questions` 某一題
+三選一——`PRD §x`（PRD 原文有這段）、`Q-<n>`（來自 `## Open Questions` 某一題
 的答案）、`推論`（兩者都不是，是推導出來的）。範圍：`## Scope — In / Out` 的
 每條邊界、`## Assumptions / Constraints` 的每條，以及 Pass 2 的每條
-FR／AC／EX、Pass 3 的每條 NFR。寫法與範例 → `references/prd-format.md`。
+FR／AC、Pass 3 的每條 NFR。寫法與範例 → `references/prd-format.md`。
 
 沒有這個標記，**「CLARIFY 真的逼問過 PRD」跟「CLARIFY 只是把 PRD 換句話抄
 一遍」在 `prd.md` 上長得一模一樣**——整份文件的來源欄全是 `PRD §x` 時，代表
@@ -198,6 +203,9 @@ Pass 1 的判準不一樣，而且更窄：
 ## Pass 2 · 深度 —— 對整個 feature
 
 ### 4. 澄清循環 —— 一次一題，每輪抽規則
+
+**手法是 Example Mapping** —— 四色卡怎麼對應 `prd.md`、怎麼攤、四條診斷怎麼讀
+→ `example-mapping`。本節只講這個 pass 的節奏（一次一題、每輪抽規則），不重述手法。
 
 從敘述裡找模糊點，**一題一題問**，不要一次列出全部。
 
@@ -310,11 +318,11 @@ MUST: 一輪問完就把**這一輪能抽的規則抽出來**，不要累積到�
 - ✗「一個無效的使用者」—— 這是規則換句話說
 - ✓「一個 token 在 3 秒前過期的使用者」
 
-MUST: 新規則直接寫進所屬 `### US-<n>` 底下的 `#### FR-<n>`（EARS 句式，
-見 `references/prd-format.md`），底下掛 `##### AC`（PM 讀，畫面與感受）與
-`##### Examples`（SPEC 讀，含實際數字）。**編號在這裡定版**，寫出去就不重排；
-刪掉一條規則就留空號，不遞補——空號看得出來，重排看不出來。FR／AC／EX 三者
-都要標來源（`PRD §x`／`Q<n>`／`推論`，規則見「拆成骨架」一節）。
+MUST: 新規則直接寫進所屬 `### US-<n>` 底下 `#### FR` 分組裡的 `**FR-<n>**`（EARS
+句式，見 `references/prd-format.md`），底下巢狀掛 `- **AC-<n>.<m>**`（Given／
+When／Then，含實際數字，SPEC 讀）。**編號在這裡定版**，寫出去就不重排；刪掉
+一條規則就留空號，不遞補——空號看得出來，重排看不出來。FR／AC 都要標來源
+（`PRD §x`／`Q-<n>`／`推論`，規則見「拆成骨架」一節）。
 
 #### 什麼時候停
 
@@ -326,24 +334,15 @@ MUST: 新規則直接寫進所屬 `### US-<n>` 底下的 `#### FR-<n>`（EARS �
 | 問了兩三輪但問題總數不下降 | 先用 Pass 1 的判準確認範圍有沒有抓錯：**沒抓錯**——這個 feature 本來就大，不是切小它，繼續問完，多大交給 SPEC 之後決定；**抓錯了**——回 Pass 1 補問「會改變範圍」的題目，重新定住邊界，再回來繼續 Pass 2 |
 | **抽不出新規則** | 這一輪的答案沒有改變任何行為。問題選錯了，回頭看「值不值得問」那一關 |
 
-### 5. 就緒判定 —— 提出判定，票不是你投的
+### 5. 就緒判定 —— 呼叫 `example-mapping`
 
-| 訊號 | 看什麼 | 代表 |
-| --- | --- | --- |
-| 不確定性高 | **未答問題數**偏高 | 紅卡沒清 → 再跑一輪 `clarify-loop` |
+紅卡清空（或使用者決定帶著紅卡往下走）之後，跑一次 `example-mapping`：它攤開地圖、
+跑四條診斷、把就緒問句交給使用者，並依使用者的答覆寫 `## Document Overview` 的
+`狀態` 欄。
 
-IMPORTANT: **就緒與否由開發、測試、產品三方投票決定，不是由分析得出。** 你的
-角色是把訊號攤開、提出一個判定，並明講「這是提案，最終由你們決定」。宣告
-「未就緒」等於替團隊投了票。
-
-MUST: 訊號觸發但你判定不適用時，**在判定裡寫出來**，連同理由。
-
-安靜跳過一個檢查項，和沒發現它，在文件上長得一模一樣——讀的人無從分辨你是想過
-了還是漏看了，於是只能自己重查一遍，那張表就白列了。
-
-未就緒只有一條路：不確定性高、跳過的題還很多 → `clarify-loop`。這個 feature
-有多大、要不要切成幾則 story，是 SPEC 拿到這份 `prd.md` 之後的事，CLARIFY 的
-就緒判定不管它。
+MUST NOT: 在這裡自己宣告就緒。**本 skill 不寫 `狀態` 欄的就緒值**（`待對焦`／
+`已對焦`）——那是 `example-mapping` 唯一負責的一格，而值由使用者決定。本 skill
+對那一格只做一件事：Pass 1 開檔時寫成 `澄清中`。
 
 ### 6. 收尾：標記完成，`prd.md` 全部保留
 
@@ -386,7 +385,7 @@ MUST: 抽完規則後，把問答裡浮現的每一張**列舉型的表**（型�
 第一個會問的那件事：「當初為什麼不選第二個選項？」
 
 IMPORTANT: 保留不等於它是規則的定案來源——一題答完那一刻，結論已經寫進
-`## User Stories` 底下的某條 `FR-<n>`／`AC`／`Examples`，或
+`## User Stories` 底下的某條 `FR-<n>`／`AC-<n>.<m>`，或
 `## Assumptions / Constraints`；小節留著的是**為什麼**，不是規則本身。
 
 ---
@@ -405,7 +404,7 @@ Requirements`；不可協商的外部限制（既有硬體、法規、已發包�
 `## Assumptions / Constraints`。答不出來的一律進 `## Open Questions`，跟業務
 面的紅卡同一張表，不勉強塞進 NFR 或 Constraints 湊數——這兩節怎麼分邊見
 `references/prd-format.md`。標 `n/a` 的要寫理由，否則它跟「懶得問」分不出來。
-每條 NFR 一樣要標來源（多半是 `Q<n>`，因為它來自這一輪技術追問）。
+每條 NFR 一樣要標來源（多半是 `Q-<n>`，因為它來自這一輪技術追問）。
 
 IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只讀 `prd.md` 已經有答案的
 東西。所以這一趟漏掉的面向，不會在下游被補起來——它會在 `prd.md` 裡留下一個
@@ -427,7 +426,7 @@ docs/CONTEXT.md              SPEC
 一個 feature 一份 `prd.md`，不切分——**切 story 是 SPEC 的事**，它需要領域知識
 而且需要範圍先穩定。格式 → `references/prd-format.md`。
 
-規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`EX-<n>.<m>`。`.feature` 的
+規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
 `@example-<n>.<m>` 回指它們，`spec.md` 不重述。
 
 MUST NOT: 另存一份進度儀表板。進度是**算出來的**——`scripts/status.py` 從
@@ -453,9 +452,9 @@ MUST NOT: 另存一份進度儀表板。進度是**算出來的**——`scripts/
 
 ## 完成後
 
-明講就緒判定與下一步：
+明講下一步：
 
 - **就緒** → 進 SPEC，把例子寫成 Gherkin
-- **未就緒** → 依上表的訊號，並說明理由
+- **未就緒** → 依 `example-mapping` 的四條診斷訊號，並說明理由
 
 不要在未就緒的情況下自己往下走。
