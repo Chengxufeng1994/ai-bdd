@@ -2,9 +2,9 @@
 name: story-splitting
 description: >
   把太大的 story 切成數則仍能獨立交付價值的小 story——優先沿規則切，切不動時
-  用九種切分模式，並用兩條規則挑出最好的切法。判斷「該不該切」也在這裡。
+  用九種切分模式，並用兩條規則挑出最好的切法。
   觸發詞：「這個 story 太大」「要怎麼切」「怎麼拆成小的」「拆 story」
-  「這則做不完」「規則太多了」「切成幾則比較好」「這樣切對嗎」。
+  「這則做不完」「切成幾則比較好」「這樣切對嗎」。
   English: split this story, this story is too big, how do I slice this,
   break this into smaller stories, is this a good split.
 ---
@@ -15,7 +15,7 @@ description: >
 
 ## 使用時機
 
-- Example Mapping 跑不完，或藍卡（規則）多到一次講不清
+- 切 story 時發現一則怎麼切都太大
 - 一則 story 大到一個迭代做不完
 - 已經切了，但想確認切法對不對
 - 拿到一坨需求，要先分成幾則才能開始澄清
@@ -25,6 +25,8 @@ description: >
 - 要從需求找出規則與例子 → 改用 `bdd-clarify`，本 skill 只管切分
 - 要把紅卡問到收斂 → 改用 `clarify-loop`
 - 要決定切完之後**先做哪一則** → 那是排序，屬於 `bdd-plan`。本 skill 只切，不排
+- 要跑四色卡診斷、或判定這則 story 就不就緒 → 改用 `example-mapping`。**「藍卡多」
+  不是呼叫本 skill 的理由**——在這條流程裡它只回報，不阻塞
 - 本 skill 不寫規格、不估點數
 
 ---

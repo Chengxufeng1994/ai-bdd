@@ -40,7 +40,8 @@ Pass 2 對整個 feature，逐題問到規則浮現。
 - 要把例子寫成 Gherkin → 改用 `bdd-spec`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
 - 要跑四色卡技巧、或判定這則 story 就不就緒 → 改用 `example-mapping`——它攤地圖、
-  跑四條診斷，也是唯一寫 `## Document Overview` 的 `狀態` 欄的 skill；本 skill 不寫
+  跑四條診斷，也是唯一寫 `## Document Overview` `狀態` 欄**就緒值**的 skill；本
+  skill 只在 Pass 1 開檔時把那一格寫成 `澄清中`
 - 產出是一份 `prd.md`，**不是**規格、程式碼或資料模型
 
 ---
@@ -136,9 +137,11 @@ MUST: Pass 1 刻意淺。**判準是「範圍講得出依據」，不是「問�
 
 ### 1. 拆成骨架
 
-先不碰技術，把資訊分進 `prd.md` 五處：`## Background`、`## Goal`、
-`## Success Metrics`（業務目標、成功指標）、`## Scope — In / Out`（範圍邊界），
-以及 `## Assumptions / Constraints`（**隱含假設**——沒寫下來、但整份文件預設
+先不碰技術，把資訊分進 `prd.md` 六處：`## Document Overview`（`狀態` 開成
+`澄清中`、最後更新、核心關係人——**這一格只有這裡寫得出來**，往後的就緒值由
+`example-mapping` 改）、`## Background`、`## Goal`、`## Success Metrics`
+（業務目標、成功指標）、`## Scope — In / Out`（範圍邊界），以及
+`## Assumptions / Constraints`（**隱含假設**——沒寫下來、但整份文件預設
 它成立的那些，是這一步存在的理由）。
 
 MUST: PRD 裡標題叫「假設」的那一段，**每一條都當成沒問過**，不要照抄成既定
@@ -337,8 +340,9 @@ When／Then，含實際數字，SPEC 讀）。**編號在這裡定版**，寫出
 跑四條診斷、把就緒問句交給使用者，並依使用者的答覆寫 `## Document Overview` 的
 `狀態` 欄。
 
-MUST NOT: 在這裡自己宣告就緒。**本 skill 不寫 `狀態` 欄**——那是 `example-mapping`
-唯一負責的一格，而值由使用者決定。
+MUST NOT: 在這裡自己宣告就緒。**本 skill 不寫 `狀態` 欄的就緒值**（`待對焦`／
+`已對焦`）——那是 `example-mapping` 唯一負責的一格，而值由使用者決定。本 skill
+對那一格只做一件事：Pass 1 開檔時寫成 `澄清中`。
 
 ### 6. 收尾：標記完成，`prd.md` 全部保留
 
@@ -448,9 +452,9 @@ MUST NOT: 另存一份進度儀表板。進度是**算出來的**——`scripts/
 
 ## 完成後
 
-明講就緒判定與下一步：
+明講下一步：
 
 - **就緒** → 進 SPEC，把例子寫成 Gherkin
-- **未就緒** → 依上表的訊號，並說明理由
+- **未就緒** → 依 `example-mapping` 的四條診斷訊號，並說明理由
 
 不要在未就緒的情況下自己往下走。
