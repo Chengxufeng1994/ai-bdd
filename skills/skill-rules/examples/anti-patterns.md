@@ -138,7 +138,7 @@ skills/
 ```
 
 執行時有效，但驗證工具不遞迴——這個 skill 永遠不會被檢查。問題要等到它靜默
-失效才會浮現。改成扁平 `skills/bdd-clarify-example-mapping/`。
+失效才會浮現。改成扁平 `skills/bdd-discovery-example-mapping/`。
 
 ## 10. 本文塞滿只有特定情況才需要的內容
 

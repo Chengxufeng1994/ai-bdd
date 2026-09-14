@@ -2,7 +2,7 @@
 name: example-mapping
 description: >
   用四色卡把一則 story 攤成規則與例子——黃卡 story、藍卡規則、綠卡例子、紅卡問題，
-  攤完跑四條診斷並提出就緒判定。可讀 `prd.md`，也可單獨對一段描述跑。
+  攤完跑四條診斷並提出就緒判定。可讀 `spec.md`，也可單獨對一段描述跑。
   觸發詞：「攤成四色卡」「example mapping」「跑一次 mapping」「這則 story 就緒了嗎」
   「規則跟例子攤開來看」「地圖長什麼樣」「紅卡還剩幾張」「這則可以開工了嗎」。
   English: run example mapping, map this story, lay out the rules and examples,
@@ -11,7 +11,7 @@ description: >
 
 # EXAMPLE MAPPING — 把一則 story 攤成四色卡
 
-輸入是一則 story（或一份 `prd.md`），輸出是**攤開的地圖 ＋ 四條診斷 ＋ 一個就緒
+輸入是一則 story（或一份 `spec.md`），輸出是**攤開的地圖 ＋ 四條診斷 ＋ 一個就緒
 問句**。
 
 出處與原始定義 → [`docs/bdd.md`](../../docs/bdd.md)。那份只轉述 Cucumber 怎麼說，
@@ -19,7 +19,7 @@ description: >
 
 ## 四色卡在這裡叫什麼
 
-| 卡 | Example Mapping | `prd.md` |
+| 卡 | Example Mapping | `spec.md` |
 | --- | --- | --- |
 | 🟨 | story | `US-<n>` |
 | 🟦 | rule | `FR-<n>` |
@@ -30,15 +30,15 @@ description: >
 criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**。在主流 PRD／Jira 用法裡，AC
 是那串 Given/When/Then。
 
-`prd.md` 用的是後者，因為**產物是 PRD，讀者帶著 PRD 的詞彙來**。手法的詞彙不覆蓋
+`spec.md` 用的是後者，因為**產物是 PRD，讀者帶著 PRD 的詞彙來**。手法的詞彙不覆蓋
 產物的詞彙。讀過 Cucumber 那篇文章的人看到這張表會覺得綠卡對錯了——沒有，是同一個
 詞在兩個社群有兩個意思。
 
 ## 使用時機
 
-- `bdd-clarify` 的 Pass 2 要把需求攤成規則與例子
+- `bdd-discovery` 的 Pass 2 要把需求攤成規則與例子
 - 想知道一則 story 就緒了沒
-- 手上有一份 `prd.md`，想看它的形狀而不是讀它的字
+- 手上有一份 `spec.md`，想看它的形狀而不是讀它的字
 - 單獨拿一則 story 來攤，不走 BDD 流程
 
 ## Skill Boundaries
@@ -89,7 +89,7 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 | --- | --- | --- | --- |
 | 🟥 還有紅卡 | 不確定性高，未就緒 | 同左 | `clarify-loop` |
 | 🟦 一則 story 掛太多 FR | **story 太大，該切** | **不阻塞** ← 見下 | 只回報 |
-| 🟩 AC 堆在同一條 FR | 這條規則該拆 | 同左 | `bdd-clarify` |
+| 🟩 AC 堆在同一條 FR | 這條規則該拆 | 同左 | `bdd-discovery` |
 | ⏱ 25 分鐘 map 不完 | 太大或太不確定 | **沒有時鐘** ← 見下 | `clarify-loop` |
 
 ### 🟦 為什麼不再是阻塞
@@ -97,7 +97,7 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 原始啟發式假設**黃卡上的 story 就是交付切片**。這個流程裡它不是——`bdd-spec` 的
 規則寫著：
 
-> `prd.md` 已經把 FR 分在 `### US-<n>` 底下了，**但那是需求方視角的敘事分組，不是
+> `spec.md` 已經把 FR 分在 `### US-<n>` 底下了，**但那是需求方視角的敘事分組，不是
 > 交付切片**。
 >
 > **你得自己重新分組，不必解釋為什麼跟 PRD 不一樣。**
@@ -105,7 +105,7 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 所以「US-2 掛了 9 條 FR」不代表未就緒——SPEC 本來就要重新分組。它代表的是這則敘事
 story 可能包了不只一個使用者目標。
 
-MUST NOT: 因為藍卡多就去呼叫 `story-splitting` 改 `prd.md` 的分組。那會讓本 skill
+MUST NOT: 因為藍卡多就去呼叫 `story-splitting` 改 `spec.md` 的分組。那會讓本 skill
 去動 PRD 的 story 邊界，正好違反上面那條規則。**回報，不動手。**
 
 ### ⏱ 沒有時鐘，那個框換成什麼
@@ -142,16 +142,16 @@ MUST NOT: agent 自己把 `## Document Overview` 的 `狀態` 推到 `已對焦`
 | `待對焦` | 紅卡清空了，等需求方過目 |
 | `已對焦` | 使用者在上面那個問句回答「就緒」 |
 
-`澄清中` 與 `已凍結` 不由本 skill 寫。`澄清中` 由 `bdd-clarify` 在 Pass 1 開檔時
+`澄清中` 與 `已凍結` 不由本 skill 寫。`澄清中` 由 `bdd-discovery` 在 Pass 1 開檔時
 寫入。`已凍結` **目前沒有寫入者**——SPEC 消費過之後該標記，但那還沒實作，所以
-今天不會有任何一份 `prd.md` 走到那個值。
+今天不會有任何一份 `spec.md` 走到那個值。
 
 ## 兩種模式
 
 | 模式 | 輸入 | 輸出 |
 | --- | --- | --- |
-| 流程內 | `specs/<date>-<feature>/prd.md` | 地圖 ＋ 診斷 ＋ 就緒問句；使用者答完才寫 `狀態` |
+| 流程內 | `specs/<date>-<feature>/spec.md` | 地圖 ＋ 診斷 ＋ 就緒問句；使用者答完才寫 `狀態` |
 | 單獨 | 一段 story 的描述 | 同樣的地圖與診斷，**不寫任何檔案** |
 
 MUST NOT: 單獨模式產出一份 `example-map.md`。**第二個裝規則與例子的地方會跟
-`prd.md` 漂移**——2026-09-09 拿掉那個產物就是為了這件事。要留下來就寫進 `prd.md`。
+`spec.md` 漂移**——2026-09-09 拿掉那個產物就是為了這件事。要留下來就寫進 `spec.md`。

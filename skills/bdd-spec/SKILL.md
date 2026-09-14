@@ -32,7 +32,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加
 
 - 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
-- 例子還不夠、還有紅卡 → 回 `bdd-clarify`
+- 例子還不夠、還有紅卡 → 回 `bdd-discovery`
 - 產出是 `.feature` ＋ `specs/<date>-<feature>/spec.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `openapi.yaml`、migration 或任何可執行的檔案
 - 要把 `spec.md` 拆成可執行的票 → 改用 `bdd-plan`
 

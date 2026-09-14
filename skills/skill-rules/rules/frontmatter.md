@@ -8,7 +8,7 @@
 | F2 | `MUST` | 與目錄名完全一致 |
 | F3 | `SHOULD` | 望名知義 |
 
-✅ `email-reply-helper`、`bdd-clarify`
+✅ `email-reply-helper`、`bdd-discovery`
 ❌ `skill1`、`my_skill`、`SKillForEmail`
 
 ## description

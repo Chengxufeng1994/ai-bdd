@@ -9,7 +9,7 @@ weak.
 ## Ground rule
 
 **No business code until CLARIFY has run.** Every type in `domain/` must trace
-back to an `FR-<n>` in `prd.md`, and every scenario in `features/` back to an
+back to an `FR-<n>` in `spec.md`, and every scenario in `features/` back to an
 `AC-<n>.<m>`. Writing the model first defeats the entire point of the
 testbed — it would prove the skills work by handing them the answer.
 
@@ -223,10 +223,10 @@ wording are the beginning of a glue layer nobody can safely change.
 
 ### Keeping the chain machine-checkable
 
-Gherkin's `Rule:` keyword maps onto `prd.md`'s requirements, so the specification
+Gherkin's `Rule:` keyword maps onto `spec.md`'s requirements, so the specification
 can be checked against it mechanically rather than by reading:
 
-| `prd.md` / `spec.md` | Gherkin | What can be checked |
+| `spec.md` | Gherkin | What can be checked |
 | --- | --- | --- |
 | a story (sliced in SPEC, listed in `spec.md`'s `## Stories`) | `Feature:` | — |
 | `FR-1` | `Rule:` | every requirement the story covers has a `Rule:` block |
@@ -246,14 +246,14 @@ Feature: Discount tiers
       ...
 ```
 
-This is why `prd.md`'s numbering must never be renumbered — the tags are
+This is why `spec.md`'s numbering must never be renumbered — the tags are
 references, and renumbering silently repoints them.
 
 ### Tags
 
 | Tag | Meaning |
 | --- | --- |
-| `@example-1.1` | traces to an `AC-1.1` in `prd.md` |
+| `@example-1.1` | traces to an `AC-1.1` in `spec.md` |
 | `@wip` | being worked on right now |
 | `@smoke` | must pass before anything else is trusted |
 | `@slow` | excluded from the fast loop (`-godog.tags="~@slow"`) |

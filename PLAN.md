@@ -195,7 +195,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | --- | --- | --- | --- |
 | CLARIFY | `clarify-loop` | 多輪把問題問到收斂 | **已實作，不動**。地位從配角變主角——它就是 CLARIFY 的主體 |
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**。觸發訊號要改（見下） |
-| | `bdd-clarify` | 三個 pass 的總入口 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
+| | `bdd-discovery` | 三個 pass，只問不寫 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定 | **已實作**。Pass 2 的手法與就緒判定從 `bdd-clarify` 搬進來 |
 | SPEC | `bdd-spec` | 答案 → `.feature` ＋ `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護；`check_spec.py` 的覆蓋來源從 `example-mapping.md` 改成 `spec.md` |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
@@ -425,7 +425,7 @@ Always-on: ~1,620 tok  每個 session 都付
    檔案在 git 歷史裡。）
 
 5. ~~**技術問題的追問面向。**~~ 已定：Pass 3 的技術面向清單見
-   `skills/bdd-clarify/references/technical-probes.md`，目前有五個面向
+   `skills/bdd-discovery/references/technical-probes.md`，目前有五個面向
    （seam、模組邊界、介面與型別契約、排序契約／決定性、既有資產／測試慣例）。
    這五個面向全部從 `workout-tracking` 這一次實測場的硬跑反推出來，只跑過
    一個技術棧（Go）、一個專案——換一個技術棧不同的專案重跑，如果冒出新的、
@@ -460,12 +460,12 @@ Always-on: ~1,620 tok  每個 session 都付
 
 11. **`feature` 這個字還有九處用在退休的舊義上。** 這一輪把 `feature` 收窄成
     「Gherkin 的 `.feature` 檔，一則 story 一個」，把交付批次改叫 `slice`。但
-    `clarify-loop/SKILL.md` 有四處、`bdd-clarify/SKILL.md` 有五處仍寫「跨 feature
+    `clarify-loop/SKILL.md` 有四處、`bdd-discovery/SKILL.md` 有五處仍寫「跨 feature
     問題」「換 feature 時」，那裡的 `feature` 指的是 story。最終審查判定不要把
     這個掃描併進 merge 前的修復波——散在兩個當時範圍外的檔案，只修一半比不修
     更容易誤導。它需要自己一次變更，連同 `story` 與 `slice` 的用法一起校準。
 
-12. **`bdd-clarify/SKILL.md` 需要一次結構性的下放，不是再刮幾行。** 它連續三輪
+12. **`bdd-discovery/SKILL.md` 需要一次結構性的下放，不是再刮幾行。** 它連續三輪
     卡在 500 行的天花板上：每加一樣東西（Pass 3、分批、`clarify.md`）就得回頭
     刮掉幾行別的，現在是 504 行。逐行刮是在對付症狀——S10 這個訊號要講的正是
     「該把只有特定情況才需要讀的段落下放了」。候選是 Pass 2 的追問手法與 Pass 3
@@ -474,7 +474,7 @@ Always-on: ~1,620 tok  每個 session 都付
 
 13. **這份文件自己有大段仍在描述 2026-09-09 PRD 改版前的舊世界，位置比已修好
     的未決事項 #1 更靠前。** 第 11 項只點名 `feature` 這個字在
-    `clarify-loop`／`bdd-clarify` 兩份 SKILL.md 裡的舊義，沒有涵蓋這裡：
+    `clarify-loop`／`bdd-discovery` 兩份 SKILL.md 裡的舊義，沒有涵蓋這裡：
     六步流程表（63 行，仍列 `brief.md`、`actor.md`、`glossary.md`、
     `questions/`）、`## 產物佈局`（75-133 行，用現在式描述整棵已經不存在的
     舊目錄樹）、`spec.md` 的節表（108-129 行，規則定版位置仍寫
