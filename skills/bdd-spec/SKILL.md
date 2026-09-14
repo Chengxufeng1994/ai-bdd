@@ -177,7 +177,7 @@ MUST NOT: 把 `clarify-log.md`「待答」表裡的列當成已經有答案。�
 
 角色要雙向對得上：`前置（狀態）` 出現 `spec.md` `## Personas` 沒有的角色 →
 CLARIFY 漏了一個；`## Personas` 有但沒有任何規則提到 → 那個角色是憑空的。
-兩種都寫進覆蓋表回報。
+兩種都寫進 `spec.md` 的 `## Scope — In / Out`「回 CLARIFY 補問」。
 
 ### 3. 決定 seam —— 驗收測試打在哪一層
 
@@ -194,7 +194,7 @@ application service？domain？這個決定會長成 step definition 的形狀�
 | 整個變更的理想數量是**一個** | 兩個 seam 代表這批行為的入口不只一個，多半是切分沒切乾淨 |
 
 **Ask user: 把 seam 攤出來確認再寫。** 這是本 skill 唯一一次徵詢——
-其餘全部只綜合已有的答案。之所以是例外：seam 要看過 `.feature` 才推得出來，
+其餘全部只綜合已有的答案。之所以是例外：seam 要看過具體的 AC 才推得出來，
 而它推錯的話，底下所有 step definition 都打在錯的高度，改起來是整批重寫。
 
 IMPORTANT: seam 一旦寫進 `spec.md` 就往下傳——IMPLEMENT 照著打，
@@ -220,8 +220,8 @@ MUST: `狀態` 的初值由這一步寫。建檔時還有『待答』的列就�
 MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東西。**
 推不出來的寫進 `## Scope — In / Out` 的「回 CLARIFY 補問」，不要順手決定掉。
 
-判準：指著 `spec.md` 的任何一句話，說得出它來自哪個已答的問題、哪條規則、
-或哪個 `.feature` 的哪一段嗎？說不出來的就是憑空長出來的，那是缺陷。
+判準：指著 `spec.md` 的任何一句話，說得出它來自哪個已答的問題、哪條規則嗎？
+說不出來的就是憑空長出來的，那是缺陷。
 
 ### 5. 增修 `specs/domain-model.md`
 
