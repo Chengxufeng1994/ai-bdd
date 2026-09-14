@@ -194,5 +194,5 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 - 告訴對方切成幾則、依據是什麼、哪一則你認為可以不做
 - **不要順便排順序**——那是 `bdd-plan` 的事。切分只回答「分成哪幾則」，
   不回答「先做哪一則」
-- 每則切完後回 `bdd-spec`，把各自的 FR 與例子寫成 `.feature`——規則與例子在
-  `spec.md` 已經就緒，不是回 `bdd-discovery` 補問
+- 每則切完後回 `bdd-spec` 寫進 `spec.md`，再由 `bdd-formulation` 把各自的 FR 與例子寫成 `.feature`
+  ——規則與例子在 `spec.md` 已經就緒，不是回 `bdd-discovery` 補問

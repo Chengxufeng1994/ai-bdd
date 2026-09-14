@@ -28,6 +28,7 @@ ai-bdd/
 ├── skills/
 │   ├── bdd-discovery/
 │   ├── bdd-spec/
+│   ├── bdd-formulation/
 │   ├── bdd-plan/
 │   ├── clarify-loop/
 │   ├── story-splitting/

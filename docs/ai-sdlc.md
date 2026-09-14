@@ -37,16 +37,16 @@ CLARIFY  →  SPEC  →  PLAN  →  IMPLEMENT  →  VERIFY  →  REVIEW
 
 **帶 BDD 的那三格不等於 BDD。** CLARIFY 的前半在對齊業務目標、定住範圍邊界
 ——這件事本身不是 Discovery，卻是 Discovery（把需求逼成規則與例子）真正要用
-的輸入；SPEC 除了 `.feature`，還要把那些問答綜合成 `spec.md`、切 story、把
-技術決定記下來，一起構成讓整份東西成為 live document 的其餘產物。只有
-IMPLEMENT 跟 Automation 重合，因為 Automation 的產物本來就是程式碼而不是
-膠水層（見 [bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是夾在中間
-的洞。**
+的輸入；SPEC 除了 `bdd-formulation` 產的 `.feature`，還要把那些問答綜合成
+`spec.md`、切 story、把技術決定記下來，一起構成讓整份東西成為 live document
+的其餘產物。只有 IMPLEMENT 跟 Automation 重合，因為 Automation 的產物本來就是
+程式碼而不是膠水層（見 [bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是
+夾在中間的洞。**
 
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
 | **CLARIFY** | 兩件事：**對齊業務目標、定住範圍邊界**（不是 BDD）＋把需求逼成規則與例子（BDD 的 Discovery）。**只問問題，答案記進 `clarify-log.md`，一個字的規格都不寫。** 需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | 四件事：把問答綜合成一份自足的 `spec.md`（不是 BDD——CLARIFY 只留問答記錄，規格是這一步第一次寫下來的）＋切 story（不是 BDD）＋把例子寫成可執行規格（BDD 的 Formulation）＋把技術決定記下來（不是 BDD——它讓 `.feature` 以外的產物一起構成 live document） | Formulation ＋ 額外 |
+| **SPEC** | 四件事：把問答綜合成一份自足的 `spec.md`（不是 BDD——CLARIFY 只留問答記錄，規格是這一步第一次寫下來的）＋切 story（不是 BDD）＋把例子寫成可執行規格（BDD 的 Formulation，由這一步的第二個 skill `bdd-formulation` 執行）＋把技術決定記下來（不是 BDD——它讓 `.feature` 以外的產物一起構成 live document） | Formulation ＋ 額外 |
 | **PLAN** | 把工作切到一個 fresh session 做得完，並宣告誰卡誰 | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來 | Automation |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
@@ -58,17 +58,19 @@ IMPLEMENT 跟 Automation 重合，因為 Automation 的產物本來就是程式�
 
 ---
 
-## 三條紀律
+## 四條紀律
 
-六步之所以站得住，是因為前三步各自只做一件事：
+六步之所以站得住，是因為前三步底下的每個 skill 各自只做一件事——SPEC 由兩個
+skill 分擔，所以是四條：
 
 | 步驟 | 只做 | 不做 |
 | --- | --- | --- |
 | **CLARIFY** | 問問題，問到收斂 | 不寫規格；不切 story——那是 SPEC 的事 |
-| **SPEC** | 切 story ＋ 綜合已經有答案的東西 | **不訪談**——憑空長出來的內容是缺陷 |
+| **SPEC**（`bdd-spec`） | 切 story ＋ 綜合已經有答案的東西 | **不訪談**——憑空長出來的內容是缺陷 |
+| **SPEC**（`bdd-formulation`） | 把定案的 `spec.md` 翻成 `.feature` | 不發明例子；不回寫 `spec.md` |
 | **PLAN** | 切 tracer bullet | 不設計——API、schema、seam 在 SPEC 就定完了 |
 
-三條互相支撐：SPEC 能「不訪談」是因為 CLARIFY 做完了決定；PLAN 能「不設計」
+四條互相支撐：SPEC 能「不訪談」是因為 CLARIFY 做完了決定；PLAN 能「不設計」
 是因為 SPEC 寫下了技術決定。任何一條破了，下一條就守不住。
 
 出處是 Matt Pocock 的 `to-spec`：「The spec is a record of decisions already
@@ -77,7 +79,7 @@ made, not a place where new ones get made.」
 **這條紀律對人是選配，對 agent 是必需。** 人在寫規格時發現有洞，會停下來去問；
 agent 會補一個合理的答案然後繼續，而那個答案看起來跟真的一樣。
 
-### 為什麼是三個 skill，不是一個
+### 為什麼是四個 skill，不是一個
 
 Discovery 與 Formulation 相鄰，卻是**方向相反的工作模式**：Discovery 是模型
 不停追問、使用者回答；Formulation 是模型書寫、使用者審閱。

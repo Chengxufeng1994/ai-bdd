@@ -45,7 +45,7 @@ criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**。在主流 PR
 
 - 要把紅卡逐一問到收斂 → 改用 `clarify-loop`，本 skill 只指出還剩幾張
 - 要把 story 切小 → 改用 `story-splitting`
-- 要把例子寫成 Gherkin → 改用 `bdd-spec`
+- 要把例子寫成 Gherkin → 改用 `bdd-formulation`
 - 本 skill **不做決定**：它攤牌、診斷、提問，就緒與否由使用者判
 
 ## 怎麼攤

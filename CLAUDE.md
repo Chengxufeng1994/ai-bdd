@@ -12,8 +12,9 @@ The plugin's subject is a six-step pipeline:
 
 **CLARIFY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**
 
-Only the first three exist as skills. `docs/ai-sdlc.md` explains which steps map onto
-BDD's practices and which are this project's own additions.
+Only the first three steps exist as skills, and SPEC is served by two of them —
+`bdd-spec` and `bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
+explains which steps map onto BDD's practices and which are this project's own additions.
 
 ## Commands
 
@@ -58,8 +59,8 @@ Both take a project root and default to `.`; both exit 1 and name what is missin
 than inferring anything from zero input.
 
 ```bash
-python3 skills/bdd-spec/scripts/status.py [root]      # clarification progress per feature
-python3 skills/bdd-spec/scripts/check_spec.py [root]     # .feature ↔ spec.md consistency
+python3 skills/bdd-spec/scripts/status.py [root]                # clarification progress per feature
+python3 skills/bdd-formulation/scripts/check_spec.py [root]     # .feature ↔ spec.md consistency
 ```
 
 ## Architecture
@@ -95,14 +96,17 @@ PLAN reads `spec.md` and the `.feature` files, REVIEW audits the whole chain.
 Every arrow is a place intent can be lost. Changing an artifact's format breaks the chain,
 so formats are settled before downstream work starts.
 
-### The three disciplines
+### The four disciplines
 
-The first three steps hold because each does exactly one thing:
+The first three steps hold because each skill under them does exactly one thing — SPEC
+has two, which is why there are four:
 
 - **CLARIFY** asks questions until they converge — it does not write specs, and it does not
   slice stories; that is SPEC's job.
 - **SPEC** slices stories and synthesises what already has answers — **it does not
   interview.** Content that appears from nowhere is a defect.
+- **FORMULATION** turns the settled `spec.md` into `.feature` files — it does not
+  interview, does not invent examples, and does not write back to `spec.md`.
 - **PLAN** slices tracer bullets — it does not design. APIs, schema and seams were settled
   in SPEC.
 

@@ -25,7 +25,8 @@ tracer-bullet 票、每張穿過所有層、彼此怎麼 block、先做哪一張
 
 ## Skill Boundaries
 
-- 還沒有 `spec.md` → 先跑 `bdd-spec`；規則還沒定案 → 回 `bdd-discovery`
+- 還沒有 `spec.md` → 先跑 `bdd-spec`；有 `spec.md` 但還沒有 `.feature` → 先跑
+  `bdd-formulation`；規則還沒定案 → 回 `bdd-discovery`
 - **要決定 API、domain 型別、schema、seam → 那是 `bdd-spec` 的工作**，不是這裡
 - 整批塞得進一個 context window → 不需要這一步，直接 `bdd-implement`
 - 要實際寫 step definition 與產品程式碼 → `bdd-implement`
