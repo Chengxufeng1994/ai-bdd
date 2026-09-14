@@ -296,7 +296,7 @@ def check(root: Path) -> int:
     specs_dir = root / "specs"
     feat_dir = find_features(root)
     if not specs_dir.is_dir():
-        print(f"找不到 {specs_dir} —— 沒有 CLARIFY 的產物可以比對")
+        print(f"找不到 {specs_dir} —— 沒有 SPEC 的產物可以比對")
         return 1
     if feat_dir is None:
         print("找不到任何 .feature")

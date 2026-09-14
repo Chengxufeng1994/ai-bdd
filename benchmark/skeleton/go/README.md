@@ -228,7 +228,7 @@ can be checked against it mechanically rather than by reading:
 
 | `spec.md` | Gherkin | What can be checked |
 | --- | --- | --- |
-| a story (sliced in SPEC, listed in `spec.md`'s `## Stories`) | `Feature:` | — |
+| a story (sliced in SPEC, listed in `spec.md`'s `## User Stories`) | `Feature:` | — |
 | `FR-1` | `Rule:` | every requirement the story covers has a `Rule:` block |
 | `AC-1.1` | `@example-1.1` on a `Scenario` | every example has a scenario; no orphan scenarios |
 

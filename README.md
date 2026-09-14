@@ -26,7 +26,7 @@ ai-bdd/
 │   ├── sdd.md          # what spec-driven development is — external reference
 │   └── ai-sdlc.md      # why this pipeline looks the way it does
 ├── skills/
-│   ├── bdd-clarify/
+│   ├── bdd-discovery/
 │   ├── bdd-spec/
 │   ├── bdd-plan/
 │   ├── clarify-loop/

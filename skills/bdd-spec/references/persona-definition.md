@@ -1,7 +1,8 @@
 # 怎麼定義 Persona
 
-`spec.md` 的 `## Personas` 節的寫法。讀這份的時機：Pass 1 步驟 2，第一次識別
-角色，或後面某一輪冒出一個沒見過的角色。
+`spec.md` 的 `## Personas` 節的寫法。兩個讀者：`bdd-discovery` 在 Pass 1 步驟 2
+第一次識別角色、或後面某一輪冒出沒見過的角色時讀它；`bdd-spec` 寫 `## Personas`
+那一節時讀它。
 
 Persona 是**角色**，不是帳號。「Alice」是實例，「已購買旅程的學員」才是角色，
 而同一個人可以同時是好幾個角色。

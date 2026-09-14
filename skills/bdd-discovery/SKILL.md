@@ -9,11 +9,9 @@ description: >
   觸發詞：「這個需求要怎麼拆」「需求講不清楚」「幫我釐清需求」
   「這份 PRD 有什麼沒寫清楚」「PRD 的隱含假設」「這份需求哪裡有洞」「PRD 怎麼拆解」
   「有哪些角色」「actor 要怎麼定義」「這份 PRD 要怎麼變成 story」
-  「這功能有哪些規則」「驗收條件有哪些」
   「寫規格前先釐清」「需求有什麼漏掉的」。
   English: clarify this requirement, break down a PRD, find the unstated
-  assumptions, what are the rules for this story, acceptance
-  criteria discovery.
+  assumptions.
 ---
 
 # CLARIFY — 把需求逼問到收斂

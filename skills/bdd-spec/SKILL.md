@@ -174,7 +174,7 @@ NEVER: `input.md` 不存在時開始。`PRD §x` 這個來源標記回指的就�
 
 | 呼叫方式 | 範圍 |
 | --- | --- |
-| `bdd-spec` | **預設：`結束方式` 已是 `收斂` 的那份 `clarify-log.md` 的全部 story** |
+| `bdd-spec` | **預設：`結束方式` 已是 `收斂` 的每一份 `clarify-log.md`，整份做完——包含從它切出來的每一則 story** |
 | `bdd-spec <story-slug>` | 只做指定的那一則 |
 
 MUST: `結束方式` 還不是 `收斂` 的 `clarify-log.md` **整份**跳過，並明講跳過的

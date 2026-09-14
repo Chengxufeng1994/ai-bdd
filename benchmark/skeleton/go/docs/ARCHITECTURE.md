@@ -326,7 +326,7 @@ that list.
 
 Planned, in order:
 
-1. Run `bdd-clarify` against `../../cases/personal-memo/input-brief.md`
+1. Run `bdd-discovery` against `../../cases/personal-memo/input-brief.md`
 2. SPEC turns those examples into `.feature` files
 3. PLAN assigns each scenario a test level
 4. IMPLEMENT fills `domain/` outside-in, following the `/version` slice as the
