@@ -230,7 +230,7 @@ MUST NOT: 因為 sub-agent 還在跑就停下來。**一個進行中的探查是
 | `skills/bdd-discovery/references/technical-probes.md` | 加「自己查還是問人」欄 |
 | `skills/example-mapping/SKILL.md` | 輸入從 `spec.md` 改成進行中的訪談 |
 | `skills/bdd-spec/SKILL.md` | 加 seam 步驟；拿掉 Gherkin 的產出職責 |
-| `skills/bdd-spec/references/spec-format.md` | 加四節；AC／EX 兩層 |
+| `skills/bdd-spec/references/spec-format.md` | 加四節；AC 的層級不動 |
 | `skills/bdd-spec/examples/minimal-spec.md` | **canonical 解析對象**，跟著改 |
 | `skills/bdd-formulation/` | **全新**，接收五份 reference ＋ 13 個 examples ＋ `check_spec.py` |
 | `skills/bdd-plan/SKILL.md` | 讀 `spec.md` ＋ `.feature`，指向更新 |
@@ -251,7 +251,7 @@ MUST NOT: 因為 sub-agent 還在跑就停下來。**一個進行中的探查是
 
 做完之後流程完整可跑。
 
-### 計畫二：`spec.md` 加四節 ＋ AC／EX 兩層
+### 計畫二：`spec.md` 加四節
 
 `spec-format.md` 加四節、fixture 跟著改（原子單位）。`bdd-spec` 加 seam 步驟。
 
