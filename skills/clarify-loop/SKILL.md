@@ -27,7 +27,7 @@ description: >
 
 - 要從零開始**找出**問題（抽規則、配例子）→ 改用 `bdd-discovery`，
   本 skill 接手它的產出
-- 要把例子寫成 Gherkin → 改用 `bdd-spec`
+- 要把例子寫成 Gherkin → 改用 `bdd-formulation`
 - 通用的需求訪談、不涉及紅卡與就緒判定 → 環境中另有 `clarify-loop`，那個以
   「最多五題」為終止條件，適合快速收斂；本 skill 以「紅卡清空」為終止條件，
   適合必須把話講死的場合

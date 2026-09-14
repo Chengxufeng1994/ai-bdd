@@ -197,8 +197,9 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**。觸發訊號要改（見下） |
 | | `bdd-discovery` | 三個 pass，只問不寫 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定 | **已實作**。Pass 2 的手法與就緒判定從 `bdd-clarify` 搬進來 |
-| SPEC | `bdd-spec` | 答案 → `.feature` ＋ `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護；`check_spec.py` 的覆蓋來源從 `example-mapping.md` 改成 `spec.md` |
+| SPEC | `bdd-spec` | 答案 → `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護；`check_spec.py` 的覆蓋來源從 `example-mapping.md` 改成 `spec.md` |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
+| FORMULATION | `bdd-formulation` | `spec.md` → `.feature` | **已實作**：從 `bdd-spec` 拆出來，封閉步驟文法與 `check_spec.py` 跟著走 |
 | PLAN | `bdd-plan` | `.feature` → tracer bullet ＋ blocking edges | **已實作，幾乎重寫（大）**：現在的 §1–5（API／domain／schema／測試分層／風險）全部搬進 `spec.md` |
 | IMPLEMENT | `bdd-implement` | 實作流程總入口 | 未實作 |
 | | `bdd-implement-step-definitions` | 比對既有 step 再產新的 | 未實作 |
@@ -211,7 +212,8 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 
 `bdd-spec` 加了 `spec.md` 之後會不會太肥、要不要拆成兩個 skill——**先不拆**。
 子 skill 是否真的需要，等步驟 skill 跑過真實案例、發現它太長時再拆。
-現在拆是猜的。
+現在拆是猜的。**2026-09-14 翻案：拆了。** 見
+`docs/superpowers/specs/2026-09-14-grilling-and-formulation-design.md` 的 D8。
 
 ### Example Mapping 的兩個訊號在哪裡看
 
@@ -320,7 +322,7 @@ Always-on: ~1,620 tok  每個 session 都付
 `.feature` 在 `Feature:` 上掛恰好一個狀態 tag（`@draft` `@ready` `@wip`
 `@review` `@done`），記錄它走到六步的哪一站。
 
-完整詞彙表與三個設計決定在 `skills/bdd-spec/references/state-tags.md`——
+完整詞彙表與三個設計決定在 `skills/bdd-formulation/references/state-tags.md`——
 **它是 skill 之間的契約，所以跟著 skill 走，不放在這份路線圖裡**。
 別人安裝這個 plugin 時拿不到 repo 的文件，契約寫在這裡就等於斷了。
 

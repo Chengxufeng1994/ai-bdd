@@ -58,8 +58,8 @@ Both take a project root and default to `.`; both exit 1 and name what is missin
 than inferring anything from zero input.
 
 ```bash
-python3 skills/bdd-spec/scripts/status.py [root]      # clarification progress per feature
-python3 skills/bdd-spec/scripts/check_spec.py [root]     # .feature ↔ spec.md consistency
+python3 skills/bdd-spec/scripts/status.py [root]                # clarification progress per feature
+python3 skills/bdd-formulation/scripts/check_spec.py [root]     # .feature ↔ spec.md consistency
 ```
 
 ## Architecture
@@ -103,6 +103,8 @@ The first three steps hold because each does exactly one thing:
   slice stories; that is SPEC's job.
 - **SPEC** slices stories and synthesises what already has answers — **it does not
   interview.** Content that appears from nowhere is a defect.
+- **FORMULATION** turns the settled `spec.md` into `.feature` files — it does not
+  interview, does not invent examples, and does not write back to `spec.md`.
 - **PLAN** slices tracer bullets — it does not design. APIs, schema and seams were settled
   in SPEC.
 

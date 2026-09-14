@@ -37,7 +37,7 @@ Pass 2 對整個 feature，逐題問到收斂。
 
 - 只是要把一則太大的 story 切開 → 改用 `story-splitting`
 - 已經有一疊跳過的問題要再收斂 → 改用 `clarify-loop`
-- 要把例子寫成 Gherkin → 改用 `bdd-spec`
+- 要把例子寫成 Gherkin → 改用 `bdd-formulation`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
 - 要跑四色卡技巧、或判定這則 story 就不就緒 → 改用 `example-mapping`——它攤地圖、
   跑四條診斷，也是唯一寫「就緒值」的 skill；`clarify-log.md` 沒有這一欄，本 skill
