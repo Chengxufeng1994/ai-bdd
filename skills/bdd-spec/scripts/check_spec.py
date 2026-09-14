@@ -4,7 +4,7 @@
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查十二件事，全部是機械性的：
+檢查十三件事，全部是機械性的：
 
   1. 覆蓋——雙向。spec.md 有例子而 feature 沒有的（漏做），
      以及 feature 指向 spec.md 裡不存在的例子（發明出來的驗收條件）。
@@ -13,7 +13,7 @@
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
-     十二項裡只有這一項不會把退出碼變成 1。
+     十三項裡只有這一項不會把退出碼變成 1。
   6. FR 完整性——spec.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      SPEC 就無從寫出場景，只能發明。
   7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
@@ -21,13 +21,17 @@
   8. story 標題形式——`### US-<n> · <slug>` 差一點的標題，對
      stories_in_spec() 而言也是「不存在」；文件有兩則以上 story 時，那則
      story 連同它的 `.feature` 會安靜地從覆蓋比對裡消失，跟第 7 項是同一
-     種缺陷。
+     種缺陷。層級寫錯（`#### US-1 · x`）與行內寫錯（少了 `·`）都算。
   9. 紅卡群組的形式——`#### Q` 與 `**Q-<n>**` 都是精確形式；偏掉的行會讓
      第 10、11 項一張紅卡都收不到，於是那兩項無法失敗。
  10. 懸空的紅卡指標——`#### Q` 指向 `## Open Questions` 表裡沒有的題號。
  11. 紅卡只列待答——`#### Q` 指向表裡狀態不是「待答」的題號。已答的答案
      已經長成某條 FR 或 AC，留著會讓地圖上的紅卡數量永遠不歸零。
  12. AC 編號對帳——`AC-<n>.<m>` 的 `<n>` 必須等於它掛在底下的那條 FR。
+ 13. 無主的 FR——有 FR 不屬於任何一則 story。沒有 story 認領它，就沒有任何
+     `.feature` 被要求帶它的 `@example-` tag，那些 AC 於是安靜地不見了。
+     第 8 項抓標題本身寫壞，這一項抓對應關係斷掉：FR 擺在第一個 story 標題
+     之前，每一行都合規，照樣沒有人認領。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、找不到 .feature、
 沒有 spec.md、`## User Stories` 底下沒有任何 story 也各自退出 1——那些是
@@ -54,7 +58,7 @@ def find_features(root: Path) -> Path:
     return sorted(hits, key=lambda p: len(p.parts))[0] if hits else None
 
 
-def frs_in_prd(text: str) -> dict[str, set[str]]:
+def frs_in_spec(text: str) -> dict[str, set[str]]:
     """spec.md 的 `## User Stories` 段：FR 編號 -> AC 編號集合。
 
     v3 把 FR 從標題改成 `#### FR` 分組底下的粗體項目，AC 則是掛在它底下的
@@ -93,11 +97,11 @@ def frs_in_prd(text: str) -> dict[str, set[str]]:
     return out
 
 
-def v2_forms_in_prd(text: str) -> list[str]:
+def v2_forms_in_spec(text: str) -> list[str]:
     """`## User Stories` 段裡殘留的 v2 標題形式。
 
     v3 把 FR／NFR 從標題改成粗體項目，所以 `#### FR-2` 這種寫法對
-    `frs_in_prd()` 而言是「不存在」而不是「錯」——它會安靜地連同它的例子
+    `frs_in_spec()` 而言是「不存在」而不是「錯」——它會安靜地連同它的例子
     一起掉出覆蓋率計算，而整份文件印出「全部通過」。
 
     這個檢查是唯一能把那個缺席變回錯誤的東西。半遷移的文件才是暴露面：
@@ -112,14 +116,23 @@ def v2_forms_in_prd(text: str) -> list[str]:
 
 
 def malformed_story_headings(text: str) -> list[str]:
-    """`## User Stories` 段裡不合規的 `### ` 標題。
+    """`## User Stories` 段裡不合規的 story 標題。
 
     slug 住在標題裡（`### US-<n> · <slug>`），而 stories_in_spec() 比對的是
     那個確切形式。差一點的標題不會報錯，只會讓那則 story 連同它的 `.feature`
     一起從覆蓋比對裡消失——文件有兩則以上 story 時，「一則都沒有」那道防線
     也不會觸發，於是整份印出「全部通過」。
 
-    這個檢查把那個缺席變回錯誤。跟 v2_forms_in_prd() 是同一種東西：解析器
+    **層級也算差一點。** 只看 `### ` 開頭的話，`#### US-1 · <slug>` 兩個條件
+    都不成立：它不是 `### ` 開頭，所以這裡看不到；它也不是 stories_in_spec()
+    要的形式，所以那裡也收不到——那則 story 與它的 `.feature` 一起靜默消失。
+    比照 v2_forms_in_spec() 用 `^#+` 匹配任何層級，再要求標題文字以
+    `US-<數字>` 起始，就把它收回來了。
+
+    `### ` 那一條仍然保留：這一節底下的 `### ` 只能是 story，寫成別的字也是
+    一則收不到的 story。
+
+    這個檢查把那個缺席變回錯誤。跟 v2_forms_in_spec() 是同一種東西：解析器
     找它要的，這個找它不要的，只有後者抓得到缺席。
     """
     section = re.search(
@@ -127,7 +140,7 @@ def malformed_story_headings(text: str) -> list[str]:
     if not section:
         return []
     return [line.strip() for line in section.group(1).splitlines()
-            if line.startswith("### ")
+            if (line.startswith("### ") or re.match(r"^#+\s*US-\d", line))
             and not re.match(r"^### US-\d+ · \S+\s*$", line)]
 
 
@@ -222,6 +235,26 @@ def stories_in_spec(text: str) -> dict[str, set[str]]:
     return out
 
 
+def orphan_frs(text: str) -> list[str]:
+    """`## User Stories` 段裡不屬於任何一則 story 的 FR 編號。
+
+    覆蓋比對是逐 story 走的：一則 story 認領哪些 FR，就決定它的 `.feature`
+    該帶哪些 `@example-` tag。沒有 story 認領的 FR 因此不會被任何檔案要求
+    覆蓋——它的 AC 一條都不必寫，而腳本照樣印出「全部通過」。
+
+    最常見的來源是位置：FR 擺在第一個 `### US-` 標題之前，stories_in_spec()
+    的 current 還是 None，於是它兩邊都在（frs_in_spec 看得到它）卻不屬於誰。
+    那不是「錯的 FR」而是「沒有人認領的 FR」，只有用減法找得到——正向解析
+    永遠看不見自己沒收進來的東西。
+
+    另一個來源是 story 標題寫壞，那由 malformed_story_headings() 指名；
+    這裡會跟著報一次，訊息指的是不同的東西：那邊說標題錯了，這邊說哪幾條
+    FR 因此沒有人覆蓋。
+    """
+    owned = {fr for frs in stories_in_spec(text).values() for fr in frs}
+    return sorted(set(frs_in_spec(text)) - owned, key=int)
+
+
 def step_templates(texts: list[str]) -> tuple[int, int, int]:
     """把引號內容、佔位符、數字正規化之後，數不重複的步驟樣板。
 
@@ -280,11 +313,11 @@ def check(root: Path) -> int:
     covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
     for spec_path in specs:
         stext = spec_path.read_text(encoding="utf-8")
-        frs = frs_in_prd(stext)
+        frs = frs_in_spec(stext)
 
         # 要先於 barren 檢查：v2 形式的標題會讓那條 FR 連同它的例子一起
         # 從 frs 消失，barren 於是對著一份殘缺的 dict 發出誤導訊息。
-        stale = v2_forms_in_prd(stext)
+        stale = v2_forms_in_spec(stext)
         if stale:
             print(f"✗ {spec_path.parent.name} 的 `## User Stories` 底下有 v2 形式的"
                   f"標題，v3 要用粗體項目：{', '.join(stale)}")
@@ -360,10 +393,18 @@ def check(root: Path) -> int:
             problems += 1
             continue
 
-        # 這裡原本有一個「spec.md 點名了 PRD 裡沒有的 FR」的檢查。併檔之後
-        # 它恆真：slug 與 FR 走的是同一節、同一次遍歷，一份文件不可能跟自己
-        # 不一致。它原本要防的「FR 靜默缺席」由 v2_forms_in_prd() 接手——那是
-        # 正向檢查，主動找不該存在的標題形式，而不是等對帳對不上。
+        # 這裡原本有一個「spec.md 點名了 PRD 裡沒有的 FR」的檢查。它比的是
+        # **兩份文件互相點名**，併檔之後那個方向不存在了，所以刪掉它沒有損失
+        # 保護。但「story 與 FR 的對應可能不一致」是另一回事，併檔並沒有消掉
+        # 它：同一次遍歷讀到的兩份資料仍然各有各的錨點（`### US-` 與
+        # `**FR-**`），FR 擺在第一個 story 標題之前就誰也不屬於。那個方向由
+        # 下面這個檢查接手。
+        unowned = orphan_frs(stext)
+        if unowned:
+            print(f"✗ {spec_path.parent.name} 這些 FR 不屬於任何一則 story，"
+                  f"沒有 .feature 會被要求涵蓋它們的 AC："
+                  f"{', '.join('FR-' + f for f in unowned)}")
+            problems += 1
 
         # 逐 story 比，不可把所有 story 的例子聯集起來跟單一 .feature 比：
         # 一則 story 一個 .feature，聯集會讓 A 的例子出現在 B 檔裡也算通過。
