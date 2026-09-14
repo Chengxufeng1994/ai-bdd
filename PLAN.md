@@ -33,17 +33,19 @@
 
 ---
 
-## 三條紀律
+## 四條紀律
 
-這是 2026-09-02 重規劃的核心。六步之所以站得住，是因為前三步**各自只做一件事**：
+這是 2026-09-02 重規劃的核心。六步之所以站得住，是因為前三步底下的每個 skill
+**各自只做一件事**——SPEC 由兩個 skill 分擔，所以是四條：
 
 | 步驟 | 只做 | 不做 |
 | --- | --- | --- |
 | **CLARIFY** | 問問題，把問題問到收斂 | 不寫規格。連 story 的定版句子都不寫 |
-| **SPEC** | 綜合已經有答案的東西 | **不訪談**。憑空長出來的內容是缺陷 |
+| **SPEC**（`bdd-spec`） | 綜合已經有答案的東西 | **不訪談**。憑空長出來的內容是缺陷 |
+| **SPEC**（`bdd-formulation`） | 把定案的 `spec.md` 翻成 `.feature` | 不發明例子。不回寫 `spec.md` |
 | **PLAN** | 切 tracer bullet | 不設計。API、schema、seam 在 SPEC 就定完了 |
 
-三條紀律互相支撐：SPEC 之所以能「不訪談」，是因為 CLARIFY 已經把決定做完；
+四條紀律互相支撐：SPEC 之所以能「不訪談」，是因為 CLARIFY 已經把決定做完；
 PLAN 之所以能「不設計」，是因為 SPEC 已經把技術決定寫下來。任何一條破了，
 下一條就守不住。
 
@@ -61,7 +63,7 @@ already made, not a place where new ones get made.」
 | 步驟 | 這一步在問什麼 | 作法 | 產物 |
 | --- | --- | --- | --- |
 | **CLARIFY** | 還有哪些不知道？問到不能再問為止 | 三個 pass：廣度（PRD 拆解／角色／切 story／分批）→ 深度（每則 story 的業務邊界）→ 技術（打哪一層、動哪些模組） | `brief.md`、`actor.md`、`glossary.md`、`questions/` ＋ 就緒判定 |
-| **SPEC** | 這些答案的可執行規格長怎樣？ | 綜合已答問題 → Gherkin ＋ 決定紀錄 | `.feature`（可執行）＋ `spec.md`（Gherkin 表達不了的決定）＋ `domain-model.md` |
+| **SPEC** | 這些答案的可執行規格長怎樣？ | 綜合已答問題 → `spec.md`（`bdd-spec`）→ Gherkin（`bdd-formulation`） | `spec.md` ＋ `domain-model.md` ＋ `.feature`（可執行） |
 | **PLAN** | 怎麼切成一次做得完的步驟？ | tracer bullet 垂直切片 ＋ blocking edges | `plan.md` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | 跑情境 ＋ 失敗判讀 | 測試結果 ＋ 判讀結論 |
@@ -198,8 +200,8 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `bdd-discovery` | 三個 pass，只問不寫 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定 | **已實作**。Pass 2 的手法與就緒判定從 `bdd-clarify` 搬進來 |
 | SPEC | `bdd-spec` | 答案 → `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護 |
+| | `bdd-formulation` | `spec.md` → `.feature` | **已實作**：從 `bdd-spec` 拆出來，封閉步驟文法與 `check_spec.py` 跟著走 |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
-| FORMULATION | `bdd-formulation` | `spec.md` → `.feature` | **已實作**：從 `bdd-spec` 拆出來，封閉步驟文法與 `check_spec.py` 跟著走 |
 | PLAN | `bdd-plan` | `.feature` → tracer bullet ＋ blocking edges | **已實作，幾乎重寫（大）**：現在的 §1–5（API／domain／schema／測試分層／風險）全部搬進 `spec.md` |
 | IMPLEMENT | `bdd-implement` | 實作流程總入口 | 未實作 |
 | | `bdd-implement-step-definitions` | 比對既有 step 再產新的 | 未實作 |
@@ -410,7 +412,7 @@ Always-on: ~1,620 tok  每個 session 都付
    跟「產物存放路徑」是同一個決定底下的兩個例外，不是兩件各自獨立的事。
 
 3. ~~**SPEC 與 PLAN 的分界。**~~ 已定（2026-09-02）：技術設計歸 SPEC，
-   拆解歸 PLAN。見「三條紀律」。
+   拆解歸 PLAN。見「四條紀律」。
 
 4. **一批到底多大。** 判準已定（一次可交付的價值），已有兩個數字：
 
