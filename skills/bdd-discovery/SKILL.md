@@ -372,12 +372,17 @@ IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只讀 `clarify-log.
 
 ```
 specs/<date>-<feature>/
-└── clarify-log.md    CLARIFY  ★ 唯一產物
+├── input.md           需求方帶來的原始輸入，開始澄清時逐字複製一次
+└── clarify-log.md     CLARIFY  ★ 問答記錄
 
 （spec.md 是 SPEC 的產物，本 skill 不得寫入）
 ```
 
 格式 → `references/clarify-log-format.md`。
+
+MUST: 開始澄清時把需求方帶來的原始輸入**逐字複製**進 `input.md`，之後不得
+再改寫它。`bdd-spec` 的 `PRD §x` 來源標記回指的就是這份原文；改寫 `input.md`
+等於讓那個標記從此指向一句不存在的話，而且不會報錯——它只是悄悄指錯。
 
 MUST NOT: 寫 `spec.md`。**連 story 的定版句子都不寫**——那是 `bdd-spec` 的第一句話。
 這一條不是分工偏好：Discovery 是模型追問、使用者回答；Formulation 是模型書寫、

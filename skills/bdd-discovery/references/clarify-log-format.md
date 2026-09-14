@@ -1,7 +1,8 @@
 # `clarify-log.md` 的格式
 
-`specs/<date>-<feature>/clarify-log.md`。CLARIFY 的**唯一產物**，也是 `bdd-spec`
-唯一的輸入。
+`specs/<date>-<feature>/clarify-log.md`。CLARIFY 的產物之一，記錄問答，也是
+`bdd-spec` 讀的兩份輸入之一——另一份是同目錄的 `input.md`，需求方帶來的原始
+輸入的逐字副本，`bdd-spec` 的 `PRD §x` 來源標記引用的就是它。
 
 **它不是規格。** 它記的是「問了什麼、答了什麼、還開著什麼」，不記「系統該做什麼」。
 那條界線是這個 repo 的三份文件共同要求的：CLARIFY 不寫規格，連 story 的定版句子

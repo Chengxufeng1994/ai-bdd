@@ -1,13 +1,16 @@
 ---
 name: bdd-spec
 description: >
-  把 CLARIFY 的規則與例子寫成可執行的 Gherkin `.feature`——規則對應 Rule 區塊、
-  例子對應 Example、編號用 tag 帶下去，步驟套一組封閉文法讓 step definition 能重用。
+  把 CLARIFY 的問答綜合成 `spec.md`——十三節、完整自足的規格文件，再把規則與
+  例子寫成可執行的 Gherkin `.feature`——規則對應 Rule 區塊、例子對應 Example、
+  編號用 tag 帶下去，步驟套一組封閉文法讓 step definition 能重用。
   BDD 六步流程的 SPEC 步驟。
   觸發詞：「寫成 feature 檔」「轉成 Gherkin」「產出驗收情境」「clarify-log.md 變成規格」
-  「把例子寫成場景」「這些規則的 scenario 長怎樣」「寫 .feature」「產生驗收測試規格」。
-  English: turn the clarification log into Gherkin, write the feature file,
-  generate acceptance scenarios, convert rules and examples into scenarios.
+  「產出規格文件」「寫 spec.md」「把例子寫成場景」「這些規則的 scenario 長怎樣」
+  「寫 .feature」「產生驗收測試規格」。
+  English: synthesize the clarification log into spec.md, turn the
+  clarification log into Gherkin, write the feature file, generate
+  acceptance scenarios, convert rules and examples into scenarios.
 ---
 
 # SPEC — 把例子寫成可執行的規格
@@ -185,7 +188,7 @@ MUST: `結束方式` 還不是 `收斂` 的 `clarify-log.md` **整份**跳過，
 | 讀什麼 | 為了什麼 |
 | --- | --- |
 | `specs/<date>-<feature>/clarify-log.md` | **規則與例子的綜合來源**——「已答」表的答案是原始素材，`歸屬` 欄說這句話該進 `spec.md` 哪一節，不必從問題文字反推；「待答」「n/a」兩張表劃出這一步碰不得的界線 |
-| 需求方帶進來的原始輸入（PRD、brief，或任何形式的原始需求描述） | **`PRD §x` 這個來源標記唯一的依據**——`clarify-log.md` 只記問答，不記哪一句是原文照抄，沒有原始輸入就分不出「這句抄自需求方原文」與「這句是我們自己補的」 |
+| `specs/<date>-<feature>/input.md` | **`PRD §x` 這個來源標記唯一的依據**——`clarify-log.md` 只記問答，不記哪一句是原文照抄；`input.md` 是需求方帶來的原始輸入的逐字副本，沒有它就分不出「這句抄自需求方原文」與「這句是我們自己補的」 |
 | 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
 
 `clarify-log.md`「已答」表的答案是規則與例子的原始素材，但 FR／AC 的定版
@@ -525,22 +528,14 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 
 ---
 
-## 產物
+## 產物格式
 
 ```
 specs/<date>-<feature>/
-├── clarify-log.md    CLARIFY 的產物，本 skill 只讀不寫
 └── spec.md           SPEC  ★ 十三節，完整自足
 
-docs/CONTEXT.md       詞彙表，本 skill 可建立或追加，不得重寫既有小節
+（clarify-log.md 是 CLARIFY 的產物，本 skill 只讀不寫）
 ```
-
-格式 → `references/spec-format.md`。
-
-規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
-`@rule-<n>`／`@example-<n>.<m>` 回指它們。
-
-## 產物格式
 
 本步驟產四份東西，格式各有一份參考檔：
 
@@ -550,6 +545,9 @@ docs/CONTEXT.md       詞彙表，本 skill 可建立或追加，不得重寫既
 | `specs/<date>-<feature>/spec.md` | `references/spec-format.md` |
 | `specs/domain-model.md`（增修） | `references/spec-format.md` 末節 |
 | `docs/CONTEXT.md`（建立或追加） | 「詞彙表」一節 |
+
+規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
+`@rule-<n>`／`@example-<n>.<m>` 回指它們。
 
 **關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
 
