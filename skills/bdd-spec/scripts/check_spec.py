@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""稽核 .feature 與 prd.md／spec.md 的一致性。
+"""稽核 .feature 與 spec.md 的一致性。
 
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查十二件事，全部是機械性的：
+檢查十一件事，全部是機械性的：
 
-  1. 覆蓋——雙向。prd.md 有例子而 feature 沒有的（漏做），
-     以及 feature 指向 prd.md 裡不存在的例子（發明出來的驗收條件）。
+  1. 覆蓋——雙向。spec.md 有例子而 feature 沒有的（漏做），
+     以及 feature 指向 spec.md 裡不存在的例子（發明出來的驗收條件）。
   2. 缺口——漏掉的例子有沒有在 .feature 裡就地留註解交代。
   3. 狀態 tag——每個有對應 story 的 .feature 恰好一個。
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
-     十二項裡只有這一項不會把退出碼變成 1。
-  6. FR 完整性——prd.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
+     十一項裡只有這一項不會把退出碼變成 1。
+  6. FR 完整性——spec.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      SPEC 就無從寫出場景，只能發明。
   7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
      對 v3 的解析器而言那是「不存在」不是「錯」，會安靜地掉出覆蓋率。
@@ -24,16 +24,15 @@
  10. 紅卡只列待答——`#### Q` 指向表裡狀態不是「待答」的題號。已答的答案
      已經長成某條 FR 或 AC，留著會讓地圖上的紅卡數量永遠不歸零。
  11. AC 編號對帳——`AC-<n>.<m>` 的 `<n>` 必須等於它掛在底下的那條 FR。
- 12. spec.md 點名的 FR 必須真的存在於 prd.md。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、找不到 .feature、
-沒有 prd.md、沒有 spec.md、`## Stories` 損壞也各自退出 1——那些是「先跑上
-一步」，不算在上面十二項一致性檢查裡。
+沒有 spec.md、`## User Stories` 底下沒有任何 story 也各自退出 1——那些是
+「先跑上一步」，不算在上面十一項一致性檢查裡。
 
 只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
-例子的目錄讀自 specs/<date>-<feature>/prd.md 的 `## User Stories` 段
-（FR 編號在那裡定版）；story 由哪些 FR 組成讀自 specs/<date>-<feature>/spec.md 的
-`## Stories` 段——切 story 是 SPEC 的事，不再是 CLARIFY 的事。
+FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
+specs/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
+story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
 """
 import re
 import sys
@@ -176,20 +175,28 @@ def qs_in_table(text: str) -> dict[str, str]:
 
 
 def stories_in_spec(text: str) -> dict[str, set[str]]:
-    """spec.md 的 `## Stories` 段：story-slug -> 它涵蓋的 FR 編號集合。"""
-    section = re.search(r"^## Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    """spec.md 的 `## User Stories` 段：story-slug -> 它涵蓋的 FR 編號集合。
+
+    併檔之前 slug 住在另一個檔的 `## Stories` 一節，story 與 FR 的對應是
+    人手維護的清單。併檔之後那個對應是**結構性的**——FR 就掛在它的 story
+    底下，所以走一遍同時拿到 slug 與 FR，不需要第二份清單。
+
+    slug 從 `### US-<n> · <slug>` 取，它也是那則 story 的 `.feature` 檔名。
+    """
+    section = re.search(
+        r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     if not section:
         return {}
     out: dict[str, set[str]] = {}
     current = None
     for line in section.group(1).splitlines():
-        st = re.match(r"^### (\S+)\s*$", line)
+        st = re.match(r"^### US-\d+ · (\S+)\s*$", line)
         if st:
             current = st.group(1)
             out.setdefault(current, set())
             continue
         if current:
-            for fr in re.findall(r"\bFR-(\d+)\b", line):
+            for fr in re.findall(r"^\*\*FR-(\d+)\*\*", line):
                 out[current].add(fr)
     return out
 
@@ -244,27 +251,27 @@ def check(root: Path) -> int:
     problems = 0
     print(f"specs: {specs_dir}    feature: {feat_dir}\n")
 
-    prds = sorted(specs_dir.glob("*/prd.md"))
-    if not prds:
-        print(f"{specs_dir} 底下沒有 prd.md —— 先跑 bdd-clarify")
+    specs = sorted(specs_dir.glob("*/spec.md"))
+    if not specs:
+        print(f"{specs_dir} 底下沒有 spec.md —— 先跑 bdd-spec")
         return 1
 
     covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
-    for prd_path in prds:
-        ptext = prd_path.read_text(encoding="utf-8")
-        frs = frs_in_prd(ptext)
+    for spec_path in specs:
+        stext = spec_path.read_text(encoding="utf-8")
+        frs = frs_in_prd(stext)
 
         # 要先於 barren 檢查：v2 形式的標題會讓那條 FR 連同它的例子一起
         # 從 frs 消失，barren 於是對著一份殘缺的 dict 發出誤導訊息。
-        stale = v2_forms_in_prd(ptext)
+        stale = v2_forms_in_prd(stext)
         if stale:
-            print(f"✗ {prd_path.parent.name} 的 `## User Stories` 底下有 v2 形式的"
+            print(f"✗ {spec_path.parent.name} 的 `## User Stories` 底下有 v2 形式的"
                   f"標題，v3 要用粗體項目：{', '.join(stale)}")
             problems += 1
 
         if not frs:
-            print(f"✗ {prd_path.parent.name} 的 prd.md 沒有 `## User Stories` "
-                  f"一節、或該節底下沒有任何 FR —— 先跑 bdd-clarify")
+            print(f"✗ {spec_path.parent.name} 的 spec.md 沒有 `## User Stories` "
+                  f"一節、或該節底下沒有任何 FR —— 先跑 bdd-spec")
             problems += 1
             continue
 
@@ -274,16 +281,16 @@ def check(root: Path) -> int:
         # 哪個 feature 目錄。
         barren = sorted(fr for fr, exs in frs.items() if not exs)
         if barren:
-            print(f"✗ {prd_path.parent.name} 這些 FR 沒有任何 AC，SPEC 無從寫出場景："
+            print(f"✗ {spec_path.parent.name} 這些 FR 沒有任何 AC，SPEC 無從寫出場景："
                   f"{', '.join('FR-' + b for b in barren)}")
             problems += 1
 
         # 形式不對的紅卡群組收不到任何編號，下面兩個檢查因此無法失敗——
         # 所以形式本身要先報錯，不能被容納成「這則 story 沒有紅卡」。
-        q_ids, q_malformed = qs_in_stories(ptext)
-        q_table = qs_in_table(ptext)
+        q_ids, q_malformed = qs_in_stories(stext)
+        q_table = qs_in_table(stext)
         if q_malformed:
-            print(f"✗ {prd_path.parent.name} 的 `#### Q` 形式不對，紅卡收不到："
+            print(f"✗ {spec_path.parent.name} 的 `#### Q` 形式不對，紅卡收不到："
                   f"{', '.join(q_malformed)}")
             problems += 1
 
@@ -292,7 +299,7 @@ def check(root: Path) -> int:
         # v2 的結構做不到這個檢查（紅卡不掛在 story 上），v3 才有。
         dangling = sorted(q_ids - set(q_table), key=int)
         if dangling:
-            print(f"✗ {prd_path.parent.name} 的 story 引用了 `## Open Questions` "
+            print(f"✗ {spec_path.parent.name} 的 story 引用了 `## Open Questions` "
                   f"裡沒有的問題：{', '.join('Q-' + d for d in dangling)}")
             problems += 1
 
@@ -303,49 +310,33 @@ def check(root: Path) -> int:
                           key=int)
         if answered:
             named = ", ".join(f"Q-{q}（{q_table[q] or '表缺狀態欄'}）" for q in answered)
-            print(f"✗ {prd_path.parent.name} 的 `#### Q` 列了狀態不是「待答」的"
+            print(f"✗ {spec_path.parent.name} 的 `#### Q` 列了狀態不是「待答」的"
                   f"問題：{named}")
             problems += 1
 
         # AC 的 <n> 必須等於它掛在底下的那條 FR。巢狀讓這件事在寫的時候
         # 不容易弄錯，但打字錯不會被結構擋下來——`AC-9.1` 打在 `**FR-1**`
         # 底下會被記成 FR-1 的例子，然後在下面的覆蓋比對裡變成一則
-        # 「@example-9.1 不見了」的訊息，指著 .feature 說它漏寫，而錯在 prd.md。
+        # 「@example-9.1 不見了」的訊息，指著 .feature 說它漏寫，而錯在 spec.md。
         mismatched = sorted(
             (fr, ac) for fr, acs in frs.items() for ac in acs
             if ac.split(".")[0] != fr)
         if mismatched:
-            print(f"✗ {prd_path.parent.name} 這些 AC 的編號對不上它所屬的 FR："
+            print(f"✗ {spec_path.parent.name} 這些 AC 的編號對不上它所屬的 FR："
                   f"{', '.join(f'AC-{ac} 掛在 FR-{fr} 底下' for fr, ac in mismatched)}")
             problems += 1
 
-        spec_path = prd_path.parent / "spec.md"
-        if not spec_path.exists():
-            print(f"✗ {prd_path.parent.name} 有 prd.md 但沒有 spec.md —— 先跑 bdd-spec")
-            problems += 1
-            continue
-        stext = spec_path.read_text(encoding="utf-8")
-        if not re.search(r"^## Stories\s*$", stext, re.M):
-            print(f"✗ {prd_path.parent.name} 的 spec.md 找不到 `## Stories` 一節 —— 檔案格式損壞")
-            problems += 1
-            continue
         stories = stories_in_spec(stext)
         if not stories:
-            print(f"✗ {prd_path.parent.name} 的 spec.md `## Stories` 一節底下沒有任何 story "
+            print(f"✗ {spec_path.parent.name} 的 spec.md `## User Stories` 一節底下沒有任何 story "
                   f"—— SPEC 還沒切 story")
             problems += 1
             continue
 
-        # spec.md 點名的 FR 必須真的在 prd.md 裡。少了這一步，下面
-        # `frs.get(fr, set())` 的預設值會把「這條 FR 沒有例子」跟「這條 FR
-        # 根本不存在」混成同一件事：一條留在 v1 深度的 `### FR-` 對解析器
-        # 而言是不存在，於是它的例子一個都不會被期待，整份文件安靜地全過。
-        unknown = sorted({f for ids in stories.values() for f in ids} - set(frs),
-                         key=int)
-        if unknown:
-            print(f"✗ {prd_path.parent.name} 的 spec.md 點名了 prd.md 裡沒有的 FR："
-                  f"{', '.join('FR-' + u for u in unknown)}")
-            problems += 1
+        # 這裡原本有一個「spec.md 點名了 prd.md 裡沒有的 FR」的檢查。併檔之後
+        # 它恆真：slug 與 FR 走的是同一節、同一次遍歷，一份文件不可能跟自己
+        # 不一致。它原本要防的「FR 靜默缺席」由 v2_forms_in_prd() 接手——那是
+        # 正向檢查，主動找不該存在的標題形式，而不是等對帳對不上。
 
         # 逐 story 比，不可把所有 story 的例子聯集起來跟單一 .feature 比：
         # 一則 story 一個 .feature，聯集會讓 A 的例子出現在 B 檔裡也算通過。
@@ -366,7 +357,7 @@ def check(root: Path) -> int:
             issues = []
             # 發明優先於漏做：憑空的驗收條件比缺一條更難發現，因為它看起來很完整。
             if invented:
-                issues.append(f"指向 prd.md 裡不存在的例子 {invented}")
+                issues.append(f"指向 spec.md 裡不存在的例子 {invented}")
             if len(states) != 1:
                 issues.append(f"狀態 tag {states or '缺'} —— 每個檔恰好要一個")
             if zh_rule:

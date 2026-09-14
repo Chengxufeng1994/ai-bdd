@@ -35,9 +35,8 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加
 ## 參考檔案
 
 - `references/spec-format.md` — `spec.md` 的骨架
-- `references/prd-format.md` — 讀進來的 `prd.md` 的格式
 - `references/persona-definition.md` — 角色怎麼定義
-- `examples/minimal-prd.md` — 一份完整的 `prd.md` 範例
+- `examples/minimal-spec.md` — 一份完整的 `spec.md` 範例
 - `scripts/status.py` — 從 `## Open Questions` 算澄清進度
 
 ---

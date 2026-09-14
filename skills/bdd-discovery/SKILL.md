@@ -160,14 +160,14 @@ MUST: PRD 裡標題叫「假設」的那一段，**每一條都當成沒問過**
 | 每個**排除項** | 排除 A 是不是隱含要做 B？ | 被排除項推出來的隱藏需求 |
 
 非功能需求怎麼分邊（產品級的品質屬性 vs. 某條規則的行為分支）→
-`../bdd-spec/references/prd-format.md` 的「Non-Functional Requirements 與 Constraints：
+`../bdd-spec/references/spec-format.md` 的「Non-Functional Requirements 與 Constraints：
 怎麼分邊」一節。
 
 MUST: 這裡、以及後面兩個 Pass 寫進 `prd.md` 的每一行實質內容都要標來源，
 三選一——`PRD §x`（PRD 原文有這段）、`Q-<n>`（來自 `## Open Questions` 某一題
 的答案）、`推論`（兩者都不是，是推導出來的）。範圍：`## Scope — In / Out` 的
 每條邊界、`## Assumptions / Constraints` 的每條，以及 Pass 2 的每條
-FR／AC、Pass 3 的每條 NFR。寫法與範例 → `../bdd-spec/references/prd-format.md`。
+FR／AC、Pass 3 的每條 NFR。寫法與範例 → `../bdd-spec/references/spec-format.md`。
 
 沒有這個標記，**「CLARIFY 真的逼問過 PRD」跟「CLARIFY 只是把 PRD 換句話抄
 一遍」在 `prd.md` 上長得一模一樣**——整份文件的來源欄全是 `PRD §x` 時，代表
@@ -302,7 +302,7 @@ MUST: 一題確定，兩件事同時發生，缺一個就是不一致狀態：
 只記「跳過」不記原因，`## Open Questions` 就會變成一堆分不出輕重的待辦——而那
 正是讓人一個都不想動的狀態。
 
-Q 編號、狀態值、`面向` 欄、`輪次`／`信心` 怎麼填 → `../bdd-spec/references/prd-format.md`
+Q 編號、狀態值、`面向` 欄、`輪次`／`信心` 怎麼填 → `../bdd-spec/references/spec-format.md`
 的 `## Open Questions` 一節。
 
 #### 每一輪結束：抽規則
@@ -319,7 +319,7 @@ MUST: 一輪問完就把**這一輪能抽的規則抽出來**，不要累積到�
 - ✓「一個 token 在 3 秒前過期的使用者」
 
 MUST: 新規則直接寫進所屬 `### US-<n>` 底下 `#### FR` 分組裡的 `**FR-<n>**`（EARS
-句式，見 `../bdd-spec/references/prd-format.md`），底下巢狀掛 `- **AC-<n>.<m>**`（Given／
+句式，見 `../bdd-spec/references/spec-format.md`），底下巢狀掛 `- **AC-<n>.<m>**`（Given／
 When／Then，含實際數字，SPEC 讀）。**編號在這裡定版**，寫出去就不重排；刪掉
 一條規則就留空號，不遞補——空號看得出來，重排看不出來。FR／AC 都要標來源
 （`PRD §x`／`Q-<n>`／`推論`，規則見「拆成骨架」一節）。
@@ -403,7 +403,7 @@ Pass 2 收斂之後才跑。順序不能反：**技術問題有一半要看過�
 Requirements`；不可協商的外部限制（既有硬體、法規、已發包的規格）進
 `## Assumptions / Constraints`。答不出來的一律進 `## Open Questions`，跟業務
 面的紅卡同一張表，不勉強塞進 NFR 或 Constraints 湊數——這兩節怎麼分邊見
-`../bdd-spec/references/prd-format.md`。標 `n/a` 的要寫理由，否則它跟「懶得問」分不出來。
+`../bdd-spec/references/spec-format.md`。標 `n/a` 的要寫理由，否則它跟「懶得問」分不出來。
 每條 NFR 一樣要標來源（多半是 `Q-<n>`，因為它來自這一輪技術追問）。
 
 IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只讀 `prd.md` 已經有答案的
@@ -424,7 +424,7 @@ docs/CONTEXT.md              SPEC
 ```
 
 一個 feature 一份 `prd.md`，不切分——**切 story 是 SPEC 的事**，它需要領域知識
-而且需要範圍先穩定。格式 → `../bdd-spec/references/prd-format.md`。
+而且需要範圍先穩定。格式 → `../bdd-spec/references/spec-format.md`。
 
 規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
 `@example-<n>.<m>` 回指它們，`spec.md` 不重述。

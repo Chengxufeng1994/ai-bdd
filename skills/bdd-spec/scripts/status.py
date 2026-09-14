@@ -5,13 +5,13 @@
     python3 status.py [專案根目錄]        # 預設當前目錄
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
-`specs/<date>-<feature>/prd.md` 的 `## Open Questions` 表：已答／n/a／待答數自
+`specs/<date>-<feature>/spec.md` 的 `## Open Questions` 表：已答／n/a／待答數自
 狀態欄，追問覆蓋（業務面向＋Pass 3 的技術面向）數自面向欄。存一份儀表板的話，
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
 
 找不到資料時不猜、不印出「已就緒」。`specs/` 不存在、或底下沒有任何
-`prd.md`，兩種都算「找不到」。單一 `prd.md` 也有三種算「壞」的情況，訊息
+`spec.md`，兩種都算「找不到」。單一 `spec.md` 也有三種算「壞」的情況，訊息
 分開講因為修法不同：`## Open Questions` 一節整個缺席（標題缺漏或打錯）是
 檔案格式損壞；一節存在但零列，代表 CLARIFY 沒問過任何問題，不是需求沒有
 疑點；表格裡有列的欄數不是 5，是那一列本身壞了。三種都指名是哪個檔案、
@@ -106,9 +106,9 @@ def main(root: Path) -> int:
         print(f"找不到 {specs}")
         return 1
 
-    prds = sorted(specs.glob("*/prd.md"))
-    if not prds:
-        print(f"{specs} 底下沒有任何 prd.md —— 先跑 bdd-clarify")
+    specs_files = sorted(specs.glob("*/spec.md"))
+    if not specs_files:
+        print(f"{specs} 底下沒有任何 spec.md —— 先跑 bdd-spec")
         return 1
 
     # 逐份先解析、逐份先報壞——三種壞法訊息分開講，因為修法不同：
@@ -117,19 +117,19 @@ def main(root: Path) -> int:
     # 同一份裡還解析得出來的列也一起蓋掉——那正是「看起來正常」的來源。
     parsed = {}
     broken = False
-    for prd in prds:
+    for spec_path in specs_files:
         found, rows, unparseable = parse_open_questions(
-            prd.read_text(encoding="utf-8"))
-        parsed[prd] = rows
+            spec_path.read_text(encoding="utf-8"))
+        parsed[spec_path] = rows
         if not found:
-            print(f"{prd} 找不到 `## Open Questions` 一節 —— 檔案格式損壞")
+            print(f"{spec_path} 找不到 `## Open Questions` 一節 —— 檔案格式損壞")
             broken = True
         elif not rows and not unparseable:
-            print(f"{prd} 的 `## Open Questions` 表零列 —— "
+            print(f"{spec_path} 的 `## Open Questions` 表零列 —— "
                   f"CLARIFY 還沒問過任何問題，不是需求沒有疑點")
             broken = True
         if unparseable:
-            print(f"{prd} 有 {len(unparseable)} 列解析不出欄位（欄數不是 5）：")
+            print(f"{spec_path} 有 {len(unparseable)} 列解析不出欄位（欄數不是 5）：")
             for line in unparseable:
                 print(f"  {line}")
             broken = True
@@ -139,9 +139,9 @@ def main(root: Path) -> int:
     tot = [0, 0, 0]
     blocked = []
 
-    for prd in prds:
-        slug = prd.parent.name
-        rows = parsed[prd]
+    for spec_path in specs_files:
+        slug = spec_path.parent.name
+        rows = parsed[spec_path]
         answered = na = pending = 0
         dims: set[str] = set()
         pending_qs = []
