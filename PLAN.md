@@ -197,7 +197,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**。觸發訊號要改（見下） |
 | | `bdd-discovery` | 三個 pass，只問不寫 | **已實作，要改（中大）**：Pass 1 加「分批」；Pass 2 砍成純問答、拿掉 `example-mapping.md` 這個產物；新增 Pass 3 技術澄清 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定 | **已實作**。Pass 2 的手法與就緒判定從 `bdd-clarify` 搬進來 |
-| SPEC | `bdd-spec` | 答案 → `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護；`check_spec.py` 的覆蓋來源從 `example-mapping.md` 改成 `spec.md` |
+| SPEC | `bdd-spec` | 答案 → `spec.md` | **已實作，要擴張（大）**：新增 `spec.md` 七節、seam 決定、`domain-model.md` 維護 |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
 | FORMULATION | `bdd-formulation` | `spec.md` → `.feature` | **已實作**：從 `bdd-spec` 拆出來，封閉步驟文法與 `check_spec.py` 跟著走 |
 | PLAN | `bdd-plan` | `.feature` → tracer bullet ＋ blocking edges | **已實作，幾乎重寫（大）**：現在的 §1–5（API／domain／schema／測試分層／風險）全部搬進 `spec.md` |

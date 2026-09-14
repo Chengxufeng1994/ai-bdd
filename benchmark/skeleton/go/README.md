@@ -146,7 +146,7 @@ skeleton/
 clarified and specified, but IMPLEMENT has not run, so no step definitions exist
 and every scenario reports `step is undefined`.
 
-That is what `@ready` means. `bdd-spec` states the rule it follows from: a
+That is what `@ready` means. `bdd-formulation` states the rule it follows from: a
 scenario that goes green the moment it is written verified nothing. The plan for
 turning these green is `docs/bdd/workout-tracking/plan.md` — nine tickets, in
 dependency order.
