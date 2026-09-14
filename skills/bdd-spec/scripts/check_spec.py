@@ -4,7 +4,7 @@
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查十一件事，全部是機械性的：
+檢查十二件事，全部是機械性的：
 
   1. 覆蓋——雙向。spec.md 有例子而 feature 沒有的（漏做），
      以及 feature 指向 spec.md 裡不存在的例子（發明出來的驗收條件）。
@@ -13,21 +13,25 @@
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
-     十一項裡只有這一項不會把退出碼變成 1。
+     十二項裡只有這一項不會把退出碼變成 1。
   6. FR 完整性——spec.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      SPEC 就無從寫出場景，只能發明。
   7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
      對 v3 的解析器而言那是「不存在」不是「錯」，會安靜地掉出覆蓋率。
-  8. 紅卡群組的形式——`#### Q` 與 `**Q-<n>**` 都是精確形式；偏掉的行會讓
-     第 9、10 項一張紅卡都收不到，於是那兩項無法失敗。
-  9. 懸空的紅卡指標——`#### Q` 指向 `## Open Questions` 表裡沒有的題號。
- 10. 紅卡只列待答——`#### Q` 指向表裡狀態不是「待答」的題號。已答的答案
+  8. story 標題形式——`### US-<n> · <slug>` 差一點的標題，對
+     stories_in_spec() 而言也是「不存在」；文件有兩則以上 story 時，那則
+     story 連同它的 `.feature` 會安靜地從覆蓋比對裡消失，跟第 7 項是同一
+     種缺陷。
+  9. 紅卡群組的形式——`#### Q` 與 `**Q-<n>**` 都是精確形式；偏掉的行會讓
+     第 10、11 項一張紅卡都收不到，於是那兩項無法失敗。
+ 10. 懸空的紅卡指標——`#### Q` 指向 `## Open Questions` 表裡沒有的題號。
+ 11. 紅卡只列待答——`#### Q` 指向表裡狀態不是「待答」的題號。已答的答案
      已經長成某條 FR 或 AC，留著會讓地圖上的紅卡數量永遠不歸零。
- 11. AC 編號對帳——`AC-<n>.<m>` 的 `<n>` 必須等於它掛在底下的那條 FR。
+ 12. AC 編號對帳——`AC-<n>.<m>` 的 `<n>` 必須等於它掛在底下的那條 FR。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、找不到 .feature、
 沒有 spec.md、`## User Stories` 底下沒有任何 story 也各自退出 1——那些是
-「先跑上一步」，不算在上面十一項一致性檢查裡。
+「先跑上一步」，不算在上面十二項一致性檢查裡。
 
 只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
@@ -108,6 +112,26 @@ def v2_forms_in_prd(text: str) -> list[str]:
         return []
     return [line.strip() for line in section.group(1).splitlines()
             if re.match(r"^#+\s*(FR|NFR|AC|EX)-\d", line)]
+
+
+def malformed_story_headings(text: str) -> list[str]:
+    """`## User Stories` 段裡不合規的 `### ` 標題。
+
+    slug 住在標題裡（`### US-<n> · <slug>`），而 stories_in_spec() 比對的是
+    那個確切形式。差一點的標題不會報錯，只會讓那則 story 連同它的 `.feature`
+    一起從覆蓋比對裡消失——文件有兩則以上 story 時，「一則都沒有」那道防線
+    也不會觸發，於是整份印出「全部通過」。
+
+    這個檢查把那個缺席變回錯誤。跟 v2_forms_in_prd() 是同一種東西：解析器
+    找它要的，這個找它不要的，只有後者抓得到缺席。
+    """
+    section = re.search(
+        r"^## User Stories\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    if not section:
+        return []
+    return [line.strip() for line in section.group(1).splitlines()
+            if line.startswith("### ")
+            and not re.match(r"^### US-\d+ · \S+\s*$", line)]
 
 
 def qs_in_stories(text: str) -> tuple[set[str], list[str]]:
@@ -267,6 +291,12 @@ def check(root: Path) -> int:
         if stale:
             print(f"✗ {spec_path.parent.name} 的 `## User Stories` 底下有 v2 形式的"
                   f"標題，v3 要用粗體項目：{', '.join(stale)}")
+            problems += 1
+
+        malformed = malformed_story_headings(stext)
+        if malformed:
+            print(f"✗ {spec_path.parent.name} 的 `## User Stories` 底下有不合規的 "
+                  f"story 標題，形式要是 `### US-<n> · <slug>`：{', '.join(malformed)}")
             problems += 1
 
         if not frs:
