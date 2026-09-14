@@ -1,39 +1,39 @@
 ---
 name: bdd-spec
 description: >
-  把 CLARIFY 的問答綜合成 `spec.md`——十三節、完整自足的規格文件，再把規則與
-  例子寫成可執行的 Gherkin `.feature`——規則對應 Rule 區塊、例子對應 Example、
-  編號用 tag 帶下去，步驟套一組封閉文法讓 step definition 能重用。
+  把 CLARIFY 的問答綜合成 `spec.md`——十三節、完整自足的規格文件：切 story、
+  抽出 FR 與 AC、決定驗收測試打在哪一層 seam、把詞彙抬進 `docs/CONTEXT.md`。
+  不訪談，只綜合已經有答案的東西；`.feature` 由下一步的 `bdd-formulation` 產出。
   BDD 六步流程的 SPEC 步驟。
-  觸發詞：「寫成 feature 檔」「轉成 Gherkin」「產出驗收情境」「clarify-log.md 變成規格」
-  「產出規格文件」「寫 spec.md」「把例子寫成場景」「這些規則的 scenario 長怎樣」
-  「寫 .feature」「產生驗收測試規格」。
-  English: synthesize the clarification log into spec.md, turn the
-  clarification log into Gherkin, write the feature file, generate
-  acceptance scenarios, convert rules and examples into scenarios.
+  觸發詞：「產出規格文件」「寫 spec.md」「clarify-log.md 變成規格」
+  「把問答整理成規格」「切 story」「決定 seam」「驗收測試打在哪一層」
+  「這個 feature 的規格長怎樣」。
+  English: synthesize the clarification log into spec.md, turn answered
+  questions into a spec, slice stories, decide the acceptance test seam,
+  write the glossary.
 ---
 
-# SPEC — 把例子寫成可執行的規格
+# SPEC — 把答案綜合成一份規格
 
-一份收斂的 `clarify-log.md`（連同它問過的原始輸入）進來，出去的是 `.feature`
-與 `spec.md`：**先切 story——決定哪幾條 FR 湊成一則可獨立驗收的 story——
-再把 FR 變成 `Rule:` 區塊、
-AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加一張覆蓋表。
+一份收斂的 `clarify-log.md`（連同它問過的原始輸入）進來，出去的是
+`spec.md`：**先切 story——決定哪幾條 FR 湊成一則可獨立驗收的 story——再把
+已經有答案的東西綜合成 FR 與 AC**，並決定驗收測試打在哪一層 seam。
 
-不寫 step definition。不決定情境跑在哪一層。不發明新的例子。
+不訪談。不發明新的例子。**不產 `.feature`**——那是下一步 `bdd-formulation` 的事。
 
 ## 使用時機
 
-- CLARIFY 判定收斂，要把 `clarify-log.md` 變成 `.feature` 與 `spec.md`
-- 手上有規則與具體例子，需要可執行的驗收條件
-- 準備進 IMPLEMENT，需要先有紅燈的情境
+- CLARIFY 判定收斂，要把 `clarify-log.md` 變成 `spec.md`
+- 手上有規則與具體例子，需要一份完整自足的規格文件
+- 準備跟 PM 對答案，但還沒有 `spec.md`
 
 ## Skill Boundaries
 
+- **要把 FR 與 AC 寫成 `.feature` → 改用 `bdd-formulation`**
 - 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
 - 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
 - 例子還不夠、還有紅卡 → 回 `bdd-discovery`
-- 產出是 `.feature` ＋ `specs/<date>-<feature>/spec.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `openapi.yaml`、migration 或任何可執行的檔案
+- 產出是 `specs/<date>-<feature>/spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `.feature`、`openapi.yaml`、migration 或任何可執行的檔案
 - 要把 `spec.md` 拆成可執行的票 → 改用 `bdd-plan`
 
 ## 參考檔案
@@ -51,7 +51,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加
 SPEC 再分交付切片——所以需要一條規則仲裁。CLARIFY 不再寫文件之後，那條規則已刪除。
 
 每則 story 的標題是 `### US-<n> · <slug>`，`<slug>` 是它的 `.feature` 檔名。
-kebab-case，一份 `spec.md` 裡唯一——`check_spec.py` 用它對應檔案。
+kebab-case，一份 `spec.md` 裡唯一——`bdd-formulation` 的 `check_spec.py` 用它對應檔案。
 
 一則 story ＝ 一個 `.feature` 檔 ＝ 一次可獨立驗收的交付。
 
@@ -78,7 +78,7 @@ kebab-case，一份 `spec.md` 裡唯一——`check_spec.py` 用它對應檔案�
 ```
 
 **`### US-<n> · <slug>` 與它底下提到的 `FR-<n>` 是機械可解析的**——
-`scripts/check_spec.py` 用它算「這則 story 該有哪些 `@example` tag」。
+`bdd-formulation` 的 `check_spec.py` 用它算「這則 story 該有哪些 `@example` tag」。
 
 MUST: 寫下**為什麼是這個切法**。半年後有人要加一則 story 時，第一個該讀的
 就是這一段。
@@ -88,7 +88,7 @@ MUST NOT: 切出 `spec.md` `## Scope — In / Out` 明確排除的東西。範�
 
 ## 詞彙表 —— `docs/CONTEXT.md`
 
-寫 `.feature` 時措辭必須一致，所以詞彙在這一步才變成承重的東西。把
+**下一步**寫 `.feature` 時措辭必須一致，所以詞彙在這一步就要定下來。把
 `clarify-log.md`「已答」表裡**已經有答案**的詞抬進 `docs/CONTEXT.md`。
 
 **只轉錄，不裁決。** 詞義有爭議時不要自己定一個——那是訪談，SPEC 不訪談。
@@ -114,41 +114,10 @@ runner 決定）。理由是**壽命**：刪掉某個 feature 的 spec 目錄之
 
 ---
 
-## 這份 `.feature` 是寫給誰讀的
-
-寫給**下一個要實作 step definition 的人或模型**讀的。看得懂不是目標——**規律**才是。
-
-| | 場景 | 不重複步驟樣板 | 只出現一次的 |
-| --- | --- | --- | --- |
-| 散文式（本 skill 的舊版產出） | 76 | **208** | 172 |
-| 封閉文法（`examples/1-video-progress.md`） | 7 | **10** | 3 |
-
-172 支只會被呼叫一次的 step definition——**step def 比場景還多**，因為每個場景都把
-同一件事講得不太一樣，而那些寫法遲早會分岔。封閉文法不隨規模衰減：再加二十個
-場景，樣板表幾乎不會變長。兩組數字都是 `check_spec.py` 量的，不是估的。
-
-| 讀哪一份 | 什麼時候 |
-| --- | --- |
-| `examples/1-video-progress.md` | 第一次用。命令 · 狀態機，最完整的一份 |
-| `examples/2-submit-assignment.md` | 型別檢查；Example 層播種 |
-| `examples/3-deliver-course.md` | 副作用與序列；兩個 `When` 何時對 |
-| `examples/4-query-progress.md` | 寫查詢時。第四種形狀不一樣 |
-| `examples/5-query-course-list.md` | 查詢回傳多筆時。順序與「有沒有多餘的」 |
-| `examples/6-query-product-list.md` | 巢狀結構、參數篩選、空象限怎麼註明 |
-| `examples/7-create-order.md` | 最複雜的命令。算出來的預期值、選用參數 |
-| `examples/8-query-order.md` | 一個情境被斷言切開的反例；錯誤訊息的粒度 |
-| `examples/9-pay-order.md` | 副作用最重的一份；七個 Example 如何收斂成兩個 |
-| `examples/10-cancel-order.md` | 狀態守衛。`Given` 用狀態還是用動作鋪陳 |
-| `examples/11-query-user-roles.md` | 空清單、軟刪除；弱動詞如何逼出多餘的例子 |
-| `references/step-grammar.md` | 某條步驟規則想不通為什麼，或準備破例之前 |
-| `examples/anti-patterns.md` | 寫完自檢；或樣板數看起來不對 |
-| `references/rule-taxonomy.md` | 排規則之前，以及寫完做覆蓋盤點 |
-
----
-
 ## 前置確認（Ask user）
 
-不必問。`.feature` 的位置偵測得到（見「產物隔離」），要跑哪些 feature 有預設值。
+不必問輸入的位置。`clarify-log.md` 與 `input.md` 都在 `specs/<date>-<feature>/`
+底下。唯一要徵詢的是 seam，在流程步驟 3。
 
 MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺陷。`clarify-log.md`
 的「待答」表裡還有東西時，那些對應的規則就寫不出來，寫進 `## Scope — In / Out`
@@ -186,22 +155,16 @@ MUST: `結束方式` 還不是 `收斂` 的 `clarify-log.md` **整份**跳過，
 寫成場景，等於**把不確定性從一個顯眼的問題檔搬進一份看起來已完成的
 規格**——之後沒有人會回頭質疑它。
 
-使用者要求「未就緒的也先寫」時就寫，標成 `@draft`——見下方「狀態 tag」。
-
-### 2. 讀三樣東西
+### 2. 讀兩樣東西
 
 | 讀什麼 | 為了什麼 |
 | --- | --- |
 | `specs/<date>-<feature>/clarify-log.md` | **規則與例子的綜合來源**——「已答」表的答案是原始素材，`歸屬` 欄說這句話該進 `spec.md` 哪一節，不必從問題文字反推；「待答」「n/a」兩張表劃出這一步碰不得的界線；`## 核心關係人` 表是 `## Document Overview` 那一節**唯一**的來源 |
 | `specs/<date>-<feature>/input.md` | **`PRD §x` 這個來源標記唯一的依據**——`clarify-log.md` 只記問答，不記哪一句是原文照抄；`input.md` 是需求方帶來的原始輸入的逐字副本，沒有它就分不出「這句抄自需求方原文」與「這句是我們自己補的」 |
-| 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
 
 `clarify-log.md`「已答」表的答案是規則與例子的原始素材，但 FR／AC 的定版
-編號、`Rule:`／`Example:` 的文字都是**這一步**第一次寫下來的——story 由哪些
-FR 組成同樣是這一步自己切出來的，不是讀到的（見「切 story」）。
-
-第三項最容易被跳過，代價最貴，而且**在封閉文法下更貴**：文法的價值全在重用，
-另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
+編號都是**這一步**第一次寫下來的——story 由哪些 FR 組成同樣是這一步自己切
+出來的，不是讀到的（見「切 story」）。
 
 IMPORTANT: `clarify-log.md` 由 CLARIFY 維護，本 skill **不得寫入**。問答是
 澄清對話的產物，在寫規格時偷偷改一句答案，等於繞過了當初定義它的那場對話。
@@ -260,239 +223,7 @@ MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東�
 判準：指著 `spec.md` 的任何一句話，說得出它來自哪個已答的問題、哪條規則、
 或哪個 `.feature` 的哪一段嗎？說不出來的就是憑空長出來的，那是缺陷。
 
-### 5. 規則對應 Rule，例子對應 Example
-
-```
-spec.md 的 `## User Stories` 段      .feature
-─────────────────────────────────────────────────────────────
-這則 story 的切法說明                →    Feature: 與其下的敘述
-**FR-2**  影片進度不可回退            →    Rule: 影片進度必須單調遞增
-- **AC-2.2** 進度 70% 想改 60%        →    @rule-2 @example-2.2
-                                          Example: 進度回退時操作失敗
-```
-
-| `spec.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
-| --- | --- |
-| `FR-<n>` | `@rule-<n>` |
-| `AC-<n>.<m>` | `@example-<n>.<m>` |
-
-**tag 不跟著 `spec.md` 改名。** `.feature` 是 Gherkin 的產物，`@example` 是 Gherkin
-的字；`spec.md` 裡的 FR／AC 是 PRD 的字。接縫寫明對應就夠了。
-
-用 `Example:` 不用 `Scenario:`（Gherkin 的同義字）。`spec.md` 裡叫 Example，這裡
-也叫 Example——同一個東西在鏈上換名字，讀的人就得自己對應。
-
-MUST: 每個 Example 至少對應一個場景，且**不新增 `spec.md` 裡沒有的例子**。
-
-覺得少了一個邊界時，那是 CLARIFY 的發現，不是 SPEC 的產出——回去補一題，
-讓它經過同樣的討論。在這裡順手加一個場景，等於一個人決定了驗收條件。
-
-**唯一的例外是識別碼。** `spec.md` 寫「物件導向基礎」，`.feature` 需要一個 ID 才能
-穩定指涉。編一個不算發明驗收條件——**ID 是定址，不是行為**。判準：把 ID 全部換掉，
-有沒有任何一條斷言的真假會變？會變就不是 ID，是行為。
-
-SHOULD: 用 UUID，不用 1、2、3。序號**可以猜**——「查別人的訂單回權限不足、
-查不存在的回訂單不存在」在序號下就是一個枚舉工具。ID 的形式是規格的一部分，
-不是排版偏好。
-
-**編號用 tag 帶下去。** `Rule:` 區塊帶規則的文字，編號在 tag 裡：
-
-```gherkin
-@rule-2 @example-2.2
-Example: 進度回退時操作失敗
-```
-
-兩個 tag 都要。`@example-2.1` 讓你機械稽核「哪個例子還沒有場景」，
-`@rule-2` 讓你一次跑完某條規則的所有場景（實測：`--tags @rule-2` 會選到該規則
-底下全部場景，含 Scenario Outline 展開的每一列）。
-
-MUST NOT: 事後重排已經寫進 `spec.md` 的 FR 與 AC 編號。**這批編號在這一步
-第一次誕生**——寫定之後，本 skill 只把它們原封不動地搬進 `.feature` 的 tag。
-下游（`bdd-plan`、之後新增的場景）回指的是
-`@example-2.2` 這個 tag，不是那句規則的文字本身；重排編號等於讓那些引用
-**靜默**指向別的東西——不會報錯，只會對錯。
-
-#### 規則歸到四個象限
-
-| | 操作**前** | 操作**後** |
-| --- | --- | --- |
-| **狀態** | 前置（狀態）：什麼情況下不該被允許 | 後置（狀態）：世界變成什麼樣，含副作用 |
-| **輸入輸出** | 前置（參數）：邊界、格式、範圍 | 後置（回應）：回傳的形狀 |
-
-命名帶上象限：`Rule: 前置（狀態）- <主詞>必須<單一條件>`。
-**「單一條件」是重點**——「必須已購買**且**已訂閱」是兩條規則，
-拆開之後失敗的例子才指得出是哪個條件沒滿足。判準：兩半的**錯誤訊息不同**，
-就是兩條規則。
-
-象限是**分類，不是規則的名字**：`前置（參數）` 底下常常有好幾條。
-
-空掉的象限是規格的缺口。MUST NOT: 自己補一條規則填它——那是 CLARIFY 的工作。
-MUST: 在 `.feature` 裡留一行註解說明它是**合理地空**還是**沒問過**，
-並寫進覆蓋表。只寫進覆蓋表不夠——那份報告會隨對話消失，檔案會留著。
-
-每個象限逼你想什麼、覆蓋盤點怎麼寫 → `references/rule-taxonomy.md`。
-
-#### 每條規則要看三種結果
-
-象限分類問的是「有哪幾類規則」，這一條問的是**每條規則被走過哪幾種結果**：
-
-| | 問什麼 |
-| --- | --- |
-| **成功** | 這條規則被滿足時會怎樣 |
-| **邊界** | 剛好在界線上、空的、第一次、最大值 |
-| **失敗** | 這條規則被違反時會怎樣，錯誤訊息是什麼 |
-
-MUST: 每條規則的三種結果，在覆蓋表裡各標**有／無／不適用**，
-`不適用` 要寫理由。
-
-不是每條規則三種都要有。查詢的規則常常沒有失敗（`workout-history` 的分頁規則
-不會失敗），常數規則沒有邊界。但**「沒有」與「沒想到」在 `.feature` 裡長得一樣**——
-這一條就是要把它們分開。
-
-實測值得警惕：一批 55 條規則裡，**只有 5 條同時有成功與失敗的例子**，
-其中一個 `@command` 的 feature 四條規則全部沒有失敗場景。
-那不是那則 story 不會失敗，是沒有人問過它怎麼失敗。
-
-#### 場景名字要能定位
-
-**句型**：`<情境條件>時<預期結果>`（失敗）或 `<操作>後<預期結果>`（成功）。
-規則就寫在上一行，場景再抄一次只是佔位置。
-
-| | |
-| --- | --- |
-| ✓ | `Example: 已購買旅程的用戶再次購買時操作失敗` |
-| ✗ | `Example: 使用折扣券` —— 讀不出結果 |
-| ✗ | `Example: 影片進度必須單調遞增` —— 這是規則，不是案例 |
-
-測試紅了的時候，讀到的是這一行。它要能單獨說明壞了什麼。
-
-### 規則與它自己的例子打架時
-
-把規則套回它的例子，是這一步會做的事。有時候會發現**算不出來**——例子裡的
-數字在它自己那條規則下不可能出現。實測撞過兩次：一條「每小時 30 元、不足一
-小時進位」的規則，例子寫「原本算出 350 元」（只可能是 30 的倍數）；一個跨日
-分段的例子把 22:00–24:00 寫成「1 小時 30 分鐘」。
-
-處置：**規則為準。**
-
-在 Example Mapping 的模型裡，例子是用來**說明**規則的，規則才是規範性的。
-一個跟自己的規則矛盾的例子，是壞掉的說明，不是另一條競爭的規則。所以照規則
-算出來的數字寫場景，不是本 skill 在裁決——是那個模型本來就這樣定義的。
-
-MUST: 在 `.feature` 就地留註解，寫出算式與差異。回報會隨對話消失，檔案會留著，
-而下一個人拿 `.feature` 與原始輸入的數字一對，第一個念頭會是「SPEC 亂編」。
-
-MUST: 同時寫進 `spec.md` 的 `## Scope — In / Out` → 回 CLARIFY 補問，標明來源
-要更正。`.feature` 改了不代表原始輸入就對了——它仍然是錯的，沒有人去更正過。
-
-MUST NOT: 照抄壞掉的數字。那會產出一個**任何正確實作都永遠過不了**的場景，
-而它看起來跟其他場景一模一樣。
-
-MUST NOT: 直接改原始輸入，也不得寫入 `clarify-log.md`——那是 CLARIFY 的產物，
-本 skill 不得寫入。
-
-**判準的界線：** 只有在**例子的錯可以從規則推導出來**時才適用。規則本身含糊、
-兩種讀法都說得通的時候，你無法知道是規則寫錯還是例子寫錯——那時候不要挑，
-跳過那個例子、就地註解、寫進回 CLARIFY 補問。**能推導的是算術錯誤，
-不能推導的是規格衝突，兩者的處置相反。**
-
-### 6. 步驟文法 —— 四種形狀
-
-這一步是本 skill 的核心。每個步驟套下列四種形狀之一：
-
-| # | 形狀 | 位置 | 樣板 |
-| --- | --- | --- | --- |
-| 1 | **播種** | `Background`；只有一個例子要用時放它自己的 `Given` | `系統中有以下<實體>：` ＋ 資料表 |
-| 2 | **前置狀態** | `Given` | `<實體> 的 <屬性> 為 <值>` |
-| 3 | **動作** | `When`，預設一個 | `<行為者> <動作> <目標> <參數>` |
-| 4 | **結果** | `Then` | `操作成功` ／ `操作失敗`，再接斷言——命令接**狀態**，查詢接**結果** |
-
-```gherkin
-Feature: 增加影片進度
-
-  Background:
-    Given 系統中有以下課程：
-      | 課程 ID | 名稱         | 類型     | 獎勵.經驗值 |
-      | 1       | 物件導向基礎 | 影片課程 | 300         |
-    And 系統中有以下用戶：
-      | 名稱  | 等級 | 經驗值 |
-      | Alice | 1    | 0      |
-
-  Rule: 影片進度必須單調遞增
-
-    @rule-2 @example-2.1
-    Example: 進度不可倒退
-      Given 用戶 "Alice" 在課程 1 的進度為 70%，狀態為 "進行中"
-      When 用戶 "Alice" 更新課程 1 的影片進度為 60%
-      Then 操作失敗
-      And 用戶 "Alice" 在課程 1 的進度應為 70%，狀態應為 "進行中"
-```
-
-### 每一條規則
-
-| | 規則 | 為什麼 |
-| --- | --- | --- |
-| `MUST` | 清單查詢用 `應恰好為`／`應依序恰好為`，不用 `應包含` | 弱動詞證明不了「沒有多餘的」，還會逼出負向斷言 |
-| `MUST` | 清單查詢要有**空集合**的例子 | 沒資料時回 404 還是空清單，是兩種實作 |
-| `MUST` | 副作用改到集合時，斷言集合的**完整內容** | 只驗新增的那一項，覆蓋掉舊資料的實作會通過 |
-| `SHOULD` | 兩個參數的**合法組合**是一條 `前置（參數）` 規則 | 各示範一組成立的組合，推不出其他組合會怎樣 |
-| `MUST` | 算出來的預期值，計算規則寫進 `Rule:` 敘述 | 讀規則要能自己算出同一個數字 |
-| `MUST` | 斷言表的每一格是字面值 | `18位數字` 是規格描述不是資料 |
-| `SHOULD` | `Given` 用狀態表達；不變式複雜時才用動作鋪陳 | 直接設狀態可能造出系統到不了的狀態 |
-| `MUST` | 失敗案例要讓失敗原因唯一 | 否則刪掉待驗的規則，測試照樣綠 |
-| `MUST NOT` | 同一個 `Given`＋`When` 不因斷言不同而拆成多個 Example | 「這些欄位同時存在」會沒被驗到 |
-| `MUST` | Example 之間不共享狀態、不依賴順序 | godog 並行跑，順序相依＝間歇性失敗 |
-| `SHOULD` | 命令的失敗案例要斷言狀態沒變；查詢不必 | 擋住「回錯誤但已寫進資料庫」 |
-| `SHOULD` | 一個 `When`；序列產生新行為時才用多個 | 狀態守衛用 `Given`，累積才用序列 |
-| `SHOULD` | 選用參數拆成獨立 `And`，不每種組合各造一句 | 否則 step definition 組合爆炸 |
-| `SHOULD` | `Given` 只寫與預設不同的部分 | 鋪陳預設狀態＝驗自己的佈置 |
-| `SHOULD` | 播種用資料表，不一句一個實體 | 欄位增加時不必改簽章 |
-| `SHOULD` | 一個 Example 三到五步 | 步驟愈多，失敗時要排除的可能愈多 |
-| `SHOULD NOT` | 不把成敗與狀態擠進同一句 | 複合斷言的失敗訊息說不出壞在哪 |
-| `SHOULD NOT` | 不寫按鈕、欄位、API 路徑 | 綁死操作方式，換介面就要重寫 |
-| `SHOULD` | 行為者用名稱、其他實體用 ID；字串加引號、數字不加 | 指涉不一致＝同一件事兩支 step definition |
-| `SHOULD NOT` | 資料表裡不放 JSON 字串 | 失去欄位名，diff 看不出改了哪個值 |
-
-每一條的理由、範例與邊界 → `references/step-grammar.md`。
-套不進四種形狀時先當成設計訊號（通常代表這個 Example 混了兩件事）；
-真的要破例就在檔案裡留一行說明為什麼——沒有理由的例外會擴散。
-
-### 7. 什麼時候用 Scenario Outline
-
-**判準只有一個：這些例子除了資料以外，句子完全一樣嗎？**
-
-一樣 → `Scenario Outline`。不一樣 → 各自獨立的 `Example`，不要硬湊。
-
-一條規則掛很多例子時，多半是在窮舉一張對照表（型別、狀態、單位），那正是
-Outline 的用途。硬把語意不同的例子塞進同一張 Examples 表，會逼出
-`| 課程 | 型別 | 進度 | 預期 | 備註 |` 這種欄位越加越多的表，
-最後沒有人讀得出每一列在測什麼。
-
-```gherkin
-@rule-3 @example-3.1 @example-3.2 @example-3.3
-Scenario Outline: 有效範圍內的進度值可以更新
-  Given 用戶 "Alice" 在課程 1 的進度為 50%，狀態為 "進行中"
-  When 用戶 "Alice" 更新課程 1 的影片進度為 <新進度>%
-  Then 操作成功
-  And 用戶 "Alice" 在課程 1 的進度應為 <新進度>%，狀態應為 "<預期狀態>"
-
-  Examples:
-    | 新進度 | 預期狀態 |
-    | 60     | 進行中   |
-    | 100    | 已完成   |
-```
-
-IMPORTANT: 一個 Outline 涵蓋 Example 3.1 到 3.3 時，**三個 tag 都要掛**，
-否則覆蓋稽核會誤報漏做。
-
-### 8. 寫檔
-
-一則 story 一個 `.feature`，檔名用 feature slug：`video-progress.feature`。
-
-同一個 slug 在 `specs/` 與 `.feature` 之間保持一致——那是這條鏈唯一的接縫，
-換名字就得靠人腦記住對應關係。
-
-### 9. 增修 `specs/domain-model.md`
+### 5. 增修 `specs/domain-model.md`
 
 根層一份，跨 feature 累積。這個 feature 長出來的聚合與不變條件加進去。
 
@@ -505,45 +236,6 @@ domain model 要活得比它久。塞進去等於陪葬。
 判準（哪些該進來）：這條規則**跨 feature 仍然成立**嗎？只在這個 feature 的情境下為真的，
 留在 `spec.md`。
 
-### 10. 稽核，然後才算完成
-
-**這一步跑在最後**——它比對 `spec.md` `## User Stories` 段與寫好的
-`.feature`，兩者都要存在才對得起來。
-
-`spec.md` 的 `## User Stories` 段一次裝下兩件事：FR／AC 的定版內容，與
-這則 story 涵蓋哪些 FR——FR 掛在它的 story 底下，走一遍就同時拿到兩者，
-不再是兩份文件、兩份清單。合起來才拼得出「這個 `.feature` 該有哪些
-`@example` tag」。
-
-```bash
-python3 <skill>/scripts/check_spec.py <專案根>
-```
-
-檢查十二件事：雙向覆蓋比對（漏做／發明）、每個檔恰好一個狀態 tag、
-中文「規則:」誤用、缺口有沒有就地註解、**步驟樣板重用率**、`spec.md` 裡有沒有
-FR 完全沒掛任何 AC（沒有例子，SPEC 就無從寫出場景，只能發明）、`## User Stories`
-底下有沒有 `#### FR-2` 這種 v2 標題形式（對解析器是「不存在」不是「錯」）、
-`### US-<n> · <slug>` 這種 story 標題形式對不對（差一點的標題對解析器也是
-「不存在」）、`#### Q` 與 `**Q-<n>**` 的形式對不對、`#### Q` 有沒有指向
-`## Open Questions` 表裡不存在的題號、`#### Q` 有沒有列狀態不是「待答」的
-題號、`AC-<n>.<m>` 的 `<n>` 對不對得上它所屬的 FR。只讀不寫，退出碼可直接進 CI。
-
-**發明比漏做更該優先看。** 漏一條會被覆蓋數字抓到；憑空多一條看起來很完整，
-沒有人有理由懷疑它。
-
-**樣板重用率沒有及格線，但有兩個實測參考點**：散文式寫法是 76 個場景／208 個
-樣板，封閉文法是 7 個場景／10 個樣板（見 `examples/anti-patterns.md` 的對照表）。
-只出現一次的樣板數逼近場景數，代表文法沒有真的套上。
-
-MUST: 產出覆蓋表，缺的要列出來、寫出為什麼，不要只說「完成」。
-MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註解**——回報會隨對話
-消失，檔案會留著。半年後有人拿 `spec.md` 和 `.feature` 對一次，看到沒有解釋的洞，
-只有兩條路：當成漏做去補上（於是把還在討論的東西變成驗收條件），或花半小時考古。
-
-格式照抄 `references/coverage-report.md`。
-
----
-
 ## 產物格式
 
 ```
@@ -551,85 +243,38 @@ specs/<date>-<feature>/
 └── spec.md           SPEC  ★ 十三節，完整自足
 
 （clarify-log.md 是 CLARIFY 的產物，本 skill 只讀不寫）
+（.feature 是 bdd-formulation 的產物，本 skill 不產）
 ```
 
-本步驟產四份東西，格式各有一份參考檔：
+本步驟產三份東西，格式各有一份參考檔：
 
 | 產物 | 格式 |
 | --- | --- |
-| `.feature` | 本節（關鍵字、狀態 tag、型別 tag、方言陷阱） |
 | `specs/<date>-<feature>/spec.md` | `references/spec-format.md` |
 | `specs/domain-model.md`（增修） | `references/spec-format.md` 末節 |
 | `docs/CONTEXT.md`（建立或追加） | 「詞彙表」一節 |
 
-規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
-`@rule-<n>`／`@example-<n>.<m>` 回指它們。
-
-**關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
-
-完整骨架見步驟 6 的範例。`Feature:` 底下那段敘述寫的是這則 story 的
-「作為⋯我要⋯以便⋯」——角色抄 `spec.md` 的 `## Personas`，能力與價值從這則
-story 涵蓋的那幾條 FR 濃縮而來（`## User Stories` 裡的切法說明就是濃縮的
-起點）。它是這份規格存在的理由，而讀 `.feature` 的人不會同時開著 `spec.md`。
-
-### 狀態 tag —— 每個檔恰好一個
-
-MUST: 每個 `.feature` 在 `Feature:` 上掛**恰好一個**狀態 tag。本 skill 只寫兩個：
-
-| story 的就緒判定 | 寫入 |
-| --- | --- |
-| 已就緒 | `@ready` |
-| 未就緒（使用者仍要求先寫） | `@draft` ＋ 一段說明它建立在哪些未定的答案上 |
-
-完整詞彙表（含 `@wip` `@review` `@done`，由後面的 skill 寫入）在
-`references/state-tags.md`。**不要在這裡抄一份**——同一張表存兩處就會漂移。
-
-### 型別 tag —— `@command` 或 `@query`
-
-MUST: 狀態 tag 旁邊再掛一個型別 tag：`@ready @command` 或 `@ready @query`。
-
-它不只是標籤，**它決定哪些象限該有東西**：命令的重心在前置（狀態／參數）與後置
-（狀態），查詢在前置（狀態）與後置（回應）。`@query` 卻長出「後置（狀態）」規則，
-代表這個查詢有副作用——那多半是設計問題，不是規格問題。
-
-同時是命令又是查詢的 feature 是兩則 story → `story-splitting`。
-
-必填而不是「有問題才標」，是因為**少標一個要看得出來**。負向旗標分不出「不需要
-標」與「忘了標」——第一次真實產出正是這樣失守的：兩則未就緒的 `.feature` 沒有
-任何標記，跟已就緒的長得一模一樣。
-
-`@draft` 的說明段要具體到讀者能自己判斷「這份能不能信」：未就緒的成因是什麼、
-恢復要跑哪個 skill。只寫「未就緒」等於把問題換個地方藏。
-
-### 方言陷阱 —— 不要用中文的「規則:」
-
-MUST NOT: 寫 `規則:` 當關鍵字。
-
-zh-TW 方言**沒有**「規則」這個字（`zh-CN` 有「规则」、`ja` 有「ルール」，
-只有 zh-TW 缺）。實測 `gherkin/go/v42`：`規則:` 產生 **0 個 Rule 節點**，
-整行被吞進 `Feature.Description` 當散文——而且**不報錯**，測試照樣 exit 0，
-只是規則與場景的從屬關係安靜消失，而那正是這份規格最主要的結構。
-
-這也是關鍵字一律用英文的理由：不必逐個記哪些字有翻譯。
-
----
+規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`AC-<n>.<m>`。`bdd-formulation` 寫的
+`@rule-<n>`／`@example-<n>.<m>` 回指它們——所以**這批編號一旦寫定就不准重排**。
+下游回指的是 tag，不是那句規則的文字本身；重排等於讓那些引用**靜默**指向別的
+東西，不會報錯，只會對錯。
 
 ## 產物隔離
 
-MUST: 只新增本節列出的四種產物，**不修改專案既有的任何檔案**（含既有的
-`.feature`、`docs/CONTEXT.md` 既有段落）。`.feature` 的位置由測試框架決定
-——有 `.feature` 就跟隨，沒有就用專案根的 `features/`。理由與例外 →
-`references/artifact-location.md`。
+MUST: 只新增本節列出的三種產物，**不修改專案既有的任何檔案**（含既有的
+`.feature`、`docs/CONTEXT.md` 既有段落）。`.feature` 完全不碰——本 skill 不產它，
+也不改它。
 
 ## 完成後
 
-告訴對方五件事：
+告訴對方四件事：
 
 1. 切了哪些 story、為什麼這樣切（`## User Stories` 的切法說明）
-2. 產了哪些 `.feature`、各幾個場景、**幾個不重複步驟樣板**
-3. **覆蓋表**——哪些例子還沒有場景，為什麼
-4. **seam 是哪一層**、`domain-model.md` 這一批新增了哪些聚合與不變條件、`docs/CONTEXT.md` 追加了哪些詞彙
-5. `spec.md` 的 `## Scope — In / Out`「回 CLARIFY 補問」有幾條；缺口多 → 回 `clarify-loop`，缺口少 → `bdd-plan` 切票
+2. **seam 是哪一層**、`domain-model.md` 這一批新增了哪些聚合與不變條件、
+   `docs/CONTEXT.md` 追加了哪些詞彙
+3. `## Open Questions` 還剩幾題待答、`## Scope — In / Out` 的「回 CLARIFY 補問」
+   有幾條
+4. `## Document Overview` 的 `狀態` 這一步寫成什麼（`澄清中` 還是 `待對焦`）
 
-這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
-綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。
+缺口多 → 回 `clarify-loop` 收斂。缺口少 → 跑 `bdd-formulation` 產 `.feature`，
+拿它跟 PM 對答案。
