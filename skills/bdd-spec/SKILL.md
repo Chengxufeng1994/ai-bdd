@@ -187,7 +187,7 @@ MUST: `結束方式` 還不是 `收斂` 的 `clarify-log.md` **整份**跳過，
 
 | 讀什麼 | 為了什麼 |
 | --- | --- |
-| `specs/<date>-<feature>/clarify-log.md` | **規則與例子的綜合來源**——「已答」表的答案是原始素材，`歸屬` 欄說這句話該進 `spec.md` 哪一節，不必從問題文字反推；「待答」「n/a」兩張表劃出這一步碰不得的界線 |
+| `specs/<date>-<feature>/clarify-log.md` | **規則與例子的綜合來源**——「已答」表的答案是原始素材，`歸屬` 欄說這句話該進 `spec.md` 哪一節，不必從問題文字反推；「待答」「n/a」兩張表劃出這一步碰不得的界線；`## 核心關係人` 表是 `## Document Overview` 那一節**唯一**的來源 |
 | `specs/<date>-<feature>/input.md` | **`PRD §x` 這個來源標記唯一的依據**——`clarify-log.md` 只記問答，不記哪一句是原文照抄；`input.md` 是需求方帶來的原始輸入的逐字副本，沒有它就分不出「這句抄自需求方原文」與「這句是我們自己補的」 |
 | 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
 
@@ -237,6 +237,17 @@ REVIEW 把「沒人同意過的 seam」當成 finding。這個綁定是**間接�
 
 一個 feature 一份，路徑 `specs/<date>-<feature>/spec.md`。骨架照抄
 `references/spec-format.md`。
+
+MUST: `## Document Overview` 的 `核心關係人` 表**照抄** `clarify-log.md` 的
+`## 核心關係人`，三欄原樣搬過來，不增列也不改寫 `決策權`。誰能決定什麼是問出來的，
+不是看得出來的——log 裡沒有那個人，這裡就不該有那一列。log 缺這張表時**不要自己
+補三列看起來合理的**，寫一行說明它缺了、回 `bdd-discovery` 登記；`## Open Questions`
+每一題的「該問誰」都要指向這張表裡的人，兩邊一起編的話那條規則會輕鬆通過而毫無意義。
+
+MUST: `狀態` 的初值由這一步寫。建檔時還有『待答』的列就寫 `澄清中`，一列都不剩
+就寫 `待對焦`。**這個檔是本 skill 建的，所以初值只能由本 skill 寫**——
+`bdd-discovery` 明文不得寫 `spec.md`。之後 `已對焦` 由 `example-mapping` 依使用者
+的答覆改寫，本 skill 不碰。
 
 MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東西。**
 推不出來的寫進 `## Scope — In / Out` 的「回 CLARIFY 補問」，不要順手決定掉。
