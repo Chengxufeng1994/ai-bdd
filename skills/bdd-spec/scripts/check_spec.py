@@ -55,13 +55,10 @@ def find_features(root: Path) -> Path:
 
 
 def frs_in_prd(text: str) -> dict[str, set[str]]:
-    """prd.md 的 `## User Stories` 段：FR 編號 -> AC 編號集合。
+    """spec.md 的 `## User Stories` 段：FR 編號 -> AC 編號集合。
 
     v3 把 FR 從標題改成 `#### FR` 分組底下的粗體項目，AC 則是掛在它底下的
     清單項。理由是 AC 還要再往下掛 Given/When/Then 三行，用標題會走到 H6。
-
-    來源是 prd.md 而不是 spec.md：例子的定版編號誕生在 CLARIFY，
-    spec.md 只記哪些 FR 湊成一則 story，不重述例子。
 
     FR 編號全域唯一，不是每則 story 各自從 1 起算——否則 AC-1.1 會指向
     兩個地方，`.feature` 的 @example-1.1 就失去意義。
@@ -363,7 +360,7 @@ def check(root: Path) -> int:
             problems += 1
             continue
 
-        # 這裡原本有一個「spec.md 點名了 prd.md 裡沒有的 FR」的檢查。併檔之後
+        # 這裡原本有一個「spec.md 點名了 PRD 裡沒有的 FR」的檢查。併檔之後
         # 它恆真：slug 與 FR 走的是同一節、同一次遍歷，一份文件不可能跟自己
         # 不一致。它原本要防的「FR 靜默缺席」由 v2_forms_in_prd() 接手——那是
         # 正向檢查，主動找不該存在的標題形式，而不是等對帳對不上。

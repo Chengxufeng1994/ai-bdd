@@ -52,7 +52,7 @@ def _field(label: str, width: int) -> str:
 def parse_open_questions(
     text: str,
 ) -> tuple[bool, list[dict[str, str]], list[str]]:
-    """prd.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
+    """spec.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
 
     只讀那一節的表格列，不掃整份檔案：`## Document Overview` 底下也有表格，
     而**版本修訂歷史正好也是五欄**，跟下面用來擋壞列的欄數判斷相同——對整份

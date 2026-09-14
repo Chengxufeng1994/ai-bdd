@@ -66,7 +66,7 @@
 | `已凍結` | SPEC 已經消費過它，之後任何改動都要開新版本 |
 
 **已知弱點：`澄清中` → SPEC 不得開始這道閘門沒有東西在強制它。**
-`check_spec.py` 從不讀狀態欄，一份還停在 `澄清中` 的 `prd.md` 照樣能通過全部
+`check_spec.py` 從不讀狀態欄，一份還停在 `澄清中` 的 `spec.md` 照樣能通過全部
 檢查。這一欄現在是給人看的宣告，不是機械閘門。
 
 MUST NOT: 狀態欄寫題數。「9 題已答／10 題待答」是 `scripts/status.py` **算出來的**，
@@ -252,7 +252,7 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 ```
 
 MUST: 這個標記不是裝飾。少了它，「這一行是真的逼問過 PRD 才寫下來的」跟
-「這一行只是把 PRD 換句話抄一遍」在 `prd.md` 上長得一模一樣——完整範例見
+「這一行只是把 PRD 換句話抄一遍」在 `spec.md` 上長得一模一樣——完整範例見
 [`../examples/minimal-spec.md`](../examples/minimal-spec.md)：整份文件的來源欄
 全是 `PRD §x` 時，代表 CLARIFY 沒有真的發生。
 
@@ -306,7 +306,7 @@ NFR 的編號同樣全域唯一，而且跨越它的兩個家：story 專屬的 
 
 ### 接縫：兩份產物各用母語
 
-| `prd.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
+| `spec.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
 | --- | --- |
 | `FR-<n>` | `@rule-<n>` |
 | `AC-<n>.<m>` | `@example-<n>.<m>` |
@@ -367,7 +367,7 @@ criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**；在主流 PR
 是那串 Given/When/Then。這裡用 PRD 的。四色卡與 PRD 術語的完整對照 →
 `example-mapping` skill。
 
-**已知弱點**：G/W/T 與 `.feature` 的 `Scenario` 有字面重複。`prd.md` 的是**談定的**，
+**已知弱點**：G/W/T 與 `.feature` 的 `Scenario` 有字面重複。`spec.md` 的是**談定的**，
 `.feature` 的是**可執行的**（還要套封閉步驟文法與 `Rule:` 結構）。沒有東西檢查兩者
 一致——`check_spec.py` 只檢查 tag 對得上編號。
 
@@ -419,8 +419,8 @@ MUST NOT: 寫具體檔案路徑與程式碼片段——它們過期得比什麼�
 例外：prototype 產出的、比散文更精確地編碼了某個決定的片段（狀態機、schema、
 型別形狀），可以內嵌並註明來自 prototype，只留決定的部分。
 
-MUST NOT: 在這裡做新決定。推不出來的寫進 `## Out of Scope` 的「回 CLARIFY」欄，
-不要順手決定掉——那正是規格失效的方式。
+MUST NOT: 在這裡做新決定。推不出來的寫進 `## Scope — In / Out` 的
+「回 CLARIFY 補問」，不要順手決定掉——那正是規格失效的方式。
 
 ## Testing Decisions
 
@@ -455,8 +455,8 @@ seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人�
 ## Risks
 
 規格沒說、但實作一定會撞到的。每一條指出從哪條規則長出來。
-跟 Out of Scope 的缺口不同：缺口是**還不知道要做什麼**，風險是**知道要做什麼
-但做對很難**。
+跟 `## Scope — In / Out`「回 CLARIFY 補問」的缺口不同：缺口是**還不知道要做
+什麼**，風險是**知道要做什麼但做對很難**。
 
 | 風險 | 從哪條規則長出來 | 影響什麼 |
 | --- | --- | --- |
@@ -541,29 +541,30 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 
 ## 角色與詞義：兩條界線
 
-**角色留在 `prd.md` 的 `## Personas`，不進 `docs/CONTEXT.md`。** 角色是這個
+**角色留在 `spec.md` 的 `## Personas`，不進 `docs/CONTEXT.md`。** 角色是這個
 feature 流程裡誰在做事，換一個 feature 就換一批；詞彙不是。角色若日後真的
 需要跨 feature 累積，套 rule of three 再建，不預先做。
 
 **詞義的決策住 `## Open Questions`，不另設 glossary 一節。** CLARIFY 發現
-「訪客」有歧義時，那就是一題——答案進表格與小節，跟其他問題一視同仁。SPEC
-之後從已答的問題把定義抬進 `docs/CONTEXT.md`；`prd.md` 沒有詞彙表，但詞義的
-來源與拍板的時間點都查得到。
+「訪客」有歧義時，那就是一題——答案進 `clarify-log.md` 的表格與 `spec.md`
+的小節，跟其他問題一視同仁。SPEC 之後從已答的問題把定義抬進
+`docs/CONTEXT.md`；`spec.md` 沒有詞彙表，但詞義的來源與拍板的時間點都查得到。
 
-## 為什麼規則不寫在這裡
+## 為什麼規則寫在這裡，不是回填 `clarify-log.md`
 
-`check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`prd.md` 的
-FR／AC 清單，與 `.feature` 的可執行場景。`spec.md` 的 `## Stories` 只多插
-一條——哪些 FR 歸哪則 story，決定該去哪個 `.feature` 找對應的例子；它不重述
-FR 或 AC 本身。`prd.md` 有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature`
-指向 `prd.md` 沒有的例子 ＝ 憑空發明。
+`check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`spec.md`
+`## User Stories` 段的 FR／AC 清單，與 `.feature` 的可執行場景。`spec.md`
+有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature` 指向 `spec.md` 沒有的
+例子 ＝ 憑空發明。
 
-`spec.md` 若連 FR 或 AC 的內容也抄一份，就變成三份表述——稽核有兩個可能
-來源，而它們遲早不一樣。「發明」是最沒有人會懷疑的那種錯：漏一條會被數字
-抓到，多一條看起來只是很完整。
+FR／AC 的定版編號與內容**在這裡第一次被寫下來**，不是抄自 `clarify-log.md`
+——那裡只有問答，形狀跟 FR／AC 不一樣，硬要抄一份等於自己造第三份表述，
+稽核就有兩個可能的來源，而它們遲早不一樣。「發明」是最沒有人會懷疑的那種
+錯：漏一條會被數字抓到，多一條看起來只是很完整。
 
-規則的家在 CLARIFY，因為那是它們被決定的地方。`spec.md` 記的是**規則決定
-之後**的事：切出哪些 story、怎麼驗、動哪些模組、有什麼風險、什麼不做。
+規則的家在這一步，因為這是它們**第一次被寫成規則**的地方——`clarify-log.md`
+記的是規則決定之前的事：問了什麼、答了什麼。`spec.md` 記的是規則寫定
+**之後**的事：切出哪些 story、怎麼驗、動哪些模組、有什麼風險、什麼不做。
 
 ## 為什麼一個 feature 一份，不是一則 story 一份
 
