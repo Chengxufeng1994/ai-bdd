@@ -16,7 +16,8 @@ description: >
 # FORMULATION — 把 `spec.md` 翻成可執行的規格
 
 一份定案的 `spec.md` 進來，出去的是 `.feature`：**FR 變成 `Rule:` 區塊、
-AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加一張覆蓋表。
+AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋表也要產，
+但它是回報給人的，不是落地的檔案——缺口同時要就地註解進 `.feature`。
 
 不訪談。不發明新的例子。不寫 step definition。不決定情境跑在哪一層——seam 在
 `bdd-spec` 就決定完了，寫在 `spec.md` 裡。
@@ -35,7 +36,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加
 - `spec.md` 還不存在、或還有沒答完的問題 → 回 `bdd-spec`（更上游是 `bdd-discovery`）
 - 要切 story、決定 seam、寫 `spec.md` 或 `docs/CONTEXT.md` → 那是 `bdd-spec` 的工作
 - 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
-- 要決定情境跑在哪一層測試、實作順序、切票 → 改用 `bdd-plan`
+- 要決定實作順序、切票 → 改用 `bdd-plan`；情境跑在哪一層測試是 seam，回 `bdd-spec`
 - 產出是 `.feature`，**不是** `spec.md`、`openapi.yaml`、migration 或任何可執行的檔案
 
 ## 參考檔案
@@ -67,7 +68,7 @@ NEVER: `spec.md` 不存在時，憑需求描述直接寫 `.feature`。那會產�
 
 | | 場景 | 不重複步驟樣板 | 只出現一次的 |
 | --- | --- | --- | --- |
-| 散文式（本 skill 的舊版產出） | 76 | **208** | 172 |
+| 散文式（封閉文法之前，`bdd-spec` 的產出） | 76 | **208** | 172 |
 | 封閉文法（`examples/1-video-progress.md`） | 7 | **10** | 3 |
 
 172 支只會被呼叫一次的 step definition——**step def 比場景還多**，因為每個場景都把
@@ -162,8 +163,8 @@ Example: 進度回退時操作失敗
 `@rule-2` 讓你一次跑完某條規則的所有場景（實測：`--tags @rule-2` 會選到該規則
 底下全部場景，含 Scenario Outline 展開的每一列）。
 
-MUST NOT: 事後重排已經寫進 `spec.md` 的 FR 與 AC 編號。**這批編號在這一步
-第一次誕生**——寫定之後，本 skill 只把它們原封不動地搬進 `.feature` 的 tag。
+MUST NOT: 事後重排已經寫進 `spec.md` 的 FR 與 AC 編號。**這批編號在 `bdd-spec`
+誕生**——本 skill 只把它們原封不動地搬進 `.feature` 的 tag。
 下游（`bdd-plan`、之後新增的場景）回指的是
 `@example-2.2` 這個 tag，不是那句規則的文字本身；重排編號等於讓那些引用
 **靜默**指向別的東西——不會報錯，只會對錯。
@@ -431,7 +432,7 @@ MUST: 狀態 tag 旁邊再掛一個型別 tag：`@ready @command` 或 `@ready @q
 （狀態），查詢在前置（狀態）與後置（回應）。`@query` 卻長出「後置（狀態）」規則，
 代表這個查詢有副作用——那多半是設計問題，不是規格問題。
 
-同時是命令又是查詢的 feature 是兩則 story → `story-splitting`。
+同時是命令又是查詢的 feature 是兩則 story → 回 `bdd-spec` 重切（手法見 `story-splitting`）。
 
 必填而不是「有問題才標」，是因為**少標一個要看得出來**。負向旗標分不出「不需要
 標」與「忘了標」——第一次真實產出正是這樣失守的：兩則未就緒的 `.feature` 沒有
@@ -466,8 +467,8 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 1. 產了哪些 `.feature`、各幾個場景、**幾個不重複步驟樣板**
 2. **覆蓋表**——哪些例子還沒有場景，為什麼
 3. 哪些象限是空的，空得合不合理
-4. `spec.md` 有沒有需要更正的地方（規則與例子打架、缺了角色）——本 skill 不改它，
-   要回 `bdd-spec`
+4. `spec.md` 有沒有需要更正的地方（規則與例子打架、`check_spec.py` 抓到的
+   FR 沒掛任何 AC）——本 skill 不改它，要回 `bdd-spec`
 
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
 綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。

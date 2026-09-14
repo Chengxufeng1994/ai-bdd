@@ -31,7 +31,7 @@ description: >
 
 - **要把 FR 與 AC 寫成 `.feature` → 改用 `bdd-formulation`**
 - 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
-- 要決定情境跑在哪一層測試、實作順序 → 改用 `bdd-plan`
+- 要決定實作順序 → 改用 `bdd-plan`（情境跑在哪一層測試是 seam，本 skill 步驟 3 決定）
 - 例子還不夠、還有紅卡 → 回 `bdd-discovery`
 - 產出是 `specs/<date>-<feature>/spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `.feature`、`openapi.yaml`、migration 或任何可執行的檔案
 - 要把 `spec.md` 拆成可執行的票 → 改用 `bdd-plan`
@@ -123,7 +123,7 @@ MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺
 的「待答」表裡還有東西時，那些對應的規則就寫不出來，寫進 `## Scope — In / Out`
 的「回 CLARIFY 補問」，不要順手決定掉。
 
-NEVER: `clarify-log.md` 不存在時，憑需求描述直接寫 `.feature`。那會產出一份
+NEVER: `clarify-log.md` 不存在時，憑需求描述直接寫 `spec.md`。那會產出一份
 沒有人同意過的規格，而它看起來跟真的一模一樣。沒有 `clarify-log.md` 就先跑
 `bdd-discovery`。
 
@@ -175,8 +175,8 @@ MUST NOT: 把 `clarify-log.md`「待答」表裡的列當成已經有答案。�
 看起來已完成的規格，之後沒有人會回頭質疑它。**只有「已答」表可以用**——
 這也是「詞彙表」一節「只轉錄，不裁決」的同一條界線。
 
-角色要雙向對得上：`前置（狀態）` 出現 `spec.md` `## Personas` 沒有的角色 →
-CLARIFY 漏了一個；`## Personas` 有但沒有任何規則提到 → 那個角色是憑空的。
+角色要雙向對得上：FR 出現 `spec.md` `## Personas` 沒有的角色 →
+CLARIFY 漏了一個；`## Personas` 有但沒有任何 FR 提到 → 那個角色是憑空的。
 兩種都寫進 `spec.md` 的 `## Scope — In / Out`「回 CLARIFY 補問」。
 
 ### 3. 決定 seam —— 驗收測試打在哪一層
