@@ -235,7 +235,22 @@ Expected：行數大於 1。
 
 | 來源 | 去處 |
 | --- | --- |
-| `prd-format.md` 的 `## Document Overview 的三個部分`、`## Personas：在三欄上加兩欄`、`## User Stories：三個分組…`、`## 編號規則…`、`## 用 EARS 寫規則`、`## AC 就是綠卡`、`## Non-Functional Requirements 與 Constraints：怎麼分邊`、`## Open Questions：表是索引…`、`## 角色與詞義：兩條界線`、`## 來源標記：三選一` | 整段搬進 `spec-format.md`，順序照上表 |
+| `prd-format.md` 的**每一個 `## ` 小節，除了下面兩個例外** | 整段搬進 `spec-format.md`，順序照上表 |
+
+**用補集而不是列舉。** `prd-format.md` 有十五個 H2，逐一列舉會漏——這個 repo 已經
+連續五次栽在「我列到的地方防住了，缺陷長在我沒列到的地方」。所以規則是：**全部搬，
+除了這兩個**：
+
+| 不搬的 | 為什麼 |
+| --- | --- |
+| `## 章節順序` | 被上面那張新的十三節表取代 |
+| `## PRD 的 story 分組不是交付切片` | 刪除，見下方說明 |
+
+搬完之後跑 `grep -c "^## " skills/bdd-spec/references/spec-format.md` 對一下數量：
+應該是 prd-format.md 的 15 − 2 ＝ 13，加上 spec-format.md 原有保留的 6 個
+（Implementation Decisions／Testing Decisions／Risks／為什麼規則不寫在這裡／
+為什麼一個 feature 一份／domain-model.md 的骨架）＋ 新的章節順序表那一節。
+**數字對不上就是漏搬或多搬了。**
 | `spec-format.md` 原有的 `## Implementation Decisions`、`## Testing Decisions`、`## Risks`、`## 為什麼規則不寫在這裡`、`## 為什麼一個 feature 一份…`、`## domain-model.md 的骨架`及其子節 | **原位保留，內容不動** |
 | `spec-format.md` 原有的 `## Problem Statement`、`## Solution` | 刪除——由 `## Background`／`## Goal` 取代 |
 | `spec-format.md` 原有的 `## Stories`、`## Acceptance Criteria` | 刪除——併進 `## User Stories` |
@@ -263,6 +278,19 @@ Expected：行數大於 1。
 回 CLARIFY 補問：
 - <推不出來、需要回頭問的缺口> —— 影響什麼定不下來
 ```
+
+**刪掉 `prd-format.md` 之前，先把指向它的引用改掉。** Task 1 把
+`bdd-discovery/SKILL.md` 的六處與 `persona-definition.md` 的兩處指向了
+`prd-format.md`；這一步刪檔，那八處會變成斷鏈，而 Task 3 才會重寫 SKILL.md。
+
+```bash
+grep -rn "prd-format" skills/
+```
+
+全部改成 `spec-format.md`（`bdd-discovery/SKILL.md` 裡的寫成
+`../bdd-spec/references/spec-format.md`；`persona-definition.md` 與它同目錄，
+寫成 `spec-format.md`）。**只改路徑，句子的意思不動**——那些句子講的東西在新檔案裡
+仍然存在，只是換了家。
 
 - [ ] **Step 3: `## User Stories` 的標題加 slug**
 

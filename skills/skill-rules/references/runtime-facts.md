@@ -35,7 +35,7 @@ $ find ~/.claude/plugins/cache -name SKILL.md | ... | sort | uniq -c
 `pr-review-toolkit:code-reviewer`。
 
 【推論】分組若不寫進名字，在同一個 plugin 內就完全看不見。同組 skill 用共同
-前綴（`bdd-clarify`、`bdd-spec`），字母排序會把它們聚在一起——那是扁平命名空間
+前綴（`bdd-discovery`、`bdd-spec`），字母排序會把它們聚在一起——那是扁平命名空間
 裡唯一還能保住分組的機制。跨 plugin 的唯一性由 plugin 名負責，不需要自己處理。
 
 > 修訂記錄：本節初版寫成「名稱在全域唯一」。那是從「inventory 顯示扁平名字」

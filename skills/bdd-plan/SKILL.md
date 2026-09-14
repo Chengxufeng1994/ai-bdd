@@ -25,7 +25,7 @@ tracer-bullet 票、每張穿過所有層、彼此怎麼 block、先做哪一張
 
 ## Skill Boundaries
 
-- 還沒有 `spec.md` → 先跑 `bdd-spec`；規則還沒定案 → 回 `bdd-clarify`
+- 還沒有 `spec.md` → 先跑 `bdd-spec`；規則還沒定案 → 回 `bdd-discovery`
 - **要決定 API、domain 型別、schema、seam → 那是 `bdd-spec` 的工作**，不是這裡
 - 整批塞得進一個 context window → 不需要這一步，直接 `bdd-implement`
 - 要實際寫 step definition 與產品程式碼 → `bdd-implement`
@@ -60,7 +60,7 @@ MUST NOT: 在這一步決定任何 API、型別、欄位、資料表或 seam。
 先切出**最薄的完整路徑**當第一張票：碰到每一層、邏輯最少。它證明的是接線，
 不是行為。專案已經有骨架就跳過。
 
-其餘依 `prd.md` 的 FR 切，一張票一組相關的 `@example-N.M`。
+其餘依 `spec.md` 的 FR 切，一張票一組相關的 `@example-N.M`。
 每張票問一次「做完之後我能 demo 什麼」，答不出來就是切錯了。
 
 三條規則與 wide refactor 的例外 → `references/plan-format.md`。

@@ -41,7 +41,7 @@ cp -r benchmark/skeleton/go runs/go-personal-memo
 
 `runs/` 是 gitignored，所以新 clone 上不存在——`mkdir -p` 不能省。
 
-然後把該 case 的輸入檔**整份**交給 `bdd-clarify`：
+然後把該 case 的輸入檔**整份**交給 `bdd-discovery`：
 
 ```bash
 cat benchmark/cases/personal-memo/input-brief.md
@@ -57,8 +57,9 @@ cat benchmark/cases/personal-memo/input-brief.md
 
 ```
 runs/<lang>-<case>/
-├── specs/<date>-<feature>/prd.md    CLARIFY 的產物
-└── features/                        SPEC 產出的 .feature
+├── specs/<date>-<feature>/clarify-log.md   CLARIFY 的產物
+├── specs/<date>-<feature>/spec.md          SPEC 的產物
+└── features/                               SPEC 產出的 .feature
 ```
 
 ## 兩條規則

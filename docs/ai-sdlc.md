@@ -35,25 +35,26 @@ CLARIFY  →  SPEC  →  PLAN  →  IMPLEMENT  →  VERIFY  →  REVIEW
 └──── BDD ─────┘      ✗       └─ BDD ─┘       ✗          ✗
 ```
 
-**帶 BDD 的那三格不等於 BDD。** CLARIFY 的前半在對齊業務目標、產出一份對焦
-用的 PRD——這件事本身不是 Discovery，卻是 Discovery（把需求逼成規則與例子）
-真正要用的輸入；SPEC 除了 `.feature`，還要切 story、把技術決定記下來，一起
-構成讓整份東西成為 live document 的其餘產物。只有 IMPLEMENT 跟 Automation
-重合，因為 Automation 的產物本來就是程式碼而不是膠水層（見
-[bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是夾在中間的洞。**
+**帶 BDD 的那三格不等於 BDD。** CLARIFY 的前半在對齊業務目標、定住範圍邊界
+——這件事本身不是 Discovery，卻是 Discovery（把需求逼成規則與例子）真正要用
+的輸入；SPEC 除了 `.feature`，還要把那些問答綜合成 `spec.md`、切 story、把
+技術決定記下來，一起構成讓整份東西成為 live document 的其餘產物。只有
+IMPLEMENT 跟 Automation 重合，因為 Automation 的產物本來就是程式碼而不是
+膠水層（見 [bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是夾在中間
+的洞。**
 
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
-| **CLARIFY** | 兩件事：**對齊業務目標、產出一份對焦用的 PRD**（不是 BDD）＋把需求逼成規則與例子（BDD 的 Discovery）。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | 三件事：切 story（不是 BDD）＋把例子寫成可執行規格（BDD 的 Formulation）＋把技術決定記下來（不是 BDD——它讓 `.feature` 以外的產物一起構成 live document） | Formulation ＋ 額外 |
+| **CLARIFY** | 兩件事：**對齊業務目標、定住範圍邊界**（不是 BDD）＋把需求逼成規則與例子（BDD 的 Discovery）。**只問問題，答案記進 `clarify-log.md`，一個字的規格都不寫。** 需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
+| **SPEC** | 四件事：把問答綜合成一份自足的 `spec.md`（不是 BDD——CLARIFY 只留問答記錄，規格是這一步第一次寫下來的）＋切 story（不是 BDD）＋把例子寫成可執行規格（BDD 的 Formulation）＋把技術決定記下來（不是 BDD——它讓 `.feature` 以外的產物一起構成 live document） | Formulation ＋ 額外 |
 | **PLAN** | 把工作切到一個 fresh session 做得完，並宣告誰卡誰 | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來 | Automation |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | **無**——治理不在三個實踐裡 |
 
-**五塊不屬於 BDD 的東西（PLAN、REVIEW、CLARIFY 的業務對齊那半、SPEC 的切
-story、SPEC 的技術決定那半）都不是補丁。** 它們回答的是「協作對象會失憶」帶來
-的問題，而 BDD 從來沒有那個問題要解。
+**六塊不屬於 BDD 的東西（PLAN、REVIEW、CLARIFY 的業務對齊那半、SPEC 的綜合
+成文、SPEC 的切 story、SPEC 的技術決定那半）都不是補丁。** 它們回答的是
+「協作對象會失憶」帶來的問題，而 BDD 從來沒有那個問題要解。
 
 ---
 
@@ -95,7 +96,7 @@ PLAN 要獨立的理由不同：它是唯一一個**不需要領域知識**的�
 
 | 實踐 | agent 能做 | agent 不能做 |
 | --- | --- | --- |
-| **Discovery** | 扮演提問者，針對每條規則追問邊界、例外、空值、權限、併發。把「使用者可以上傳檔案」逼成「10MB 剛好／10MB+1 byte／0 byte／副檔名偽裝」。手法是 Example Mapping，四色卡怎麼對應 `prd.md`、四條診斷在這裡各自代表什麼 → `example-mapping` skill | **取代三方對話。** 它沒有業務脈絡的最終裁量權——它問得出問題，答不了 |
+| **Discovery** | 扮演提問者，針對每條規則追問邊界、例外、空值、權限、併發。把「使用者可以上傳檔案」逼成「10MB 剛好／10MB+1 byte／0 byte／副檔名偽裝」。手法是 Example Mapping，四色卡怎麼對應 `spec.md`、四條診斷在這裡各自代表什麼 → `example-mapping` skill | **取代三方對話。** 它沒有業務脈絡的最終裁量權——它問得出問題，答不了 |
 | **Formulation** | 草擬 Gherkin、稽核是否命令式化、統一詞彙、找出重複情境 | **確認共識。** 定義裡的 check for agreement 需要一個真的會反對的人 |
 | **Automation** | 產 step 骨架、優先比對既有 step 避免重複、指出該拆的 conjunction step | — |
 
