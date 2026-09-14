@@ -60,11 +60,16 @@
 『待答』表的 `該問誰` 只能指向這張表裡的人。指到表外＝那個人還沒被登記成關係人，
 補一列，不要當成筆誤略過。
 
-`歸屬` 標這個答案要進 `spec.md` 的哪一節：`Background`／`Goal`／`Scope`／
-`Personas`／`User Stories`／`NFR`／`Assumptions`／`Success Metrics`，或 `—`
-（沒有單一節能歸屬時）。這是問題的分類，跟 `面向` 一樣問的時候就定案，不是
-規格決定——沒有這一欄，`bdd-spec` 只能從問題文字猜這句話該塞進哪一節，猜測
-出來的內容正是這一步最不該有的東西。
+`歸屬` 標這個答案要進 `spec.md` 的哪一節，值域照 `spec.md` 的章節順序：
+`Background`／`Goal`／`Scope`／`Personas`／`User Stories`／`NFR`／
+`Assumptions`／`Success Metrics`／`Implementation Decisions`／
+`Testing Decisions`／`Risks`，或 `—`（沒有單一節能歸屬時）。這是問題的分類，
+跟 `面向` 一樣問的時候就定案，不是規格決定——沒有這一欄，`bdd-spec` 只能從
+問題文字猜這句話該塞進哪一節，猜測出來的內容正是這一步最不該有的東西。
+
+**最後三個是 Pass 3 答案的家。** 技術問答答出來的就是 seam、模組邊界、測試
+分層與風險；值域少了它們，Pass 3 每一題都只能填 `—`，而 `—` 的意思正是「沒有
+一節歸得了，SPEC 自己看著辦」——那是這一欄存在目的的反面。
 
 ## 編號
 
