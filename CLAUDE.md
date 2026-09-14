@@ -58,7 +58,7 @@ Both take a project root and default to `.`; both exit 1 and name what is missin
 than inferring anything from zero input.
 
 ```bash
-python3 skills/bdd-clarify/scripts/status.py [root]      # clarification progress per feature
+python3 skills/bdd-spec/scripts/status.py [root]      # clarification progress per feature
 python3 skills/bdd-spec/scripts/check_spec.py [root]     # .feature ↔ prd.md/spec.md consistency
 ```
 

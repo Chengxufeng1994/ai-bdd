@@ -1,5 +1,5 @@
 ---
-name: bdd-clarify
+name: bdd-discovery
 description: >
   把 PRD 或一段模糊的需求逼成具體的規則與例子——先拆出業務目標、成功指標與範圍邊界，
   揪出 PRD 沒寫的隱含假設，識別角色，
@@ -62,7 +62,7 @@ NEVER: 在需求還沒拿到時自行想像一則 story 來跑流程。那會產
 ## 流程
 
 ```
-PRD／一段敘述（新的）          或      繼續澄清（bdd-clarify [feature]）
+PRD／一段敘述（新的）          或      繼續澄清（bdd-discovery [feature]）
         ↓                                          ↓
 Pass 1 · 廣度 —— 對整個 feature                    （跳過 Pass 1）
   1. 拆成目標／成功指標／範圍邊界＋隱含假設         ↓
@@ -91,8 +91,8 @@ Pass 3 · 技術 —— 逐項掃過 technical-probes.md
 
 | 呼叫方式 | 範圍 |
 | --- | --- |
-| `bdd-clarify` | **預設：所有還沒就緒的 feature**（`scripts/status.py` 列得出來） |
-| `bdd-clarify <feature>` | 只跑指定的那一個 |
+| `bdd-discovery` | **預設：所有還沒就緒的 feature**（`../bdd-spec/scripts/status.py` 列得出來） |
+| `bdd-discovery <feature>` | 只跑指定的那一個 |
 
 **不要問對方要跑哪一個。** 預設全部，想限定的人自己會帶參數——多問一次等於把
 決定推回去，而多數時候答案就是「都繼續」。
@@ -105,7 +105,7 @@ Pass 3 · 技術 —— 逐項掃過 technical-probes.md
 `## Success Metrics` 與 `## Scope — In / Out` 判斷這個 feature 要交付什麼，
 `## Open Questions` 看問過什麼、已經
 確定什麼、哪些還待答——已答的問題就是目前確定的規則。還開著的：
-`python3 scripts/status.py`。
+`python3 ../bdd-spec/scripts/status.py`。
 
 IMPORTANT: 重問一題已經答過的，比漏問一題更傷信任——它證明你沒有讀既有產物。
 
@@ -160,14 +160,14 @@ MUST: PRD 裡標題叫「假設」的那一段，**每一條都當成沒問過**
 | 每個**排除項** | 排除 A 是不是隱含要做 B？ | 被排除項推出來的隱藏需求 |
 
 非功能需求怎麼分邊（產品級的品質屬性 vs. 某條規則的行為分支）→
-`references/prd-format.md` 的「Non-Functional Requirements 與 Constraints：
+`../bdd-spec/references/prd-format.md` 的「Non-Functional Requirements 與 Constraints：
 怎麼分邊」一節。
 
 MUST: 這裡、以及後面兩個 Pass 寫進 `prd.md` 的每一行實質內容都要標來源，
 三選一——`PRD §x`（PRD 原文有這段）、`Q-<n>`（來自 `## Open Questions` 某一題
 的答案）、`推論`（兩者都不是，是推導出來的）。範圍：`## Scope — In / Out` 的
 每條邊界、`## Assumptions / Constraints` 的每條，以及 Pass 2 的每條
-FR／AC、Pass 3 的每條 NFR。寫法與範例 → `references/prd-format.md`。
+FR／AC、Pass 3 的每條 NFR。寫法與範例 → `../bdd-spec/references/prd-format.md`。
 
 沒有這個標記，**「CLARIFY 真的逼問過 PRD」跟「CLARIFY 只是把 PRD 換句話抄
 一遍」在 `prd.md` 上長得一模一樣**——整份文件的來源欄全是 `PRD §x` 時，代表
@@ -182,7 +182,7 @@ MUST: 每個角色記**是誰**／**怎麼取得這個身分**／**跟誰容易�
 **現在什麼讓他痛**，寫進 `prd.md` 的 `## Personas`；最後兩項答不出來就寫
 「（無資料）」，不要編。且至少一條規則只約束它，沒有就合併——這一條 Pass 1
 驗不完，先記下待驗證，Pass 2 抽完規則再回來判（見「收尾」）。
-判準、寫法與範例、別漏掉哪些角色 → `references/persona-definition.md`。
+判準、寫法與範例、別漏掉哪些角色 → `../bdd-spec/references/persona-definition.md`。
 
 ### 3. 只問「會改變範圍」的題目
 
@@ -302,7 +302,7 @@ MUST: 一題確定，兩件事同時發生，缺一個就是不一致狀態：
 只記「跳過」不記原因，`## Open Questions` 就會變成一堆分不出輕重的待辦——而那
 正是讓人一個都不想動的狀態。
 
-Q 編號、狀態值、`面向` 欄、`輪次`／`信心` 怎麼填 → `references/prd-format.md`
+Q 編號、狀態值、`面向` 欄、`輪次`／`信心` 怎麼填 → `../bdd-spec/references/prd-format.md`
 的 `## Open Questions` 一節。
 
 #### 每一輪結束：抽規則
@@ -319,7 +319,7 @@ MUST: 一輪問完就把**這一輪能抽的規則抽出來**，不要累積到�
 - ✓「一個 token 在 3 秒前過期的使用者」
 
 MUST: 新規則直接寫進所屬 `### US-<n>` 底下 `#### FR` 分組裡的 `**FR-<n>**`（EARS
-句式，見 `references/prd-format.md`），底下巢狀掛 `- **AC-<n>.<m>**`（Given／
+句式，見 `../bdd-spec/references/prd-format.md`），底下巢狀掛 `- **AC-<n>.<m>**`（Given／
 When／Then，含實際數字，SPEC 讀）。**編號在這裡定版**，寫出去就不重排；刪掉
 一條規則就留空號，不遞補——空號看得出來，重排看不出來。FR／AC 都要標來源
 （`PRD §x`／`Q-<n>`／`推論`，規則見「拆成骨架」一節）。
@@ -349,7 +349,7 @@ MUST NOT: 在這裡自己宣告就緒。**本 skill 不寫 `狀態` 欄的就緒
 `## Open Questions` 沒有「待答」、就緒判定通過之後：
 
 1. **核對覆蓋**：十一個業務面向（Pass 3 再加五個技術面向）每一個都有對應的
-   一列，包含標 `n/a` 的——`scripts/status.py` 的追問覆蓋欄不該印出 `?`
+   一列，包含標 `n/a` 的——`../bdd-spec/scripts/status.py` 的追問覆蓋欄不該印出 `?`
 2. **核對 persona**：`## Personas` 的每個角色都有問答或規則約束它；規則裡講出來
    的主詞都在 `## Personas` 裡。兩個方向都要對得上——只對一邊會漏掉憑空的角色。
    Pass 1 記下的「目前沒有規則區分它與 X」在這裡結案：仍然沒有就合併
@@ -358,7 +358,7 @@ MUST NOT: 在這裡自己宣告就緒。**本 skill 不寫 `狀態` 欄的就緒
    `## Open Questions` 裡待答的一列。前者是範圍悄悄擴張，後者是假設被當成
    前提收下了
 4. **稽核分類是否窮盡**（見下）
-5. 重跑一次 `scripts/status.py`，確認就緒訊號不再觸發
+5. 重跑一次 `../bdd-spec/scripts/status.py`，確認就緒訊號不再觸發
 6. **`prd.md` 保留，不刪除**
 
 核對不能跳過——它是「面向要嘛問過要嘛標 n/a」那條規則的驗收。若某個面向連
@@ -403,7 +403,7 @@ Pass 2 收斂之後才跑。順序不能反：**技術問題有一半要看過�
 Requirements`；不可協商的外部限制（既有硬體、法規、已發包的規格）進
 `## Assumptions / Constraints`。答不出來的一律進 `## Open Questions`，跟業務
 面的紅卡同一張表，不勉強塞進 NFR 或 Constraints 湊數——這兩節怎麼分邊見
-`references/prd-format.md`。標 `n/a` 的要寫理由，否則它跟「懶得問」分不出來。
+`../bdd-spec/references/prd-format.md`。標 `n/a` 的要寫理由，否則它跟「懶得問」分不出來。
 每條 NFR 一樣要標來源（多半是 `Q-<n>`，因為它來自這一輪技術追問）。
 
 IMPORTANT: **SPEC 那一步不會再問任何問題。** 它只讀 `prd.md` 已經有答案的
@@ -424,12 +424,12 @@ docs/CONTEXT.md              SPEC
 ```
 
 一個 feature 一份 `prd.md`，不切分——**切 story 是 SPEC 的事**，它需要領域知識
-而且需要範圍先穩定。格式 → `references/prd-format.md`。
+而且需要範圍先穩定。格式 → `../bdd-spec/references/prd-format.md`。
 
 規則與例子的**定版編號在這裡誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
 `@example-<n>.<m>` 回指它們，`spec.md` 不重述。
 
-MUST NOT: 另存一份進度儀表板。進度是**算出來的**——`scripts/status.py` 從
+MUST NOT: 另存一份進度儀表板。進度是**算出來的**——`../bdd-spec/scripts/status.py` 從
 `## Open Questions` 的表直接數。
 
 ---

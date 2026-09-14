@@ -32,6 +32,14 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法，外加
 - 產出是 `.feature` ＋ `specs/<date>-<feature>/spec.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `openapi.yaml`、migration 或任何可執行的檔案
 - 要把 `spec.md` 拆成可執行的票 → 改用 `bdd-plan`
 
+## 參考檔案
+
+- `references/spec-format.md` — `spec.md` 的骨架
+- `references/prd-format.md` — 讀進來的 `prd.md` 的格式
+- `references/persona-definition.md` — 角色怎麼定義
+- `examples/minimal-prd.md` — 一份完整的 `prd.md` 範例
+- `scripts/status.py` — 從 `## Open Questions` 算澄清進度
+
 ---
 
 ## 切 story

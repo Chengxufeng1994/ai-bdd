@@ -2,7 +2,7 @@
 name: clarify-loop
 description: >
   多輪迭代把未解問題逐一問到收斂——每題四個選項、必要時附提案與理由，答不出來就
-  記成紅卡並繼續下一題，每輪結束給進度。可接手 bdd-clarify 的紅卡，也可單獨用在
+  記成紅卡並繼續下一題，每輪結束給進度。可接手 bdd-discovery 的紅卡，也可單獨用在
   任何「一疊問題需要收斂」的場合。
   觸發詞：「還有哪些沒釐清」「把問題問完」「紅卡清一清」「再問一輪」
   「繼續澄清」「還有幾張紅卡」「這些問題怎麼收斂」「問到不能再問為止」。
@@ -18,14 +18,14 @@ description: >
 
 ## 使用時機
 
-- `bdd-clarify` 產出了紅卡，要把它們逐一問掉
+- `bdd-discovery` 產出了紅卡，要把它們逐一問掉
 - 上一輪澄清之後又冒出新問題，需要再跑一輪
 - 手上有一疊模糊的問題，想知道哪些能當場解決、哪些必須去問別人
 - 想知道「還差多少才能開工」
 
 ## Skill Boundaries
 
-- 要從零開始**找出**問題（抽規則、配例子）→ 改用 `bdd-clarify`，
+- 要從零開始**找出**問題（抽規則、配例子）→ 改用 `bdd-discovery`，
   本 skill 接手它的產出
 - 要把例子寫成 Gherkin → 改用 `bdd-spec`
 - 通用的需求訪談、不涉及紅卡與就緒判定 → 環境中另有 `clarify-loop`，那個以
@@ -40,7 +40,7 @@ description: >
 Ask user: 若以下不明確，先問清楚。
 
 1. **要收斂哪一疊問題**：`prd.md` 的 `## Open Questions` 表裡狀態為「待答」
-   的列——`python3 skills/bdd-clarify/scripts/status.py` 列得出來。單獨使用
+   的列——`python3 skills/bdd-spec/scripts/status.py` 列得出來。單獨使用
    時，一段模糊的描述也可以——本 skill 會先把它拆成問題，逐題記錄答案
 2. **這一輪想推進到哪**：全部問完，還是先清掉能當場決定的。**先知道範圍，
    才不會把一輪拖成沒有終點的訪談**
@@ -73,11 +73,11 @@ IMPORTANT: 阻塞的題目**不要換句話說再問一次**。使用者答不�
 跳過的原因；先讀那個原因再決定怎麼問：
 
 ```bash
-python3 skills/bdd-clarify/scripts/status.py   # 列出每個 feature 還待答的問題
+python3 skills/bdd-spec/scripts/status.py   # 列出每個 feature 還待答的問題
 ```
 
 一次跑多個 feature 時，**跨 feature 的共用規則會浮現**——這是逐一處理單一
-feature 時看不到的收穫，見 `bdd-clarify` 對這件事的說明。
+feature 時看不到的收穫，見 `bdd-discovery` 對這件事的說明。
 
 | 跳過的原因 | 這一輪怎麼處理 |
 | --- | --- |
