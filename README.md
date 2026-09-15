@@ -27,6 +27,7 @@ ai-bdd/
 │   └── ai-sdlc.md      # why this pipeline looks the way it does
 ├── skills/
 │   ├── bdd-discovery/
+│   ├── example-mapping/
 │   ├── bdd-spec/
 │   ├── bdd-formulation/
 │   ├── bdd-plan/
