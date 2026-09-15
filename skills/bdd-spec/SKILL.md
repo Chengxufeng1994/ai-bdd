@@ -185,7 +185,7 @@ CLARIFY 漏了一個；`## Personas` 有但沒有任何 FR 提到 → 那個角�
 application service？domain？這個決定會長成 step definition 的形狀，
 所以它屬於規格，不屬於實作。
 
-三條規則：
+四條規則：
 
 | 規則 | 為什麼 |
 | --- | --- |
