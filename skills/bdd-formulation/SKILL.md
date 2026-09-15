@@ -47,7 +47,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 - `references/coverage-report.md` — 覆蓋表的格式
 - `references/artifact-location.md` — `.feature` 該放哪裡
 - `examples/anti-patterns.md` — 寫完自檢
-- `scripts/check_spec.py` — `.feature` ↔ `spec.md` 的一致性稽核
+- `scripts/check_spec.py` — 稽核 `spec.md` 自己的形狀；有 `.feature` 之後再加上兩者的一致性
 
 十一份逐案範例的索引在下面「這份 `.feature` 是寫給誰讀的」。
 
