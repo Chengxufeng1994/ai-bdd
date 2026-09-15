@@ -263,7 +263,9 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 `## Background`、`## Goal`、`## Success Metrics` 的每一句、
 `## User Stories` 底下的每條 FR／AC 與 story 專屬的 NFR、
 `## Non-Functional Requirements` 的每條 NFR、`## Scope — In / Out` 的每條邊界、
-`## Assumptions / Constraints` 的每條，行尾都要標來源，三選一：
+`## Assumptions / Constraints` 的每條、
+`## Tech Preferences & Constraints` 的每條偏好與禁令、
+`## Known Boundaries` 三張清單的每一條，行尾都要標來源，三選一：
 
 | 標記 | 意思 |
 | --- | --- |
@@ -288,6 +290,10 @@ MUST: 這個標記不是裝飾。少了它，「這一行是真的逼問過 PRD 
 `## Personas` **在**範圍內。v1 的角色只有「是誰／怎麼取得／跟誰不同」，
 來源就是表格自己的欄位；v2 多了「他要什麼」與「現在什麼讓他痛」，而那兩件事
 可以是問出來的，也可以是編出來的——正是這個標記存在的理由。
+
+`## Further Notes` **也在**範圍內。它是最後手段的那一節，放進去的東西別處都
+對不到，讀的人唯一能判斷的就是這句話是聽來的還是編的——「當時誰有疑慮」是
+`Q-<n>`，「我猜當時的考量是」是 `推論`，兩者在紙上長得一模一樣。
 
 唯一的豁免：**「沒問過」與「（無資料）」本身就說明了來源狀態**，不再疊 `←`
 標記。其餘每一欄都要標。
