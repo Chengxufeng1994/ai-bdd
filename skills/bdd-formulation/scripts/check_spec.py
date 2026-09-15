@@ -41,7 +41,8 @@
 開跑之間正是它們最該跑的時候，所以那時只跳過需要 .feature 的第 1-5 項並在開頭
 明講跳過了哪幾項；spec.md 乾淨就退出 0。
 
-只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
+只讀不寫。找不到什麼就說找不到，不猜——但 specs/ 與 .feature 不對稱：
+前者是停，後者是照說不誤，然後把跑得到的八項跑完。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
 specs/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
 story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
@@ -313,7 +314,7 @@ def check(root: Path) -> int:
     if spec_only:
         print(f"specs: {specs_dir}    feature: 找不到任何 .feature\n"
               f"只跑 spec.md 自己的八項檢查；覆蓋比對、狀態 tag、方言陷阱、"
-              f"缺口註解、樣板重用率五項需要 .feature，跳過。\n")
+              f"缺口註解、樣板重用率五項需要 .feature，跳過。")
     else:
         print(f"specs: {specs_dir}    feature: {feat_dir}\n")
 

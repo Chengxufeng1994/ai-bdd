@@ -42,6 +42,7 @@ description: >
 - `references/persona-definition.md` — 角色怎麼定義
 - `examples/minimal-spec.md` — 一份完整的 `spec.md` 範例
 - `scripts/status.py` — 從 `## Open Questions` 算澄清進度
+- `../bdd-formulation/scripts/check_spec.py` — 交件前自檢（第 6 步）。**在隔壁 skill**：本 skill 只跑它，不改它
 
 ---
 
