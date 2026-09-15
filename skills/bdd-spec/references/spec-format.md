@@ -265,7 +265,9 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 `## Non-Functional Requirements` 的每條 NFR、`## Scope — In / Out` 的每條邊界、
 `## Assumptions / Constraints` 的每條、
 `## Tech Preferences & Constraints` 的每條偏好與禁令、
-`## Known Boundaries` 三張清單的每一條，行尾都要標來源，三選一：
+`## Known Boundaries` 三張清單的每一條、
+`## Implementation Decisions`、`## Testing Decisions` 的每條決定，
+行尾都要標來源，三選一：
 
 | 標記 | 意思 |
 | --- | --- |
