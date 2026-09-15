@@ -30,7 +30,7 @@ description: >
 ## Skill Boundaries
 
 - **要把 FR 與 AC 寫成 `.feature` → 改用 `bdd-formulation`**
-- 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
+- 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑 `bdd-formulation` 的 `scripts/check_spec.py`（十三項裡五項稽核 `.feature`），對照它的 `examples/anti-patterns.md`
 - 要決定實作順序 → 改用 `bdd-plan`（情境跑在哪一層測試是 seam，本 skill 步驟 3 決定）
 - 例子還不夠、還有紅卡 → 回 `bdd-discovery`
 - 產出是 `specs/<date>-<feature>/spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `.feature`、`openapi.yaml`、migration 或任何可執行的檔案

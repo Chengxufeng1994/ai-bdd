@@ -35,7 +35,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 
 - `spec.md` 還不存在、或還有沒答完的問題 → 回 `bdd-spec`（更上游是 `bdd-discovery`）
 - 要切 story、決定 seam、寫 `spec.md` 或 `docs/CONTEXT.md` → 那是 `bdd-spec` 的工作
-- 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
+- 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十三項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md`
 - 要決定實作順序、切票 → 改用 `bdd-plan`；情境跑在哪一層測試是 seam，回 `bdd-spec`
 - 產出是 `.feature`，**不是** `spec.md`、`openapi.yaml`、migration 或任何可執行的檔案
 
