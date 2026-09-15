@@ -30,7 +30,7 @@ description: >
 ## Skill Boundaries
 
 - **要把 FR 與 AC 寫成 `.feature` → 改用 `bdd-formulation`**
-- 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
+- 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑 `bdd-formulation` 的 `scripts/check_spec.py`（十三項裡五項稽核 `.feature`），對照它的 `examples/anti-patterns.md`
 - 要決定實作順序 → 改用 `bdd-plan`（情境跑在哪一層測試是 seam，本 skill 步驟 3 決定）
 - 例子還不夠、還有紅卡 → 回 `bdd-discovery`
 - 產出是 `specs/<date>-<feature>/spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `.feature`、`openapi.yaml`、migration 或任何可執行的檔案
@@ -42,6 +42,7 @@ description: >
 - `references/persona-definition.md` — 角色怎麼定義
 - `examples/minimal-spec.md` — 一份完整的 `spec.md` 範例
 - `scripts/status.py` — 從 `## Open Questions` 算澄清進度
+- `../bdd-formulation/scripts/check_spec.py` — 交件前自檢（第 6 步）。**在隔壁 skill**：本 skill 只跑它，不改它
 
 ---
 
@@ -219,7 +220,8 @@ MUST: `## Document Overview` 的 `核心關係人` 表**照抄** `clarify-log.md
 `## 核心關係人`，三欄原樣搬過來，不增列也不改寫 `決策權`。誰能決定什麼是問出來的，
 不是看得出來的——log 裡沒有那個人，這裡就不該有那一列。log 缺這張表時**不要自己
 補三列看起來合理的**，寫一行說明它缺了、回 `bdd-discovery` 登記；`## Open Questions`
-每一題的「該問誰」都要指向這張表裡的人，兩邊一起編的話那條規則會輕鬆通過而毫無意義。
+的「該問誰」要指向誰，通則在 `references/spec-format.md`，不要在這裡抄一份——
+兩邊一起編的話那條規則會輕鬆通過而毫無意義。
 
 MUST: `狀態` 的初值由這一步寫。建檔時還有『待答』的列就寫 `澄清中`，一列都不剩
 就寫 `待對焦`。**這個檔是本 skill 建的，所以初值只能由本 skill 寫**——
@@ -247,6 +249,24 @@ domain model 要活得比它久。塞進去等於陪葬。
 
 判準（哪些該進來）：這條規則**跨 feature 仍然成立**嗎？只在這個 feature 的情境下為真的，
 留在 `spec.md`。
+
+### 6. 自檢，然後才算完成
+
+```bash
+python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
+```
+
+`.feature` 還不存在，所以它只跑得到八項——全部是 `spec.md` 自己的形狀：FR 有沒有掛
+AC、`## User Stories` 底下有沒有 v2 的舊標題、story 標題形式對不對、`#### Q` 的形式、
+紅卡指向不存在的題號、紅卡列了已答的題、`AC-<n>.<m>` 的 `<n>` 對不對得上它的 FR、
+有沒有 FR 不屬於任何一則 story。它會明講另外五項跳過了。
+
+**這八項全是「安靜地錯」的形狀**：每一行都合規、檔案照樣 parse、讀起來通順，
+但下游的解析器看不到那條 FR，於是它的 AC 從覆蓋率裡消失，而**沒有任何東西會報錯**。
+交件前跑一次是這條鏈上唯一一個能在寫的人還記得為什麼這樣寫的時候抓到它們的位置。
+
+MUST: `exit` 非 0 就修完再交件。修不掉的（例如缺的答案要回頭問）寫進
+`## Scope — In / Out` 的「回 CLARIFY 補問」，不要留給下一步去撞。
 
 ## 產物格式
 
@@ -279,7 +299,7 @@ MUST: 只新增本節列出的三種產物，**不修改專案既有的任何檔
 
 ## 完成後
 
-告訴對方四件事：
+告訴對方五件事：
 
 1. 切了哪些 story、為什麼這樣切（`## User Stories` 的切法說明）
 2. **seam 是哪一層**、`domain-model.md` 這一批新增了哪些聚合與不變條件、
@@ -287,6 +307,8 @@ MUST: 只新增本節列出的三種產物，**不修改專案既有的任何檔
 3. `## Open Questions` 還剩幾題待答、`## Scope — In / Out` 的「回 CLARIFY 補問」
    有幾條
 4. `## Document Overview` 的 `狀態` 這一步寫成什麼（`澄清中` 還是 `待對焦`）
+5. `check_spec.py` 那八項跑出什麼——過了就說「八項全過」，抓到就說抓到哪幾條、
+   當場修掉了還是寫進「回 CLARIFY 補問」
 
 缺口多 → 回 `clarify-loop` 收斂。缺口少 → 跑 `bdd-formulation` 產 `.feature`，
 拿它跟 PM 對答案。

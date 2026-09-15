@@ -35,7 +35,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 
 - `spec.md` 還不存在、或還有沒答完的問題 → 回 `bdd-spec`（更上游是 `bdd-discovery`）
 - 要切 story、決定 seam、寫 `spec.md` 或 `docs/CONTEXT.md` → 那是 `bdd-spec` 的工作
-- 要稽核既有 `.feature` 寫得好不好 → 改用 `bdd-spec-review`
+- 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十三項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md`
 - 要決定實作順序、切票 → 改用 `bdd-plan`；情境跑在哪一層測試是 seam，回 `bdd-spec`
 - 產出是 `.feature`，**不是** `spec.md`、`openapi.yaml`、migration 或任何可執行的檔案
 
@@ -47,7 +47,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 - `references/coverage-report.md` — 覆蓋表的格式
 - `references/artifact-location.md` — `.feature` 該放哪裡
 - `examples/anti-patterns.md` — 寫完自檢
-- `scripts/check_spec.py` — `.feature` ↔ `spec.md` 的一致性稽核
+- `scripts/check_spec.py` — 稽核 `spec.md` 自己的形狀；有 `.feature` 之後再加上兩者的一致性
 
 十一份逐案範例的索引在下面「這份 `.feature` 是寫給誰讀的」。
 
@@ -363,6 +363,11 @@ IMPORTANT: 一個 Outline 涵蓋 Example 3.1 到 3.3 時，**三個 tag 都要�
 ```bash
 python3 <skill>/scripts/check_spec.py <專案根>
 ```
+
+**`bdd-spec` 也會跑同一支腳本，但它看到的是八項。** 沒有 `.feature` 時，需要它的
+五項（雙向覆蓋、狀態 tag、方言陷阱、缺口註解、樣板重用率）會明講跳過。
+跑到這一步才是十三項全開——**這五項只有這裡驗得到**，所以這一步不能因為
+「`bdd-spec` 已經跑過了」而省略。
 
 檢查十三件事：雙向覆蓋比對（漏做／發明）、每個檔恰好一個狀態 tag、
 中文「規則:」誤用、缺口有沒有就地註解、**步驟樣板重用率**、`spec.md` 裡有沒有

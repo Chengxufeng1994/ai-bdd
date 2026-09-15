@@ -33,11 +33,16 @@
      第 8 項抓標題本身寫壞，這一項抓對應關係斷掉：FR 擺在第一個 story 標題
      之前，每一行都合規，照樣沒有人認領。
 
-退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、找不到 .feature、
-沒有 spec.md、`## User Stories` 底下沒有任何 story 也各自退出 1——那些是
-「先跑上一步」，不算在上面十三項一致性檢查裡。
+退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 spec.md、
+`## User Stories` 底下沒有任何 story 也各自退出 1——那些是「先跑上一步」，
+不算在上面十三項一致性檢查裡。
 
-只讀不寫。找不到 specs/ 或 .feature 時直接說找不到，不猜。
+找不到 .feature 不在此列。第 6-13 項只讀 spec.md，而 SPEC 交件到 FORMULATION
+開跑之間正是它們最該跑的時候，所以那時只跳過需要 .feature 的第 1-5 項並在開頭
+明講跳過了哪幾項；spec.md 乾淨就退出 0。
+
+只讀不寫。找不到什麼就說找不到，不猜——但 specs/ 與 .feature 不對稱：
+前者是停，後者是照說不誤，然後把跑得到的八項跑完。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
 specs/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
 story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
@@ -298,12 +303,20 @@ def check(root: Path) -> int:
     if not specs_dir.is_dir():
         print(f"找不到 {specs_dir} —— 沒有 SPEC 的產物可以比對")
         return 1
-    if feat_dir is None:
-        print("找不到任何 .feature")
-        return 1
+    # 十三項裡有八項只讀 spec.md（第 6-13 項）。SPEC 交件到 FORMULATION
+    # 開跑之間還沒有任何 .feature，而那正是 spec.md 最需要被檢查的時刻——
+    # 早退會讓那八項在整段空窗期一項都跑不到，壞掉的 spec.md 於是要等到
+    # 下一個 skill 才被發現。所以缺 .feature 不再是「不能跑」，是「跑得到
+    # 的先跑，跑不到的明講跳過」。
+    spec_only = feat_dir is None
 
     problems = 0
-    print(f"specs: {specs_dir}    feature: {feat_dir}\n")
+    if spec_only:
+        print(f"specs: {specs_dir}    feature: 找不到任何 .feature\n"
+              f"只跑 spec.md 自己的八項檢查；覆蓋比對、狀態 tag、方言陷阱、"
+              f"缺口註解、樣板重用率五項需要 .feature，跳過。")
+    else:
+        print(f"specs: {specs_dir}    feature: {feat_dir}\n")
 
     specs = sorted(specs_dir.glob("*/spec.md"))
     if not specs:
@@ -406,67 +419,74 @@ def check(root: Path) -> int:
                   f"{', '.join('FR-' + f for f in unowned)}")
             problems += 1
 
+        # slug 記的是「spec.md 提到哪些 story」，跟 .feature 在不在無關，
+        # 所以留在守衛外面——孤兒 .feature 那一段要用它。
+        for slug in sorted(stories):
+            covered.add(slug)
+
         # 逐 story 比，不可把所有 story 的例子聯集起來跟單一 .feature 比：
         # 一則 story 一個 .feature，聯集會讓 A 的例子出現在 B 檔裡也算通過。
-        for slug, fr_ids in sorted(stories.items()):
-            covered.add(slug)
-            expected = {ex for fr in fr_ids for ex in frs.get(fr, set())}
-            fpath = feat_dir / f"{slug}.feature"
-            ftext = fpath.read_text(encoding="utf-8") if fpath.exists() else ""
+        if not spec_only:
+            for slug, fr_ids in sorted(stories.items()):
+                expected = {ex for fr in fr_ids for ex in frs.get(fr, set())}
+                fpath = feat_dir / f"{slug}.feature"
+                ftext = fpath.read_text(encoding="utf-8") if fpath.exists() else ""
 
-            tags = set(re.findall(r"@example-(\d+\.\d+)", ftext))
-            key = lambda s: tuple(map(int, s.split(".")))
-            missing = sorted(expected - tags, key=key)
-            invented = sorted(tags - expected, key=key)
+                tags = set(re.findall(r"@example-(\d+\.\d+)", ftext))
+                key = lambda s: tuple(map(int, s.split(".")))
+                missing = sorted(expected - tags, key=key)
+                invented = sorted(tags - expected, key=key)
 
-            states = [s for s in STATES if re.search(rf"^{s}\b", ftext, re.M)]
-            zh_rule = re.findall(r"^\s*規則:", ftext, re.M)
+                states = [s for s in STATES if re.search(rf"^{s}\b", ftext, re.M)]
+                zh_rule = re.findall(r"^\s*規則:", ftext, re.M)
 
-            issues = []
-            # 發明優先於漏做：憑空的驗收條件比缺一條更難發現，因為它看起來很完整。
-            if invented:
-                issues.append(f"指向 spec.md 裡不存在的例子 {invented}")
-            if len(states) != 1:
-                issues.append(f"狀態 tag {states or '缺'} —— 每個檔恰好要一個")
-            if zh_rule:
-                issues.append(f"用了中文「規則:」{len(zh_rule)} 處 —— 會被解析成散文，不會報錯")
+                issues = []
+                # 發明優先於漏做：憑空的驗收條件比缺一條更難發現，因為它看起來很完整。
+                if invented:
+                    issues.append(f"指向 spec.md 裡不存在的例子 {invented}")
+                if len(states) != 1:
+                    issues.append(f"狀態 tag {states or '缺'} —— 每個檔恰好要一個")
+                if zh_rule:
+                    issues.append(f"用了中文「規則:」{len(zh_rule)} 處 —— 會被解析成散文，不會報錯")
 
-            # 漏做不一定是錯：標「暫定」的例子本來就不該寫成場景。要求就地留註解交代。
-            unexplained = [e for e in missing
-                           if not re.search(rf"^\s*#.*Example {re.escape(e)}", ftext, re.M)]
-            if unexplained:
-                issues.append(f"漏了 {unexplained} 且檔案裡沒有註解說明")
+                # 漏做不一定是錯：標「暫定」的例子本來就不該寫成場景。要求就地留註解交代。
+                unexplained = [e for e in missing
+                               if not re.search(rf"^\s*#.*Example {re.escape(e)}", ftext, re.M)]
+                if unexplained:
+                    issues.append(f"漏了 {unexplained} 且檔案裡沒有註解說明")
 
-            # 一條規則只走過一種結果不是錯，但要看得見——多數時候它代表沒問過
-            # 「這條規則被違反時會怎樣」。邊界機器判不了，所以只報成功／失敗。
-            lop = [n for n, ok, ng in outcome_coverage(ftext) if bool(ok) != bool(ng)]
+                # 一條規則只走過一種結果不是錯，但要看得見——多數時候它代表沒問過
+                # 「這條規則被違反時會怎樣」。邊界機器判不了，所以只報成功／失敗。
+                lop = [n for n, ok, ng in outcome_coverage(ftext) if bool(ok) != bool(ng)]
 
-            explained = sorted(set(missing) - set(unexplained), key=key)
-            status = "✗" if issues else "✓"
-            print(f"{status} {slug:30} {len(expected & tags):>3}/{len(expected)} 例子 · {states[0] if len(states)==1 else '?':7}"
-                  + (f" · 已交代不寫 {explained}" if explained else "")
-                  + (f" · 單一結果的規則 {len(lop)}" if lop else ""))
-            for i in issues:
-                print(f"    ✗ {i}")
-                problems += 1
+                explained = sorted(set(missing) - set(unexplained), key=key)
+                status = "✗" if issues else "✓"
+                print(f"{status} {slug:30} {len(expected & tags):>3}/{len(expected)} 例子 · {states[0] if len(states)==1 else '?':7}"
+                      + (f" · 已交代不寫 {explained}" if explained else "")
+                      + (f" · 單一結果的規則 {len(lop)}" if lop else ""))
+                for i in issues:
+                    print(f"    ✗ {i}")
+                    problems += 1
 
-    written = [p.read_text(encoding="utf-8") for p in feat_dir.glob("*.feature")
-               if p.stem in covered]
-    if written:
-        n_steps, n_tpl, n_once = step_templates(written)
-        n_scen = sum(len(re.findall(r"^\s*(?:Scenario|Scenario Outline|Example):", t, re.M))
-                     for t in written)
-        print(f"\n步驟 {n_steps} 行 · 不重複樣板 {n_tpl} · 只出現一次 {n_once} · 場景 {n_scen}")
-        # 只出現一次的樣板 ≈ 一支只會被呼叫一次的 step definition。
-        # 沒有及格線（那會是編出來的），但接近場景數就代表文法沒套上。
-        if n_once >= n_scen:
-            print(f"  ⚠ 只出現一次的樣板({n_once}) 已達場景數({n_scen})——"
-                  f"封閉文法可能沒真的套上，step definition 會比場景還多")
+    if not spec_only:
+        written = [p.read_text(encoding="utf-8") for p in feat_dir.glob("*.feature")
+                   if p.stem in covered]
+        if written:
+            n_steps, n_tpl, n_once = step_templates(written)
+            n_scen = sum(len(re.findall(r"^\s*(?:Scenario|Scenario Outline|Example):", t, re.M))
+                         for t in written)
+            print(f"\n步驟 {n_steps} 行 · 不重複樣板 {n_tpl} · 只出現一次 {n_once} · 場景 {n_scen}")
+            # 只出現一次的樣板 ≈ 一支只會被呼叫一次的 step definition。
+            # 沒有及格線（那會是編出來的），但接近場景數就代表文法沒套上。
+            if n_once >= n_scen:
+                print(f"  ⚠ 只出現一次的樣板({n_once}) 已達場景數({n_scen})——"
+                      f"封閉文法可能沒真的套上，step definition 會比場景還多")
 
-    orphans = [p.name for p in feat_dir.glob("*.feature")
-               if p.stem not in covered]
-    if orphans:
-        print(f"\n沒有對應 story 的 .feature（不在本檢查範圍）：{orphans}")
+    if not spec_only:
+        orphans = [p.name for p in feat_dir.glob("*.feature")
+                   if p.stem not in covered]
+        if orphans:
+            print(f"\n沒有對應 story 的 .feature（不在本檢查範圍）：{orphans}")
 
     print(f"\n{'全部通過' if not problems else f'{problems} 個問題'}")
     return 1 if problems else 0
