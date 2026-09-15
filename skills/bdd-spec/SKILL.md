@@ -1,7 +1,7 @@
 ---
 name: bdd-spec
 description: >
-  把 CLARIFY 的問答綜合成 `spec.md`——十三節、完整自足的規格文件：切 story、
+  把 CLARIFY 的問答綜合成 `spec.md`——十六節、完整自足的規格文件：切 story、
   抽出 FR 與 AC、決定驗收測試打在哪一層 seam、把詞彙抬進 `docs/CONTEXT.md`。
   不訪談，只綜合已經有答案的東西；`.feature` 由下一步的 `bdd-formulation` 產出。
   BDD 六步流程的 SPEC 步驟。
@@ -192,10 +192,19 @@ application service？domain？這個決定會長成 step definition 的形狀�
 | 優先用既有 seam | 每多一個 seam 就多一套測試替身與資料建構 |
 | 取**最高**的那一層 | 越高越接近使用者真正做的事，也越不綁實作細節 |
 | 整個變更的理想數量是**一個** | 兩個 seam 代表這批行為的入口不只一個，多半是切分沒切乾淨 |
+| 需要新 seam 就在**你能做到的最高點**提出 | 往下挪一層通常是為了好寫，代價是驗到的東西離使用者更遠 |
 
 **Ask user: 把 seam 攤出來確認再寫。** 這是本 skill 唯一一次徵詢——
 其餘全部只綜合已有的答案。之所以是例外：seam 要看過具體的 AC 才推得出來，
 而它推錯的話，底下所有 step definition 都打在錯的高度，改起來是整批重寫。
+
+MUST NOT: 把 seam 的討論變成需求訪談。這一次徵詢問的是**技術判斷**——
+「打這一層對嗎」——不是「這個規則該怎麼定」。談的時候發現需求有洞，
+寫進 `## Scope — In / Out` 的「回 CLARIFY 補問」，**不要順手問掉**。
+
+理由是這一步沒有 `clarify-log.md` 的記錄機制：訪談的問答會被寫進 log、
+被後面每一步讀到；在 seam 討論裡順口問到的答案只活在這一次對話裡，
+下一個人打開 `spec.md` 只會看到一條沒有出處的規則。
 
 IMPORTANT: seam 一旦寫進 `spec.md` 就往下傳——IMPLEMENT 照著打，
 REVIEW 把「沒人同意過的 seam」當成 finding。這個綁定是**間接的**，
@@ -216,6 +225,9 @@ MUST: `狀態` 的初值由這一步寫。建檔時還有『待答』的列就�
 就寫 `待對焦`。**這個檔是本 skill 建的，所以初值只能由本 skill 寫**——
 `bdd-discovery` 明文不得寫 `spec.md`。之後 `已對焦` 由 `example-mapping` 依使用者
 的答覆改寫，本 skill 不碰。
+
+MUST: `## Known Boundaries` 的三張清單要填，空的也要寫為什麼空——判準與
+`要先問` 的格式都在 `references/spec-format.md`，**不要在這裡抄一份**。
 
 MUST NOT: 在這一步做新決定。**本 skill 只綜合已經有答案的東西。**
 推不出來的寫進 `## Scope — In / Out` 的「回 CLARIFY 補問」，不要順手決定掉。
@@ -240,7 +252,7 @@ domain model 要活得比它久。塞進去等於陪葬。
 
 ```
 specs/<date>-<feature>/
-└── spec.md           SPEC  ★ 十三節，完整自足
+└── spec.md           SPEC  ★ 十六節，完整自足
 
 （clarify-log.md 是 CLARIFY 的產物，本 skill 只讀不寫）
 （.feature 是 bdd-formulation 的產物，本 skill 不產）
