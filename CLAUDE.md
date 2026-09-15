@@ -60,7 +60,7 @@ than inferring anything from zero input.
 
 ```bash
 python3 skills/bdd-spec/scripts/status.py [root]                # clarification progress per feature
-python3 skills/bdd-formulation/scripts/check_spec.py [root]     # .feature ↔ spec.md consistency
+python3 skills/bdd-formulation/scripts/check_spec.py [root]     # spec.md shape; adds .feature ↔ spec.md coverage once features exist
 ```
 
 ## Architecture
