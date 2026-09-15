@@ -120,7 +120,7 @@ MUST: `P-<n>` 的編號全域唯一，而且**不重排**——`## User Stories`
 ## 下游怎麼用它
 
 `bdd-formulation` 寫「前置（狀態）」規則（象限定義見
-[`../bdd-formulation/references/rule-taxonomy.md`](../bdd-formulation/references/rule-taxonomy.md)）
+[`../../bdd-formulation/references/rule-taxonomy.md`](../../bdd-formulation/references/rule-taxonomy.md)）
 時，主詞應該是 `spec.md` 的 `## Personas` 裡的角色名。出現一個沒在 `## Personas`
 的角色，就是這裡漏了一個——這是人在寫的時候要對的，不是腳本會抓的：
 `check_spec.py` 不解析 `## Personas`。
