@@ -36,7 +36,8 @@ criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**。在主流 PR
 
 ## 使用時機
 
-- `bdd-discovery` 的 Pass 2 要把需求攤成規則與例子
+- `bdd-discovery` 逼問進行中，要把已經問出來的東西攤在桌上看形狀
+- `bdd-discovery` 前沿空了，要跑就緒判定
 - 想知道一則 story 就緒了沒
 - 手上有一份 `spec.md`，想看它的形狀而不是讀它的字
 - 單獨拿一則 story 來攤，不走 BDD 流程
