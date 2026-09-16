@@ -6,7 +6,7 @@
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
 `specs/<date>-<feature>/spec.md` 的 `## Open Questions` 表：已答／n/a／待答數自
-狀態欄，追問覆蓋（業務面向＋Pass 3 的技術面向）數自面向欄。存一份儀表板的話，
+狀態欄，追問覆蓋（業務面向＋技術面向）數自面向欄。存一份儀表板的話，
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
 
@@ -25,10 +25,10 @@ import sys
 from pathlib import Path
 from unicodedata import east_asian_width
 
-# Pass 2 的十一個業務面向。
+# 前沿檢查表的十一個業務面向。
 BIZ_DIMS = ["空與零", "邊界", "重複", "時序", "權限", "失敗", "時間", "規模",
             "降級", "時限", "可觀測"]
-# Pass 3 的五個技術面向，名稱與順序取自 references/technical-probes.md 的
+# 前沿檢查表的五個技術面向，名稱與順序取自 references/technical-probes.md 的
 # 章節標題，不是憑空編的縮寫——兩邊不一致以那份為準。沒有這一半，「seam
 # 沒問到」在儀表板上完全看不見，而那正是這次改版要補的洞。
 TECH_DIMS = ["seam", "模組邊界", "介面與型別契約", "排序契約／決定性",
@@ -146,7 +146,7 @@ def main(root: Path) -> int:
         dims: set[str] = set()
         pending_qs = []
         for row in rows:
-            # `—` 是 Pass 1 的範圍題，不屬於任何探針面向，不計入追問覆蓋
+            # `—` 是開場的範圍題，不屬於任何探針面向，不計入追問覆蓋
             # ——跟 n/a 不同，n/a 代表「問過某個面向、判定不適用」。
             dim = row.get("面向", "")
             if dim and dim != "—":
@@ -181,10 +181,10 @@ def main(root: Path) -> int:
     else:
         print("\n待答：0")
 
-    print("\n追問覆蓋 · 業務面向（Pass 2）"
+    print("\n追問覆蓋 · 業務面向（前沿檢查表）"
           "空與零/邊界/重複/時序/權限/失敗/時間/規模/降級/時限/可觀測："
           "✓ 問過（含 n/a）· — 還沒問")
-    print("追問覆蓋 · 技術面向（Pass 3）"
+    print("追問覆蓋 · 技術面向（前沿檢查表）"
           "seam/模組邊界/介面與型別契約/排序契約／決定性/既有資產／測試慣例："
           "✓ 問過（含 n/a）· — 還沒問")
     return 1 if broken else 0
