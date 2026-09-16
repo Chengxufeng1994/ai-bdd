@@ -58,9 +58,16 @@ To check it: `go vet -tags generate .`.
 Both take a project root and default to `.`; both exit 1 and name what is missing rather
 than inferring anything from zero input.
 
+`status.py` belongs to `bdd-spec`:
+
 ```bash
-python3 skills/bdd-spec/scripts/status.py [root]                # clarification progress per feature
-python3 skills/bdd-formulation/scripts/check_spec.py [root]     # spec.md shape; adds .feature ↔ spec.md coverage once features exist
+python3 skills/bdd-spec/scripts/status.py [root]   # clarification progress per feature
+```
+
+`check_spec.py` belongs to `bdd-formulation`:
+
+```bash
+python3 skills/bdd-formulation/scripts/check_spec.py [root]   # spec.md shape; adds .feature ↔ spec.md coverage once features exist
 ```
 
 ## Architecture
