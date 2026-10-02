@@ -258,6 +258,34 @@ docs/CONTEXT.md                 不動
   ticket 與 incident 入口等有實跑需求再加。
 - `prd.md` 狀態的 accept／reject 門不做。單人跑時門是「我讀過且它說的是我的意思」。
 
+## 2026-10-02 校正：對齊既有格式
+
+寫實作計畫時讀了 `spec-format.md`、`status.py`、`check_spec.py`，發現 D2 畫的
+`#### 規則／#### 例子／#### 問題` 格式，今天的 `spec.md` 業務節已經有一份機械等價
+且**有解析器在讀**的版本。重畫格式會逼兩支腳本重寫解析器，換不到任何東西。以下
+五條覆蓋前面對應的決策：
+
+1. **`prd.md` 的格式 ＝ 今天 `spec.md` 的業務節，原樣搬。** `### US-<n> · <slug>`、
+   `#### FR`（`**FR-<n>**` 粗體項目、`- **AC-<n>.<m>**` 巢狀其下）、`#### NFR`、
+   `#### Q`（只放待答指標）、`## Open Questions` 五欄表＋決策史小節，一個字不改。
+   新增的只有 `## 原文` 一節（取代 `input.md`）。D2 的章節草圖作廢，以
+   `skills/bdd-capture/references/prd-format.md` 為準。
+2. **狀態值沿用 `澄清中／待對焦／已對焦／已凍結`。** D2 的 `draft` ＝ `澄清中`
+   （CAPTURE 建檔時寫），`complete` ＝ `已對焦`。寫入者：`澄清中` CAPTURE；
+   `待對焦` DISCOVERY 在前沿空了時寫；`已對焦` `example-mapping` 在需求方點頭後寫；
+   `已凍結` 仍無寫入者。
+3. **來源標記三選一不變，但 FR 與 AC 只准 `PRD §x` 或 `Q-<n>`。** `推論` 仍可用在
+   story 句子、成功指標、persona 的「他要什麼」這類推導；一條規則或例子標 `推論`
+   就是「agent 自己補的」，`check_spec.py` 第 14 項抓。`PRD §x` 從此指 `prd.md`
+   自己的 `## 原文` 一節。D4 的「只有兩種來源」限縮為「FR／AC 只有兩種來源」。
+4. **技術面向的答案住 `prd.md` 的 `## Open Questions`，不另開 `## 限制`。** 它們本來
+   就是題，`面向` 欄填技術面向的名字；`bdd-spec` 讀已答的那幾列寫 `spec.md`，
+   行尾 `← Q-<n>`。D6 的落點改為此。
+5. **`spec.md` 保留一節 `## 回 DISCOVERY 補問`。** 原本 `## Scope — In / Out` 的
+   「回 CLARIFY 補問」清單跟著 Scope 搬去 `prd.md` 之後，SPEC 與 FORMULATION 寫到
+   一半發現的洞需要一個不是 `prd.md` 的落點（它們不得寫 `prd.md`）。DISCOVERY
+   下一輪把這一節的每一條開成 `Q-<n>`。
+
 ## 待實跑驗證
 
 - 紅卡掛在 story 底下之後，**跨 story 的共用規則**會不會晚才浮現。對策是前沿一輪
