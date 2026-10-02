@@ -8,11 +8,11 @@ A Claude Code **plugin** (`ai-bdd`) whose product is the `skills/` directory. Ev
 else either explains why those skills look the way they do (`docs/`, `PLAN.md`) or exists
 to make them fail visibly when they are weak (`benchmark/`).
 
-The plugin's subject is a six-step pipeline:
+The plugin's subject is a seven-step pipeline:
 
-**CLARIFY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**
+**CAPTURE → DISCOVERY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**
 
-Only the first three steps exist as skills, and SPEC is served by two of them —
+Only the first four steps exist as skills, and SPEC is served by two of them —
 `bdd-spec` and `bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
 explains which steps map onto BDD's practices and which are this project's own additions.
 
@@ -58,16 +58,22 @@ To check it: `go vet -tags generate .`.
 Both take a project root and default to `.`; both exit 1 and name what is missing rather
 than inferring anything from zero input.
 
-`status.py` belongs to `bdd-spec`:
+`status.py` belongs to `bdd-discovery`:
 
 ```bash
-python3 skills/bdd-spec/scripts/status.py [root]   # clarification progress per feature
+python3 skills/bdd-discovery/scripts/status.py [root]   # red cards and probe coverage per feature, read from prd.md
 ```
 
 `check_spec.py` belongs to `bdd-formulation`:
 
 ```bash
-python3 skills/bdd-formulation/scripts/check_spec.py [root]   # spec.md shape; adds .feature ↔ spec.md coverage once features exist
+python3 skills/bdd-formulation/scripts/check_spec.py [root]   # prd.md shape incl. source markers; adds .feature ↔ prd.md coverage once features exist
+```
+
+Both have stdlib unit tests:
+
+```bash
+python3 -m unittest discover -s tests
 ```
 
 ## Architecture
@@ -93,29 +99,33 @@ rather than redrawing it.
 
 ### Artifact format is the interface
 
-Each step reads what the previous step actually emitted: SPEC reads answered questions,
-PLAN reads `spec.md` and the `.feature` files, REVIEW audits the whole chain.
+Each step reads what the previous step actually emitted: DISCOVERY reads CAPTURE's
+draft `prd.md`, SPEC reads the `已對焦` `prd.md`, PLAN reads `spec.md` and the `.feature`
+files, REVIEW audits the whole chain.
 
 ```
-商業目標 → FR → 例子 → Story → Scenario → Ticket → Step → 程式碼
+需求方的話（prd.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
 ```
 
 Every arrow is a place intent can be lost. Changing an artifact's format breaks the chain,
 so formats are settled before downstream work starts.
 
-### The four disciplines
+### The three modes, four disciplines
 
-The first three steps hold because each skill under them does exactly one thing — SPEC
-has two, which is why there are four:
+Each of the first four steps holds because every skill under it runs in exactly one
+working mode. SPEC has two skills, so there are four disciplines:
 
-- **CLARIFY** asks questions until they converge — it does not write specs, and it does not
-  slice stories; that is SPEC's job.
-- **SPEC** slices stories and synthesises what already has answers — **it does not
-  interview.** Content that appears from nowhere is a defect.
-- **FORMULATION** turns the settled `spec.md` into `.feature` files — it does not
-  interview, does not invent examples, and does not write back to `spec.md`.
-- **PLAN** slices tracer bullets — it does not design. APIs, schema and seams were settled
-  in SPEC.
+- **CAPTURE** is scribe mode: the originator speaks, the agent writes `prd.md` as a
+  draft. It asks at most four analyst questions and **never fills in rules or examples**.
+- **DISCOVERY** is interrogation mode: the agent asks, the originator answers, and each
+  answer is written on the spot as an FR/AC under its story with a `← Q-<n>` source.
+  **An FR or AC without `← PRD §n` or `← Q-<n>` is a defect** — `check_spec.py` check 14
+  rejects it. This replaces the older "CLARIFY does not write" rule, which could not be
+  verified.
+- **SPEC** is writing mode: `bdd-formulation` turns an `已對焦` `prd.md` into `.feature`
+  files; `bdd-spec` writes the technical `spec.md` — **neither interviews**, and holes go
+  into `spec.md`'s `## 回 DISCOVERY 補問`.
+- **PLAN** slices tracer bullets — it does not design.
 
 This matters more for an agent than for a person: a human who finds a hole while writing a
 spec stops and asks; an agent supplies a plausible answer and continues.
@@ -143,8 +153,8 @@ Two things about it that look like breakage but are not:
 - **The scripts exit 1 against it** when they find no artifacts. That is fail-loud
   behaviour: a dashboard that quietly reports "all fine" gets believed.
 
-Its ground rule: **no business code until CLARIFY has run.** Every type in `domain/` must
-trace back to a rule in `spec.md`. `internal/domain/` currently holds only `doc.go` —
+Its ground rule: **no business code until DISCOVERY has run.** Every type in `domain/` must
+trace back to a rule in `prd.md`. `internal/domain/` currently holds only `doc.go` —
 the `/version` walking skeleton is the sole implemented slice and carries no domain meaning.
 
 ## Conventions
@@ -153,7 +163,7 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/<date>-<feature>/` (e.g. `spec.md`), one directory that can be deleted whole. Two
+  `specs/<date>-<feature>/` (`prd.md`, `spec.md`, `plan.md`), one directory that can be deleted whole. Two
   exceptions: `.feature` files stay where the runner expects them (`features/` for
   Cucumber-family tools); `docs/CONTEXT.md` outlives any single feature, so SPEC may create
   it or append entries but must not rewrite its existing sections or write to anything else
