@@ -48,7 +48,7 @@ live document。只有 IMPLEMENT 跟 Automation 重合，因為 Automation 的�
 | **DISCOVERY** | 兩件事：對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 逼成規則與例子（BDD 的 Discovery）。**答案當場寫成 `prd.md` 的 FR／AC，每一條行尾指得出是誰說的。** 需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
 | **SPEC** | 兩件事：把已對焦的 `prd.md` 翻成可執行規格（BDD 的 Formulation，`bdd-formulation`）＋把技術決定寫成 `spec.md`（不是 BDD，`bdd-spec`——它讓 `.feature` 以外的產物一起構成 live document）。切 story 不再在這裡 | Formulation ＋ 額外 |
 | **PLAN** | 把工作切到一個 fresh session 做得完，並宣告誰卡誰 | **無**——BDD 明確沒有排序指引 |
-| **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來 | Automation |
+| **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`bdd-implement`） | Automation |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | **無**——治理不在三個實踐裡 |
 

@@ -12,7 +12,7 @@ The plugin's subject is a seven-step pipeline:
 
 **CAPTURE → DISCOVERY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**
 
-Only the first four steps exist as skills, and SPEC is served by two of them —
+Only the first five steps exist as skills, and SPEC is served by two of them —
 `bdd-spec` and `bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
 explains which steps map onto BDD's practices and which are this project's own additions.
 

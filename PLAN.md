@@ -203,7 +203,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `bdd-spec` | `prd.md` → `spec.md`（技術設計） | **已實作**；2026-10-02 瘦身 |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
 | PLAN | `bdd-plan` | `.feature` ＋ `spec.md` → tracer bullet ＋ blocking edges | **已實作** |
-| IMPLEMENT | `bdd-implement`、`bdd-implement-step-definitions`、`bdd-implement-outside-in` | 實作總入口、比對既有 step、雙迴圈 | 未實作 |
+| IMPLEMENT | `bdd-implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | VERIFY | `bdd-verify`、`bdd-verify-failure-triage` | 跑情境並回報、真 bug vs 規格過期 | 未實作 |
 | REVIEW | `bdd-review`、`bdd-review-acceptance`、`bdd-review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 
@@ -338,8 +338,10 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] `bdd-plan` 重寫（tracer bullet ＋ blocking edges）
 - [x] 實測場整批重跑一次，驗證新的三步分工
 - [x] 2026-10-02 重排：CAPTURE 步驟、`prd.md`、來源標記守門、`clarify-loop` 改名 `clarify`
-- [ ] 實測場重跑一次，驗證 CAPTURE → DISCOVERY → SPEC 的新分工
-- [ ] `bdd-implement`
+- [x] 實測場重跑一次，驗證 CAPTURE → DISCOVERY → SPEC 的新分工——2026-10-03 用 parking-billing 跑到 IMPLEMENT，八個發現在 `runs/go-parking-billing/REPORT.md`
+- [x] `bdd-implement`——2026-10-03，從那次實跑抽出
+- [ ] `bdd-verify`、`bdd-review`
+- [ ] 用 `bdd-implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣
 
 順序刻意是「做一個 → 實跑 → 再做下一個」。**產物格式就是介面**：SPEC 讀已答的
 問題、PLAN 讀 `.feature` 與 `spec.md`、REVIEW 稽核整條鏈，下游全都依賴上游實際
