@@ -7,15 +7,15 @@
 
 ---
 
-`.feature` 檔在 `Feature:` 上掛**恰好一個**狀態 tag，記錄它在六步流程的哪一站。
+`.feature` 檔在 `Feature:` 上掛**恰好一個**狀態 tag，記錄它在七步流程的哪一站。
 
 | tag | 由誰寫入 | 意義 |
 | --- | --- | --- |
-| `@draft` | `bdd-spec` | 來源 `clarify-log.md` 未收斂。可用來對齊理解，**不是**講定的驗收條件 |
-| `@ready` | `bdd-spec` | 來源 `clarify-log.md` 已收斂，三方講定，等實作 |
+| `@draft` | `bdd-formulation` | 來源 `prd.md` 狀態 `待對焦`（需求方還沒點頭，使用者要求先寫）。可用來對齊理解，**不是**講定的驗收條件 |
+| `@ready` | `bdd-formulation` | 來源 `prd.md` 狀態 `已對焦`，三方講定，等實作 |
 | `@wip` | `bdd-implement` 開工時 | 正在實作這則 |
 | `@review` | `bdd-implement` 全綠後 | 等 REVIEW |
-| `@done` | `bdd-review` 通過後 | 六步走完 |
+| `@done` | `bdd-review` 通過後 | 七步走完 |
 
 三個設計決定，各有理由：
 
