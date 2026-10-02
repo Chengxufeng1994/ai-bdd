@@ -8,6 +8,8 @@
 
   1. 覆蓋——雙向。prd.md 有例子而 feature 沒有的（漏做），
      以及 feature 指向 prd.md 裡不存在的例子（發明出來的驗收條件）。
+     一則 story 連 .feature 檔都還沒有時不算漏做——那是 FORMULATION 還沒跑，
+     印一行「還沒有 .feature」就過；檔在、例子不在才是漏做。
   2. 缺口——漏掉的例子有沒有在 .feature 裡就地留註解交代。
   3. 狀態 tag——每個有對應 story 的 .feature 恰好一個。
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
@@ -513,7 +515,17 @@ def check(root: Path) -> int:
             for slug, fr_ids in sorted(stories.items()):
                 expected = {ex for fr in fr_ids for ex in frs.get(fr, set())}
                 fpath = feat_dir / f"{slug}.feature"
-                ftext = fpath.read_text(encoding="utf-8") if fpath.exists() else ""
+                # No file at all is "FORMULATION has not run for this story" —
+                # the same state spec-only mode treats as not-yet, not as
+                # failure. The walking skeleton's version.feature makes the
+                # directory exist long before any story has a file, so this
+                # branch is what DISCOVERY sees right after it finishes. A
+                # file that exists but lacks examples is the real defect and
+                # is reported below.
+                if not fpath.exists():
+                    print(f"— {slug:30} 還沒有 .feature（{len(expected)} 個例子待 FORMULATION）")
+                    continue
+                ftext = fpath.read_text(encoding="utf-8")
 
                 tags = set(re.findall(r"@example-(\d+\.\d+)", ftext))
                 key = lambda s: tuple(map(int, s.split(".")))

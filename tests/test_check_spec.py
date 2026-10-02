@@ -166,3 +166,36 @@ class CheckReadsPrd(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class StoriesNotYetFormulated(unittest.TestCase):
+    """A features/ dir that holds only unrelated files (the walking skeleton's
+    version.feature) means FORMULATION has not run for these stories yet —
+    that is a notice, not a coverage failure. Missing examples are only a
+    problem once the story's own .feature exists."""
+
+    def test_missing_feature_file_is_a_notice_not_a_problem(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_prd(root, GOOD)
+            (root / "features").mkdir()
+            (root / "features" / "version.feature").write_text("Feature: v\n", encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertIn("還沒有 .feature", out)
+            self.assertIn("visitor-billing", out)
+
+    def test_existing_feature_file_missing_examples_is_still_a_problem(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_prd(root, GOOD)
+            (root / "features").mkdir()
+            (root / "features" / "visitor-billing.feature").write_text(
+                "@ready @query\nFeature: x\n", encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("漏了", out)
