@@ -60,7 +60,7 @@ class StatusReadsPrd(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 0)
-            self.assertIn("2026-10-02-parking", out)
+            self.assertRegex(out, r"2026-10-02-parking\s+1\s+1\s+1\s")  # 已答 / n/a / 待答
             self.assertIn("待答（1）", out)
             self.assertIn("2026-10-02-parking/Q-2", out)
 

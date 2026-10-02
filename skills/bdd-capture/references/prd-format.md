@@ -480,7 +480,7 @@ Constraints`，跟未驗證的假設放同一節，但意思不同：**假設是
 
 小節可以多兩個選填欄位：`**誰答的**：<關係人>`，以及 `**歸屬**：<這個答案要進哪一節>`。
 `歸屬` 的值域是本文件的章節名，或 `spec.md` 的章節名（`Implementation Decisions`／
-`Testing Decisions`／`Risks`／`Tech Preferences & Constraints`）——技術面向的答案靠
+`Testing Decisions`／`Risks`／`Tech Preferences & Constraints`／`Known Boundaries`）——技術面向的答案靠
 這一欄讓 `bdd-spec` 知道該抄進哪一節，不必從問題文字猜。
 
 ### `面向` 的值域
@@ -580,8 +580,9 @@ FR／AC 在 DISCOVERY 答案回來的那一刻寫下，行尾指回它來自的 
 需求方 2026-10-02 口述，由 bdd-capture 逐字記錄；§ 編號是記錄時加的，原文沒有。
 
 §1 停車場要開始收費，訪客跟月租戶分開算。
-§2 前半小時免費，之後每小時 30 元。
-§3 月租戶刷卡就直接出去。
+§2 訪客進場抽一張票。
+§3 前半小時免費，之後每小時 30 元。
+§4 月租戶刷卡就直接出去。
 ```
 
 MUST: 逐字。需求方帶著現成文件來，整份貼進來；口述的，照講的記，不潤飾、
