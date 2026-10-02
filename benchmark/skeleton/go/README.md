@@ -1,22 +1,22 @@
 # benchmark/skeleton/go
 
 A Go + godog project used to dogfood the `ai-bdd` skills end to end:
-**CLARIFY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**.
+**CAPTURE → DISCOVERY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**.
 
 It is not a product. Its job is to make the skills fail visibly when they are
 weak.
 
 ## Ground rule
 
-**No business code until CLARIFY has run.** Every type in `domain/` must trace
-back to an `FR-<n>` in `spec.md`, and every scenario in `features/` back to an
+**No business code until DISCOVERY has run.** Every type in `domain/` must trace
+back to an `FR-<n>` in `prd.md`, and every scenario in `features/` back to an
 `AC-<n>.<m>`. Writing the model first defeats the entire point of the
 testbed — it would prove the skills work by handing them the answer.
 
 Current state: `domain/` is empty. `application/` and `infrastructure/` hold the
 `/version` read slice and nothing else. The only thing implemented is the
 walking skeleton below, which carries no domain meaning and therefore does not
-pre-empt CLARIFY.
+pre-empt DISCOVERY.
 
 ## The walking skeleton
 
@@ -132,7 +132,7 @@ skeleton/
 │   └── DATAFLOW.md          every conversion on the path, and who owns it
 ├── features/                .feature files — specifications, not test code
 │   ├── version.feature      the walking skeleton — implemented, green
-│   └── <six story files>    @ready — specified, not yet implemented, red
+│   └── <story files>        @ready once bdd-formulation writes them — red until IMPLEMENT
 └── test/acceptance/         the godog harness that executes them
     ├── godogs_test.go       runner, suite and scenario hooks
     ├── world_test.go        per-scenario state, carried in context.Context
@@ -142,9 +142,11 @@ skeleton/
 ### The acceptance suite is red on purpose
 
 `go test ./...` fails here, and that is the correct state. Eight packages pass;
-`test/acceptance` does not. The six story `.feature` files carry `@ready` —
+`test/acceptance` does not once story `.feature` files exist. They carry `@ready` —
 clarified and specified, but IMPLEMENT has not run, so no step definitions exist
-and every scenario reports `step is undefined`.
+and every scenario reports `step is undefined`. (The committed skeleton holds only
+`version.feature`, so a fresh copy is green; a run's copy goes red the moment
+`bdd-formulation` writes its first story file.)
 
 That is what `@ready` means. `bdd-formulation` states the rule it follows from: a
 scenario that goes green the moment it is written verified nothing. The plan for

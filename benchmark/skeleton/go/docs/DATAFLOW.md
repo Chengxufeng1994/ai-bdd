@@ -11,7 +11,7 @@
 的方法，一個操作一個檔案。同一個字曾經同時當兩層的名字，這裡不再這樣用。
 
 寫入路徑範例用「記錄一次訓練」，**聚合與欄位名稱是示意的**，實際有哪些聚合由
-CLARIFY 決定；讀取路徑用的是已經存在的 `/version` 流程。
+DISCOVERY 決定；讀取路徑用的是已經存在的 `/version` 流程。
 
 ---
 
@@ -45,7 +45,7 @@ apigen.RecordWorkout201JSONResponse                   interfaces
 
 ## 讀取路徑 —— 2 次轉換
 
-**這條鏈是實際存在的程式碼**，不是示意——寫入路徑與聚合名稱仍然是示意的，等 CLARIFY
+**這條鏈是實際存在的程式碼**，不是示意——寫入路徑與聚合名稱仍然是示意的，等 DISCOVERY
 決定有哪些聚合。
 
 ```
@@ -150,6 +150,11 @@ func (c RecordWorkout) toDomain() (*workout.Workout, error) {
 	return workout.New(c.ExerciseID, sets)
 }
 ```
+
+**mapper 唯一允許回 error 的情況**：解析一個 contract 已經用 pattern 保證格式的參數
+（例如 `month: YYYY-MM` 轉成年與月）。`OapiRequestValidator` 已經擋掉不合格式的請求，
+所以那個 error 在實務上到不了；但簽章要誠實，不要回一個零值的 query 讓 use case
+去猜。parking 實跑的 `ToMonthlyRevenue` 是這一條的第一個例子。
 
 **驗證屬於領域建構子，這一段只負責串接與標註位置。** 這裡出現 `if weightKg < 0`
 就是把規則搬出了領域，那條規則從此有兩個家，而它們會漂移。

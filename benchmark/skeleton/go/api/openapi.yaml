@@ -8,7 +8,7 @@
 # /version is the exception that proves the rule: it carries no domain meaning,
 # and exists to keep one thin path through the whole chain
 # (spec -> generated code -> handler -> scenario -> godog) alive from day one.
-# No fitness endpoint may be added before CLARIFY has produced an example map.
+# No business endpoint may be added before DISCOVERY has produced rules and examples.
 openapi: 3.0.3
 
 info:

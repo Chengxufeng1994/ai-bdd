@@ -87,7 +87,7 @@ Runtime — one process, one protocol so far:
 Development — the chain the testbed exists to exercise:
 
 ```
-benchmark/cases/ ──▶ CLARIFY ──▶ docs/bdd/*/example-mapping.md
+benchmark/cases/ ──▶ CAPTURE ──▶ DISCOVERY ──▶ specs/<date>-<feature>/prd.md
                               │
                               ▼
                             SPEC ──▶ features/*.feature
@@ -307,8 +307,8 @@ DO NOT EDIT.
 
 ## 9. Future Considerations / Roadmap
 
-**`domain/` is empty by rule, and stays empty until a CLARIFY run has produced
-an example map.** Every type in `domain/` must trace back to a rule in that map,
+**`domain/` is empty by rule, and stays empty until DISCOVERY has produced a
+`prd.md` at `已對焦`.** Every type in `domain/` must trace back to an FR in that file,
 and every scenario in `features/` back to a concrete example. Writing the model
 first would defeat the point of the testbed — it would prove the skills work by
 handing them the answer.
@@ -362,8 +362,8 @@ a proven path.
 | **Rule** | A constraint that holds on its own. Rules are the natural fault lines for splitting a story |
 | **Example** | A concrete case illustrating a rule, with real data. `Example 1.1` is Rule 1's first |
 | **Question** | Something nobody could answer during discovery — the evidence that a story is not ready |
-| **Shared** | A rule that constrains several stories; lives in `docs/bdd/glossary.md`, referenced not copied |
-| **Example map** | The output of CLARIFY: story, rules, examples, questions, readiness |
+| **Shared** | A rule that constrains several stories; an invariant lives in `specs/domain-model.md`, a behaviour in a `.feature`'s `Rule:` |
+| **prd.md** | The output of CAPTURE and DISCOVERY: stories, rules, examples, open questions, status |
 
 Numbers in these identifiers are **references**. Downstream Gherkin scenarios tag
 themselves `@Example1.1`, so renumbering silently repoints them.

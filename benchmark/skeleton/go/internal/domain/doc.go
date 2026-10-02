@@ -43,6 +43,6 @@
 // # Not yet populated
 //
 // No aggregate exists here yet. Which aggregates the fitness tracker has is a
-// question CLARIFY answers — inventing them first would be guessing at exactly
+// question DISCOVERY answers — inventing them first would be guessing at exactly
 // the thing the testbed is meant to test. See ../../README.md.
 package domain

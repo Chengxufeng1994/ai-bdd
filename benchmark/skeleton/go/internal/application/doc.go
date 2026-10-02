@@ -24,8 +24,10 @@
 //	│   ├── query/                     reads: query, result and handler together
 //	│   │   ├── get_version.go         the only use case that exists
 //	│   │   └── workout_volume.go
-//	│   └── command/                   writes: command, result and handler
-//	│       └── record_workout.go
+//	│   ├── command/                   writes: command, result and handler
+//	│   │   └── record_workout.go
+//	│   └── classify/                  domain/port failure -> errors.Error, shared
+//	│                                  by every use case that touches one aggregate
 //	└── service/                       implements port/in by delegating
 //	    └── version_service.go
 //
@@ -239,7 +241,7 @@
 // use case with a real failure has a kind to reach for rather than an invention
 // to make.
 //
-// Which commands and queries the tracker needs is a question CLARIFY answers.
+// Which commands and queries the tracker needs is a question DISCOVERY answers.
 // Everything named in the structure above beyond GetVersion is an illustration,
 // not a plan.
 package application
