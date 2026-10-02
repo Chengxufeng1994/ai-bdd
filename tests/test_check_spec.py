@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from _load import load
+from _load import ROOT, load
 
 check_spec = load("skills/bdd-formulation/scripts/check_spec.py")
 
@@ -66,6 +66,24 @@ class UnsourcedRules(unittest.TestCase):
         self.assertEqual(check_spec.unsourced_rules(text),
                          ["- **AC-1.1**  停 29 分 → 收 0 元"])
 
+    def test_parenthetical_annotation_after_marker_is_still_sourced(self):
+        text = (GOOD.replace("← PRD §3", "← PRD §3（限制：問過）")
+                    .replace("← Q-1", "← Q-1（30 分整算免費）"))
+        self.assertEqual(check_spec.unsourced_rules(text), [])
+
+    def test_prose_after_marker_is_unsourced(self):
+        text = GOOD.replace("← PRD §3", "← PRD §3 — 另見 Q-2")
+        self.assertEqual(len(check_spec.unsourced_rules(text)), 1)
+
+
+class CitedParagraphs(unittest.TestCase):
+    def test_all_cited_paragraphs_exist(self):
+        self.assertEqual(check_spec.missing_cited_paragraphs(GOOD), [])
+
+    def test_citation_to_absent_paragraph_is_reported(self):
+        text = GOOD.replace("← PRD §3", "← PRD §9")
+        self.assertEqual(check_spec.missing_cited_paragraphs(text), ["9"])
+
 
 class CheckReadsPrd(unittest.TestCase):
     def test_good_prd_passes_in_spec_only_mode(self):
@@ -98,6 +116,40 @@ class CheckReadsPrd(unittest.TestCase):
 
             self.assertEqual(code, 1)
             self.assertIn("## 原文", out)
+
+    def test_capture_fresh_prd_points_at_discovery(self):
+        fresh = GOOD.replace(
+            "**FR-1**  When 訪客車出場, the system shall 依停留時長計費。 ← PRD §3\n"
+            "- **AC-1.1**  停 29 分 → 收 0 元 ← Q-1\n", "（空）\n")
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_prd(root, fresh)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("bdd-discovery", out)
+            self.assertNotIn("先跑 bdd-capture", out)
+
+    def test_citation_to_absent_paragraph_fails_check(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_prd(root, GOOD.replace("← PRD §3", "← PRD §9"))
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("§9", out)
+
+    def test_shipped_example_prd_passes_prd_only_checks(self):
+        example = (ROOT / "skills" / "bdd-capture" / "examples" / "minimal-prd.md").read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_prd(root, example)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
 
     def test_spec_only_dir_exits_1(self):
         with tempfile.TemporaryDirectory() as d:

@@ -54,7 +54,10 @@ Ask user: 這個 feature 的 slug（kebab-case，用來命名 `specs/<date>-<slu
 需求方沒有偏好就從原文的主詞取一個，講出來讓他改。
 
 `specs/<date>-<slug>/prd.md` 已經存在時 **不重建**，告訴對方它在、狀態是什麼，
-該跑 `bdd-discovery` 繼續。
+該跑 `bdd-discovery` 繼續。唯一例外是 `clarify` 單獨模式留下的三節檔（只有
+`## Document Overview`、`## Open Questions`、`## 原文`）：那是一份還沒有開頭幾節的
+`prd.md`，本 skill 從它的 `## 原文` 補第 2 到第 4 件事，**不碰 `## Open Questions`
+與 `## 原文`**——問答已經在那裡了，搬家只會弄丟 `Q-<n>`。
 
 ---
 
@@ -72,8 +75,8 @@ MUST NOT: 潤飾、補主詞、把「大概半小時」寫成「30 分鐘」。�
 
 照 `references/prd-format.md` 的順序填 `## Background`、`## Goal`、`## Scope — In / Out`、
 `## Personas`、`## Assumptions / Constraints`、`## Success Metrics`。每一句行尾標
-`← PRD §n`——這幾節在這一步**只能**有這一種來源，標記全是 `PRD §` 才對；出現 `推論`
-就是你補了原文沒有的話。
+`← PRD §n`——這幾節在這一步只能有兩種來源：原文（`PRD §n`），或第 3 件事那四題的
+答案（`Q-<n>`）。出現 `推論` 就是你補了原文沒有的話。
 
 原文抽不出來的節，保留標題、寫「原文沒提」。不要替它想一個。
 

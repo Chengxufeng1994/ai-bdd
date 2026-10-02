@@ -4,7 +4,7 @@
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查十五件事，全部是機械性的：
+檢查十六件事，全部是機械性的：
 
   1. 覆蓋——雙向。prd.md 有例子而 feature 沒有的（漏做），
      以及 feature 指向 prd.md 裡不存在的例子（發明出來的驗收條件）。
@@ -13,7 +13,7 @@
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
-     十五項裡只有這一項不會把退出碼變成 1。
+     十六項裡只有這一項不會把退出碼變成 1。
   6. FR 完整性——prd.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      FORMULATION 就無從寫出場景，只能發明。
   7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
@@ -35,17 +35,18 @@
  14. 來源——`## User Stories` 底下每條 FR 與 AC 行尾都要有 `← PRD §x` 或
      `← Q-<n>`。`推論` 不算：規則或例子標推論，就是 agent 自己補的。
  15. `## 原文` 一節在不在——它是 `PRD §x` 唯一的依據。
+ 16. 引用的段落在不在——每個 `← PRD §n` 的 `§n` 都要在 `## 原文` 裡。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 prd.md、
 `## User Stories` 底下沒有任何 story 也各自退出 1——那些是「先跑上一步」，
-不算在上面十五項一致性檢查裡。
+不算在上面十六項一致性檢查裡。
 
-找不到 .feature 不在此列。第 6-15 項只讀 prd.md，而 DISCOVERY 交件到 FORMULATION
+找不到 .feature 不在此列。第 6-16 項只讀 prd.md，而 DISCOVERY 交件到 FORMULATION
 開跑之間正是它們最該跑的時候，所以那時只跳過需要 .feature 的第 1-5 項並在開頭
 明講跳過了哪幾項；prd.md 乾淨就退出 0。
 
 只讀不寫。找不到什麼就說找不到，不猜——但 specs/ 與 .feature 不對稱：
-前者是停，後者是照說不誤，然後把跑得到的十項跑完。
+前者是停，後者是照說不誤，然後把跑得到的十一項跑完。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
 specs/<date>-<feature>/prd.md 同一個 `## User Stories` 段——FR 掛在它的
 story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
@@ -263,7 +264,10 @@ def orphan_frs(text: str) -> list[str]:
     return sorted(set(frs_in_spec(text)) - owned, key=int)
 
 
-SOURCED = re.compile(r"←\s*(PRD §\S+|Q-\d+)\s*$")
+# 標記後面允許一個全形或半形括號的註記（`← Q-4（30 分整算免費）`、
+# `← PRD §5（限制：問過）`），格式參考檔自己的範例就這樣寫；其餘散文不算。
+SOURCED = re.compile(r"←\s*(PRD §\S+?|Q-\d+)\s*(?:[（(][^（()）]*[)）])?\s*$")
+CITED = re.compile(r"←\s*PRD §(\d+)")
 
 
 def unsourced_rules(text: str) -> list[str]:
@@ -288,6 +292,20 @@ def unsourced_rules(text: str) -> list[str]:
         if (is_rule or is_example) and not SOURCED.search(line.rstrip()):
             out.append(line.strip())
     return out
+
+
+def missing_cited_paragraphs(text: str) -> list[str]:
+    """被 `← PRD §n` 引用、但 `## 原文` 裡沒有 `§n` 段落的 n。
+
+    `## 原文` 存在只證明有一段原文，不證明每個標記指得到東西。一個指向
+    不存在段落的 `§n` 跟指對的在檔案上長得一模一樣——這正是 D4 要擋的
+    「悄悄指錯」。只認 `§<數字>` 開頭的段落；原文沿用自己的章節編號時，
+    CAPTURE 要把那個編號寫成 `§n` 形式。
+    """
+    section = re.search(r"^## 原文\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+    present = set(re.findall(r"^§(\d+)", section.group(1), re.M)) if section else set()
+    cited = set(CITED.findall(text))
+    return sorted(cited - present, key=int)
 
 
 def has_verbatim_section(text: str) -> bool:
@@ -342,9 +360,9 @@ def check(root: Path) -> int:
     if not specs_dir.is_dir():
         print(f"找不到 {specs_dir} —— 沒有 CAPTURE／DISCOVERY 的產物可以比對")
         return 1
-    # 十五項裡有十項只讀 prd.md（第 6-15 項）。DISCOVERY 交件到 FORMULATION
+    # 十六項裡有十一項只讀 prd.md（第 6-16 項）。DISCOVERY 交件到 FORMULATION
     # 開跑之間還沒有任何 .feature，而那正是 prd.md 最需要被檢查的時刻——
-    # 早退會讓那十項在整段空窗期一項都跑不到，壞掉的 prd.md 於是要等到
+    # 早退會讓那十一項在整段空窗期一項都跑不到，壞掉的 prd.md 於是要等到
     # 下一個 skill 才被發現。所以缺 .feature 不再是「不能跑」，是「跑得到
     # 的先跑，跑不到的明講跳過」。
     spec_only = feat_dir is None
@@ -352,7 +370,7 @@ def check(root: Path) -> int:
     problems = 0
     if spec_only:
         print(f"specs: {specs_dir}    feature: 找不到任何 .feature\n"
-              f"只跑 prd.md 自己的十項檢查；覆蓋比對、狀態 tag、方言陷阱、"
+              f"只跑 prd.md 自己的十一項檢查；覆蓋比對、狀態 tag、方言陷阱、"
               f"缺口註解、樣板重用率五項需要 .feature，跳過。")
     else:
         print(f"specs: {specs_dir}    feature: {feat_dir}\n")
@@ -370,6 +388,12 @@ def check(root: Path) -> int:
             print(f"✗ {spec_path.parent.name} 的 prd.md 沒有 `## 原文` 一節，"
                   f"每個 `← PRD §x` 都指向不存在的話 —— CAPTURE 的產物不完整")
             problems += 1
+        else:
+            absent = missing_cited_paragraphs(stext)
+            if absent:
+                print(f"✗ {spec_path.parent.name} 引用了 `## 原文` 裡沒有的段落："
+                      f"{', '.join('§' + n for n in absent)} —— 標記指向一句沒人說過的話")
+                problems += 1
 
         unsourced = unsourced_rules(stext)
         if unsourced:
@@ -396,8 +420,14 @@ def check(root: Path) -> int:
             problems += 1
 
         if not frs:
-            print(f"✗ {spec_path.parent.name} 的 prd.md 沒有 `## User Stories` "
-                  f"一節、或該節底下沒有任何 FR —— 先跑 bdd-capture")
+            # 兩種空法，下一步不同：沒有 story 是 CAPTURE 沒跑；有 story 但
+            # 一條 FR 都沒有，正是 CAPTURE 交出來的形狀——該跑的是 DISCOVERY。
+            if stories_in_spec(stext):
+                print(f"✗ {spec_path.parent.name} 的 prd.md 有 story 但底下沒有任何 FR "
+                      f"—— CAPTURE 的半成品，先跑 bdd-discovery")
+            else:
+                print(f"✗ {spec_path.parent.name} 的 prd.md 沒有 `## User Stories` "
+                      f"一節、或該節底下沒有任何 story —— 先跑 bdd-capture")
             problems += 1
             continue
 
