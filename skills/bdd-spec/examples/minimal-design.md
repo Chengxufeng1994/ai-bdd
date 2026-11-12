@@ -2,7 +2,7 @@
 
 ## Document Overview
 
-**最後更新**：2026-09-14　**對應 PRD**：prd.md @ 已對焦
+**最後更新**：2026-09-14　**對應 spec**：spec.md @ 已對焦
 
 ### 版本修訂歷史
 
@@ -74,7 +74,7 @@
 
 ## 回 DISCOVERY 補問
 
-（無）——FR 與 AC 在 prd.md 已對焦時全部有前置狀態
+（無）——FR 與 AC 在 spec.md 已對焦時全部有前置狀態
 
 ## Further Notes
 

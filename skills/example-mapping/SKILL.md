@@ -2,7 +2,7 @@
 name: example-mapping
 description: >
   用四色卡把一則 story 攤成規則與例子——黃卡 story、藍卡規則、綠卡例子、紅卡問題，
-  攤完跑四條診斷並提出就緒判定。可讀 `prd.md`、`bdd-discovery` 進行中的訪談，
+  攤完跑四條診斷並提出就緒判定。可讀 `spec.md`、`bdd-discovery` 進行中的訪談，
   也可單獨對一段描述跑；逼問還在進行的那個時機只攤地圖看形狀，不提就緒判定。
   觸發詞：「攤成四色卡」「example mapping」「跑一次 mapping」「這則 story 就緒了嗎」
   「規則跟例子攤開來看」「地圖長什麼樣」「紅卡還剩幾張」「這則可以開工了嗎」。
@@ -12,7 +12,7 @@ description: >
 
 # EXAMPLE MAPPING — 把一則 story 攤成四色卡
 
-輸入是一則 story、一份 `prd.md`，或 `bdd-discovery` 一場進行中的訪談，輸出是
+輸入是一則 story、一份 `spec.md`，或 `bdd-discovery` 一場進行中的訪談，輸出是
 **攤開的地圖 ＋ 四條診斷 ＋ 一個就緒問句**——只有 `流程內·逼問中` 例外，那個時機
 攤地圖、讀診斷，但不給判讀也不提就緒問句（三個時機見〈三種模式〉）。
 
@@ -21,7 +21,7 @@ description: >
 
 ## 四色卡在這裡叫什麼
 
-| 卡 | Example Mapping | `prd.md` |
+| 卡 | Example Mapping | `spec.md` |
 | --- | --- | --- |
 | 🟨 | story | `US-<n>` |
 | 🟦 | rule | `FR-<n>` |
@@ -32,7 +32,7 @@ description: >
 criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**。在主流 PRD／Jira 用法裡，AC
 是那串 Given/When/Then。
 
-`prd.md` 用的是後者，因為**產物是 PRD，讀者帶著 PRD 的詞彙來**。手法的詞彙不覆蓋
+`spec.md` 用的是後者，因為**產物是 PRD，讀者帶著 PRD 的詞彙來**。手法的詞彙不覆蓋
 產物的詞彙。讀過 Cucumber 那篇文章的人看到這張表會覺得綠卡對錯了——沒有，是同一個
 詞在兩個社群有兩個意思。
 
@@ -41,7 +41,7 @@ criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**。在主流 PR
 - `bdd-discovery` 逼問進行中，要把已經問出來的東西攤在桌上看形狀
 - `bdd-discovery` 前沿空了，要跑就緒判定
 - 想知道一則 story 就緒了沒
-- 手上有一份 `prd.md`，想看它的形狀而不是讀它的字
+- 手上有一份 `spec.md`，想看它的形狀而不是讀它的字
 - 單獨拿一則 story 來攤，不走 BDD 流程
 
 ## Skill Boundaries
@@ -95,7 +95,7 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 | 🟩 AC 堆在同一條 FR | 這條規則該拆 | 同左 | `bdd-discovery` |
 | ⏱ 25 分鐘 map 不完 | 太大或太不確定 | **沒有時鐘** ← 見下 | `clarify` |
 
-🟦 這條之所以照原意當阻塞：分組只有一層，`prd.md` 的一個 `### US-<n> · <slug>`
+🟦 這條之所以照原意當阻塞：分組只有一層，`spec.md` 的一個 `### US-<n> · <slug>`
 直接對應一個 `.feature` 檔。一則掛了
 太多規則的 story，就是規則塞不進同一個檔案，不是分組角度不同、換個人切就沒事。
 
@@ -128,13 +128,13 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 你要 (a) 先去問消防設備師，還是 (b) 認了這個風險先往下走？
 ```
 
-MUST NOT: agent 自己把 `prd.md` `## Document Overview` 的 `狀態` 推到 `已對焦`。
+MUST NOT: agent 自己把 `spec.md` `## Document Overview` 的 `狀態` 推到 `已對焦`。
 
 **本 skill 是唯一寫 `已對焦` 的 skill**，但寫的是使用者的決定：
 
 | 狀態 | 誰寫 | 什麼時候 |
 | --- | --- | --- |
-| `澄清中` | `bdd-capture` | 建檔時 |
+| `澄清中` | `bdd-discovery` | 開場建檔時 |
 | `待對焦` | `bdd-discovery` | 前沿空了、紅卡清空 |
 | `已對焦` | 本 skill | 使用者在上面那個問句回答「就緒」 |
 | `已凍結` | 尚無寫入者 | PLAN 消費過之後 |
@@ -151,9 +151,9 @@ MUST NOT: agent 自己把 `prd.md` `## Document Overview` 的 `狀態` 推到 `�
 
 | 模式 | 輸入 | 輸出 |
 | --- | --- | --- |
-| 流程內·逼問中 | `prd.md` 狀態 `澄清中`，`bdd-discovery` 一輪記完後呼叫 | 攤開地圖看形狀；不給判讀、不提就緒問句、不寫狀態 |
-| 流程內·前沿空了 | `prd.md` 狀態 `待對焦`，由 `bdd-discovery` 收尾時呼叫或使用者指定 | 地圖 ＋ 四條診斷 ＋ 就緒問句；使用者答「就緒」才寫 `已對焦` |
+| 流程內·逼問中 | `spec.md` 狀態 `澄清中`，`bdd-discovery` 一輪記完後呼叫 | 攤開地圖看形狀；不給判讀、不提就緒問句、不寫狀態 |
+| 流程內·前沿空了 | `spec.md` 狀態 `待對焦`，由 `bdd-discovery` 收尾時呼叫或使用者指定 | 地圖 ＋ 四條診斷 ＋ 就緒問句；使用者答「就緒」才寫 `已對焦` |
 | 單獨 | 一段 story 的描述 | 同樣的地圖與診斷，**不寫任何檔案** |
 
 MUST NOT: 單獨模式產出一份 `example-map.md`。**第二個裝規則與例子的地方會跟
-`prd.md` 漂移**。要留下來就先跑 `bdd-capture` 開一份 `prd.md`，再寫進去。
+`spec.md` 漂移**。要留下來就先用 `bdd-discovery` 開一份 `spec.md`，再寫進去。

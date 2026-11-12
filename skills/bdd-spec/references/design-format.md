@@ -4,10 +4,10 @@
 
 一個 feature 一份，路徑 `specs/<date>-<feature>/design.md`。它只裝**技術設計**：
 seam、模組、介面、API 契約、schema、測試層級、風險。業務內容（story、FR、AC、
-角色、範圍、開放問題）住同目錄的 `prd.md`，格式見
+角色、範圍、開放問題）住同目錄的 `spec.md`，格式見
 `../../bdd-discovery/references/spec-format.md`——本文件不重複那些節。
 
-`design.md` 是拋棄式快照，實作一開始就會過期；`prd.md` 活得比它久。壽命不同的
+`design.md` 是拋棄式快照，實作一開始就會過期；`spec.md` 活得比它久。壽命不同的
 東西不放同一個檔。
 
 沒有內容的節**保留標題並寫為什麼空**，不要刪掉。
@@ -18,7 +18,7 @@ seam、模組、介面、API 契約、schema、測試層級、風險。業務內
 
 | 章節 | 裝什麼 |
 | --- | --- |
-| `## Document Overview` | 最後更新、對應的 `prd.md` 狀態、版本修訂歷史、核心關係人（照抄 `prd.md`） |
+| `## Document Overview` | 最後更新、對應的 `spec.md` 狀態、版本修訂歷史、核心關係人（照抄 `spec.md`） |
 | `## Tech Preferences & Constraints` | 語言、框架、不准引入的依賴——**我們自己**的技術選型偏好與禁令 |
 | `## Known Boundaries` | `總是要做`／`要先問`／`絕對不做` 三張清單 |
 | `## Implementation Decisions` | 動哪些模組、介面、API 契約、Schema、架構決定 |
@@ -37,7 +37,7 @@ seam、模組、介面、API 契約、schema、測試層級、風險。業務內
 ```markdown
 ## Document Overview
 
-**最後更新**：2026-09-10　**對應 PRD**：prd.md @ 已對焦
+**最後更新**：2026-09-10　**對應 spec**：spec.md @ 已對焦
 
 ### 版本修訂歷史
 
@@ -53,14 +53,14 @@ seam、模組、介面、API 契約、schema、測試層級、風險。業務內
 | 柵欄廠商 | 已發包的柵欄／繳費機 | 只答技術現況，不做決定 |
 ```
 
-就緒狀態住 `prd.md`，這裡只記對應的那個值——`bdd-spec` 只在它是 `已對焦` 時寫
+就緒狀態住 `spec.md`，這裡只記對應的那個值——`bdd-spec` 只在它是 `已對焦` 時寫
 這份檔。
 
 **版本修訂歷史的觸發條件**：任何動到 seam、介面、schema 的改動都要留一列——
 `bdd-plan` 可能已經照著切了票。「為什麼」那欄不可省。
 
-**核心關係人整張表照抄 `prd.md` 的 `## Document Overview`，不增列、不改寫
-`決策權`。** `prd.md` 缺那張表就寫一行說缺了、回 `bdd-discovery` 登記，不要自己補。
+**核心關係人整張表照抄 `spec.md` 的 `## Document Overview`，不增列、不改寫
+`決策權`。** `spec.md` 缺那張表就寫一行說缺了、回 `bdd-discovery` 登記，不要自己補。
 
 ## 來源標記：三選一
 
@@ -71,8 +71,8 @@ seam、模組、介面、API 契約、schema、測試層級、風險。業務內
 
 | 標記 | 意思 |
 | --- | --- |
-| `PRD §x` | 同目錄 `prd.md` 的 `## 原文` 這樣寫（引用它的章節或段落）——需求方帶來的原始輸入的逐字副本 |
-| `Q-<n>` | 來自 `prd.md` `## Open Questions` 某一題的答案，`<n>` 對應那一列的 `Q` 欄 |
+| `PRD §x` | 同目錄 `spec.md` 的 `## 原文` 這樣寫（引用它的章節或段落）——需求方帶來的原始輸入的逐字副本 |
+| `Q-<n>` | 來自 `spec.md` `## Open Questions` 某一題的答案，`<n>` 對應那一列的 `Q` 欄 |
 | `推論` | 兩者都不是，是從別的地方推導出來的 |
 
 寫法：行尾加 `← <標記>`，例如：
@@ -255,7 +255,7 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 - FR-2 沒說月租到期當天算不算有效，seam 的 Given 寫不出來 —— 影響 AC-2.1 的前置狀態
 ```
 
-MUST NOT: 在這裡順手決定掉。`bdd-spec` 與 `bdd-formulation` 都不得寫 `prd.md`，
+MUST NOT: 在這裡順手決定掉。`bdd-spec` 與 `bdd-formulation` 都不得寫 `spec.md`，
 所以洞只能記在這裡；DISCOVERY 下一輪把每一條開成 `Q-<n>`，答案長成 FR／AC 之後，
 這一節對應的列才刪。沒有洞就寫「（無）」。
 
@@ -265,7 +265,7 @@ MUST NOT: 在這裡順手決定掉。`bdd-spec` 與 `bdd-formulation` 都不得�
 schema 一節全退化成「見共用檔」），而且兩種檔案各用一套節號、意思只對得上一半
 ——**部分對齊比完全不對齊更危險**，讀的人會假設對齊然後在三個節上讀錯。
 
-API 契約與 schema 天生跨 story，只有並排才看得見衝突。`prd.md` 的 story 再多，`design.md` 仍然一個 feature 一份——story
+API 契約與 schema 天生跨 story，只有並排才看得見衝突。`spec.md` 的 story 再多，`design.md` 仍然一個 feature 一份——story
 是切分單位，不是檔案邊界。
 
 ---

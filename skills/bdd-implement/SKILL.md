@@ -4,8 +4,8 @@ description: >
   照 `plan.md` 一張票一個 session，outside-in 把票做到綠：先讓這張票的場景紅、
   domain 規則先寫 table-driven 單元測試、再接 use case／契約／step definition，
   場景全綠後把 `.feature` 從 `@ready` 翻到 `@review`、勾掉 `plan.md` 的驗收條件、
-  跑專案的驗證閘門。不改 `prd.md`、不改 `.feature` 的例子、不在 handler 放規則。
-  BDD 七步流程的 IMPLEMENT 步驟。
+  跑專案的驗證閘門。不改 `spec.md`、不改 `.feature` 的例子、不在 handler 放規則。
+  BDD 六步流程的 IMPLEMENT 步驟。
   觸發詞：「做第 N 張票」「開始實作」「bdd-implement 03」「把這張票做綠」
   「寫 step definition」「讓場景變綠」「照 plan 做」「下一張票」。
   English: implement ticket N, make the scenarios green, write the step
@@ -21,7 +21,7 @@ description: >
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
 才有理由。
 
-不改 `prd.md`。不改 `.feature` 的例子。不做 `design.md` 沒做的設計決定——發現有洞就
+不改 `spec.md`。不改 `.feature` 的例子。不做 `design.md` 沒做的設計決定——發現有洞就
 記下來，不順手補。
 
 ## 使用時機
@@ -37,7 +37,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 - 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」→ REVIEW（`bdd-review`，未實作）
 - 紅的是 bug 還是規格過期 → VERIFY（`bdd-verify`，未實作）；本 skill 只處理自己這張票
   讓紅變綠，不判讀別人的紅
-- 要改規則或例子 → 回 `bdd-discovery` 開一題；本 skill 不碰 `prd.md`、不碰 `.feature` 的例子
+- 要改規則或例子 → 回 `bdd-discovery` 開一題；本 skill 不碰 `spec.md`、不碰 `.feature` 的例子
 
 ## 參考檔案
 
@@ -54,7 +54,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
    Blocked by 全部完成、驗收條件還沒全勾的票，講出來讓對方改
 2. **驗證閘門是什麼命令**：讀專案的 README／Makefile（實測場是 `make verify`）。
    沒有就問——一張票「做完」的定義就是這個命令綠，不能猜
-3. 讀得到 `specs/<date>-<feature>/plan.md`、`design.md`、`prd.md` 與這張票涵蓋的 `.feature`
+3. 讀得到 `specs/<date>-<feature>/plan.md`、`design.md`、`spec.md` 與這張票涵蓋的 `.feature`
 
 NEVER: `design.md` 不存在時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
@@ -70,7 +70,7 @@ MUST: 一個 session 一張票。撿起票的人沒看過 `design.md` 以外的�
 
 讀 `plan.md` 那一節：交付什麼行為、涵蓋哪些 `@example-N.M`、內迴圈要寫哪些單元測試、
 驗收條件。再讀 `design.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
-——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個例子在哪一層測。`prd.md` 只讀
+——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個例子在哪一層測。`spec.md` 只讀
 對應的 FR 與 AC，看規則的原話。
 
 把這張票涵蓋的 `.feature` 檔從 `@ready` 改成 `@wip`（`state-tags.md`）。下一個 session
@@ -93,7 +93,7 @@ definition 已經被別的場景定義過，而它的斷言沒抓到這張票要
 
 `design.md` 的 `## Testing Decisions` 說了哪些例子在 unit 層。對每一條有分支的規則：
 
-1. 在 domain 寫 **table-driven** 單元測試，列就是 `prd.md` 的 AC 值加上 AC 沒寫但
+1. 在 domain 寫 **table-driven** 單元測試，列就是 `spec.md` 的 AC 值加上 AC 沒寫但
    規則隱含的邊界（24 小時又 1 分鐘、到期日的最後一秒）——跑，看它因為「還沒有這個
    套件／函式」而紅
 2. 寫最少的 domain 程式讓它綠。規則只住這裡；use case 與 handler 裡出現算式就是
@@ -157,7 +157,7 @@ is stale」。
 
 ### 不越界
 
-MUST NOT: 改 `prd.md` 或 `.feature` 的例子。例子跟規則打架、規則有洞、少一個邊界——
+MUST NOT: 改 `spec.md` 或 `.feature` 的例子。例子跟規則打架、規則有洞、少一個邊界——
 記進 `plan.md` 的 `## 缺口` 或 `design.md` 的 `## 回 DISCOVERY 補問`，回報，然後
 照現在的規格做。一個人在 IMPLEMENT 改掉驗收條件，等於沒有人同意過那條規格。
 
@@ -175,7 +175,7 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 └── specs/<date>-<feature>/plan.md   只勾驗收條件、寫缺口
 ```
 
-MUST: 不修改 `prd.md`、`design.md`（除了讀）、`.feature` 的任何場景文字。
+MUST: 不修改 `spec.md`、`design.md`（除了讀）、`.feature` 的任何場景文字。
 
 ## 完成後
 
@@ -188,4 +188,4 @@ MUST: 不修改 `prd.md`、`design.md`（除了讀）、`.feature` 的任何場�
 5. 下一張票是哪一張（`plan.md` 裡 Blocked by 剛被解開的那張）
 
 全部票做完 → `.feature` 全部 `@review`，下一步 REVIEW（未實作：先人工對照
-`prd.md` 的 AC 與 `.feature`，跑 `check_spec.py` 看鏈有沒有斷）。
+`spec.md` 的 AC 與 `.feature`，跑 `check_spec.py` 看鏈有沒有斷）。

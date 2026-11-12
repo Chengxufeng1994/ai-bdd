@@ -1,21 +1,21 @@
 ---
 name: bdd-formulation
 description: >
-  把已對焦的 `prd.md` 翻成可執行的 Gherkin `.feature`——FR 變成 `Rule:` 區塊、
+  把已對焦的 `spec.md` 翻成可執行的 Gherkin `.feature`——FR 變成 `Rule:` 區塊、
   AC 變成 `Example:`、編號變成 tag 帶下去，步驟套一組封閉文法讓 step definition
-  能重用，最後跑一次雙向覆蓋稽核。不訪談、不發明例子、不改 `prd.md`。
+  能重用，最後跑一次雙向覆蓋稽核。不訪談、不發明例子、不改 `spec.md`。
   BDD 三實踐裡的 Formulation。
   觸發詞：「寫成 feature 檔」「轉成 Gherkin」「產出驗收情境」「把例子寫成場景」
   「寫 .feature」「產生驗收測試規格」「這些規則的 scenario 長怎樣」
   「prd 已對焦了下一步」「跟 PM 對答案」。
-  English: turn prd.md into Gherkin, write the feature file, generate
+  English: turn spec.md into Gherkin, write the feature file, generate
   acceptance scenarios, convert rules and examples into scenarios,
   formulation step of BDD.
 ---
 
-# FORMULATION — 把 `prd.md` 翻成可執行的規格
+# FORMULATION — 把 `spec.md` 翻成可執行的規格
 
-一份已對焦的 `prd.md` 進來，出去的是 `.feature`：**FR 變成 `Rule:` 區塊、
+一份已對焦的 `spec.md` 進來，出去的是 `.feature`：**FR 變成 `Rule:` 區塊、
 AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋表也要產，
 但它是回報給人的，不是落地的檔案——缺口同時要就地註解進 `.feature`。
 
@@ -27,17 +27,17 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 
 ## 使用時機
 
-- `prd.md` 已對焦，要把 FR 與 AC 變成 `.feature`
+- `spec.md` 已對焦，要把 FR 與 AC 變成 `.feature`
 - 要跟 PM 或需求方對答案——攤開規則與例子請他點頭
 - 準備進 IMPLEMENT，需要先有紅燈的情境
 
 ## Skill Boundaries
 
-- `prd.md` 不存在 → `bdd-capture`；還有紅卡或狀態不是 `已對焦` → `bdd-discovery`／`example-mapping`
+- `spec.md` 不存在 → `bdd-discovery`，它會建；還有紅卡或狀態不是 `已對焦` → `bdd-discovery`／`example-mapping`
 - 要決定 seam、寫 `design.md` 或 `docs/CONTEXT.md` → `bdd-spec`；要切 story → `story-splitting`
 - 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十五項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md`
 - 要決定實作順序、切票 → 改用 `bdd-plan`；情境跑在哪一層測試是 seam，回 `bdd-spec`
-- 產出是 `.feature`，**不是** `prd.md`、`design.md`、`openapi.yaml`、migration 或任何可執行的檔案
+- 產出是 `.feature`，**不是** `spec.md`、`design.md`、`openapi.yaml`、migration 或任何可執行的檔案
 
 ## 參考檔案
 
@@ -47,7 +47,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 - `references/coverage-report.md` — 覆蓋表的格式
 - `references/artifact-location.md` — `.feature` 該放哪裡
 - `examples/anti-patterns.md` — 寫完自檢
-- `scripts/check_spec.py` — 稽核 `prd.md` 自己的形狀；有 `.feature` 之後再加上兩者的一致性
+- `scripts/check_spec.py` — 稽核 `spec.md` 自己的形狀；有 `.feature` 之後再加上兩者的一致性
 
 十一份逐案範例的索引在下面「這份 `.feature` 是寫給誰讀的」。
 
@@ -55,12 +55,12 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 
 不必問。`.feature` 的位置偵測得到（見「產物隔離」），要跑哪些 story 有預設值。
 
-MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺陷。`prd.md` 的
+MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺陷。`spec.md` 的
 `## Open Questions` 還有待答時，那些對應的規則就寫不出來，不要順手決定掉。
 
-NEVER: `prd.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述直接寫 `.feature`。那會
-產出一份沒有人同意過的規格，而它看起來跟真的一模一樣。沒有 `prd.md` 就先跑
-`bdd-capture` → `bdd-discovery`。
+NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述直接寫 `.feature`。那會
+產出一份沒有人同意過的規格，而它看起來跟真的一模一樣。沒有 `spec.md` 就先跑
+`bdd-discovery`，它會建。
 
 ## 這份 `.feature` 是寫給誰讀的
 
@@ -100,17 +100,17 @@ NEVER: `prd.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述直
 
 | 讀什麼 | 為了什麼 |
 | --- | --- |
-| `specs/<date>-<feature>/prd.md` | **唯一的規範來源**——`## User Stories` 底下的 FR 與 AC 是這一步要翻譯的全部內容，`## Personas` 是 `Feature:` 敘述裡角色的來源，`## Scope — In / Out` 劃出碰不得的界線 |
+| `specs/<date>-<feature>/spec.md` | **唯一的規範來源**——`## User Stories` 底下的 FR 與 AC 是這一步要翻譯的全部內容，`## Personas` 是 `Feature:` 敘述裡角色的來源，`## Scope — In / Out` 劃出碰不得的界線 |
 | `docs/CONTEXT.md` | **措辭的來源**——同一個概念在不同 `.feature` 裡換一個說法，封閉文法的重用就從第一份開始漂移 |
 | 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
 
 第三項最容易被跳過，代價最貴，而且**在封閉文法下更貴**：文法的價值全在重用，
 另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
 
-IMPORTANT: `prd.md` 由 CAPTURE 與 DISCOVERY 維護，本 skill **不得寫入**。要補一條
+IMPORTANT: `spec.md` 由 DISCOVERY 維護，本 skill **不得寫入**。要補一條
 規則、改一個例子、重排一個編號，都回 `bdd-discovery`。
 
-MUST: 只做 `prd.md` 的 `## Document Overview` 裡 `狀態` 已經是 `已對焦` 的 feature。
+MUST: 只做 `spec.md` 的 `## Document Overview` 裡 `狀態` 已經是 `已對焦` 的 feature。
 還停在 `澄清中` 或 `待對焦` 的整份跳過，並明講該回哪個 skill——
 把還沒定案的東西寫成場景，等於**把不確定性從一個顯眼的問題檔搬進一份看起來
 已完成的規格**，之後沒有人會回頭質疑它。
@@ -120,7 +120,7 @@ MUST: 只做 `prd.md` 的 `## Document Overview` 裡 `狀態` 已經是 `已對�
 ### 2. 規則對應 Rule，例子對應 Example
 
 ```
-prd.md 的 `## User Stories` 段      .feature
+spec.md 的 `## User Stories` 段      .feature
 ─────────────────────────────────────────────────────────────
 這則 story 的切法說明                →    Feature: 與其下的敘述
 **FR-2**  影片進度不可回退            →    Rule: 影片進度必須單調遞增
@@ -128,23 +128,23 @@ prd.md 的 `## User Stories` 段      .feature
                                           Example: 進度回退時操作失敗
 ```
 
-| `prd.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
+| `spec.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
 | --- | --- |
 | `FR-<n>` | `@rule-<n>` |
 | `AC-<n>.<m>` | `@example-<n>.<m>` |
 
-**tag 不跟著 `prd.md` 改名。** `.feature` 是 Gherkin 的產物，`@example` 是 Gherkin
-的字；`prd.md` 裡的 FR／AC 是 PRD 的字。接縫寫明對應就夠了。
+**tag 不跟著 `spec.md` 改名。** `.feature` 是 Gherkin 的產物，`@example` 是 Gherkin
+的字；`spec.md` 裡的 FR／AC 是 PRD 的字。接縫寫明對應就夠了。
 
-用 `Example:` 不用 `Scenario:`（Gherkin 的同義字）。`prd.md` 裡叫 Example，這裡
+用 `Example:` 不用 `Scenario:`（Gherkin 的同義字）。`spec.md` 裡叫 Example，這裡
 也叫 Example——同一個東西在鏈上換名字，讀的人就得自己對應。
 
-MUST: 每個 Example 至少對應一個場景，且**不新增 `prd.md` 裡沒有的例子**。
+MUST: 每個 Example 至少對應一個場景，且**不新增 `spec.md` 裡沒有的例子**。
 
 覺得少了一個邊界時，那是 DISCOVERY 的發現，不是 SPEC 的產出——回去補一題，
 讓它經過同樣的討論。在這裡順手加一個場景，等於一個人決定了驗收條件。
 
-**唯一的例外是識別碼。** `prd.md` 寫「物件導向基礎」，`.feature` 需要一個 ID 才能
+**唯一的例外是識別碼。** `spec.md` 寫「物件導向基礎」，`.feature` 需要一個 ID 才能
 穩定指涉。編一個不算發明驗收條件——**ID 是定址，不是行為**。判準：把 ID 全部換掉，
 有沒有任何一條斷言的真假會變？會變就不是 ID，是行為。
 
@@ -163,7 +163,7 @@ Example: 進度回退時操作失敗
 `@rule-2` 讓你一次跑完某條規則的所有場景（實測：`--tags @rule-2` 會選到該規則
 底下全部場景，含 Scenario Outline 展開的每一列）。
 
-MUST NOT: 事後重排已經寫進 `prd.md` 的 FR 與 AC 編號。**這批編號在 `bdd-discovery`
+MUST NOT: 事後重排已經寫進 `spec.md` 的 FR 與 AC 編號。**這批編號在 `bdd-discovery`
 誕生**——本 skill 只把它們原封不動地搬進 `.feature` 的 tag。
 下游（`bdd-plan`、之後新增的場景）回指的是
 `@example-2.2` 這個 tag，不是那句規則的文字本身；重排編號等於讓那些引用
@@ -240,13 +240,13 @@ MUST: 在 `.feature` 就地留註解，寫出算式與差異。回報會隨對�
 而下一個人拿 `.feature` 與原始輸入的數字一對，第一個念頭會是「SPEC 亂編」。
 
 MUST: 同時回報給使用者，建議回 `bdd-discovery` 開一題，標明來源要更正。
-`.feature` 改了不代表 `prd.md` 就對了——它仍然是錯的，沒有人去更正過；本 skill
-與 `bdd-spec` 都不得改 `prd.md`。
+`.feature` 改了不代表 `spec.md` 就對了——它仍然是錯的，沒有人去更正過；本 skill
+與 `bdd-spec` 都不得改 `spec.md`。
 
 MUST NOT: 照抄壞掉的數字。那會產出一個**任何正確實作都永遠過不了**的場景，
 而它看起來跟其他場景一模一樣。
 
-MUST NOT: 寫入 `prd.md`，包括它的 `## 原文`——那是 CAPTURE 與 DISCOVERY 的產物。
+MUST NOT: 寫入 `spec.md`，包括它的 `## 原文`——那是 DISCOVERY 的產物。
 
 **判準的界線：** 只有在**例子的錯可以從規則推導出來**時才適用。規則本身含糊、
 兩種讀法都說得通的時候，你無法知道是規則寫錯還是例子寫錯——那時候不要挑，
@@ -351,10 +351,10 @@ IMPORTANT: 一個 Outline 涵蓋 Example 3.1 到 3.3 時，**三個 tag 都要�
 
 ### 6. 稽核，然後才算完成
 
-**這一步跑在最後**——它比對 `prd.md` `## User Stories` 段與寫好的
+**這一步跑在最後**——它比對 `spec.md` `## User Stories` 段與寫好的
 `.feature`，兩者都要存在才對得起來。
 
-`prd.md` 的 `## User Stories` 段一次裝下兩件事：FR／AC 的定版內容，與
+`spec.md` 的 `## User Stories` 段一次裝下兩件事：FR／AC 的定版內容，與
 這則 story 涵蓋哪些 FR——FR 掛在它的 story 底下，走一遍就同時拿到兩者，
 不再是兩份文件、兩份清單。合起來才拼得出「這個 `.feature` 該有哪些
 `@example` tag」。
@@ -369,7 +369,7 @@ python3 <skill>/scripts/check_spec.py <專案根>
 因為「上游已經跑過了」而省略。
 
 檢查十五件事：雙向覆蓋比對（漏做／發明）、每個檔恰好一個狀態 tag、
-中文「規則:」誤用、缺口有沒有就地註解、**步驟樣板重用率**、`prd.md` 裡有沒有
+中文「規則:」誤用、缺口有沒有就地註解、**步驟樣板重用率**、`spec.md` 裡有沒有
 FR 完全沒掛任何 AC（沒有例子，這一步就無從寫出場景，只能發明）、`## User Stories`
 底下有沒有 `#### FR-2` 這種 v2 標題形式（對解析器是「不存在」不是「錯」）、
 `### US-<n> · <slug>` 這種 story 標題形式對不對（差一點的標題對解析器也是
@@ -390,7 +390,7 @@ FR 完全沒掛任何 AC（沒有例子，這一步就無從寫出場景，只�
 
 MUST: 產出覆蓋表，缺的要列出來、寫出為什麼，不要只說「完成」。
 MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註解**——回報會隨對話
-消失，檔案會留著。半年後有人拿 `prd.md` 和 `.feature` 對一次，看到沒有解釋的洞，
+消失，檔案會留著。半年後有人拿 `spec.md` 和 `.feature` 對一次，看到沒有解釋的洞，
 只有兩條路：當成漏做去補上（於是把還在討論的東西變成驗收條件），或花半小時考古。
 
 格式照抄 `references/coverage-report.md`。
@@ -402,7 +402,7 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 ```
 features/<story-slug>.feature     FORMULATION  ★ 本步驟唯一的產物
 
-（prd.md 是 CAPTURE／DISCOVERY 的產物，本 skill 只讀不寫；design.md 是 bdd-spec 的，本 skill 不讀也不寫）
+（spec.md 是 DISCOVERY 的產物，本 skill 只讀不寫；design.md 是 bdd-spec 的，本 skill 不讀也不寫）
 ```
 
 `.feature` 的格式全在本節（關鍵字、狀態 tag、型別 tag、方言陷阱）與
@@ -414,9 +414,9 @@ features/<story-slug>.feature     FORMULATION  ★ 本步驟唯一的產物
 **關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
 
 完整骨架見步驟 3 的範例。`Feature:` 底下那段敘述寫的是這則 story 的
-「作為⋯我要⋯以便⋯」——角色抄 `prd.md` 的 `## Personas`，能力與價值從這則
+「作為⋯我要⋯以便⋯」——角色抄 `spec.md` 的 `## Personas`，能力與價值從這則
 story 涵蓋的那幾條 FR 濃縮而來（`## User Stories` 裡的切法說明就是濃縮的
-起點）。它是這份規格存在的理由，而讀 `.feature` 的人不會同時開著 `prd.md`。
+起點）。它是這份規格存在的理由，而讀 `.feature` 的人不會同時開著 `spec.md`。
 
 ### 狀態 tag —— 每個檔恰好一個
 
@@ -463,7 +463,7 @@ zh-TW 方言**沒有**「規則」這個字（`zh-CN` 有「规则」、`ja` 有
 ## 產物隔離
 
 MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既有的 `.feature`、
-`prd.md`、`design.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
+`spec.md`、`design.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
 就跟隨，沒有就用專案根的 `features/`。理由與例外 → `references/artifact-location.md`。
 
 ## 完成後
@@ -473,7 +473,7 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 1. 產了哪些 `.feature`、各幾個場景、**幾個不重複步驟樣板**
 2. **覆蓋表**——哪些例子還沒有場景，為什麼
 3. 哪些象限是空的，空得合不合理
-4. `prd.md` 有沒有需要回 DISCOVERY 補的地方（規則與例子打架、`check_spec.py` 抓到的
+4. `spec.md` 有沒有需要回 DISCOVERY 補的地方（規則與例子打架、`check_spec.py` 抓到的
    FR 沒掛任何 AC 或沒有來源）——本 skill 不改它
 
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
