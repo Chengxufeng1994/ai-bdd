@@ -32,7 +32,7 @@ description: >
 - 要把需求**問**清楚、找隱含假設、填規則與例子 → 改用 `bdd-discovery`，它讀本 skill 的產物
 - 要把一則太大的 story 切開 → 粗切是本 skill 的事，但沿規則細切要等規則問出來，那時用 `story-splitting`
 - 要攤四色卡、判定就緒 → 改用 `example-mapping`
-- 本 skill 不問十六個面向、不寫 FR／AC、不寫 Gherkin、不碰 `spec.md`
+- 本 skill 不問十六個面向、不寫 FR／AC、不寫 Gherkin、不碰 `design.md`
 
 ## 參考檔案
 
@@ -153,7 +153,7 @@ specs/<date>-<feature>/
 └── prd.md     CAPTURE  ★ 狀態 澄清中；story 底下三個分組空著；## 原文 逐字
 ```
 
-MUST: 只寫這一個檔。不建 `spec.md`、不建 `.feature`、不寫 `docs/` 底下任何東西。
+MUST: 只寫這一個檔。不建 `design.md`、不建 `.feature`、不寫 `docs/` 底下任何東西。
 
 ## 完成後
 

@@ -2,15 +2,15 @@
 
 照抄即可。讀這份的時機：步驟 3 之後，準備寫檔的時候。
 
-一個 feature 一份，路徑 `specs/<date>-<feature>/plan.md`，跟同目錄的 `spec.md`
+一個 feature 一份，路徑 `specs/<date>-<feature>/plan.md`，跟同目錄的 `design.md`
 配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
 
 ```markdown
 # 實作計畫
 
-**來源**: `spec.md`（<日期>）＋ `features/` 底下標 `@ready` 的 <N> 個檔
+**來源**: `design.md`（<日期>）＋ `features/` 底下標 `@ready` 的 <N> 個檔
 **日期**: <YYYY-MM-DD>
-**seam**: <照抄 spec.md 的 Testing Decisions>
+**seam**: <照抄 design.md 的 Testing Decisions>
 
 ## 前置整理（prefactoring）
 
@@ -35,7 +35,7 @@
 
 **涵蓋場景**: `@example-1.1`、`@example-1.2`
 **Blocked by**: 無，可立即開始
-**內迴圈**: <這張票底下要寫哪些 unit test，來自 spec.md 的測試分層>
+**內迴圈**: <這張票底下要寫哪些 unit test，來自 design.md 的測試分層>
 
 - [ ] <驗收條件 1>
 - [ ] <驗收條件 2>
@@ -47,8 +47,8 @@
 
 ## 缺口
 
-`spec.md` 沒定案、但切票時發現需要的。不是票——不是可執行的行為；
-不是前置整理——不是現在就能做的改動。沒有就寫「沒有——`spec.md`
+`design.md` 沒定案、但切票時發現需要的。不是票——不是可執行的行為；
+不是前置整理——不是現在就能做的改動。沒有就寫「沒有——`design.md`
 涵蓋了這批需要的一切」。
 
 - <缺口>：<回 DISCOVERY 問人，或留給 IMPLEMENT 決定>
@@ -62,7 +62,7 @@
 | --- | --- |
 | **垂直切片**：一張票穿過所有層（schema／API／UI／測試） | 依層切的實測案例：26 張票、每張平均跑 20 次 agent，四分之三是返工 |
 | **自己可 demo**：做完當下就能展示 | 驗收條件會伸手進別張票擁有的工作，變成不可能獨立驗 |
-| **塞得進一個全新 session**：撿起這張票的東西沒看過 `spec.md` | 票太大時實作者會在中途失去脈絡，然後開始猜 |
+| **塞得進一個全新 session**：撿起這張票的東西沒看過 `design.md` | 票太大時實作者會在中途失去脈絡，然後開始猜 |
 
 檢驗每張票只要問一句：**做完之後我能 demo 什麼？** 答不出來的就是水平切片。
 

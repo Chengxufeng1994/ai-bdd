@@ -155,7 +155,7 @@ class CheckReadsPrd(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "x").mkdir(parents=True)
-            (root / "specs" / "x" / "spec.md").write_text("# old", encoding="utf-8")
+            (root / "specs" / "x" / "design.md").write_text("# old", encoding="utf-8")
 
             code, out = run(root)
 

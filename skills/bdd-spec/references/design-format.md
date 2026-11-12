@@ -1,13 +1,13 @@
-# `spec.md` 的骨架
+# `design.md` 的骨架
 
-照抄即可。讀這份的時機：`bdd-spec` 準備寫 `spec.md` 的時候。
+照抄即可。讀這份的時機：`bdd-spec` 準備寫 `design.md` 的時候。
 
-一個 feature 一份，路徑 `specs/<date>-<feature>/spec.md`。它只裝**技術設計**：
+一個 feature 一份，路徑 `specs/<date>-<feature>/design.md`。它只裝**技術設計**：
 seam、模組、介面、API 契約、schema、測試層級、風險。業務內容（story、FR、AC、
 角色、範圍、開放問題）住同目錄的 `prd.md`，格式見
 `../../bdd-capture/references/prd-format.md`——本文件不重複那些節。
 
-`spec.md` 是拋棄式快照，實作一開始就會過期；`prd.md` 活得比它久。壽命不同的
+`design.md` 是拋棄式快照，實作一開始就會過期；`prd.md` 活得比它久。壽命不同的
 東西不放同一個檔。
 
 沒有內容的節**保留標題並寫為什麼空**，不要刪掉。
@@ -82,8 +82,8 @@ seam、模組、介面、API 契約、schema、測試層級、風險。業務內
 ```
 
 MUST: 這個標記不是裝飾。少了它，「這個決定是從某條 FR 或某題答案推出來的」跟
-「這個決定是寫的人順手定的」在 `spec.md` 上長得一模一樣——完整範例見
-[`../examples/minimal-spec.md`](../examples/minimal-spec.md)。整份文件的來源欄
+「這個決定是寫的人順手定的」在 `design.md` 上長得一模一樣——完整範例見
+[`../examples/minimal-design.md`](../examples/minimal-design.md)。整份文件的來源欄
 全是 `推論` 時，代表 DISCOVERY 的技術那一輪沒有真的發生。
 
 `## 回 DISCOVERY 補問` 不在這條規則的範圍內——它記的正是還沒有來源的東西。
@@ -265,14 +265,14 @@ MUST NOT: 在這裡順手決定掉。`bdd-spec` 與 `bdd-formulation` 都不得�
 schema 一節全退化成「見共用檔」），而且兩種檔案各用一套節號、意思只對得上一半
 ——**部分對齊比完全不對齊更危險**，讀的人會假設對齊然後在三個節上讀錯。
 
-API 契約與 schema 天生跨 story，只有並排才看得見衝突。`prd.md` 的 story 再多，`spec.md` 仍然一個 feature 一份——story
+API 契約與 schema 天生跨 story，只有並排才看得見衝突。`prd.md` 的 story 再多，`design.md` 仍然一個 feature 一份——story
 是切分單位，不是檔案邊界。
 
 ---
 
 ## `domain-model.md` 的骨架
 
-路徑 `specs/domain-model.md`——**根層，跨 feature**。它比 `spec.md` 活得久：
+路徑 `specs/domain-model.md`——**根層，跨 feature**。它比 `design.md` 活得久：
 spec 是拋棄式的快照，實作一開始就會過期；domain model 要留下來。
 
 每個 feature 只**增修**，不重寫。改了既有條目要寫「原本是什麼、為什麼改」。

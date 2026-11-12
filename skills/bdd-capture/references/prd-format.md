@@ -33,8 +33,8 @@ story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清
 | `## 原文` | 需求方帶來的描述，逐字 | CAPTURE，之後**不得改寫** |
 
 順序固定，不因為某節內容少而調換或省略標題。技術設計（seam、API、schema、
-測試層級、風險）不在這份文件裡，那是 `spec.md`，格式見
-`../../bdd-spec/references/spec-format.md`。
+測試層級、風險）不在這份文件裡，那是 `design.md`，格式見
+`../../bdd-spec/references/design-format.md`。
 
 ---
 
@@ -92,7 +92,7 @@ MUST NOT: 狀態欄寫題數。「9 題已答／10 題待答」是 `../../bdd-di
 
 **核心關係人由 CAPTURE 登記第一批（需求方自己與他點名的人），DISCOVERY 每冒出
 一個新的受訪者就補一列。** `決策權` 這一格只有問的人寫得出來——`bdd-spec` 把整張表
-原樣抄進 `spec.md`，不增列也不改寫。
+原樣抄進 `design.md`，不增列也不改寫。
 
 **「決策權」不是裝飾。** 同一個人給的答案，有些是定案、有些只是提案（要開會
 表決），下游要分得出來，否則會拿沒表決過的東西去寫規格。
@@ -479,7 +479,7 @@ Constraints`，跟未驗證的假設放同一節，但意思不同：**假設是
 ````
 
 小節可以多兩個選填欄位：`**誰答的**：<關係人>`，以及 `**歸屬**：<這個答案要進哪一節>`。
-`歸屬` 的值域是本文件的章節名，或 `spec.md` 的章節名（`Implementation Decisions`／
+`歸屬` 的值域是本文件的章節名，或 `design.md` 的章節名（`Implementation Decisions`／
 `Testing Decisions`／`Risks`／`Tech Preferences & Constraints`／`Known Boundaries`）——技術面向的答案靠
 這一欄讓 `bdd-spec` 知道該抄進哪一節，不必從問題文字猜。
 

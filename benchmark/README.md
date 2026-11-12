@@ -59,7 +59,7 @@ cat benchmark/cases/personal-memo/input-brief.md
 ```
 runs/<lang>-<case>/
 ├── specs/<date>-<feature>/prd.md           CAPTURE 建、DISCOVERY 填到 已對焦
-├── specs/<date>-<feature>/spec.md          SPEC（bdd-spec）的技術設計
+├── specs/<date>-<feature>/design.md          SPEC（bdd-spec）的技術設計
 └── features/                               SPEC（bdd-formulation）產出的 .feature
 ```
 

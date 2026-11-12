@@ -20,7 +20,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 但它是回報給人的，不是落地的檔案——缺口同時要就地註解進 `.feature`。
 
 不訪談。不發明新的例子。不寫 step definition。不決定情境跑在哪一層——seam 是
-`bdd-spec` 的事，寫在 `spec.md` 裡，本 skill 不讀它。
+`bdd-spec` 的事，寫在 `design.md` 裡，本 skill 不讀它。
 
 這一步也是**跟 PM 對答案**的那一步。`.feature` 就是對答案用的那一份，不另做第二
 份給人讀的版本——那是 Cucumber 的前提。PM 讀不動就修 `references/step-grammar.md`。
@@ -34,10 +34,10 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 ## Skill Boundaries
 
 - `prd.md` 不存在 → `bdd-capture`；還有紅卡或狀態不是 `已對焦` → `bdd-discovery`／`example-mapping`
-- 要決定 seam、寫 `spec.md` 或 `docs/CONTEXT.md` → `bdd-spec`；要切 story → `story-splitting`
+- 要決定 seam、寫 `design.md` 或 `docs/CONTEXT.md` → `bdd-spec`；要切 story → `story-splitting`
 - 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十五項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md`
 - 要決定實作順序、切票 → 改用 `bdd-plan`；情境跑在哪一層測試是 seam，回 `bdd-spec`
-- 產出是 `.feature`，**不是** `prd.md`、`spec.md`、`openapi.yaml`、migration 或任何可執行的檔案
+- 產出是 `.feature`，**不是** `prd.md`、`design.md`、`openapi.yaml`、migration 或任何可執行的檔案
 
 ## 參考檔案
 
@@ -402,7 +402,7 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 ```
 features/<story-slug>.feature     FORMULATION  ★ 本步驟唯一的產物
 
-（prd.md 是 CAPTURE／DISCOVERY 的產物，本 skill 只讀不寫；spec.md 是 bdd-spec 的，本 skill 不讀也不寫）
+（prd.md 是 CAPTURE／DISCOVERY 的產物，本 skill 只讀不寫；design.md 是 bdd-spec 的，本 skill 不讀也不寫）
 ```
 
 `.feature` 的格式全在本節（關鍵字、狀態 tag、型別 tag、方言陷阱）與
@@ -463,7 +463,7 @@ zh-TW 方言**沒有**「規則」這個字（`zh-CN` 有「规则」、`ja` 有
 ## 產物隔離
 
 MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既有的 `.feature`、
-`prd.md`、`spec.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
+`prd.md`、`design.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
 就跟隨，沒有就用專案根的 `features/`。理由與例外 → `references/artifact-location.md`。
 
 ## 完成後

@@ -1,11 +1,11 @@
 ---
 name: bdd-spec
 description: >
-  讀已對焦的 `prd.md`，寫 `spec.md` 的技術設計——seam、模組邊界、介面與 API 契約、
+  讀已對焦的 `prd.md`，寫 `design.md` 的技術設計——seam、模組邊界、介面與 API 契約、
   schema、每個 AC 的測試層級、風險——並把詞彙抬進 `docs/CONTEXT.md`、聚合與不變條件
   增修進 `specs/domain-model.md`。不訪談、不切 story、不寫 FR／AC；
   `.feature` 由 `bdd-formulation` 產出。BDD 七步流程 SPEC 步驟的技術那一半。
-  觸發詞：「寫 spec.md」「技術設計」「決定 seam」「驗收測試打在哪一層」
+  觸發詞：「寫 design.md」「技術設計」「決定 seam」「驗收測試打在哪一層」
   「API 契約要怎麼定」「這個 feature 動哪些模組」「prd.md 已對焦了，接下來」。
   English: write the technical spec, decide the acceptance test seam,
   implementation decisions from the prd, write the glossary.
@@ -13,7 +13,7 @@ description: >
 
 # SPEC — 把已對焦的 PRD 變成技術設計
 
-一份狀態 `已對焦` 的 `prd.md` 進來，出去的是同目錄的 `spec.md`：**驗收測試打在哪一層
+一份狀態 `已對焦` 的 `prd.md` 進來，出去的是同目錄的 `design.md`：**驗收測試打在哪一層
 seam、動哪些模組、介面與 API 契約、schema、每個 AC 在哪一層測、風險。** FR／AC／story
 已經在 `prd.md` 裡定案，這一步**讀**它們，不改它們。
 
@@ -32,13 +32,13 @@ seam、動哪些模組、介面與 API 契約、schema、每個 AC 在哪一層�
 - story 切得不對 → `story-splitting`，然後回 `bdd-discovery`；本 skill 不碰 `## User Stories`
 - 要決定實作順序 → 改用 `bdd-plan`
 - 要稽核既有 `.feature` 寫得好不好 → `bdd-spec-review` 未實作（見 `PLAN.md`），先跑 `bdd-formulation` 的 `scripts/check_spec.py`
-- 產出是 `specs/<date>-<feature>/spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `prd.md`、`.feature`、`openapi.yaml`、migration
+- 產出是 `specs/<date>-<feature>/design.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是** `prd.md`、`.feature`、`openapi.yaml`、migration
 
 ## 參考檔案
 
-- `references/spec-format.md` — `spec.md` 的骨架（只有技術節）
+- `references/design-format.md` — `design.md` 的骨架（只有技術節）
 - `../bdd-capture/references/prd-format.md` — 讀 `prd.md` 時對照它的節
-- `examples/minimal-spec.md` — 一份完整的 `spec.md` 範例
+- `examples/minimal-design.md` — 一份完整的 `design.md` 範例
 - `../bdd-formulation/scripts/check_spec.py` — 交件前自檢（第 6 步）。**在隔壁 skill**：本 skill 只跑它，不改它
 - `../bdd-discovery/scripts/status.py` — 確認 `prd.md` 沒有待答的題
 
@@ -50,7 +50,7 @@ seam、動哪些模組、介面與 API 契約、schema、每個 AC 在哪一層�
 一則 story ＝ 一個 `.feature` 檔 ＝ 一次可獨立驗收的交付，slug 就是檔名。
 
 MUST NOT: 改 `prd.md` 的 `## User Stories`。寫技術設計時覺得切法不對，寫進
-`spec.md` 的 `## 回 DISCOVERY 補問`，由 DISCOVERY 用 `story-splitting` 重切。
+`design.md` 的 `## 回 DISCOVERY 補問`，由 DISCOVERY 用 `story-splitting` 重切。
 悄悄重切比公開改糟，因為 `.feature` 的檔名與 tag 已經掛在舊的切法上。
 
 ## 詞彙表 —— `docs/CONTEXT.md`
@@ -85,7 +85,7 @@ runner 決定）。理由是**壽命**：刪掉某個 feature 的 spec 目錄之
 
 不必問輸入的位置。`prd.md` 在 `specs/<date>-<feature>/`。唯一要徵詢的是 seam，在流程步驟 3。
 
-MUST NOT: 在這裡問需求。**不訪談**——`prd.md` 推不出來的，寫進 `spec.md` 的
+MUST NOT: 在這裡問需求。**不訪談**——`prd.md` 推不出來的，寫進 `design.md` 的
 `## 回 DISCOVERY 補問`，不要順手決定掉。
 
 NEVER: `prd.md` 不存在、或狀態不是 `已對焦` 時開始。`澄清中` 代表還有紅卡，
@@ -110,13 +110,13 @@ MUST: 狀態不是 `已對焦` 的 `prd.md` 整份跳過，並明講跳過的理
 | 讀什麼 | 為了什麼 |
 | --- | --- |
 | `## User Stories` | 每條 FR 與 AC——seam 要看過具體的 AC 才推得出來；`## Testing Decisions` 要替每個 AC 標測試層級 |
-| `## Open Questions` 裡 `面向` 是技術面向、狀態 `已答` 的列 | **技術決定的原始素材**——小節的 `歸屬` 說它該進 `spec.md` 哪一節，行尾 `← Q-<n>` |
+| `## Open Questions` 裡 `面向` 是技術面向、狀態 `已答` 的列 | **技術決定的原始素材**——小節的 `歸屬` 說它該進 `design.md` 哪一節，行尾 `← Q-<n>` |
 | `## Assumptions / Constraints`、`## Non-Functional Requirements` | 外部限制與品質屬性，`## Tech Preferences & Constraints` 與 `## Risks` 的來源 |
-| `## Document Overview` 的核心關係人 | **照抄**進 `spec.md` 的同名表 |
+| `## Document Overview` 的核心關係人 | **照抄**進 `design.md` 的同名表 |
 | `## 原文` | `← PRD §x` 的依據 |
 
 IMPORTANT: `prd.md` 由 CAPTURE 與 DISCOVERY 維護，本 skill **不得寫入**。推導不出來的
-寫進 `spec.md` 的 `## 回 DISCOVERY 補問`。
+寫進 `design.md` 的 `## 回 DISCOVERY 補問`。
 
 ### 3. 決定 seam —— 驗收測試打在哪一層
 
@@ -142,13 +142,13 @@ MUST NOT: 把 seam 的討論變成需求訪談。談的時候發現需求有洞�
 `## 回 DISCOVERY 補問`，**不要順手問掉**——這一步沒有把答案寫進 `prd.md` 的權限，
 順口問到的答案只活在這一次對話裡。
 
-IMPORTANT: seam 一旦寫進 `spec.md` 就往下傳——IMPLEMENT 照著打，
+IMPORTANT: seam 一旦寫進 `design.md` 就往下傳——IMPLEMENT 照著打，
 REVIEW 把「沒人同意過的 seam」當成 finding。這個綁定是**間接的**，
-穿過 `spec.md` 這份文件；所以這一節寫不寫，決定了後面兩步抓不抓得到。
+穿過 `design.md` 這份文件；所以這一節寫不寫，決定了後面兩步抓不抓得到。
 
-### 4. 寫 `spec.md`
+### 4. 寫 `design.md`
 
-路徑 `specs/<date>-<feature>/spec.md`，骨架照抄 `references/spec-format.md`——只有技術節。
+路徑 `specs/<date>-<feature>/design.md`，骨架照抄 `references/design-format.md`——只有技術節。
 
 MUST: `## Document Overview` 的核心關係人表**照抄** `prd.md`，不增列也不改寫 `決策權`。
 
@@ -158,7 +158,7 @@ MUST: `## 回 DISCOVERY 補問` 要有——沒有洞就寫「（無）」。有
 寫清楚影響什麼定不下來。
 
 MUST NOT: 在這一步做需求決定。**本 skill 只綜合已經有答案的東西。** 判準：指著
-`spec.md` 的任何一句話，說得出它來自 `prd.md` 的哪條 FR、哪題已答的 Q 嗎？
+`design.md` 的任何一句話，說得出它來自 `prd.md` 的哪條 FR、哪題已答的 Q 嗎？
 
 ### 5. 增修 `specs/domain-model.md`
 
@@ -167,11 +167,11 @@ MUST NOT: 在這一步做需求決定。**本 skill 只綜合已經有答案的�
 MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本是什麼、為什麼改」——
 那張表記錄的是這個領域被理解的過程，而下一個 feature 的人靠它判斷某個決定還算不算數。
 
-MUST NOT: 寫進 `spec.md`。`spec.md` 是這個 feature 的快照，實作一開始就會過期；
+MUST NOT: 寫進 `design.md`。`design.md` 是這個 feature 的快照，實作一開始就會過期；
 domain model 要活得比它久。塞進去等於陪葬。
 
 判準（哪些該進來）：這條規則**跨 feature 仍然成立**嗎？只在這個 feature 的情境下為真的，
-留在 `spec.md`。
+留在 `design.md`。
 
 ### 6. 自檢，然後才算完成
 
@@ -187,7 +187,7 @@ python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 
 ```
 specs/<date>-<feature>/
-└── spec.md           SPEC  ★ 技術設計
+└── design.md           SPEC  ★ 技術設計
 
 （prd.md 是 CAPTURE／DISCOVERY 的產物，本 skill 只讀不寫）
 （.feature 是 bdd-formulation 的產物，本 skill 不產）
@@ -195,8 +195,8 @@ specs/<date>-<feature>/
 
 | 產物 | 格式 |
 | --- | --- |
-| `specs/<date>-<feature>/spec.md` | `references/spec-format.md` |
-| `specs/domain-model.md`（增修） | `references/spec-format.md` 末節 |
+| `specs/<date>-<feature>/design.md` | `references/design-format.md` |
+| `specs/domain-model.md`（增修） | `references/design-format.md` 末節 |
 | `docs/CONTEXT.md`（建立或追加） | 「詞彙表」一節 |
 
 ## 產物隔離

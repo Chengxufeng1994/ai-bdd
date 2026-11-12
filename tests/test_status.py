@@ -68,7 +68,7 @@ class StatusReadsPrd(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text("# old", encoding="utf-8")
+            (root / "specs" / "2026-10-02-parking" / "design.md").write_text("# old", encoding="utf-8")
 
             code, out = run(root)
 

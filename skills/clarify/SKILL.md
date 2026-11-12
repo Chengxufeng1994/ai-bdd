@@ -88,7 +88,7 @@ MUST: 一個問題確定就**立刻**在 `prd.md` `## Open Questions` 把那一�
 `**FR-<n>**`／`- **AC-<n>.<m>**`，行尾 `← Q-<n>`——寫法與編號規則見
 `../bdd-capture/references/prd-format.md`。這跟 `bdd-discovery` 的記錄紀律是同一條。
 
-MUST NOT: 寫 `spec.md`、`.feature`，或改寫 `prd.md` 的 `## 原文`。答案只有一個家：
+MUST NOT: 寫 `design.md`、`.feature`，或改寫 `prd.md` 的 `## 原文`。答案只有一個家：
 `## Open Questions` 的列與它長出的 FR／AC。
 
 不要累積到一輪結束才一次更新記錄。剛答完那一刻你還記得它跟哪條規則有關；

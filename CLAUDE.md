@@ -100,7 +100,7 @@ rather than redrawing it.
 ### Artifact format is the interface
 
 Each step reads what the previous step actually emitted: DISCOVERY reads CAPTURE's
-draft `prd.md`, SPEC reads the `已對焦` `prd.md`, PLAN reads `spec.md` and the `.feature`
+draft `prd.md`, SPEC reads the `已對焦` `prd.md`, PLAN reads `design.md` and the `.feature`
 files, REVIEW audits the whole chain.
 
 ```
@@ -123,8 +123,8 @@ working mode. SPEC has two skills, so there are four disciplines:
   rejects it. This replaces the older "CLARIFY does not write" rule, which could not be
   verified.
 - **SPEC** is writing mode: `bdd-formulation` turns an `已對焦` `prd.md` into `.feature`
-  files; `bdd-spec` writes the technical `spec.md` — **neither interviews**, and holes go
-  into `spec.md`'s `## 回 DISCOVERY 補問`.
+  files; `bdd-spec` writes the technical `design.md` — **neither interviews**, and holes go
+  into `design.md`'s `## 回 DISCOVERY 補問`.
 - **PLAN** slices tracer bullets — it does not design.
 
 This matters more for an agent than for a person: a human who finds a hole while writing a
@@ -163,7 +163,7 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/<date>-<feature>/` (`prd.md`, `spec.md`, `plan.md`), one directory that can be deleted whole. Two
+  `specs/<date>-<feature>/` (`prd.md`, `design.md`, `plan.md`), one directory that can be deleted whole. Two
   exceptions: `.feature` files stay where the runner expects them (`features/` for
   Cucumber-family tools); `docs/CONTEXT.md` outlives any single feature, so SPEC may create
   it or append entries but must not rewrite its existing sections or write to anything else

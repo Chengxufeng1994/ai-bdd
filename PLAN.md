@@ -42,7 +42,7 @@
 | --- | --- | --- | --- |
 | **CAPTURE**（`bdd-capture`） | 需求方說、agent 記 | 原文逐字、抽開頭幾節、最多問四題、粗切 story | 不填規則與例子 |
 | **DISCOVERY**（`bdd-discovery`） | agent 問、需求方答 | 問紅卡；答過的才能變 FR／AC，行尾標來源 | 不寫 Gherkin、不設計、不自己填答案 |
-| **SPEC**（`bdd-formulation`／`bdd-spec`） | agent 寫、需求方審 | `已對焦` 的 `prd.md` → `.feature` ＋ `spec.md` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` |
+| **SPEC**（`bdd-formulation`／`bdd-spec`） | agent 寫、需求方審 | `已對焦` 的 `prd.md` → `.feature` ＋ `design.md` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` |
 | **PLAN**（`bdd-plan`） | agent 切、工程師審 | tracer bullet ＋ blocking edges | 不設計 |
 
 「agent 補一個合理的答案然後繼續」這個風險，舊版靠「DISCOVERY 不寫檔」擋，
@@ -61,7 +61,7 @@ already made, not a place where new ones get made.」
 | --- | --- | --- | --- |
 | **CAPTURE** | 需求方想要什麼、為什麼、有什麼限制？ | 當書記：原文逐字、抽開頭幾節、粗切 story | `prd.md`（澄清中） |
 | **DISCOVERY** | 還有哪些不知道？問到不能再問為止 | 設計樹＋前沿，每則 story 攤成 FR／AC／Q | 同一份 `prd.md`（待對焦 → 已對焦） |
-| **SPEC** | 這些答案的可執行規格與技術設計長怎樣？ | `prd.md` → Gherkin（`bdd-formulation`）；`prd.md` → seam、契約、schema（`bdd-spec`） | `.feature`（可執行）＋ `spec.md` ＋ `domain-model.md` |
+| **SPEC** | 這些答案的可執行規格與技術設計長怎樣？ | `prd.md` → Gherkin（`bdd-formulation`）；`prd.md` → seam、契約、schema（`bdd-spec`） | `.feature`（可執行）＋ `design.md` ＋ `domain-model.md` |
 | **PLAN** | 怎麼切成一次做得完的步驟？ | tracer bullet 垂直切片 ＋ blocking edges | `plan.md` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | 跑情境 ＋ 失敗判讀 | 測試結果 ＋ 判讀結論 |
@@ -82,21 +82,21 @@ specs/
 └── <date>-<feature>/
     ├── prd.md          CAPTURE 建、DISCOVERY 填到 已對焦。story、FR、AC、角色、範圍、
     │                   開放問題、原文。活得比實作久
-    ├── spec.md         SPEC     seam、模組、契約、schema、測試層級、風險。實作開始就過期
+    ├── design.md         SPEC     seam、模組、契約、schema、測試層級、風險。實作開始就過期
     └── plan.md         PLAN     tracer bullet ＋ blocking edges
 
 features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 docs/CONTEXT.md                  SPEC  詞彙，跨 feature
 ```
 
-**`prd.md` 與 `spec.md` 分檔的理由是壽命。** FR、AC、角色在實作完成後仍然是這個
+**`prd.md` 與 `design.md` 分檔的理由是壽命。** FR、AC、角色在實作完成後仍然是這個
 feature 的事實；seam 與 schema 在第一個 commit 之後就開始過期。`to-spec` 說 spec 是
 拋棄式快照——所以快照裡只放會過期的東西。
 
 `.feature` 是唯一不進 `specs/` 的產物——它同時是規格與可執行測試，
 **位置由測試框架決定**。鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。
 
-### `prd.md` 與 `spec.md` 的節
+### `prd.md` 與 `design.md` 的節
 
 `prd.md`（格式契約在 `skills/bdd-capture/references/prd-format.md`）：
 
@@ -110,7 +110,7 @@ feature 的事實；seam 與 schema 在第一個 commit 之後就開始過期。
 | Open Questions | 五欄表 ＋ 決策史小節 | 兩步都寫 |
 | 原文 | 需求方的話，逐字 | CAPTURE，之後不得改寫 |
 
-`spec.md`（格式契約在 `skills/bdd-spec/references/spec-format.md`）：
+`design.md`（格式契約在 `skills/bdd-spec/references/design-format.md`）：
 
 | 節 | 內容 | 來源 |
 | --- | --- | --- |
@@ -127,7 +127,7 @@ feature 的事實；seam 與 schema 在第一個 commit 之後就開始過期。
 更危險。API 契約與 schema 天生跨 story，只有並排才看得見衝突。
 
 **規則與例子住 `prd.md`。** `check_spec.py` 比對的是 `prd.md` 的 FR／AC 與 `.feature`
-的 tag——**兩份獨立的表述，重複就是那個檢查**。`spec.md` 若也抄一份就成了三份。
+的 tag——**兩份獨立的表述，重複就是那個檢查**。`design.md` 若也抄一份就成了三份。
 
 **MUST NOT 寫具體檔案路徑與程式碼片段。** 它們過期得比什麼都快。
 例外：prototype 產出的、比散文更精確地編碼了某個決定的片段（狀態機、reducer、
@@ -151,7 +151,7 @@ prefactoring（「make the change easy, then make the easy change」）排最前
 
 ### 1. Slice ——「一批」
 
-`spec.md` 一批一份，所以「一批」多大是個真的決定。判準：
+`design.md` 一批一份，所以「一批」多大是個真的決定。判準：
 **這批做完，能不能對使用者交付一次完整的價值。**
 
 實測場的數字給了上限感：6 則 story、69 個場景 → `plan.md` 36.5K。
@@ -167,9 +167,9 @@ HTTP handler？application service？domain？**這是 BDD 決定 step definitio
 規則（抄 `to-spec`）：優先用既有 seam、取最高的那一層、
 **整個變更的理想數量是一個**。
 
-seam 寫進 `spec.md` 的意義是它會往下傳：IMPLEMENT 照著打，
+seam 寫進 `design.md` 的意義是它會往下傳：IMPLEMENT 照著打，
 REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個綁定是間接的
-——它穿過 `spec.md`——所以那份文件寫不寫這一節，決定了後面兩步抓不抓得到。
+——它穿過 `design.md`——所以那份文件寫不寫這一節，決定了後面兩步抓不抓得到。
 
 ### 3. 一張票 ＝ 一個 fresh context window
 
@@ -200,14 +200,14 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**；由 `bdd-capture`（粗切）與 `bdd-discovery`（細切）呼叫 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定；唯一寫 `已對焦` 的 skill | **已實作**；由 `bdd-discovery` 呼叫 |
 | SPEC | `bdd-formulation` | `prd.md` → `.feature` | **已實作** |
-| | `bdd-spec` | `prd.md` → `spec.md`（技術設計） | **已實作**；2026-10-02 瘦身 |
+| | `bdd-spec` | `prd.md` → `design.md`（技術設計） | **已實作**；2026-10-02 瘦身 |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
-| PLAN | `bdd-plan` | `.feature` ＋ `spec.md` → tracer bullet ＋ blocking edges | **已實作** |
+| PLAN | `bdd-plan` | `.feature` ＋ `design.md` → tracer bullet ＋ blocking edges | **已實作** |
 | IMPLEMENT | `bdd-implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | VERIFY | `bdd-verify`、`bdd-verify-failure-triage` | 跑情境並回報、真 bug vs 規格過期 | 未實作 |
 | REVIEW | `bdd-review`、`bdd-review-acceptance`、`bdd-review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 
-`bdd-spec` 加了 `spec.md` 之後會不會太肥、要不要拆成兩個 skill——**先不拆**。
+`bdd-spec` 加了 `design.md` 之後會不會太肥、要不要拆成兩個 skill——**先不拆**。
 子 skill 是否真的需要，等步驟 skill 跑過真實案例、發現它太長時再拆。
 現在拆是猜的。**2026-09-14 翻案：拆了。** 見
 `docs/superpowers/specs/2026-09-14-grilling-and-formulation-design.md` 的 D8。
@@ -344,7 +344,7 @@ Always-on: ~1,620 tok  每個 session 都付
 - [ ] 用 `bdd-implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣
 
 順序刻意是「做一個 → 實跑 → 再做下一個」。**產物格式就是介面**：SPEC 讀已答的
-問題、PLAN 讀 `.feature` 與 `spec.md`、REVIEW 稽核整條鏈，下游全都依賴上游實際
+問題、PLAN 讀 `.feature` 與 `design.md`、REVIEW 稽核整條鏈，下游全都依賴上游實際
 吐出什麼。在紙上設計那個格式是猜的。
 
 這次重規劃違反了上面那句話——它是在紙上改的。所以「實測場整批重跑」那一項不能跳。
@@ -409,13 +409,13 @@ Always-on: ~1,620 tok  每個 session 都付
 
 4. **一批到底多大。** 判準已定（一次可交付的價值），已有兩個數字：
 
-   | 批次 | story | 規則 | 例子 | `spec.md` | 票 |
+   | 批次 | story | 規則 | 例子 | `design.md` | 票 |
    | --- | --- | --- | --- | --- | --- |
    | `workout-tracking` | 6 | 39 | 93 | 649 行 | 9 |
    | `parking-fee-collection` | 3 | 14 | 21 | 187 行 | 未跑 PLAN |
 
    兩者相差三到四倍，而兩批都通過了「一次可交付的價值」這個判準——所以那個
-   判準**不決定大小**，只決定邊界切在哪。真正的上限訊號還是「`spec.md` 大到
+   判準**不決定大小**，只決定邊界切在哪。真正的上限訊號還是「`design.md` 大到
    沒人讀得完」，而 649 行那一批當時已經被評為在邊緣。
 
    （`workout-tracking` 的產物已於 `110819e` 刪除，數字取自當時的稽核輸出，

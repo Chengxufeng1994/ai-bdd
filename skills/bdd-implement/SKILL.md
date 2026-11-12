@@ -21,18 +21,18 @@ description: >
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
 才有理由。
 
-不改 `prd.md`。不改 `.feature` 的例子。不做 `spec.md` 沒做的設計決定——發現有洞就
+不改 `prd.md`。不改 `.feature` 的例子。不做 `design.md` 沒做的設計決定——發現有洞就
 記下來，不順手補。
 
 ## 使用時機
 
 - `plan.md` 寫好了，要做第一張（或下一張 Blocked by 全完成的）票
-- 整批小到不需要 `bdd-plan`，直接從 `.feature` 與 `spec.md` 做
+- 整批小到不需要 `bdd-plan`，直接從 `.feature` 與 `design.md` 做
 - 上一個 session 做到一半，要從 `@wip` 的檔接手
 
 ## Skill Boundaries
 
-- 還沒有 `.feature` → `bdd-formulation`；還沒有 `spec.md`（seam、埠、契約）→ `bdd-spec`
+- 還沒有 `.feature` → `bdd-formulation`；還沒有 `design.md`（seam、埠、契約）→ `bdd-spec`
 - 票之間的順序、要不要再切 → `bdd-plan`
 - 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」→ REVIEW（`bdd-review`，未實作）
 - 紅的是 bug 還是規格過期 → VERIFY（`bdd-verify`，未實作）；本 skill 只處理自己這張票
@@ -54,12 +54,12 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
    Blocked by 全部完成、驗收條件還沒全勾的票，講出來讓對方改
 2. **驗證閘門是什麼命令**：讀專案的 README／Makefile（實測場是 `make verify`）。
    沒有就問——一張票「做完」的定義就是這個命令綠，不能猜
-3. 讀得到 `specs/<date>-<feature>/plan.md`、`spec.md`、`prd.md` 與這張票涵蓋的 `.feature`
+3. 讀得到 `specs/<date>-<feature>/plan.md`、`design.md`、`prd.md` 與這張票涵蓋的 `.feature`
 
-NEVER: `spec.md` 不存在時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
+NEVER: `design.md` 不存在時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
 
-MUST: 一個 session 一張票。撿起票的人沒看過 `spec.md` 以外的脈絡——這是 `bdd-plan`
+MUST: 一個 session 一張票。撿起票的人沒看過 `design.md` 以外的脈絡——這是 `bdd-plan`
 切票的上界，也是這一步不要一次做三張的理由：做到第二張時第一張的脈絡已經在擠。
 
 ---
@@ -69,7 +69,7 @@ MUST: 一個 session 一張票。撿起票的人沒看過 `spec.md` 以外的脈
 ### 1. 讀票，標 `@wip`
 
 讀 `plan.md` 那一節：交付什麼行為、涵蓋哪些 `@example-N.M`、內迴圈要寫哪些單元測試、
-驗收條件。再讀 `spec.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
+驗收條件。再讀 `design.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
 ——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個例子在哪一層測。`prd.md` 只讀
 對應的 FR 與 AC，看規則的原話。
 
@@ -91,7 +91,7 @@ definition 已經被別的場景定義過，而它的斷言沒抓到這張票要
 
 ### 3. 內迴圈：規則先進 domain
 
-`spec.md` 的 `## Testing Decisions` 說了哪些例子在 unit 層。對每一條有分支的規則：
+`design.md` 的 `## Testing Decisions` 說了哪些例子在 unit 層。對每一條有分支的規則：
 
 1. 在 domain 寫 **table-driven** 單元測試，列就是 `prd.md` 的 AC 值加上 AC 沒寫但
    規則隱含的邊界（24 小時又 1 分鐘、到期日的最後一秒）——跑，看它因為「還沒有這個
@@ -110,7 +110,7 @@ parking 實跑的第一個假紅就是這個。
 依 `docs/DATAFLOW.md`（或專案的同類文件）：埠（`port/out`）→ use case →
 driving port 與 service → contract（`openapi.yaml`）→ 產碼 → mapper → operation →
 presenter → bootstrap 組裝。每一段都是機械翻譯，**不做決定**；要做的決定都該在
-`spec.md`，沒有就記進 `plan.md` 的 `## 缺口`。
+`design.md`，沒有就記進 `plan.md` 的 `## 缺口`。
 
 - contract 改了就重新產碼（實測場 `make gen-api`），產出的介面多了方法，`Server`
   不實作就編不過——那是對的，讓編譯器告訴你還缺哪個 operation
@@ -151,14 +151,14 @@ is stale」。
   票涵蓋同一檔的場景就留 `@wip`
 - `plan.md`：勾掉這張票的驗收條件。只勾驗過的——「手動驗」要寫是哪個測試驗的，
   沒有測試就不要勾
-- 暫定行為（`spec.md` 的 `## 回 DISCOVERY 補問` 裡的洞，實作時不得不選一個）：
+- 暫定行為（`design.md` 的 `## 回 DISCOVERY 補問` 裡的洞，實作時不得不選一個）：
   **用一個測試釘住**，測試的註解寫明它是暫定、等哪一題的答案。沒釘住的暫定行為
   會在答案出來之後被當成規格
 
 ### 不越界
 
 MUST NOT: 改 `prd.md` 或 `.feature` 的例子。例子跟規則打架、規則有洞、少一個邊界——
-記進 `plan.md` 的 `## 缺口` 或 `spec.md` 的 `## 回 DISCOVERY 補問`，回報，然後
+記進 `plan.md` 的 `## 缺口` 或 `design.md` 的 `## 回 DISCOVERY 補問`，回報，然後
 照現在的規格做。一個人在 IMPLEMENT 改掉驗收條件，等於沒有人同意過那條規格。
 
 MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪掉，哪個 domain
@@ -175,7 +175,7 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 └── specs/<date>-<feature>/plan.md   只勾驗收條件、寫缺口
 ```
 
-MUST: 不修改 `prd.md`、`spec.md`（除了讀）、`.feature` 的任何場景文字。
+MUST: 不修改 `prd.md`、`design.md`（除了讀）、`.feature` 的任何場景文字。
 
 ## 完成後
 
