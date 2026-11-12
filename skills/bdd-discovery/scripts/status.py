@@ -5,13 +5,13 @@
     python3 status.py [專案根目錄]        # 預設當前目錄
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
-`specs/<date>-<feature>/prd.md` 的 `## Open Questions` 表：已答／n/a／待答數自
+`specs/<date>-<feature>/spec.md` 的 `## Open Questions` 表：已答／n/a／待答數自
 狀態欄，追問覆蓋（業務面向＋技術面向）數自面向欄。存一份儀表板的話，
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
 
 找不到資料時不猜、不印出「已就緒」。`specs/` 不存在、或底下沒有任何
-`prd.md`，兩種都算「找不到」。單一 `prd.md` 也有三種算「壞」的情況，訊息
+`spec.md`，兩種都算「找不到」。單一 `spec.md` 也有三種算「壞」的情況，訊息
 分開講因為修法不同：`## Open Questions` 一節整個缺席（標題缺漏或打錯）是
 檔案格式損壞；一節存在但零列，代表 DISCOVERY 沒問過任何問題，不是需求沒有
 疑點；表格裡有列的欄數不是 5，是那一列本身壞了。三種都指名是哪個檔案、
@@ -52,7 +52,7 @@ def _field(label: str, width: int) -> str:
 def parse_open_questions(
     text: str,
 ) -> tuple[bool, list[dict[str, str]], list[str]]:
-    """prd.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
+    """spec.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
 
     只讀那一節的表格列，不掃整份檔案：`## Document Overview` 底下也有表格，
     而**版本修訂歷史正好也是五欄**，跟下面用來擋壞列的欄數判斷相同——對整份
@@ -106,9 +106,14 @@ def main(root: Path) -> int:
         print(f"找不到 {specs}")
         return 1
 
-    specs_files = sorted(specs.glob("*/prd.md"))
+    legacy = sorted(specs.glob("*/prd.md"))
+    if legacy:
+        print(f"{legacy[0].parent} 是舊版佈局（prd.md）：先 `git mv prd.md spec.md`、`git mv spec.md design.md`")
+        return 1
+
+    specs_files = sorted(specs.glob("*/spec.md"))
     if not specs_files:
-        print(f"{specs} 底下沒有任何 prd.md —— 先跑 bdd-capture")
+        print(f"{specs} 底下沒有任何 spec.md —— 先跑 bdd-discovery")
         return 1
 
     # 逐份先解析、逐份先報壞——三種壞法訊息分開講，因為修法不同：
@@ -158,7 +163,7 @@ def main(root: Path) -> int:
                 # n/a 是「問過、判定不適用」的結論，不是還沒處理。待答數與
                 # 待答清單存在的目的是讓讀者知道還要去追誰要答案——n/a 沒
                 # 有答案可追，跟真正卡住的問題混在一起算，會讓一份
-                # prd.md 永遠有消不掉的紅卡、看起來比實際更沒準備好。
+                # spec.md 永遠有消不掉的紅卡、看起來比實際更沒準備好。
                 # 獨立開一欄，不計入待答。
                 na += 1
             else:

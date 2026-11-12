@@ -45,10 +45,10 @@ def run(root: Path) -> tuple[int, str]:
     return code, buf.getvalue()
 
 
-def write_prd(root: Path, text: str) -> None:
+def write_spec(root: Path, text: str) -> None:
     d = root / "specs" / "2026-10-02-parking"
     d.mkdir(parents=True)
-    (d / "prd.md").write_text(text, encoding="utf-8")
+    (d / "spec.md").write_text(text, encoding="utf-8")
 
 
 class UnsourcedRules(unittest.TestCase):
@@ -85,11 +85,11 @@ class CitedParagraphs(unittest.TestCase):
         self.assertEqual(check_spec.missing_cited_paragraphs(text), ["9"])
 
 
-class CheckReadsPrd(unittest.TestCase):
-    def test_good_prd_passes_in_spec_only_mode(self):
+class CheckReadsSpec(unittest.TestCase):
+    def test_good_spec_passes_in_spec_only_mode(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, GOOD)
+            write_spec(root, GOOD)
 
             code, out = run(root)
 
@@ -99,7 +99,7 @@ class CheckReadsPrd(unittest.TestCase):
     def test_unsourced_fr_fails(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, GOOD.replace("← PRD §3", "← 推論"))
+            write_spec(root, GOOD.replace("← PRD §3", "← 推論"))
 
             code, out = run(root)
 
@@ -110,20 +110,20 @@ class CheckReadsPrd(unittest.TestCase):
     def test_missing_verbatim_section_reported(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, GOOD.split("## 原文")[0])
+            write_spec(root, GOOD.split("## 原文")[0])
 
             code, out = run(root)
 
             self.assertEqual(code, 1)
             self.assertIn("## 原文", out)
 
-    def test_capture_fresh_prd_points_at_discovery(self):
+    def test_fresh_spec_points_at_discovery(self):
         fresh = GOOD.replace(
             "**FR-1**  When 訪客車出場, the system shall 依停留時長計費。 ← PRD §3\n"
             "- **AC-1.1**  停 29 分 → 收 0 元 ← Q-1\n", "（空）\n")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, fresh)
+            write_spec(root, fresh)
 
             code, out = run(root)
 
@@ -134,7 +134,7 @@ class CheckReadsPrd(unittest.TestCase):
     def test_citation_to_absent_paragraph_fails_check(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, GOOD.replace("← PRD §3", "← PRD §9"))
+            write_spec(root, GOOD.replace("← PRD §3", "← PRD §9"))
 
             code, out = run(root)
 
@@ -145,7 +145,7 @@ class CheckReadsPrd(unittest.TestCase):
         example = (ROOT / "skills" / "bdd-capture" / "examples" / "minimal-prd.md").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, example)
+            write_spec(root, example)
 
             code, out = run(root)
 
@@ -160,8 +160,21 @@ class CheckReadsPrd(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("沒有 prd.md", out)
-            self.assertIn("bdd-capture", out)
+            self.assertIn("沒有 spec.md", out)
+            self.assertIn("bdd-discovery", out)
+            self.assertNotIn("bdd-capture", out)
+
+    def test_old_layout_prd_beside_spec_exits_1_and_names_git_mv(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(GOOD, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("舊版佈局", out)
+            self.assertIn("git mv prd.md spec.md", out)
 
 
 if __name__ == "__main__":
@@ -177,7 +190,7 @@ class StoriesNotYetFormulated(unittest.TestCase):
     def test_missing_feature_file_is_a_notice_not_a_problem(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, GOOD)
+            write_spec(root, GOOD)
             (root / "features").mkdir()
             (root / "features" / "version.feature").write_text("Feature: v\n", encoding="utf-8")
 
@@ -190,7 +203,7 @@ class StoriesNotYetFormulated(unittest.TestCase):
     def test_existing_feature_file_missing_examples_is_still_a_problem(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_prd(root, GOOD)
+            write_spec(root, GOOD)
             (root / "features").mkdir()
             (root / "features" / "visitor-billing.feature").write_text(
                 "@ready @query\nFeature: x\n", encoding="utf-8")

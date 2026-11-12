@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""稽核 .feature 與 prd.md 的一致性。
+"""稽核 .feature 與 spec.md 的一致性。
 
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
 檢查十六件事，全部是機械性的：
 
-  1. 覆蓋——雙向。prd.md 有例子而 feature 沒有的（漏做），
-     以及 feature 指向 prd.md 裡不存在的例子（發明出來的驗收條件）。
+  1. 覆蓋——雙向。spec.md 有例子而 feature 沒有的（漏做），
+     以及 feature 指向 spec.md 裡不存在的例子（發明出來的驗收條件）。
      一則 story 連 .feature 檔都還沒有時不算漏做——那是 FORMULATION 還沒跑，
      印一行「還沒有 .feature」就過；檔在、例子不在才是漏做。
   2. 缺口——漏掉的例子有沒有在 .feature 裡就地留註解交代。
@@ -16,7 +16,7 @@
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
      十六項裡只有這一項不會把退出碼變成 1。
-  6. FR 完整性——prd.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
+  6. FR 完整性——spec.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      FORMULATION 就無從寫出場景，只能發明。
   7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
      對 v3 的解析器而言那是「不存在」不是「錯」，會安靜地掉出覆蓋率。
@@ -39,18 +39,18 @@
  15. `## 原文` 一節在不在——它是 `PRD §x` 唯一的依據。
  16. 引用的段落在不在——每個 `← PRD §n` 的 `§n` 都要在 `## 原文` 裡。
 
-退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 prd.md、
+退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 spec.md、
 `## User Stories` 底下沒有任何 story 也各自退出 1——那些是「先跑上一步」，
 不算在上面十六項一致性檢查裡。
 
-找不到 .feature 不在此列。第 6-16 項只讀 prd.md，而 DISCOVERY 交件到 FORMULATION
+找不到 .feature 不在此列。第 6-16 項只讀 spec.md，而 DISCOVERY 交件到 FORMULATION
 開跑之間正是它們最該跑的時候，所以那時只跳過需要 .feature 的第 1-5 項並在開頭
-明講跳過了哪幾項；prd.md 乾淨就退出 0。
+明講跳過了哪幾項；spec.md 乾淨就退出 0。
 
 只讀不寫。找不到什麼就說找不到，不猜——但 specs/ 與 .feature 不對稱：
 前者是停，後者是照說不誤，然後把跑得到的十一項跑完。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
-specs/<date>-<feature>/prd.md 同一個 `## User Stories` 段——FR 掛在它的
+specs/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
 story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
 """
 import re
@@ -70,7 +70,7 @@ def find_features(root: Path) -> Path:
 
 
 def frs_in_spec(text: str) -> dict[str, set[str]]:
-    """prd.md 的 `## User Stories` 段：FR 編號 -> AC 編號集合。
+    """spec.md 的 `## User Stories` 段：FR 編號 -> AC 編號集合。
 
     v3 把 FR 從標題改成 `#### FR` 分組底下的粗體項目，AC 則是掛在它底下的
     清單項。理由是 AC 還要再往下掛 Given/When/Then 三行，用標題會走到 H6。
@@ -220,7 +220,7 @@ def qs_in_table(text: str) -> dict[str, str]:
 
 
 def stories_in_spec(text: str) -> dict[str, set[str]]:
-    """prd.md 的 `## User Stories` 段：story-slug -> 它涵蓋的 FR 編號集合。
+    """spec.md 的 `## User Stories` 段：story-slug -> 它涵蓋的 FR 編號集合。
 
     併檔之前 slug 住在另一個檔的 `## Stories` 一節，story 與 FR 的對應是
     人手維護的清單。併檔之後那個對應是**結構性的**——FR 就掛在它的 story
@@ -302,7 +302,7 @@ def missing_cited_paragraphs(text: str) -> list[str]:
     `## 原文` 存在只證明有一段原文，不證明每個標記指得到東西。一個指向
     不存在段落的 `§n` 跟指對的在檔案上長得一模一樣——這正是 D4 要擋的
     「悄悄指錯」。只認 `§<數字>` 開頭的段落；原文沿用自己的章節編號時，
-    CAPTURE 要把那個編號寫成 `§n` 形式。
+    DISCOVERY 開場要把那個編號寫成 `§n` 形式。
     """
     section = re.search(r"^## 原文\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     present = set(re.findall(r"^§(\d+)", section.group(1), re.M)) if section else set()
@@ -314,7 +314,7 @@ def has_verbatim_section(text: str) -> bool:
     """`## 原文` 一節在不在。
 
     它是 `PRD §x` 標記唯一的依據。沒有這一節，每個 `← PRD §x` 都指向一段從未
-    寫下的話，而且不會報錯——只會悄悄指錯。CAPTURE 建檔時寫，之後不得改寫。
+    寫下的話，而且不會報錯——只會悄悄指錯。DISCOVERY 開場建檔時寫，之後不得改寫。
     """
     return re.search(r"^## 原文\s*$", text, re.M) is not None
 
@@ -360,11 +360,11 @@ def check(root: Path) -> int:
     specs_dir = root / "specs"
     feat_dir = find_features(root)
     if not specs_dir.is_dir():
-        print(f"找不到 {specs_dir} —— 沒有 CAPTURE／DISCOVERY 的產物可以比對")
+        print(f"找不到 {specs_dir} —— 沒有 DISCOVERY 的產物可以比對")
         return 1
-    # 十六項裡有十一項只讀 prd.md（第 6-16 項）。DISCOVERY 交件到 FORMULATION
-    # 開跑之間還沒有任何 .feature，而那正是 prd.md 最需要被檢查的時刻——
-    # 早退會讓那十一項在整段空窗期一項都跑不到，壞掉的 prd.md 於是要等到
+    # 十六項裡有十一項只讀 spec.md（第 6-16 項）。DISCOVERY 交件到 FORMULATION
+    # 開跑之間還沒有任何 .feature，而那正是 spec.md 最需要被檢查的時刻——
+    # 早退會讓那十一項在整段空窗期一項都跑不到，壞掉的 spec.md 於是要等到
     # 下一個 skill 才被發現。所以缺 .feature 不再是「不能跑」，是「跑得到
     # 的先跑，跑不到的明講跳過」。
     spec_only = feat_dir is None
@@ -372,23 +372,28 @@ def check(root: Path) -> int:
     problems = 0
     if spec_only:
         print(f"specs: {specs_dir}    feature: 找不到任何 .feature\n"
-              f"只跑 prd.md 自己的十一項檢查；覆蓋比對、狀態 tag、方言陷阱、"
+              f"只跑 spec.md 自己的十一項檢查；覆蓋比對、狀態 tag、方言陷阱、"
               f"缺口註解、樣板重用率五項需要 .feature，跳過。")
     else:
         print(f"specs: {specs_dir}    feature: {feat_dir}\n")
 
-    specs = sorted(specs_dir.glob("*/prd.md"))
-    if not specs:
-        print(f"{specs_dir} 底下沒有 prd.md —— 先跑 bdd-capture")
+    legacy = sorted(specs_dir.glob("*/prd.md"))
+    if legacy:
+        print(f"{legacy[0].parent} 是舊版佈局（prd.md）：先 `git mv prd.md spec.md`、`git mv spec.md design.md`")
         return 1
 
-    covered: set[str] = set()      # 有出現在某份 prd.md 裡的 story slug
+    specs = sorted(specs_dir.glob("*/spec.md"))
+    if not specs:
+        print(f"{specs_dir} 底下沒有 spec.md —— 先跑 bdd-discovery")
+        return 1
+
+    covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
     for spec_path in specs:
         stext = spec_path.read_text(encoding="utf-8")
 
         if not has_verbatim_section(stext):
-            print(f"✗ {spec_path.parent.name} 的 prd.md 沒有 `## 原文` 一節，"
-                  f"每個 `← PRD §x` 都指向不存在的話 —— CAPTURE 的產物不完整")
+            print(f"✗ {spec_path.parent.name} 的 spec.md 沒有 `## 原文` 一節，"
+                  f"每個 `← PRD §x` 都指向不存在的話 —— DISCOVERY 開場沒建完")
             problems += 1
         else:
             absent = missing_cited_paragraphs(stext)
@@ -422,14 +427,14 @@ def check(root: Path) -> int:
             problems += 1
 
         if not frs:
-            # 兩種空法，下一步不同：沒有 story 是 CAPTURE 沒跑；有 story 但
-            # 一條 FR 都沒有，正是 CAPTURE 交出來的形狀——該跑的是 DISCOVERY。
+            # 兩種空法，下一步不同：沒有 story 是 DISCOVERY 開場沒跑；有 story 但
+            # 一條 FR 都沒有，正是開場交出來的形狀——該跑的是 DISCOVERY 的輪次。
             if stories_in_spec(stext):
-                print(f"✗ {spec_path.parent.name} 的 prd.md 有 story 但底下沒有任何 FR "
-                      f"—— CAPTURE 的半成品，先跑 bdd-discovery")
+                print(f"✗ {spec_path.parent.name} 的 spec.md 有 story 但底下沒有任何 FR "
+                      f"—— 開場的半成品，先跑 bdd-discovery")
             else:
-                print(f"✗ {spec_path.parent.name} 的 prd.md 沒有 `## User Stories` "
-                      f"一節、或該節底下沒有任何 story —— 先跑 bdd-capture")
+                print(f"✗ {spec_path.parent.name} 的 spec.md 沒有 `## User Stories` "
+                      f"一節、或該節底下沒有任何 story —— 先跑 bdd-discovery")
             problems += 1
             continue
 
@@ -475,7 +480,7 @@ def check(root: Path) -> int:
         # AC 的 <n> 必須等於它掛在底下的那條 FR。巢狀讓這件事在寫的時候
         # 不容易弄錯，但打字錯不會被結構擋下來——`AC-9.1` 打在 `**FR-1**`
         # 底下會被記成 FR-1 的例子，然後在下面的覆蓋比對裡變成一則
-        # 「@example-9.1 不見了」的訊息，指著 .feature 說它漏寫，而錯在 prd.md。
+        # 「@example-9.1 不見了」的訊息，指著 .feature 說它漏寫，而錯在 spec.md。
         mismatched = sorted(
             (fr, ac) for fr, acs in frs.items() for ac in acs
             if ac.split(".")[0] != fr)
@@ -486,8 +491,8 @@ def check(root: Path) -> int:
 
         stories = stories_in_spec(stext)
         if not stories:
-            print(f"✗ {spec_path.parent.name} 的 prd.md `## User Stories` 一節底下沒有任何 story "
-                  f"—— CAPTURE 還沒切 story")
+            print(f"✗ {spec_path.parent.name} 的 spec.md `## User Stories` 一節底下沒有任何 story "
+                  f"—— DISCOVERY 開場還沒切 story")
             problems += 1
             continue
 
@@ -504,7 +509,7 @@ def check(root: Path) -> int:
                   f"{', '.join('FR-' + f for f in unowned)}")
             problems += 1
 
-        # slug 記的是「prd.md 提到哪些 story」，跟 .feature 在不在無關，
+        # slug 記的是「spec.md 提到哪些 story」，跟 .feature 在不在無關，
         # 所以留在守衛外面——孤兒 .feature 那一段要用它。
         for slug in sorted(stories):
             covered.add(slug)
@@ -538,7 +543,7 @@ def check(root: Path) -> int:
                 issues = []
                 # 發明優先於漏做：憑空的驗收條件比缺一條更難發現，因為它看起來很完整。
                 if invented:
-                    issues.append(f"指向 prd.md 裡不存在的例子 {invented}")
+                    issues.append(f"指向 spec.md 裡不存在的例子 {invented}")
                 if len(states) != 1:
                     issues.append(f"狀態 tag {states or '缺'} —— 每個檔恰好要一個")
                 if zh_rule:

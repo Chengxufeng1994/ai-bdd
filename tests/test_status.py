@@ -50,12 +50,12 @@ def run(root: Path) -> tuple[int, str]:
     return code, buf.getvalue()
 
 
-class StatusReadsPrd(unittest.TestCase):
-    def test_counts_rows_from_prd(self):
+class StatusReadsSpec(unittest.TestCase):
+    def test_counts_rows_from_spec(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(PRD, encoding="utf-8")
+            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text(PRD, encoding="utf-8")
 
             code, out = run(root)
 
@@ -64,7 +64,7 @@ class StatusReadsPrd(unittest.TestCase):
             self.assertIn("待答（1）", out)
             self.assertIn("2026-10-02-parking/Q-2", out)
 
-    def test_missing_prd_exits_1_and_names_capture(self):
+    def test_missing_spec_exits_1_and_names_discovery(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
@@ -73,8 +73,22 @@ class StatusReadsPrd(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("沒有任何 prd.md", out)
-            self.assertIn("bdd-capture", out)
+            self.assertIn("沒有任何 spec.md", out)
+            self.assertIn("bdd-discovery", out)
+            self.assertNotIn("bdd-capture", out)
+
+    def test_old_layout_prd_beside_spec_exits_1_and_names_git_mv(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(PRD, encoding="utf-8")
+            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text("# old technical", encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("舊版佈局", out)
+            self.assertIn("git mv prd.md spec.md", out)
 
 
 if __name__ == "__main__":
