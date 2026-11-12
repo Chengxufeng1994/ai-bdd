@@ -1,6 +1,6 @@
 # 怎麼定義 Persona
 
-`prd.md` 的 `## Personas` 節的寫法。三個讀者：`bdd-capture` 從原文第一次抽角色時讀它；
+`spec.md` 的 `## Personas` 節的寫法。三個讀者：`bdd-discovery` 開場從原文第一次抽角色時讀它；
 `bdd-discovery` 在開場的「識別角色」那一步、或後面某一輪冒出沒見過的角色時讀它；
 `bdd-spec` 在 `design.md` 引用角色時讀它。
 
@@ -90,11 +90,11 @@ MUST: 每個角色至少要有**一條規則**只約束它、不約束別人。
 
 ---
 
-## 寫進 `prd.md` 的 `## Personas`
+## 寫進 `spec.md` 的 `## Personas`
 
 一個 persona 一個 `### P-<n>` 小節，不是表格的一列。**因為 `## User Stories`
 的每一則都要寫「身為 P-<n>」，而表格的一列給不出可引用的識別碼。** 欄位與完整
-範例見 [`../examples/minimal-prd.md`](../examples/minimal-prd.md)，本文不重複
+範例見 [`../examples/minimal-spec.md`](../examples/minimal-spec.md)，本文不重複
 格式，只講前面幾節那些判準怎麼落進欄位：**是誰**與**怎麼取得這個身分**照抄；
 **跟誰容易混**同時是欄位也是收尾時的核對項（見「兩個角色沒有規則區分，就是
 同一個角色」）；**他要什麼**是 story 的來源，寫不出來就代表這個角色還沒有
@@ -121,7 +121,7 @@ MUST: `P-<n>` 的編號全域唯一，而且**不重排**——`## User Stories`
 
 `bdd-formulation` 寫「前置（狀態）」規則（象限定義見
 [`../../bdd-formulation/references/rule-taxonomy.md`](../../bdd-formulation/references/rule-taxonomy.md)）
-時，主詞應該是 `prd.md` 的 `## Personas` 裡的角色名。出現一個沒在 `## Personas`
+時，主詞應該是 `spec.md` 的 `## Personas` 裡的角色名。出現一個沒在 `## Personas`
 的角色，就是這裡漏了一個——這是人在寫的時候要對的，不是腳本會抓的：
 `check_spec.py` 不解析 `## Personas`。
 

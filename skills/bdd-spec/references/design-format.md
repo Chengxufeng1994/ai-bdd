@@ -5,7 +5,7 @@
 一個 feature 一份，路徑 `specs/<date>-<feature>/design.md`。它只裝**技術設計**：
 seam、模組、介面、API 契約、schema、測試層級、風險。業務內容（story、FR、AC、
 角色、範圍、開放問題）住同目錄的 `prd.md`，格式見
-`../../bdd-capture/references/prd-format.md`——本文件不重複那些節。
+`../../bdd-discovery/references/spec-format.md`——本文件不重複那些節。
 
 `design.md` 是拋棄式快照，實作一開始就會過期；`prd.md` 活得比它久。壽命不同的
 東西不放同一個檔。

@@ -1,12 +1,12 @@
-# `prd.md` 的骨架
+# `spec.md` 的骨架
 
-照抄即可。三個 skill 在不同時刻讀它：`bdd-capture` 建檔時、`bdd-discovery`
+照抄即可。三個 skill 在不同時刻讀它：`bdd-discovery` 建檔時與
 每一輪寫答案時、`bdd-formulation` 翻 `.feature` 時。`example-mapping` 讀它攤地圖。
 
-一個 feature 一份，路徑 `specs/<date>-<feature>/prd.md`。一份 `prd.md` 裝這個
-feature 的全部 story——story 由 CAPTURE 粗切、DISCOVERY 細切，見各自的 SKILL.md。
+一個 feature 一份，路徑 `specs/<date>-<feature>/spec.md`。一份 `spec.md` 裝這個
+feature 的全部 story——story 由 DISCOVERY 開場粗切、輪次細切，見各自的 SKILL.md。
 
-它是**一份從 draft 長到 complete 的活文件**：CAPTURE 建檔時只有開頭幾節與空的
+它是**一份從 draft 長到 complete 的活文件**：DISCOVERY 開場 建檔時只有開頭幾節與空的
 story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清空、需求方點頭，
 狀態翻成 `已對焦`，`bdd-formulation` 與 `bdd-spec` 才讀它。
 
@@ -19,18 +19,18 @@ story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清
 
 | 章節 | 裝什麼 | 誰第一次寫 |
 | --- | --- | --- |
-| `## Document Overview` | 狀態、最後更新、結束方式、版本修訂歷史、核心關係人 | CAPTURE |
-| `## Background` | 業務問題與現在什麼在痛 | CAPTURE |
-| `## Goal` | 做成之後的樣子 | CAPTURE |
-| `## Scope — In / Out` | In 是這次要交付的能力；Out 分兩類，見下 | CAPTURE |
-| `## Personas` | `### P-<n>` | CAPTURE（五欄可留「（無資料）」），DISCOVERY 補 |
-| `## User Stories` | `### US-<n> · <slug>`，底下三個分組 `#### FR`／`#### NFR`／`#### Q` | CAPTURE 寫標題與句子，DISCOVERY 填三個分組 |
+| `## Document Overview` | 狀態、最後更新、結束方式、版本修訂歷史、核心關係人 | DISCOVERY 開場 |
+| `## Background` | 業務問題與現在什麼在痛 | DISCOVERY 開場 |
+| `## Goal` | 做成之後的樣子 | DISCOVERY 開場 |
+| `## Scope — In / Out` | In 是這次要交付的能力；Out 分兩類，見下 | DISCOVERY 開場 |
+| `## Personas` | `### P-<n>` | DISCOVERY 開場（五欄可留「（無資料）」），DISCOVERY 補 |
+| `## User Stories` | `### US-<n> · <slug>`，底下三個分組 `#### FR`／`#### NFR`／`#### Q` | DISCOVERY 開場 寫標題與句子，DISCOVERY 填三個分組 |
 | `## Non-Functional Requirements` | 跨 story 的品質屬性 | DISCOVERY |
-| `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | CAPTURE 抄原文的假設，DISCOVERY 改寫成問過的 |
-| `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | CAPTURE |
-| `## Open Questions` | 表是機械可解析的索引，小節是人讀的決策史 | CAPTURE 填需求方自己列的開放問題，DISCOVERY 填其餘 |
+| `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | DISCOVERY 開場 抄原文的假設，DISCOVERY 改寫成問過的 |
+| `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | DISCOVERY 開場 |
+| `## Open Questions` | 表是機械可解析的索引，小節是人讀的決策史 | DISCOVERY 開場 填需求方自己列的開放問題，DISCOVERY 填其餘 |
 | `## Further Notes` | 放不進其他節、但下一個接手的人會想知道的 | 任何一步 |
-| `## 原文` | 需求方帶來的描述，逐字 | CAPTURE，之後**不得改寫** |
+| `## 原文` | 需求方帶來的描述，逐字 | DISCOVERY 開場，之後**不得改寫** |
 
 順序固定，不因為某節內容少而調換或省略標題。技術設計（seam、API、schema、
 測試層級、風險）不在這份文件裡，那是 `design.md`，格式見
@@ -65,21 +65,21 @@ story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清
 
 | 狀態 | 意思 | 誰寫 |
 | --- | --- | --- |
-| `澄清中` | 還有待答問題，`example-mapping` 不該判就緒 | CAPTURE 建檔時 |
+| `澄清中` | 還有待答問題，`example-mapping` 不該判就緒 | DISCOVERY 開場 建檔時 |
 | `待對焦` | 紅卡清空了，等需求方過目 | DISCOVERY 在前沿空了時 |
 | `已對焦` | 需求方同意 | `example-mapping`，依使用者的答覆 |
 | `已凍結` | PLAN 已經消費過它，之後任何改動都要開新版本 | 尚無寫入者 |
 
 這四個值講的是這份文件自己走到哪。下游的閘門：`bdd-formulation` 與 `bdd-spec`
-只讀 `已對焦` 的 `prd.md`。
+只讀 `已對焦` 的 `spec.md`。
 
 **結束方式**是 DISCOVERY 最近一輪怎麼停的，四選一：`收斂`／`阻塞`／`零進展`／
-`喊停`，CAPTURE 建檔時寫 `—`。它跟 `狀態` 不同：`狀態` 說這份文件走到哪，
+`喊停`，DISCOVERY 開場 建檔時寫 `—`。它跟 `狀態` 不同：`狀態` 說這份文件走到哪，
 `結束方式` 說上一輪為什麼停在那裡。`阻塞` 要在 `## Open Questions` 對應小節寫清楚
 卡在誰身上。
 
 **已知弱點：沒有東西在強制這一欄。** `check_spec.py` 從不讀狀態欄，一份還停在
-`澄清中` 的 `prd.md` 照樣能通過全部檢查。這一欄是給人看的宣告，不是機械閘門。
+`澄清中` 的 `spec.md` 照樣能通過全部檢查。這一欄是給人看的宣告，不是機械閘門。
 
 MUST NOT: 狀態欄寫題數。「9 題已答／10 題待答」是 `../../bdd-discovery/scripts/status.py` **算出來的**，
 寫進文件等於同一個事實兩份，而它們遲早不一樣。
@@ -90,7 +90,7 @@ MUST NOT: 狀態欄寫題數。「9 題已答／10 題待答」是 `../../bdd-di
 
 **「為什麼」那欄不可省。** 只記改了什麼，半年後有人會把它改回去。
 
-**核心關係人由 CAPTURE 登記第一批（需求方自己與他點名的人），DISCOVERY 每冒出
+**核心關係人由 DISCOVERY 開場 登記第一批（需求方自己與他點名的人），DISCOVERY 每冒出
 一個新的受訪者就補一列。** `決策權` 這一格只有問的人寫得出來——`bdd-spec` 把整張表
 原樣抄進 `design.md`，不增列也不改寫。
 
@@ -167,7 +167,7 @@ FR 掛在 story、story 掛在 persona，**沒有目標的 persona 會產出沒�
 身為 P-1（訪客），我想在出場前知道要付多少，以便付完就能開走 ← 推論
 ```
 
-MUST: slug 在一份 `prd.md` 裡唯一。`check_spec.py` 用它對應 `.feature` 檔名。
+MUST: slug 在一份 `spec.md` 裡唯一。`check_spec.py` 用它對應 `.feature` 檔名。
 
 ````markdown
 ### US-1 · visitor-billing
@@ -258,7 +258,7 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 
 **已知弱點：這行宣告沒有東西在檢查它。**
 
-**只有一個 story 分組。** CAPTURE 沿使用者目標粗切、DISCOVERY 沿規則細切，兩者改的
+**只有一個 story 分組。** 開場沿使用者目標粗切、輪次沿規則細切，兩者改的
 是同一節，不是兩份分組——所以不需要一條規則仲裁哪個算數。
 
 ## 來源標記：三選一
@@ -271,7 +271,7 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 
 | 標記 | 意思 |
 | --- | --- |
-| `PRD §x` | 同一份 `prd.md` 的 `## 原文` 這樣寫（引用它的章節或段落）——需求方帶來的原始輸入的逐字副本 |
+| `PRD §x` | 同一份 `spec.md` 的 `## 原文` 這樣寫（引用它的章節或段落）——需求方帶來的原始輸入的逐字副本 |
 | `Q-<n>` | 來自 `## Open Questions` 某一題的答案，`<n>` 對應那一列的 `Q` 欄 |
 | `推論` | 兩者都不是，是從別的地方推導出來的 |
 
@@ -282,8 +282,8 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 ```
 
 MUST: 這個標記不是裝飾。少了它，「這一行是真的逼問過 PRD 才寫下來的」跟
-「這一行只是把 PRD 換句話抄一遍」在 `prd.md` 上長得一模一樣——完整範例見
-[`../examples/minimal-prd.md`](../examples/minimal-prd.md)：整份文件的來源欄
+「這一行只是把 PRD 換句話抄一遍」在 `spec.md` 上長得一模一樣——完整範例見
+[`../examples/minimal-spec.md`](../examples/minimal-spec.md)：整份文件的來源欄
 全是 `PRD §x` 時，代表 DISCOVERY 沒有真的發生。
 
 MUST: `## User Stories` 底下的 FR 與 AC **只准 `PRD §x` 或 `Q-<n>`**。一條規則或
@@ -351,7 +351,7 @@ NFR 的編號同樣全域唯一，而且跨越它的兩個家：story 專屬的 
 
 ### 接縫：兩份產物各用母語
 
-| `prd.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
+| `spec.md`（PRD 詞彙） | `.feature`（Gherkin 詞彙） |
 | --- | --- |
 | `FR-<n>` | `@rule-<n>` |
 | `AC-<n>.<m>` | `@example-<n>.<m>` |
@@ -412,7 +412,7 @@ criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**；在主流 PR
 是那串 Given/When/Then。這裡用 PRD 的。四色卡與 PRD 術語的完整對照 →
 `example-mapping` skill。
 
-**已知弱點**：G/W/T 與 `.feature` 的 `Scenario` 有字面重複。`prd.md` 的是**談定的**，
+**已知弱點**：G/W/T 與 `.feature` 的 `Scenario` 有字面重複。`spec.md` 的是**談定的**，
 `.feature` 的是**可執行的**（還要套封閉步驟文法與 `Rule:` 結構）。沒有東西檢查兩者
 一致——`check_spec.py` 只檢查 tag 對得上編號。
 
@@ -551,20 +551,20 @@ MUST NOT: 把應該進其他節的東西丟進來。這一節是**最後手段**
 
 ## 角色與詞義：兩條界線
 
-**角色留在 `prd.md` 的 `## Personas`，不進 `docs/CONTEXT.md`。** 角色是這個
+**角色留在 `spec.md` 的 `## Personas`，不進 `docs/CONTEXT.md`。** 角色是這個
 feature 流程裡誰在做事，換一個 feature 就換一批；詞彙不是。角色若日後真的
 需要跨 feature 累積，套 rule of three 再建，不預先做。
 
 **詞義的決策住 `## Open Questions`，不另設 glossary 一節。** DISCOVERY 發現
 「訪客」有歧義時，那就是一題——答案進 `## Open Questions` 的表與小節，跟其他問題一視同仁。
 `bdd-spec` 之後從已答的問題把定義抬進
-`docs/CONTEXT.md`；`prd.md` 沒有詞彙表，但詞義的來源與拍板的時間點都查得到。
+`docs/CONTEXT.md`；`spec.md` 沒有詞彙表，但詞義的來源與拍板的時間點都查得到。
 
 ## 為什麼規則寫在 story 底下，不另存一份問答
 
-`check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`prd.md`
-`## User Stories` 段的 FR／AC 清單，與 `.feature` 的可執行場景。`prd.md`
-有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature` 指向 `prd.md` 沒有的
+`check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`spec.md`
+`## User Stories` 段的 FR／AC 清單，與 `.feature` 的可執行場景。`spec.md`
+有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature` 指向 `spec.md` 沒有的
 例子 ＝ 憑空發明。
 
 FR／AC 在 DISCOVERY 答案回來的那一刻寫下，行尾指回它來自的 `Q-<n>` 或 `PRD §n`。
@@ -577,7 +577,7 @@ FR／AC 在 DISCOVERY 答案回來的那一刻寫下，行尾指回它來自的 
 ```markdown
 ## 原文
 
-需求方 2026-10-02 口述，由 bdd-capture 逐字記錄；§ 編號是記錄時加的，原文沒有。
+需求方 2026-10-02 口述，由 bdd-discovery 逐字記錄；§ 編號是記錄時加的，原文沒有。
 
 §1 停車場要開始收費，訪客跟月租戶分開算。
 §2 訪客進場抽一張票。

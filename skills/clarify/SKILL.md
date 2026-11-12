@@ -86,7 +86,7 @@ feature 時看不到的收穫，見 `bdd-discovery` 對這件事的說明。
 MUST: 一個問題確定就**立刻**在 `prd.md` `## Open Questions` 把那一列狀態改 `已答`、
 答案欄填結論，小節補 `**誰答的**`。答案改變了行為的，**當場**寫成所屬 story 底下的
 `**FR-<n>**`／`- **AC-<n>.<m>**`，行尾 `← Q-<n>`——寫法與編號規則見
-`../bdd-capture/references/prd-format.md`。這跟 `bdd-discovery` 的記錄紀律是同一條。
+`../bdd-discovery/references/spec-format.md`。這跟 `bdd-discovery` 的記錄紀律是同一條。
 
 MUST NOT: 寫 `design.md`、`.feature`，或改寫 `prd.md` 的 `## 原文`。答案只有一個家：
 `## Open Questions` 的列與它長出的 FR／AC。

@@ -141,8 +141,8 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertIn("§9", out)
 
-    def test_shipped_example_prd_passes_prd_only_checks(self):
-        example = (ROOT / "skills" / "bdd-capture" / "examples" / "minimal-prd.md").read_text(encoding="utf-8")
+    def test_shipped_example_spec_passes_spec_only_checks(self):
+        example = (ROOT / "skills" / "bdd-discovery" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, example)
