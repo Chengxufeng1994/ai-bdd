@@ -25,7 +25,7 @@ seam、模組、介面、API 契約、schema、測試層級、風險。業務內
 | `## Testing Decisions` | seam ＋ 每個 AC 的測試層級 ＋ prior art |
 | `## Risks` | 風險 |
 | `## 回 DISCOVERY 補問` | 寫技術設計時發現、本步驟不得自己決定的洞 |
-| `## Further Notes` | 放不進其他節的；寫法同 `prd-format.md` 的同名節 |
+| `## Further Notes` | 放不進其他節的；寫法同 `../../bdd-discovery/references/spec-format.md` 的同名節 |
 
 順序固定，不因為某節內容少而調換或省略標題。
 `domain-model.md` 仍是獨立檔案，格式見本文最後一節。

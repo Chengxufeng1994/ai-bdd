@@ -174,7 +174,20 @@ class CheckReadsSpec(unittest.TestCase):
 
             self.assertEqual(code, 1)
             self.assertIn("舊版佈局", out)
-            self.assertIn("git mv prd.md spec.md", out)
+            self.assertIn("先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`", out)
+
+    def test_prd_only_dir_names_single_git_mv(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(GOOD, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("舊版佈局", out)
+            self.assertIn("`git mv prd.md spec.md`", out)
+            self.assertNotIn("design.md", out)
 
 
 if __name__ == "__main__":

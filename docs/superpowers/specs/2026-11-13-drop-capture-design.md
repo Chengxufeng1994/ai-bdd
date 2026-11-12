@@ -130,7 +130,7 @@ description、觸發詞「寫 spec.md」→「寫 design.md」。
 - `tests/test_check_spec.py`、`tests/test_status.py` 的 fixture 檔名跟著改
 - 來源標記 `← PRD §n` **不改**：它指的是「原文第 n 段」，原文仍叫原文
 - **舊佈局防呆**：兩支 script 在 `specs/<x>/` 底下看到 `prd.md` 與 `spec.md` 並存時，
-  退出 1 並說「舊版佈局：先 `git mv prd.md spec.md`、`git mv spec.md design.md`」，
+  退出 1 並說「舊版佈局：先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`」（只有 `prd.md` 時只說後一句），
   附一個測試。這不是第十七項檢查，是跟「沒有 specs/」同級的輸入防線——否則新 script
   會把舊的技術 `spec.md` 當業務規格讀，報「找不到 `## Open Questions`」，訊息指錯修法，
   正是 `ai-sdlc.md` 說的「靜默地錯」。磁碟上 `runs/go-parking-billing/` 就是這種佈局

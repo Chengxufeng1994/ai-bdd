@@ -81,7 +81,7 @@ git commit -m "refactor(bdd-spec): rename the technical spec.md to design.md"
 
 **Interfaces:**
 - Consumes: Task 1's `design.md` fixtures in both tests.
-- Produces: both `main(root)` glob `specs/*/spec.md`; messages 「沒有 spec.md —— 先跑 bdd-discovery」; a new guard in each `main` that returns 1 with the message 「舊版佈局：先 `git mv prd.md spec.md`、`git mv spec.md design.md`」 when any `specs/<x>/prd.md` exists.
+- Produces: both `main(root)` glob `specs/*/spec.md`; messages 「沒有 spec.md —— 先跑 bdd-discovery」; a new guard in each `main` that returns 1 with the message 「舊版佈局：先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`」 when any `specs/<x>/prd.md` exists.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -108,7 +108,7 @@ In each `main(root: Path) -> int`, after the `specs.is_dir()` check and before t
 ```python
 legacy = sorted(specs.glob("*/prd.md"))
 if legacy:
-    print(f"{legacy[0].parent} 是舊版佈局（prd.md）：先 `git mv prd.md spec.md`、`git mv spec.md design.md`")
+    print(f"{legacy[0].parent} 是舊版佈局（prd.md）：先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`")
     return 1
 ```
 

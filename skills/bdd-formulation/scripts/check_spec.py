@@ -379,7 +379,11 @@ def check(root: Path) -> int:
 
     legacy = sorted(specs_dir.glob("*/prd.md"))
     if legacy:
-        print(f"{legacy[0].parent} 是舊版佈局（prd.md）：先 `git mv prd.md spec.md`、`git mv spec.md design.md`")
+        # 兩種舊佈局，搬法不同：技術 spec.md 還在旁邊時要先讓位，否則第一個 mv 就撞檔。
+        old_dir = legacy[0].parent
+        hint = ("先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`"
+                if (old_dir / "spec.md").exists() else "`git mv prd.md spec.md`")
+        print(f"{old_dir} 是舊版佈局（prd.md）：{hint}")
         return 1
 
     specs = sorted(specs_dir.glob("*/spec.md"))
