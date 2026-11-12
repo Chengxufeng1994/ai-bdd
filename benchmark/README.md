@@ -28,7 +28,7 @@ cases/parking-billing/
 ## 為什麼 case 與 skeleton 分開
 
 `cases/` 語言無關，`skeleton/` 每個語言一份。這條軸不是隨便切的：**IMPLEMENT
-以上游的一切都是共用的，只有 harness 隨語言不同**。CAPTURE、DISCOVERY、SPEC、PLAN 的產物
+以上游的一切都是共用的，只有 harness 隨語言不同**。DISCOVERY、SPEC、PLAN 的產物
 （規則、例子、`.feature`）換個語言仍然成立；`Makefile`、分層規則、測試 runner
 不行。
 
@@ -41,7 +41,7 @@ cp -r benchmark/skeleton/go runs/go-personal-memo
 
 `runs/` 是 gitignored，所以新 clone 上不存在——`mkdir -p` 不能省。
 
-然後把該 case 的輸入檔**整份**交給 `bdd-capture`（它會逐字收進 `prd.md` 的 `## 原文`），
+然後把該 case 的輸入檔**整份**交給 `bdd-discovery`（開場會逐字收進 `spec.md` 的 `## 原文`），
 再跑 `bdd-discovery`：
 
 ```bash
@@ -58,7 +58,7 @@ cat benchmark/cases/personal-memo/input-brief.md
 
 ```
 runs/<lang>-<case>/
-├── specs/<date>-<feature>/prd.md           CAPTURE 建、DISCOVERY 填到 已對焦
+├── specs/<date>-<feature>/spec.md          DISCOVERY 建、填到 已對焦
 ├── specs/<date>-<feature>/design.md          SPEC（bdd-spec）的技術設計
 └── features/                               SPEC（bdd-formulation）產出的 .feature
 ```

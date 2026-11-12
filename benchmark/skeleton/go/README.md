@@ -1,7 +1,7 @@
 # benchmark/skeleton/go
 
 A Go + godog project used to dogfood the `ai-bdd` skills end to end:
-**CAPTURE → DISCOVERY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**.
+**DISCOVERY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**.
 
 It is not a product. Its job is to make the skills fail visibly when they are
 weak.
@@ -9,7 +9,7 @@ weak.
 ## Ground rule
 
 **No business code until DISCOVERY has run.** Every type in `domain/` must trace
-back to an `FR-<n>` in `prd.md`, and every scenario in `features/` back to an
+back to an `FR-<n>` in `spec.md`, and every scenario in `features/` back to an
 `AC-<n>.<m>`. Writing the model first defeats the entire point of the
 testbed — it would prove the skills work by handing them the answer.
 

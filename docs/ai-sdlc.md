@@ -1,7 +1,7 @@
 # AI-SDLC — 為什麼這條流程長這樣
 
 這份文件記錄**本專案的主張**：一條給 AI 協作用的開發生命週期，為什麼需要
-七步、每一步為什麼存在、哪幾段是 BDD、哪幾段不是。
+六步、每一步為什麼存在、哪幾段是 BDD、哪幾段不是。
 
 它跟 [bdd.md](./bdd.md) 的分工：那份轉述 BDD 這套方法本身，
 不提本專案；這份是本專案的立場，會隨實跑演進。要建什麼、什麼順序見
@@ -28,11 +28,11 @@ BDD 談的是人跟人之間怎麼建立共識，這裡多出來的問題是**�
 
 ---
 
-## 七步，以及哪幾段是 BDD
+## 六步，以及哪幾段是 BDD
 
 ```
-CAPTURE  →  DISCOVERY  →  SPEC  →  PLAN  →  IMPLEMENT  →  VERIFY  →  REVIEW
-   ✗        └──── BDD ──────┘       ✗       └─ BDD ─┘        ✗          ✗
+DISCOVERY  →  SPEC  →  PLAN  →  IMPLEMENT  →  VERIFY  →  REVIEW
+└──── BDD ────┘       ✗       └─ BDD ─┘        ✗          ✗
 ```
 
 **帶 BDD 的那三格不等於 BDD。** DISCOVERY 的開場在對 `## 原文` 掃隱含假設——這件事
@@ -40,37 +40,35 @@ CAPTURE  →  DISCOVERY  →  SPEC  →  PLAN  →  IMPLEMENT  →  VERIFY  → 
 `bdd-formulation` 產的 `.feature`，還要把技術決定寫成 `spec.md`，讓整份東西成為
 live document。只有 IMPLEMENT 跟 Automation 重合，因為 Automation 的產物本來就是
 程式碼而不是膠水層（見 [bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是
-夾在中間的洞**，CAPTURE 是前面的洞。
+夾在中間的洞**。
 
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
-| **CAPTURE** | 把需求方的話變成一份他簽過名的半成品 `prd.md`：原文逐字、問題／預期結果／角色／範圍、粗切 story。這是 playbook 的 `intent.md`——鏈上第一個有人擁有的東西 | **無**——BDD 假設 story 已經存在 |
-| **DISCOVERY** | 兩件事：對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 逼成規則與例子（BDD 的 Discovery）。**答案當場寫成 `prd.md` 的 FR／AC，每一條行尾指得出是誰說的。** 需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | 兩件事：把已對焦的 `prd.md` 翻成可執行規格（BDD 的 Formulation，`bdd-formulation`）＋把技術決定寫成 `spec.md`（不是 BDD，`bdd-spec`——它讓 `.feature` 以外的產物一起構成 live document）。切 story 不再在這裡 | Formulation ＋ 額外 |
+| **DISCOVERY** | 三件事：開場把需求方的話建成一份他簽過名的半成品 `spec.md`（原文逐字、粗切 story——不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 逼成規則與例子（BDD 的 Discovery）。**答案當場寫成 `spec.md` 的 FR／AC，每一條行尾指得出是誰說的。** 需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
+| **SPEC** | 兩件事：把已對焦的 `spec.md` 翻成可執行規格（BDD 的 Formulation，`bdd-formulation`）＋把技術決定寫成 `design.md`（不是 BDD，`bdd-spec`——它讓 `.feature` 以外的產物一起構成 live document）。切 story 不再在這裡 | Formulation ＋ 額外 |
 | **PLAN** | 把工作切到一個 fresh session 做得完，並宣告誰卡誰 | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`bdd-implement`） | Automation |
 | **VERIFY** | 綠了嗎？紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | **無**——治理不在三個實踐裡 |
 
-**六塊不屬於 BDD 的東西（CAPTURE 整步、PLAN、REVIEW、DISCOVERY 的隱含假設掃描、
-SPEC 的技術設計、story 的粗切）都不是補丁。** 它們回答的是「協作對象會失憶」帶來的
+**六塊不屬於 BDD 的東西（DISCOVERY 的建檔與 story 粗切、DISCOVERY 的隱含假設掃描、
+PLAN、REVIEW、SPEC 的技術設計）都不是補丁。** 它們回答的是「協作對象會失憶」帶來的
 問題，而 BDD 從來沒有那個問題要解。
 
 ---
 
-## 三種模式，四條紀律
+## 三種模式，三條紀律
 
-七步之所以站得住，是因為前四步底下的每個 skill 各自只有一種工作模式——SPEC 由兩個
-skill 分擔，所以是四條：
+六步之所以站得住，是因為前三步底下的每個 skill 各自只有一種工作模式——SPEC 由兩個
+skill 分擔，所以是三條：
 
 | 步驟 | 模式 | 只做 | 不做 |
 | --- | --- | --- | --- |
-| **CAPTURE**（`bdd-capture`） | 需求方說、agent 記 | 原文逐字、抽開頭幾節、最多問四題、粗切 story | 不填規則與例子 |
-| **DISCOVERY**（`bdd-discovery`） | agent 問、需求方答 | 問紅卡；答過的才能變 FR／AC，行尾標來源 | 不寫 Gherkin、不設計、不自己填答案 |
-| **SPEC**（`bdd-formulation`／`bdd-spec`） | agent 寫、需求方審 | `已對焦` 的 `prd.md` → `.feature` ＋ `spec.md` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` |
+| **DISCOVERY**（`bdd-discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story；問紅卡；答過的才能變 FR／AC，行尾標來源 | 建檔時不填規則與例子；不寫 Gherkin、不設計、不自己填答案 |
+| **SPEC**（`bdd-formulation`／`bdd-spec`） | agent 寫、需求方審 | `已對焦` 的 `spec.md` → `.feature` ＋ `design.md` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` |
 | **PLAN**（`bdd-plan`） | agent 切、工程師審 | tracer bullet ＋ blocking edges | 不設計 |
 
-四條互相支撐：DISCOVERY 能「不自己填答案」是因為 CAPTURE 把原文逐字留下、每條規則
+三條互相支撐：DISCOVERY 能「不自己填答案」是因為開場把原文逐字留下、每條規則
 都指得回去；SPEC 能「不訪談」是因為 DISCOVERY 做完了決定；PLAN 能「不設計」是因為
 SPEC 寫下了技術決定。任何一條破了，下一條就守不住。
 
@@ -82,12 +80,15 @@ agent 會補一個合理的答案然後繼續，而那個答案看起來跟真�
 不寫檔」擋這件事，而那條從來沒真的成立過；現在改靠「每條 FR／AC 必須指得出來源」
 擋——`check_spec.py` 第 14 項機械地抓沒有 `← Q-<n>` 或 `← PRD §n` 的規則。
 
-### 為什麼是五個 skill，不是一個
+### 為什麼是四個 skill，不是一個
 
-CAPTURE 與 DISCOVERY 相鄰，也是**方向相反的工作模式**：CAPTURE 是需求方說、模型記；
-DISCOVERY 是模型問、需求方答。合成一個 skill，模型會在記的時候順手補規則——那正是
-2026-09-09 到 09-11 三個版本都犯的事，每一次都靠措辭掩飾。拆開之後 CAPTURE 連
-FR 都不准寫，補不了。
+建檔與追問曾經是兩個 skill（2026-10-02 到 11-13 的 `bdd-capture`）。拆開的理由是
+**方向相反的工作模式**：建檔是需求方說、模型記；追問是模型問、需求方答。合在一起，
+模型會在記的時候順手補規則——那正是 2026-09-09 到 09-11 三個版本都犯的事，每一次
+都靠措辭掩飾。後來擋這件事的防線換了：不再靠 skill 邊界，靠 `check_spec.py` 第 14 項
+機械地抓沒有來源的 FR／AC。防線換成機械的之後，PRD 就不必再是流程自己維護的產物——
+它是需求方帶來的輸入，建檔只是把它逐字收進 `spec.md` 的 `## 原文`——所以 2026-11-13
+把建檔併回 DISCOVERY 的開場，當成它的第 0 件事。
 
 Discovery 與 Formulation 相鄰，卻是**方向相反的工作模式**：Discovery 是模型
 不停追問、使用者回答；Formulation 是模型書寫、使用者審閱。
@@ -112,7 +113,7 @@ PLAN 要獨立的理由不同：它是唯一一個**不需要領域知識**的�
 
 | 實踐 | agent 能做 | agent 不能做 |
 | --- | --- | --- |
-| **Discovery** | 扮演提問者，針對每條規則追問邊界、例外、空值、權限、併發。把「使用者可以上傳檔案」逼成「10MB 剛好／10MB+1 byte／0 byte／副檔名偽裝」。手法是 Example Mapping，四色卡怎麼對應 `prd.md`、四條診斷在這裡各自代表什麼 → `example-mapping` skill | **取代三方對話。** 它沒有業務脈絡的最終裁量權——它問得出問題，答不了 |
+| **Discovery** | 扮演提問者，針對每條規則追問邊界、例外、空值、權限、併發。把「使用者可以上傳檔案」逼成「10MB 剛好／10MB+1 byte／0 byte／副檔名偽裝」。手法是 Example Mapping，四色卡怎麼對應 `spec.md`、四條診斷在這裡各自代表什麼 → `example-mapping` skill | **取代三方對話。** 它沒有業務脈絡的最終裁量權——它問得出問題，答不了 |
 | **Formulation** | 草擬 Gherkin、稽核是否命令式化、統一詞彙、找出重複情境 | **確認共識。** 定義裡的 check for agreement 需要一個真的會反對的人 |
 | **Automation** | 產 step 骨架、優先比對既有 step 避免重複、指出該拆的 conjunction step | — |
 
@@ -124,7 +125,7 @@ PLAN 要獨立的理由不同：它是唯一一個**不需要領域知識**的�
 ## 可追溯鏈
 
 ```
-需求方的話（prd.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
+需求方的話（spec.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
 ```
 
 每個箭頭都是一個意圖遺失點。保住這條鏈是這套流程存在的理由——因為鏈的完整性
