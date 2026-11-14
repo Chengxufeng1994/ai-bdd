@@ -22,7 +22,7 @@ description: >
 
 ## Skill Boundaries
 
-- 要從需求找出規則與例子 → 改用 `bdd-discovery`，本 skill 只管切分
+- 要從需求問出規則與例子 → 改用 `bdd-discovery`；要寫成 FR／AC → `bdd-spec`。本 skill 只管切分
 - 要把紅卡問到收斂 → 改用 `clarify`
 - 要決定切完之後**先做哪一則** → 那是排序，屬於 `bdd-plan`。本 skill 只切，不排
 - 要跑四色卡診斷、或判定這則 story 就不就緒 → 改用 `example-mapping`
@@ -201,6 +201,9 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 - 告訴對方切成幾則、依據是什麼、哪一則你認為可以不做
 - **不要順便排順序**——那是 `bdd-plan` 的事。切分只回答「分成哪幾則」，
   不回答「先做哪一則」
-- 每則切完後直接改 `spec.md` 的 `## User Stories`（搬 FR 到它的新 story 底下，編號不變），
-  再由 `bdd-formulation` 把各自的 FR 與例子寫成 `.feature`——規則與例子已經就緒，
-  這一刀不需要回 `bdd-discovery` 補問
+- 切完改哪一份看是誰呼叫的：
+  - `bdd-discovery` 呼叫（還沒有規則）→ 改 `discovery.md` 的 `## 粗切 story`，一則一行
+  - `bdd-spec` 呼叫（規則已寫、`spec.md` 還沒 `已對焦`）→ 改 `spec.md` 的 `## User Stories`，
+    搬 FR 到它的新 story 底下，編號不變；之後由 `bdd-formulation` 寫成 `.feature`
+  - `spec.md` 已經 `已對焦` → 不切。`.feature` 的檔名與 tag 已經掛在舊的切法上；
+    回 `bdd-discovery` 開一題，走一輪再改

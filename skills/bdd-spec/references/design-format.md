@@ -5,7 +5,7 @@
 一個 feature 一份，路徑 `specs/<date>-<feature>/design.md`。它只裝**技術設計**：
 seam、模組、介面、API 契約、schema、測試層級、風險。業務內容（story、FR、AC、
 角色、範圍、開放問題）住同目錄的 `spec.md`，格式見
-`../../bdd-discovery/references/spec-format.md`——本文件不重複那些節。
+`../../bdd-spec/references/spec-format.md`——本文件不重複那些節。
 
 `design.md` 是拋棄式快照，實作一開始就會過期；`spec.md` 活得比它久。壽命不同的
 東西不放同一個檔。
@@ -25,7 +25,7 @@ seam、模組、介面、API 契約、schema、測試層級、風險。業務內
 | `## Testing Decisions` | seam ＋ 每個 AC 的測試層級 ＋ prior art |
 | `## Risks` | 風險 |
 | `## 回 DISCOVERY 補問` | 寫技術設計時發現、本步驟不得自己決定的洞 |
-| `## Further Notes` | 放不進其他節的；寫法同 `../../bdd-discovery/references/spec-format.md` 的同名節 |
+| `## Further Notes` | 放不進其他節的；寫法同 `../../bdd-spec/references/spec-format.md` 的同名節 |
 
 順序固定，不因為某節內容少而調換或省略標題。
 `domain-model.md` 仍是獨立檔案，格式見本文最後一節。

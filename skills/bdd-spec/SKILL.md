@@ -37,7 +37,7 @@ seam、動哪些模組、介面與 API 契約、schema、每個 AC 在哪一層�
 ## 參考檔案
 
 - `references/design-format.md` — `design.md` 的骨架（只有技術節）
-- `../bdd-discovery/references/spec-format.md` — 讀 `spec.md` 時對照它的節
+- `../bdd-spec/references/spec-format.md` — 讀 `spec.md` 時對照它的節
 - `examples/minimal-design.md` — 一份完整的 `design.md` 範例
 - `../bdd-formulation/scripts/check_spec.py` — 交件前自檢（第 6 步）。**在隔壁 skill**：本 skill 只跑它，不改它
 - `../bdd-discovery/scripts/status.py` — 確認 `spec.md` 沒有待答的題

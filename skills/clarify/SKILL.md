@@ -28,7 +28,7 @@ description: >
 - 要從零開始**找出**問題（抽規則、配例子）→ 改用 `bdd-discovery`，
   本 skill 接手它的產出
 - 要把例子寫成 Gherkin → 改用 `bdd-formulation`
-- 通用的需求訪談、不涉及 `spec.md` 與紅卡 → 環境中另有同名的外部 skill `clarify-loop`，
+- 通用的需求訪談、不涉及 `discovery.md` 與紅卡 → 環境中另有同名的外部 skill `clarify-loop`，
   以「最多五題」為終止條件；本 skill 以「紅卡清空」為終止條件
 - 本 skill **只問問題與記錄答案**，不做決定、不寫規格、不改程式碼
 
@@ -38,7 +38,7 @@ description: >
 
 Ask user: 若以下不明確，先問清楚。
 
-1. **要收斂哪一疊問題**：`spec.md` `## Open Questions` 裡狀態為「待答」的列。
+1. **要收斂哪一疊問題**：`discovery.md` `## Open Questions` 裡狀態為「待答」的列。
    `python3 skills/bdd-discovery/scripts/status.py` 列得出每個 feature 還剩哪幾題。
    單獨使用時，一段模糊的描述也可以——本 skill 會先把它拆成問題，逐題記錄答案
 2. **這一輪想推進到哪**：全部問完，還是先清掉能當場決定的。**先知道範圍，
@@ -67,7 +67,7 @@ IMPORTANT: 阻塞的題目**不要換句話說再問一次**。使用者答不�
 
 ### 2. 先讀已填的答案
 
-`spec.md` 的 `## Open Questions` 表裝的是這個 feature 問過的**每一題**，狀態三選一
+`discovery.md` 的 `## Open Questions` 表裝的是這個 feature 問過的**每一題**，狀態三選一
 `已答`／`待答`／`n/a`。本 skill 的對象是『待答』那些列；每題的小節記了跳過的原因，
 先讀那個原因再決定怎麼問。
 
@@ -83,13 +83,12 @@ feature 時看不到的收穫，見 `bdd-discovery` 對這件事的說明。
 | 之後再問 | 重問，這正是本 skill 的主要對象 |
 | 這題不該問 | 先確認它真的不影響任何規則。是 → 狀態改 `n/a`，答案欄寫清楚為什麼不用問 |
 
-MUST: 一個問題確定就**立刻**在 `spec.md` `## Open Questions` 把那一列狀態改 `已答`、
-答案欄填結論，小節補 `**誰答的**`。答案改變了行為的，**當場**寫成所屬 story 底下的
-`**FR-<n>**`／`- **AC-<n>.<m>**`，行尾 `← Q-<n>`——寫法與編號規則見
-`../bdd-discovery/references/spec-format.md`。這跟 `bdd-discovery` 的記錄紀律是同一條。
+MUST: 一個問題確定就**立刻**在 `discovery.md` `## Open Questions` 把那一列狀態改 `已答`、
+答案欄填結論，小節補 `**誰答的**` 與答案原話——格式見
+`../bdd-discovery/references/discovery-format.md`。這跟 `bdd-discovery` 的記錄紀律是同一條。
 
-MUST NOT: 寫 `design.md`、`.feature`，或改寫 `spec.md` 的 `## 原文`。答案只有一個家：
-`## Open Questions` 的列與它長出的 FR／AC。
+MUST NOT: 寫 `spec.md`、`plan.md`、`.feature`，或改寫 `discovery.md` 的 `## 原文`。答案只有
+一個家：`## Open Questions` 的列與它的小節；規則由 `bdd-spec` 之後從這裡寫。
 
 不要累積到一輪結束才一次更新記錄。剛答完那一刻你還記得它跟哪條規則有關；
 隔了十題再回來併，漏掉的機率高得多。而且中途停下時，記錄應該永遠是完整可用的。
@@ -201,10 +200,10 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 
 ### 單獨使用時
 
-寫入 `specs/<date>-<topic-slug>/spec.md`（跟 `bdd-discovery` 同一種路徑），只有三節：
+寫入 `specs/<date>-<topic-slug>/discovery.md`（跟 `bdd-discovery` 同一個檔），只有三節：
 
 ```markdown
-# PRD: <主題>
+# discovery: <主題>
 
 ## Document Overview
 
@@ -227,7 +226,7 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 ```
 
 被推翻的提案記在對應題的小節。用同一個檔名與格式，是為了之後 `bdd-discovery` 開場
-補開頭幾節時，問答不必搬家。
+補粗切 story 時，問答不必搬家。
 
 產物一律寫在 `specs/` 底下，不修改專案既有的任何檔案。
 
