@@ -1,14 +1,16 @@
 # `spec.md` 的骨架
 
-照抄即可。三個 skill 在不同時刻讀它：`bdd-discovery` 建檔時與
-每一輪寫答案時、`bdd-formulation` 翻 `.feature` 時。`example-mapping` 讀它攤地圖。
+照抄即可。`bdd-spec` 寫它時讀這份；`example-mapping` 讀它攤地圖、`bdd-formulation` 翻
+`.feature`、`bdd-plan` 切票時讀它寫出來的東西。
 
 一個 feature 一份，路徑 `specs/<date>-<feature>/spec.md`。一份 `spec.md` 裝這個
-feature 的全部 story——story 由 DISCOVERY 開場粗切、輪次細切，見各自的 SKILL.md。
+feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`bdd-spec` 寫規則時
+可以用 `story-splitting` 沿規則重切（`已對焦` 之前）。
 
-它是**一份從 draft 長到 complete 的活文件**：DISCOVERY 開場 建檔時只有開頭幾節與空的
-story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清空、需求方點頭，
-狀態翻成 `已對焦`，`bdd-formulation` 與 `bdd-spec` 才讀它。
+它是**從問答紀錄一次寫出來的規格**：`bdd-spec` 讀已收斂的 `discovery.md`，把原文與已答的
+題寫成這份文件，狀態 `待對焦`；需求方在 `example-mapping` 的就緒問句點頭，狀態翻成
+`已對焦`，`bdd-formulation` 與 `bdd-plan` 才讀它。問答與原文本身不在這裡，在
+`discovery.md`（格式見 `../../bdd-discovery/references/discovery-format.md`）。
 
 沒有內容的節**保留標題並寫為什麼空**，不要刪掉。空著的節跟被刪掉的節在檔案上
 長得一樣，而它們的意思完全不同。
@@ -19,22 +21,21 @@ story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清
 
 | 章節 | 裝什麼 | 誰第一次寫 |
 | --- | --- | --- |
-| `## Document Overview` | 狀態、最後更新、結束方式、版本修訂歷史、核心關係人 | DISCOVERY 開場 |
-| `## Background` | 業務問題與現在什麼在痛 | DISCOVERY 開場 |
-| `## Goal` | 做成之後的樣子 | DISCOVERY 開場 |
-| `## Scope — In / Out` | In 是這次要交付的能力；Out 分兩類，見下 | DISCOVERY 開場 |
-| `## Personas` | `### P-<n>` | DISCOVERY 開場（五欄可留「（無資料）」），DISCOVERY 補 |
-| `## User Stories` | `### US-<n> · <slug>`，底下三個分組 `#### FR`／`#### NFR`／`#### Q` | DISCOVERY 開場 寫標題與句子，DISCOVERY 填三個分組 |
-| `## Non-Functional Requirements` | 跨 story 的品質屬性 | DISCOVERY |
-| `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | DISCOVERY 開場 抄原文的假設，DISCOVERY 改寫成問過的 |
-| `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | DISCOVERY 開場 |
-| `## Open Questions` | 表是機械可解析的索引，小節是人讀的決策史 | DISCOVERY 開場 填需求方自己列的開放問題，DISCOVERY 填其餘 |
+| `## Document Overview` | 狀態、最後更新、版本修訂歷史、核心關係人（照抄 `discovery.md`） | `bdd-spec` |
+| `## Background` | 業務問題與現在什麼在痛 | `bdd-spec` |
+| `## Goal` | 做成之後的樣子 | `bdd-spec` |
+| `## Scope — In / Out` | In 是這次要交付的能力；Out 分兩類，見下 | `bdd-spec` |
+| `## Personas` | `### P-<n>` | `bdd-spec`（五欄可留「（無資料）」） |
+| `## User Stories` | `### US-<n> · <slug>`，底下三個分組 `#### FR`／`#### NFR`／`#### Q` | `bdd-spec` |
+| `## Non-Functional Requirements` | 跨 story 的品質屬性 | `bdd-spec` |
+| `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | `bdd-spec`（問過的引 `Q-<n>`，沒問過的引 `PRD §n`） |
+| `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | `bdd-spec` |
+| `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `bdd-spec` |
 | `## Further Notes` | 放不進其他節、但下一個接手的人會想知道的 | 任何一步 |
-| `## 原文` | 需求方帶來的描述，逐字 | DISCOVERY 開場，之後**不得改寫** |
 
 順序固定，不因為某節內容少而調換或省略標題。技術設計（seam、API、schema、
-測試層級、風險）不在這份文件裡，那是 `design.md`，格式見
-`../../bdd-spec/references/design-format.md`。
+測試層級、風險）不在這份文件裡，在 `plan.md`，格式見
+`../../bdd-plan/references/plan-format.md`。
 
 ---
 
@@ -43,7 +44,7 @@ story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清
 ```markdown
 ## Document Overview
 
-**狀態**：澄清中　**最後更新**：2026-09-10　**結束方式**：—
+**狀態**：待對焦　**最後更新**：2026-09-10
 
 ### 版本修訂歷史
 
@@ -61,22 +62,17 @@ story；DISCOVERY 每答一題就往 story 底下長一條 FR 或 AC；紅卡清
 | 柵欄廠商 | 已發包的柵欄／繳費機 | 只答技術現況，不做決定 |
 ```
 
-**狀態只有四個值**，判準是「下游能不能開工」：
+**狀態只有三個值**，判準是「下游能不能開工」：
 
 | 狀態 | 意思 | 誰寫 |
 | --- | --- | --- |
-| `澄清中` | 還有待答問題，`example-mapping` 不該判就緒 | DISCOVERY 開場 建檔時 |
-| `待對焦` | 紅卡清空了，等需求方過目 | DISCOVERY 在前沿空了時 |
+| `待對焦` | 規格寫好了，等需求方過目 | `bdd-spec`，寫完或修補完時 |
 | `已對焦` | 需求方同意 | `example-mapping`，依使用者的答覆 |
 | `已凍結` | PLAN 已經消費過它，之後任何改動都要開新版本 | 尚無寫入者 |
 
-這四個值講的是這份文件自己走到哪。下游的閘門：`bdd-formulation` 與 `bdd-spec`
-只讀 `已對焦` 的 `spec.md`。
-
-**結束方式**是 DISCOVERY 最近一輪怎麼停的，四選一：`收斂`／`阻塞`／`零進展`／
-`喊停`，DISCOVERY 開場 建檔時寫 `—`。它跟 `狀態` 不同：`狀態` 說這份文件走到哪，
-`結束方式` 說上一輪為什麼停在那裡。`阻塞` 要在 `## Open Questions` 對應小節寫清楚
-卡在誰身上。
+這三個值講的是這份文件自己走到哪。下游的閘門：`bdd-formulation` 與 `bdd-plan`
+只讀 `已對焦` 的 `spec.md`。`澄清中`／`已收斂` 是 `discovery.md` 的狀態，不出現在這裡；
+結束方式也記在 `discovery.md`。
 
 **已知弱點：沒有東西在強制這一欄。** `check_spec.py` 從不讀狀態欄，一份還停在
 `澄清中` 的 `spec.md` 照樣能通過全部檢查。這一欄是給人看的宣告，不是機械閘門。
@@ -90,9 +86,8 @@ MUST NOT: 狀態欄寫題數。「9 題已答／10 題待答」是 `../../bdd-di
 
 **「為什麼」那欄不可省。** 只記改了什麼，半年後有人會把它改回去。
 
-**核心關係人由 DISCOVERY 開場 登記第一批（需求方自己與他點名的人），DISCOVERY 每冒出
-一個新的受訪者就補一列。** `決策權` 這一格只有問的人寫得出來——`bdd-spec` 把整張表
-原樣抄進 `design.md`，不增列也不改寫。
+**核心關係人由 `bdd-discovery` 登記在 `discovery.md`。** `決策權` 這一格只有問的人寫得
+出來——`bdd-spec` 把整張表原樣抄進這裡，`bdd-plan` 抄進 `plan.md`，都不增列也不改寫。
 
 **「決策權」不是裝飾。** 同一個人給的答案，有些是定案、有些只是提案（要開會
 表決），下游要分得出來，否則會拿沒表決過的東西去寫規格。
@@ -271,8 +266,8 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 
 | 標記 | 意思 |
 | --- | --- |
-| `PRD §x` | 同一份 `spec.md` 的 `## 原文` 這樣寫（引用它的章節或段落）——需求方帶來的原始輸入的逐字副本 |
-| `Q-<n>` | 來自 `## Open Questions` 某一題的答案，`<n>` 對應那一列的 `Q` 欄 |
+| `PRD §x` | 同目錄 `discovery.md` 的 `## 原文` 這樣寫（引用它的章節或段落）——需求方帶來的原始輸入的逐字副本 |
+| `Q-<n>` | 來自同目錄 `discovery.md` `## Open Questions` 某一題的答案，`<n>` 對應那一列的 `Q` 欄；那一列必須是 `已答` |
 | `推論` | 兩者都不是，是從別的地方推導出來的 |
 
 寫法：行尾加 `← <標記>`，例如：
@@ -284,15 +279,13 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 MUST: 這個標記不是裝飾。少了它，「這一行是真的逼問過 PRD 才寫下來的」跟
 「這一行只是把 PRD 換句話抄一遍」在 `spec.md` 上長得一模一樣——完整範例見
 [`../examples/minimal-spec.md`](../examples/minimal-spec.md)：整份文件的來源欄
-全是 `PRD §x` 時，代表 DISCOVERY 沒有真的發生。
+全是 `PRD §x` 時，代表 DISCOVERY 沒有真的發生。`check_spec.py` 第 14 項連同它的跨檔延伸會抓：
+沒有來源的規則、指到 `discovery.md` 沒有的題、指到還不是 `已答` 的題。
 
 MUST: `## User Stories` 底下的 FR 與 AC **只准 `PRD §x` 或 `Q-<n>`**。一條規則或
-例子標 `推論`，意思就是「沒有人說過這句話，是我補的」——那正是 DISCOVERY 不得
+例子標 `推論`，意思就是「沒有人說過這句話，是我補的」——那正是 `bdd-spec` 不得
 做的事。`check_spec.py` 第 14 項會抓。story 的句子、NFR、persona 的「他要什麼」
 仍可標 `推論`。
-
-`## Open Questions` 不在這條規則的範圍內——問題本身就是在記錄還沒有答案的
-東西，不需要再疊一層來源標記。
 
 `## Personas` **在**範圍內。v1 的角色只有「是誰／怎麼取得／跟誰不同」，
 來源就是表格自己的欄位；v2 多了「他要什麼」與「現在什麼讓他痛」，而那兩件事
@@ -454,6 +447,23 @@ Constraints`，跟未驗證的假設放同一節，但意思不同：**假設是
 問答表、小節與 `## 原文` 由 `bdd-discovery` 維護，格式見
 `../../bdd-discovery/references/discovery-format.md`。本文件的來源標記指向它們。
 
+## 回 DISCOVERY 補問
+
+寫規格時發現的洞：問答推不出某條規則、兩條 FR 打架、例子缺前置狀態。
+一條一列，寫清楚**影響什麼定不下來**：
+
+```markdown
+## 回 DISCOVERY 補問
+
+- FR-2 沒說月租到期當天算不算有效，seam 的 Given 寫不出來 —— 影響 AC-2.1 的前置狀態
+```
+
+MUST NOT: 在這裡順手決定掉。`bdd-spec` 不訪談，洞只能記在這裡，並把 `discovery.md`
+改回 `澄清中`；`bdd-discovery` 續跑時把每一條開成 `Q-<n>`，`bdd-spec` 再跑、把答案寫成
+FR／AC 之後，這一節對應的列才刪。非空時 `example-mapping` 不提就緒問句。
+沒有洞就寫「（無）」。
+
+
 ## Further Notes
 
 放不進其他節、但下一個接手的人會想知道的。沒有就寫「（無）」，並照開頭
@@ -480,19 +490,19 @@ MUST NOT: 把應該進其他節的東西丟進來。這一節是**最後手段**
 feature 流程裡誰在做事，換一個 feature 就換一批；詞彙不是。角色若日後真的
 需要跨 feature 累積，套 rule of three 再建，不預先做。
 
-**詞義的決策住 `## Open Questions`，不另設 glossary 一節。** DISCOVERY 發現
-「訪客」有歧義時，那就是一題——答案進 `## Open Questions` 的表與小節，跟其他問題一視同仁。
+**詞義的決策住 `discovery.md` 的 `## Open Questions`，不另設 glossary 一節。** DISCOVERY 發現
+「訪客」有歧義時，那就是一題——答案進問答表與小節，跟其他問題一視同仁。
 `bdd-spec` 之後從已答的問題把定義抬進
 `docs/CONTEXT.md`；`spec.md` 沒有詞彙表，但詞義的來源與拍板的時間點都查得到。
 
-## 為什麼規則寫在 story 底下，不另存一份問答
+## 為什麼問答與規則分兩份檔
 
 `check_spec.py` 的雙向覆蓋稽核靠比對**兩份獨立的表述**工作：`spec.md`
 `## User Stories` 段的 FR／AC 清單，與 `.feature` 的可執行場景。`spec.md`
 有例子而對應 `.feature` 沒有 ＝ 漏做；`.feature` 指向 `spec.md` 沒有的
 例子 ＝ 憑空發明。
 
-FR／AC 在 DISCOVERY 答案回來的那一刻寫下，行尾指回它來自的 `Q-<n>` 或 `PRD §n`。
-問答本身住 `## Open Questions`，形狀跟 FR／AC 不一樣——它是**來源**，不是第三份
-表述。舊版另存一份 `clarify-log.md` 再由下一步抄成規則，等於自己造第三份，稽核
-就有兩個可能的來源，而它們遲早不一樣。
+`discovery.md` 不是第三份表述——它沒有 FR、沒有 AC，是**來源**：規則的每一行行尾指回
+它的某一題或某一段原文。2026-11-14 之前規則在 DISCOVERY 答案回來的那一刻就寫進同一份檔；
+現在 discovery 只記問答，規則由 `bdd-spec` 一次寫出。防線從「當場寫」換成「每一條都要
+指得到一題已答的紀錄」，由 `check_spec.py` 第 14 項的跨檔延伸機械地查。

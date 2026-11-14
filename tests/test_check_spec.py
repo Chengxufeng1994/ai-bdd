@@ -157,7 +157,6 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertIn("§9", out)
 
-    @unittest.skip("examples land in Task 3")
     def test_shipped_example_spec_passes_spec_only_checks(self):
         example = (ROOT / "skills" / "bdd-spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
         disc = (ROOT / "skills" / "bdd-discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")

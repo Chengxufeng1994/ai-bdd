@@ -20,7 +20,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 但它是回報給人的，不是落地的檔案——缺口同時要就地註解進 `.feature`。
 
 不訪談。不發明新的例子。不寫 step definition。不決定情境跑在哪一層——seam 是
-`bdd-spec` 的事，寫在 `design.md` 裡，本 skill 不讀它。
+`bdd-plan` 的事，寫在 `plan.md` 裡，本 skill 不讀它。
 
 這一步也是**跟 PM 對答案**的那一步。`.feature` 就是對答案用的那一份，不另做第二
 份給人讀的版本——那是 Cucumber 的前提。PM 讀不動就修 `references/step-grammar.md`。
@@ -33,11 +33,11 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 
 ## Skill Boundaries
 
-- `spec.md` 不存在 → `bdd-discovery`，它會建；還有紅卡或狀態不是 `已對焦` → `bdd-discovery`／`example-mapping`
-- 要決定 seam、寫 `design.md` 或 `docs/CONTEXT.md` → `bdd-spec`；要切 story → `story-splitting`
+- `spec.md` 不存在 → `bdd-spec`（`discovery.md` 也沒有就先 `bdd-discovery`）；狀態不是 `已對焦` → `bdd-spec` 會先交 `example-mapping` 判就緒
+- 要決定 seam → `bdd-plan`；要寫 `docs/CONTEXT.md` 或切 story → `bdd-spec`（它用 `story-splitting`）
 - 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十五項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md`
-- 要決定實作順序、切票 → 改用 `bdd-plan`；情境跑在哪一層測試是 seam，回 `bdd-spec`
-- 產出是 `.feature`，**不是** `spec.md`、`design.md`、`openapi.yaml`、migration 或任何可執行的檔案
+- 要決定實作順序、切票，或情境跑在哪一層測試（seam）→ 改用 `bdd-plan`
+- 產出是 `.feature`，**不是** `spec.md`、`plan.md`、`openapi.yaml`、migration 或任何可執行的檔案
 
 ## 參考檔案
 
@@ -107,8 +107,9 @@ NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述�
 第三項最容易被跳過，代價最貴，而且**在封閉文法下更貴**：文法的價值全在重用，
 另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
 
-IMPORTANT: `spec.md` 由 DISCOVERY 維護，本 skill **不得寫入**。要補一條
-規則、改一個例子、重排一個編號，都回 `bdd-discovery`。
+IMPORTANT: `spec.md` 由 `bdd-spec` 維護，本 skill **不得寫入**。要補一條
+規則、改一個例子，都回 `bdd-spec`；問答裡沒有的，它會退回 `bdd-discovery`。本 skill 通常就是
+`bdd-spec` 在 `已對焦` 之後呼叫的。
 
 MUST: 只做 `spec.md` 的 `## Document Overview` 裡 `狀態` 已經是 `已對焦` 的 feature。
 還停在 `澄清中` 或 `待對焦` 的整份跳過，並明講該回哪個 skill——
@@ -163,7 +164,7 @@ Example: 進度回退時操作失敗
 `@rule-2` 讓你一次跑完某條規則的所有場景（實測：`--tags @rule-2` 會選到該規則
 底下全部場景，含 Scenario Outline 展開的每一列）。
 
-MUST NOT: 事後重排已經寫進 `spec.md` 的 FR 與 AC 編號。**這批編號在 `bdd-discovery`
+MUST NOT: 事後重排已經寫進 `spec.md` 的 FR 與 AC 編號。**這批編號在 `bdd-spec`
 誕生**——本 skill 只把它們原封不動地搬進 `.feature` 的 tag。
 下游（`bdd-plan`、之後新增的場景）回指的是
 `@example-2.2` 這個 tag，不是那句規則的文字本身；重排編號等於讓那些引用
@@ -239,18 +240,18 @@ MUST: 每條規則的三種結果，在覆蓋表裡各標**有／無／不適用
 MUST: 在 `.feature` 就地留註解，寫出算式與差異。回報會隨對話消失，檔案會留著，
 而下一個人拿 `.feature` 與原始輸入的數字一對，第一個念頭會是「SPEC 亂編」。
 
-MUST: 同時回報給使用者，建議回 `bdd-discovery` 開一題，標明來源要更正。
+MUST: 同時回報給使用者，建議回 `bdd-spec` 寫進補問清單，標明來源要更正。
 `.feature` 改了不代表 `spec.md` 就對了——它仍然是錯的，沒有人去更正過；本 skill
 與 `bdd-spec` 都不得改 `spec.md`。
 
 MUST NOT: 照抄壞掉的數字。那會產出一個**任何正確實作都永遠過不了**的場景，
 而它看起來跟其他場景一模一樣。
 
-MUST NOT: 寫入 `spec.md`，包括它的 `## 原文`——那是 DISCOVERY 的產物。
+MUST NOT: 寫入 `spec.md` 或 `discovery.md`——前者是 `bdd-spec` 的產物，後者是 DISCOVERY 的。
 
 **判準的界線：** 只有在**例子的錯可以從規則推導出來**時才適用。規則本身含糊、
 兩種讀法都說得通的時候，你無法知道是規則寫錯還是例子寫錯——那時候不要挑，
-跳過那個例子、就地註解、回報要回 `bdd-discovery` 開一題。**能推導的是算術錯誤，
+跳過那個例子、就地註解、回報要回 `bdd-spec` 寫進補問清單。**能推導的是算術錯誤，
 不能推導的是規格衝突，兩者的處置相反。**
 
 ### 3. 步驟文法 —— 四種形狀
@@ -363,7 +364,7 @@ IMPORTANT: 一個 Outline 涵蓋 Example 3.1 到 3.3 時，**三個 tag 都要�
 python3 <skill>/scripts/check_spec.py <專案根>
 ```
 
-**`bdd-discovery` 與 `bdd-spec` 也會跑同一支腳本，但它們看到的是十項。** 沒有
+**`bdd-spec` 也會跑同一支腳本，但它看到的是十一項。** 沒有
 `.feature` 時，需要它的五項（雙向覆蓋、狀態 tag、方言陷阱、缺口註解、樣板重用率）
 會明講跳過。跑到這一步才是十五項全開——**這五項只有這裡驗得到**，所以這一步不能
 因為「上游已經跑過了」而省略。
@@ -402,13 +403,13 @@ MUST: 缺口除了寫進覆蓋表，也要**在 `.feature` 裡就地留一行註
 ```
 features/<story-slug>.feature     FORMULATION  ★ 本步驟唯一的產物
 
-（spec.md 是 DISCOVERY 的產物，本 skill 只讀不寫；design.md 是 bdd-spec 的，本 skill 不讀也不寫）
+（spec.md 是 bdd-spec 的產物，本 skill 只讀不寫；plan.md 是 bdd-plan 的，本 skill 不讀也不寫）
 ```
 
 `.feature` 的格式全在本節（關鍵字、狀態 tag、型別 tag、方言陷阱）與
 `references/step-grammar.md`。
 
-規則與例子的**定版編號在 `bdd-discovery` 誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
+規則與例子的**定版編號在 `bdd-spec` 誕生**：`FR-<n>`、`AC-<n>.<m>`。`.feature` 的
 `@rule-<n>`／`@example-<n>.<m>` 回指它們——本 skill 只把它們原封不動地搬進 tag。
 
 **關鍵字用英文，名稱與步驟用中文。** 不加 `# language:` 那一行（英文是預設方言）。
@@ -438,7 +439,7 @@ MUST: 狀態 tag 旁邊再掛一個型別 tag：`@ready @command` 或 `@ready @q
 （狀態），查詢在前置（狀態）與後置（回應）。`@query` 卻長出「後置（狀態）」規則，
 代表這個查詢有副作用——那多半是設計問題，不是規格問題。
 
-同時是命令又是查詢的 feature 是兩則 story → 回 `bdd-discovery` 重切（手法見 `story-splitting`）。
+同時是命令又是查詢的 feature 是兩則 story → 回 `bdd-spec` 重切（手法見 `story-splitting`）。
 
 必填而不是「有問題才標」，是因為**少標一個要看得出來**。負向旗標分不出「不需要
 標」與「忘了標」——第一次真實產出正是這樣失守的：兩則未就緒的 `.feature` 沒有
@@ -463,7 +464,7 @@ zh-TW 方言**沒有**「規則」這個字（`zh-CN` 有「规则」、`ja` 有
 ## 產物隔離
 
 MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既有的 `.feature`、
-`spec.md`、`design.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
+`spec.md`、`plan.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
 就跟隨，沒有就用專案根的 `features/`。理由與例外 → `references/artifact-location.md`。
 
 ## 完成後
@@ -473,10 +474,10 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 1. 產了哪些 `.feature`、各幾個場景、**幾個不重複步驟樣板**
 2. **覆蓋表**——哪些例子還沒有場景，為什麼
 3. 哪些象限是空的，空得合不合理
-4. `spec.md` 有沒有需要回 DISCOVERY 補的地方（規則與例子打架、`check_spec.py` 抓到的
+4. `spec.md` 有沒有需要回 `bdd-spec` 補的地方（規則與例子打架、`check_spec.py` 抓到的
    FR 沒掛任何 AC 或沒有來源）——本 skill 不改它
 
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
 綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。
 
-覆蓋表沒有大洞 → `bdd-spec`（若還沒跑）再 `bdd-plan` 切票。洞多 → 回 `bdd-discovery`。
+覆蓋表沒有大洞 → `bdd-plan` 切票。洞多 → 回 `bdd-spec`。

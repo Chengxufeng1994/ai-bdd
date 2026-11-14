@@ -114,7 +114,7 @@ MUST: `P-<n>` 的編號全域唯一，而且**不重排**——`## User Stories`
 ## 角色與詞義的界線
 
 角色留在這裡，不進 `docs/CONTEXT.md`；詞義的決策住 `## Open Questions`，
-不另設一節——兩條界線的理由見 `references/design-format.md` 的「角色與詞義：
+不另設一節——兩條界線的理由見 `../../bdd-spec/references/spec-format.md` 的「角色與詞義：
 兩條界線」一節，本文不重複。
 
 ## 下游怎麼用它

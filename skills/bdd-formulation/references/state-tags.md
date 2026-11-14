@@ -15,7 +15,7 @@
 | `@ready` | `bdd-formulation` | 來源 `spec.md` 狀態 `已對焦`，三方講定，等實作 |
 | `@wip` | `bdd-implement` 開工時 | 正在實作這則 |
 | `@review` | `bdd-implement` 全綠後 | 等 REVIEW |
-| `@done` | `bdd-review` 通過後 | 六步走完 |
+| `@done` | `bdd-verify` 通過後 | 六步走完 |
 
 三個設計決定，各有理由：
 
@@ -33,6 +33,6 @@
 
 CI 用 `--tags "~@draft"` 排除未定案的場景——它們不該擋住任何人的 build。
 
-IMPORTANT: 六個 skill 目前只有 `bdd-spec` 存在，所以只有 `@draft` / `@ready`
-兩個轉換是實作過的，其餘是**保留的名字**。後面三個 skill 做出來時若發現需要不同
+IMPORTANT: `bdd-review`、`bdd-verify` 還沒實作，所以只有 `@draft` / `@ready` / `@review`
+三個轉換是實作過的，其餘是**保留的名字**。後面三個 skill 做出來時若發現需要不同
 的切分，以那時的實測為準——這張表可以改，但要一次改完，不要各自加自己的。
