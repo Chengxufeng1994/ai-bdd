@@ -6,7 +6,8 @@ description: >
   就地標 `# [need clarification]`——讓需求方對著旅程判就緒。不執行、不訪談、不改 FR／AC。
   BDD 六步流程 SPEC 步驟裡，診斷之後、就緒問句之前的一步。
   觸發詞：「寫驗收旅程」「spec by example」「業務版的 feature」「給業務方看的 feature」
-  「把 spec 寫成可以 demo 的流程」「acceptance 旅程」。
+  「把 spec 寫成可以 demo 的流程」「acceptance 旅程」
+  「業務語意的 feature」「產生驗收流程」「業務方看得懂的驗收情境」。
   English: write acceptance journeys, specification by example, business-readable
   feature file, demo-able journeys from the spec.
 ---
@@ -36,7 +37,7 @@ AC，每個結果都是 `spec.md` 裡已經有的。**
 
 ## 參考檔案
 
-- `references/journey-format.md` — 六條規則、檔名、骨架。**寫之前先讀**
+- `rules/journey-format.md` — 六條規則、檔名、骨架。**寫之前先讀**
 - `examples/訪客出場結帳.feature` — 對得上 `../bdd-spec/examples/minimal-spec.md` 的範例
 - `../bdd-formulation/scripts/check_spec.py` — 第 17 項稽核 `@covers-`。在隔壁 skill：只跑，不改
 
@@ -55,13 +56,17 @@ Check if: `spec.md` 狀態是 `待對焦`，`## 回 DISCOVERY 補問` 是「（�
 
 ### 2. 寫旅程
 
-照 `references/journey-format.md`。每個 `Example:` 上方 `@covers-` 列出它走過的 AC。
+照 `rules/journey-format.md`。每個 `Example:` 上方 `@covers-` 列出它走過的 AC。
 
 MUST NOT: 寫出 `spec.md` 沒有的結果、規則或例子。旅程不執行，沒有任何東西會在之後
 擋下一句「順手補上」的 `Then`——每個 `Then` 寫之前，先指出它是哪一條 AC。指不出來
 就不寫，改走第 3 步。
 
 ### 3. 定不下來的，就地標記並寫進補問
+
+IMPORTANT: 標記與補問清單的那一列要**同時**寫。只標在旅程裡，`bdd-spec` 與
+`example-mapping` 看的補問清單仍是「（無）」，就緒問句照樣會提出來——洞安靜地留在
+一份沒有人會再讀的檔案裡。
 
 寫到一半發現 `spec.md` 推不出來的東西（某個結果沒有 AC、兩條 AC 在同一條流程裡打架、
 流程缺一個前置狀態）：
@@ -85,6 +90,15 @@ python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 - 有任何 `# [need clarification]` → 交回 `bdd-spec` 的〈退回 discovery〉，由它把
   `discovery.md` 改回 `澄清中`
 - 沒有 → 交回 `example-mapping` 提就緒問句，告訴需求方旅程在 `acceptance/`
+
+## 產物格式
+
+`specs/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
+命名。骨架與六條規則見 `rules/journey-format.md`，完整範例見
+`examples/訪客出場結帳.feature`。有標記時另有 `spec.md` `## 回 DISCOVERY 補問` 的新列。
+
+交件時告訴使用者：寫了幾個檔、幾條旅程、各自 cover 哪些 AC、有沒有 `# [need clarification]`
+（有的話列出來）、交回給誰。
 
 ## 再跑：修補，不重寫
 
