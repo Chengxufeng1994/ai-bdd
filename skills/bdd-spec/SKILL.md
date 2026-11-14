@@ -34,6 +34,7 @@ description: >
 - `discovery.md` 還有待答、或結束方式是 `阻塞`／`零進展` → 回 `bdd-discovery`
 - 要把 FR 與 AC 寫成 `.feature` → `bdd-formulation`，本 skill 在 `已對焦` 之後呼叫它
 - 要攤四色卡、判就緒 → `example-mapping`，本 skill 寫完 `spec.md` 之後呼叫它
+- 要把規格寫成業務方讀的驗收旅程 → `bdd-spec-by-example`，本 skill 在診斷之後、就緒問句之前呼叫它
 - 寫規則時 story 切得不對 → `story-splitting`，`已對焦` 之前本 skill 可以呼叫它重切
 - 要決定 seam、模組、契約、實作順序 → `bdd-plan`
 - 產出是 `spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是**
@@ -74,9 +75,10 @@ discovery.md（已收斂 或 喊停）
    ↓ 2. 收尾檢查（可重切 story）
    ↓ 3. 自檢 check_spec.py
    ↓ 4. 詞彙 → docs/CONTEXT.md、聚合 → specs/domain-model.md
-   ↓ 5. example-mapping：地圖、四條診斷、就緒問句
+   ↓ 5. example-mapping 地圖、四條診斷 → bdd-spec-by-example 寫 acceptance/ 旅程
+        → example-mapping 就緒問句
    ├─ 需求方答「就緒」→ 已對焦 → 6. bdd-formulation 產 .feature
-   └─ 不就緒／補問清單非空 → 7. 退回 discovery
+   └─ 不就緒／補問清單非空／旅程有 # [need clarification] → 7. 退回 discovery
 ```
 
 ### 1. 寫 `spec.md`
@@ -123,7 +125,7 @@ MUST: AC 的值照小節裡記下的例子寫。小節只有結論、沒有例�
 python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 ```
 
-`.feature` 還不存在時跑得到十一項，全部是 `spec.md` 的形狀與它對 `discovery.md` 的引用，
+`.feature` 還不存在時跑得到十二項，全部是 `spec.md` 的形狀與它對 `discovery.md` 的引用，
 包含第 14 項：每條 FR／AC 有來源、`← Q-<n>` 在 `discovery.md` 找得到而且是 `已答`。
 抓到的每一條要嘛修 `spec.md`（寫錯了），要嘛進補問清單（問答裡沒有）。
 
@@ -169,21 +171,28 @@ MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本�
 判準（哪些該進來）：這條規則**跨 feature 仍然成立**嗎？只在這個 feature 的情境下為真的，
 留在 `spec.md` 的 FR。
 
-### 5. 交給 `example-mapping`
+### 5. 交給 `example-mapping` 與 `bdd-spec-by-example`
 
-補問清單是「（無）」時，交給 `example-mapping`：攤地圖、跑四條診斷、提就緒問句。
-它是唯一把狀態寫成 `已對焦` 的 skill，寫的是需求方的決定。補問清單非空時不交——
-就緒問句建立在已知有洞的規格上，答「就緒」也沒有意義；直接走第 7 步。
+補問清單是「（無）」時，依序：
+
+1. `example-mapping` 攤地圖、跑四條診斷
+2. `bdd-spec-by-example` 把 `spec.md` 寫成 `acceptance/*.feature` 的驗收旅程、跑
+   `check_spec.py`。它把定不下來的地方標成 `# [need clarification]` 並寫進補問清單
+3. 補問清單仍是「（無）」→ 交回 `example-mapping` 提就緒問句，需求方對著旅程答
+
+`example-mapping` 是唯一把狀態寫成 `已對焦` 的 skill，寫的是需求方的決定。補問清單非空時
+不提就緒問句——就緒問句建立在已知有洞的規格上，答「就緒」也沒有意義；直接走第 7 步。
 
 ### 6. `已對焦` → 呼叫 `bdd-formulation`
 
 需求方答「就緒」、`example-mapping` 寫了 `已對焦`，呼叫 `bdd-formulation` 把 FR 與 AC
-寫成 `.feature`（`@ready`）。`.feature` 已經存在（修補的情況）時，它照自己處理
-「規則改了」的方式改場景。寫完再跑一次 `check_spec.py`，十六項全過才算 to spec 完成。
+寫成 `.feature`（`@ready`），`acceptance/` 的旅程只供它參考用語。`.feature` 已經存在（修補的情況）時，它照自己處理
+「規則改了」的方式改場景。寫完再跑一次 `check_spec.py`，十七項全過才算 to spec 完成。
 
 ### 7. 退回 discovery
 
-三種情況：補問清單非空、`example-mapping` 判不就緒、收尾檢查要的資訊問答裡沒有。
+四種情況：補問清單非空、`bdd-spec-by-example` 在旅程裡標了 `# [need clarification]`、
+`example-mapping` 判不就緒、收尾檢查要的資訊問答裡沒有。
 
 - `spec.md`：`## 回 DISCOVERY 補問` 一條一列，寫清楚影響什麼定不下來；狀態留 `待對焦`
 - `discovery.md`：狀態改回 `澄清中`，`### 版本修訂歷史` 記一列「回頭：<原因>」

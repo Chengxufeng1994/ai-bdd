@@ -30,7 +30,7 @@ feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`b
 | `## Non-Functional Requirements` | 跨 story 的品質屬性 | `bdd-spec` |
 | `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | `bdd-spec`（問過的引 `Q-<n>`，沒問過的引 `PRD §n`） |
 | `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | `bdd-spec` |
-| `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `bdd-spec` |
+| `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `bdd-spec`；`example-mapping` 與 `bdd-spec-by-example` 也會加列 |
 | `## Further Notes` | 放不進其他節、但下一個接手的人會想知道的 | 任何一步 |
 
 順序固定，不因為某節內容少而調換或省略標題。技術設計（seam、API、schema、
