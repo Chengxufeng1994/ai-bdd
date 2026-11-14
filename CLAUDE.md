@@ -13,9 +13,10 @@ The plugin's subject is a six-step pipeline:
 **DISCOVERY → SPEC → PLAN → IMPLEMENT → REVIEW → VERIFY**
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
-steps exist as skills; REVIEW and VERIFY are planned. SPEC is served by two skills —
-`bdd-spec` (writes `spec.md` from the recorded answers) and `bdd-formulation`, BDD's own
-Formulation practice. `docs/ai-sdlc.md`
+steps exist as skills; REVIEW and VERIFY are planned. SPEC is served by three skills —
+`bdd-spec` (writes `spec.md` from the recorded answers), `bdd-spec-by-example` (writes
+business-language acceptance journeys under `acceptance/`, not executed) and
+`bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
 explains which steps map onto BDD's practices and which are this project's own additions.
 
 ## Commands
@@ -69,7 +70,7 @@ python3 skills/bdd-discovery/scripts/status.py [root]   # red cards and probe co
 `check_spec.py` belongs to `bdd-formulation`:
 
 ```bash
-python3 skills/bdd-formulation/scripts/check_spec.py [root]   # spec.md shape + source markers resolved against discovery.md; adds .feature ↔ spec.md coverage once features exist
+python3 skills/bdd-formulation/scripts/check_spec.py [root]   # spec.md shape + source markers resolved against discovery.md; checks acceptance journeys' @covers- tags; adds .feature ↔ spec.md coverage once features exist
 ```
 
 Both have stdlib unit tests:
@@ -122,8 +123,9 @@ Each of the first three steps holds because it runs in one main working mode:
   and then interrogates. Every answer is recorded on the spot in `discovery.md` with the
   originator's words and who answered. **It writes no FR/AC.**
 - **SPEC** is writing mode: `bdd-spec` turns an `已收斂` `discovery.md` into `spec.md`,
-  `example-mapping` takes it to `已對焦`, then `bdd-formulation` writes `.feature` files —
-  **neither interviews**; holes go into `spec.md`'s `## 回 DISCOVERY 補問` and send
+  `bdd-spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
+  takes it to `已對焦`, then `bdd-formulation` writes `.feature` files —
+  **none of them interviews**; holes go into `spec.md`'s `## 回 DISCOVERY 補問` and send
   `discovery.md` back to `澄清中`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `discovery.md` — `check_spec.py`
   check 14 rejects both.
@@ -166,8 +168,8 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/<date>-<feature>/` (`discovery.md`, `spec.md`, `plan.md`), one directory that can be deleted whole. Two
-  exceptions: `.feature` files stay where the runner expects them (`features/` for
+  `specs/<date>-<feature>/` (`discovery.md`, `spec.md`, `acceptance/*.feature`, `plan.md`), one directory that can be deleted whole. Two
+  exceptions: executable `.feature` files stay where the runner expects them (`features/` for
   Cucumber-family tools); `docs/CONTEXT.md` outlives any single feature, so SPEC may create
   it or append entries but must not rewrite its existing sections or write to anything else
   under `docs/`.

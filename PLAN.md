@@ -83,6 +83,7 @@ specs/
 └── <date>-<feature>/
     ├── discovery.md    DISCOVERY 原文、粗切 story、問答。決策史，活得比實作久
     ├── spec.md         SPEC      story、FR、AC、角色、範圍。業務規則，活得比實作久
+    ├── acceptance/     SPEC      <旅程>.feature：業務語意的驗收旅程，不執行；就緒判定對著它答
     └── plan.md         PLAN      seam、模組、契約、schema、測試層級、風險 ＋ 票。實作開始就過期
 
 features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
@@ -93,7 +94,7 @@ docs/CONTEXT.md                  SPEC  詞彙，跨 feature
 feature 的事實；seam 與 schema 在第一個 commit 之後就開始過期，跟用到它們的票一起放。
 `discovery.md` 與 `spec.md` 分檔的理由是**只有一處寫規則**：問答是來源，規格是定案。
 
-`.feature` 是唯一不進 `specs/` 的產物——它同時是規格與可執行測試，
+可執行的 `.feature` 是唯一不進 `specs/` 的產物（`acceptance/` 的旅程不執行，所以留在 `specs/`）——它同時是規格與可執行測試，
 **位置由測試框架決定**。鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。
 
 ### 三份檔的節
@@ -207,6 +208,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**；由 `bdd-discovery`（粗切）與 `bdd-spec`（`已對焦` 前沿規則重切）呼叫 |
 | SPEC | `bdd-spec` | `discovery.md` → `spec.md`，判就緒後呼叫 `bdd-formulation` | **已實作**；2026-11-14 從「寫技術設計」改成「從問答寫規格」 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定；唯一寫 `已對焦` 的 skill | **已實作**；由 `bdd-spec` 呼叫 |
+| | `bdd-spec-by-example` | `spec.md` → `acceptance/*.feature` 業務語意驗收旅程，`@covers-` 標 AC | **已實作**；2026-11-14，參考 aixbdd `spec-by-example`；由 `bdd-spec` 在診斷與就緒問句之間呼叫 |
 | | `bdd-formulation` | `spec.md` → `.feature` | **已實作** |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
 | PLAN | `bdd-plan` | `spec.md` ＋ `.feature` ＋ 技術面向的答案 → 技術節 ＋ tracer bullet ＋ blocking edges | **已實作**；2026-11-14 接手原 `design.md` 的技術設計 |
@@ -348,6 +350,7 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] 實測場重跑一次，驗證 CAPTURE → DISCOVERY → SPEC 的新分工——2026-10-03 用 parking-billing 跑到 IMPLEMENT，八個發現在 `runs/go-parking-billing/REPORT.md`
 - [x] `bdd-implement`——2026-10-03，從那次實跑抽出
 - [x] 2026-11-13 砍掉 CAPTURE 與 `prd.md`；2026-11-14 六步流程：DISCOVERY 只寫 `discovery.md`、SPEC 從問答寫 `spec.md`、`design.md` 併進 `plan.md`、REVIEW 排到 VERIFY 前
+- [x] 2026-11-14 `bdd-spec-by-example`：就緒判定前先寫 `acceptance/` 驗收旅程，`check_spec.py` 第 17 項稽核 `@covers-`
 - [ ] `bdd-verify`、`bdd-review`
 - [ ] 用 `bdd-implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣
 
