@@ -338,7 +338,7 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] 實測場重跑一次，驗證 CAPTURE → DISCOVERY → SPEC 的新分工——2026-10-03 用 parking-billing 跑到 IMPLEMENT，八個發現在 `runs/go-parking-billing/REPORT.md`
 - [x] `bdd-implement`——2026-10-03，從那次實跑抽出
 - [ ] `bdd-verify`、`bdd-review`
-- [ ] 用 `bdd-implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣——那個 run 是 2026-11-13 之前的佈局，先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`，script 才讀得到
+- [ ] 用 `bdd-implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣
 
 順序刻意是「做一個 → 實跑 → 再做下一個」。**產物格式就是介面**：SPEC 讀已答的
 問題、PLAN 讀 `.feature` 與 `design.md`、REVIEW 稽核整條鏈，下游全都依賴上游實際
