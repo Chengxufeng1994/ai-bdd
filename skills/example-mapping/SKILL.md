@@ -3,7 +3,7 @@ name: example-mapping
 description: >
   用四色卡把一則 story 攤成規則與例子——黃卡 story、藍卡規則、綠卡例子、紅卡問題，
   攤完跑四條診斷並提出就緒判定。可讀 `bdd-spec` 剛寫好的 `spec.md`，
-  也可單獨對一段描述跑；逼問還在進行的那個時機只攤地圖看形狀，不提就緒判定。
+  也可單獨對一段描述跑（單獨時不寫任何檔案）。
   觸發詞：「攤成四色卡」「example mapping」「跑一次 mapping」「這則 story 就緒了嗎」
   「規則跟例子攤開來看」「地圖長什麼樣」「紅卡還剩幾張」「這則可以開工了嗎」。
   English: run example mapping, map this story, lay out the rules and examples,
