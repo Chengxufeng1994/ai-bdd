@@ -251,6 +251,129 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertIn("discovery.md", out)
 
 
+JOURNEY = """Feature: 訪客出場
+
+  Rule: 前 30 分鐘免費
+
+    @covers-1.1
+    Example: 訪客停一下就走
+      Given 訪客停了 29 分鐘
+      When 訪客開到出口
+      Then 不用付錢
+"""
+
+
+def write_journey(root: Path, name: str, text: str) -> None:
+    d = root / "specs" / "2026-10-02-parking" / "acceptance"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / name).write_text(text, encoding="utf-8")
+
+
+class AcceptanceJourneys(unittest.TestCase):
+    """Journeys are not executed, so @covers- is the only thing tying them to
+    spec.md. A journey citing an AC that does not exist is exactly the drift
+    the unexecuted layer invites: an outcome nobody agreed to."""
+
+    def test_journey_citing_known_ac_passes(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            write_journey(root, "訪客出場.feature", JOURNEY)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+
+    def test_journey_citing_unknown_ac_fails(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            write_journey(root, "訪客出場.feature", JOURNEY.replace("@covers-1.1", "@covers-9.9"))
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1, out)
+            self.assertIn("@covers-9.9", out)
+            self.assertIn("訪客出場.feature", out)
+
+    def test_example_without_covers_fails(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            write_journey(root, "訪客出場.feature", JOURNEY.replace("    @covers-1.1\n", ""))
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1, out)
+            self.assertIn("訪客停一下就走", out)
+
+    def test_no_acceptance_dir_is_silent(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertNotIn("acceptance", out)
+
+    def test_feature_level_covers_do_not_anchor_examples(self):
+        text = "@covers-1.1\nFeature: x\n  Example: y\n    Then z\n"
+        self.assertEqual(check_spec.journey_covers(text), ({"1.1"}, ["y"]))
+
+    def test_multiple_covers_on_one_line(self):
+        text = "Feature: x\n  @covers-1.1 @covers-1.2\n  Example: y\n"
+        self.assertEqual(check_spec.journey_covers(text), ({"1.1", "1.2"}, []))
+
+    def test_malformed_covers_reported_as_unknown(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            write_journey(root, "訪客出場.feature", JOURNEY.replace("@covers-1.1", "@covers-1"))
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1, out)
+            self.assertIn("@covers-1", out)
+
+
+class FindFeatures(unittest.TestCase):
+    """Journeys are written before any features/ dir exists. The rglob
+    fallback must not mistake specs/<dir>/acceptance/ for the runner's
+    feature directory, or every journey is reported as an orphan."""
+
+    def test_acceptance_only_returns_none(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_journey(root, "a.feature", JOURNEY)
+
+            self.assertIsNone(check_spec.find_features(root))
+
+    def test_rglob_still_finds_features_outside_specs(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_journey(root, "b.feature", JOURNEY)
+            (root / "app" / "features").mkdir(parents=True)
+            (root / "app" / "features" / "a.feature").write_text("Feature: a\n", encoding="utf-8")
+
+            self.assertEqual(check_spec.find_features(root), root / "app" / "features")
+
+    def test_acceptance_not_listed_as_orphan_when_features_dir_exists(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            (root / "features").mkdir()
+            (root / "features" / "version.feature").write_text("Feature: v\n", encoding="utf-8")
+            write_journey(root, "訪客出場.feature", JOURNEY)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            orphan_lines = [l for l in out.splitlines() if "沒有對應 story" in l]
+            self.assertTrue(orphan_lines)
+            self.assertNotIn("訪客出場", orphan_lines[0])
+
+
 if __name__ == "__main__":
     unittest.main()
 

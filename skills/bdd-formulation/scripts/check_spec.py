@@ -4,7 +4,7 @@
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查十六件事，全部是機械性的：
+檢查十七件事，全部是機械性的：
 
   1. 覆蓋——雙向。spec.md 有例子而 feature 沒有的（漏做），
      以及 feature 指向 spec.md 裡不存在的例子（發明出來的驗收條件）。
@@ -15,7 +15,7 @@
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
-     十六項裡只有這一項不會把退出碼變成 1。
+     十七項裡只有這一項不會把退出碼變成 1。
   6. FR 完整性——spec.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      FORMULATION 就無從寫出場景，只能發明。
   7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
@@ -38,17 +38,20 @@
      `← Q-<n>`。`推論` 不算：規則或例子標推論，就是 agent 自己補的。
  15. discovery.md 的 `## 原文` 一節在不在——它是 `PRD §x` 唯一的依據。
  16. 引用的段落在不在——每個 `← PRD §n` 的 `§n` 都要在 discovery.md `## 原文` 裡。
+ 17. 驗收旅程的引用——同目錄 `acceptance/*.feature` 每個 `@covers-<n>.<m>` 都要是
+     spec.md 裡的 AC，每個 `Example:` 上方至少一個。沒有 `acceptance/` 就跳過。
+     旅程不執行，不算 .feature：找 .feature 時排除 `specs/` 底下。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 spec.md、
 `## User Stories` 底下沒有任何 story 也各自退出 1——那些是「先跑上一步」，
-不算在上面十六項一致性檢查裡。
+不算在上面十七項一致性檢查裡。
 
-找不到 .feature 不在此列。第 6-16 項只讀 spec.md，而 DISCOVERY 交件到 FORMULATION
+找不到 .feature 不在此列。第 6-17 項只讀 spec.md，而 DISCOVERY 交件到 FORMULATION
 開跑之間正是它們最該跑的時候，所以那時只跳過需要 .feature 的第 1-5 項並在開頭
 明講跳過了哪幾項；spec.md 乾淨就退出 0。
 
 只讀不寫。找不到什麼就說找不到，不猜——但 specs/ 與 .feature 不對稱：
-前者是停，後者是照說不誤，然後把跑得到的十一項跑完。
+前者是停，後者是照說不誤，然後把跑得到的十二項跑完。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
 specs/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
 story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
@@ -65,7 +68,9 @@ def find_features(root: Path) -> Path:
     for c in (root / "features", root / "test" / "features", root / "tests" / "features"):
         if c.is_dir():
             return c
-    hits = {p.parent for p in root.rglob("*.feature")}
+    # specs/<dir>/acceptance/ 是不執行的驗收旅程，寫的時候 features/ 往往還不存在。
+    specs = root / "specs"
+    hits = {p.parent for p in root.rglob("*.feature") if specs not in p.parents}
     return sorted(hits, key=lambda p: len(p.parts))[0] if hits else None
 
 
@@ -389,15 +394,42 @@ def cited_qs(text: str) -> set[str]:
     return out
 
 
+def journey_covers(text: str) -> tuple[set[str], list[str]]:
+    """驗收旅程裡所有 `@covers-` 的值，以及上方沒有任何 `@covers-` 的 Example 標題。
+
+    值原樣收（`@covers-1`、`@covers-AC-1.1` 也收），交給呼叫端對 AC 清單比——
+    形式錯的 tag 因此報成「不存在的 AC」，而不是安靜地不算。
+    tag 只算緊貼在 Example 上方的那幾行；`Feature:`、`Rule:`、步驟都會清掉，
+    所以掛在 `Feature:` 上的 tag 不會變成底下某條旅程的錨點。
+    """
+    covers: set[str] = set()
+    bare: list[str] = []
+    pending: list[str] = []
+    for line in text.splitlines():
+        s = line.strip()
+        if s.startswith("@"):
+            found = re.findall(r"@covers-(\S+)", s)
+            covers.update(found)
+            pending.extend(found)
+            continue
+        if not s or s.startswith("#"):
+            continue
+        ex = re.match(r"(?:Example|Scenario(?: Outline)?):\s*(.*)", s)
+        if ex and not pending:
+            bare.append(ex.group(1))
+        pending = []
+    return covers, bare
+
+
 def check(root: Path) -> int:
     specs_dir = root / "specs"
     feat_dir = find_features(root)
     if not specs_dir.is_dir():
         print(f"找不到 {specs_dir} —— 沒有 DISCOVERY 的產物可以比對")
         return 1
-    # 十六項裡有十一項只讀 spec.md（第 6-16 項）。DISCOVERY 交件到 FORMULATION
+    # 十七項裡有十二項只讀 spec.md（第 6-17 項）。DISCOVERY 交件到 FORMULATION
     # 開跑之間還沒有任何 .feature，而那正是 spec.md 最需要被檢查的時刻——
-    # 早退會讓那十一項在整段空窗期一項都跑不到，壞掉的 spec.md 於是要等到
+    # 早退會讓那十二項在整段空窗期一項都跑不到，壞掉的 spec.md 於是要等到
     # 下一個 skill 才被發現。所以缺 .feature 不再是「不能跑」，是「跑得到
     # 的先跑，跑不到的明講跳過」。
     spec_only = feat_dir is None
@@ -410,7 +442,7 @@ def check(root: Path) -> int:
     problems = 0
     if spec_only:
         print(f"specs: {specs_dir}    feature: 找不到任何 .feature\n"
-              f"只跑 spec.md 自己的十一項檢查；覆蓋比對、狀態 tag、方言陷阱、"
+              f"只跑 spec.md 自己的十二項檢查；覆蓋比對、狀態 tag、方言陷阱、"
               f"缺口註解、樣板重用率五項需要 .feature，跳過。")
     else:
         print(f"specs: {specs_dir}    feature: {feat_dir}\n")
@@ -551,6 +583,20 @@ def check(root: Path) -> int:
             print(f"✗ {spec_path.parent.name} 這些 AC 的編號對不上它所屬的 FR："
                   f"{', '.join(f'AC-{ac} 掛在 FR-{fr} 底下' for fr, ac in mismatched)}")
             problems += 1
+
+        # 第 17 項：驗收旅程不執行，`@covers-` 是它跟 spec.md 唯一的錨點。
+        acs = {ac for exs in frs.values() for ac in exs}
+        for jpath in sorted((spec_path.parent / "acceptance").glob("*.feature")):
+            jcovers, jbare = journey_covers(jpath.read_text(encoding="utf-8"))
+            unknown = sorted(jcovers - acs)
+            if unknown:
+                print(f"✗ {spec_path.parent.name} 的 acceptance/{jpath.name} 引用了 spec.md "
+                      f"沒有的 AC：{', '.join('@covers-' + u for u in unknown)}")
+                problems += 1
+            if jbare:
+                print(f"✗ {spec_path.parent.name} 的 acceptance/{jpath.name} 這些旅程上方沒有 "
+                      f"`@covers-`，無從稽核：{', '.join(jbare)}")
+                problems += 1
 
         stories = stories_in_spec(stext)
         if not stories:
