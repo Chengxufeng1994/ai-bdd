@@ -105,3 +105,15 @@ python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 `bdd-spec` 修補了 `spec.md` 之後再跑：動到的旅程改、`@covers-` 跟著改；答掉的
 `# [need clarification]` 刪掉；新的 AC 視需要加一條旅程或併進既有的。沒動到的旅程不碰——
 需求方已經讀過它們，重寫等於要他再讀一次。
+
+## Verification
+
+交回前逐項確認；任何一項答「否」就不交——修好，或在回報裡明說哪一項沒過：
+
+- [ ] 每個 `Example:` 上方都有 `@covers-`，且每一個都指得到 `spec.md` 的 AC
+- [ ] 每個 `Then` 都指得出它是哪一條被 cover 的 AC；指不出來的沒有寫
+- [ ] 旅程裡沒有 API、HTTP、欄位名、selector、資料表（`rules/journey-format.md` 第 1 條）
+- [ ] 每個 `# [need clarification]` 在 `spec.md` 的 `## 回 DISCOVERY 補問` 都有對應的一列，標明哪條旅程
+- [ ] 跑了 `check_spec.py`，第 17 項過，輸出貼在回報裡
+- [ ] 沒有改 `spec.md` 的 FR／AC，也沒有自己答或去問需求方
+- [ ] 再跑時沒動到的旅程沒有被重寫

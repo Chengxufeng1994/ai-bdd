@@ -126,6 +126,13 @@ def audit(skill_dir: Path) -> list[Finding]:
             rule = "S6" if "使用時機" in section else "S7"
             add(rule, MUST, f"缺少「{section}」章節")
 
+    # S15: 標題底下（到下一個 `## ` 為止）至少要有一個 `- [ ]`，只有標題不算清單
+    verification = re.search(r"^## Verification[ \t]*\n(.*?)(?=^## |\Z)", body, re.M | re.S)
+    if not verification:
+        add("S15", MUST, "缺少「## Verification」章節 —— 交回前逐項確認的清單")
+    elif not re.search(r"^\s*- \[ \] ", verification.group(1), re.M):
+        add("S15", MUST, "「## Verification」底下沒有任何 `- [ ]` 項目")
+
     body_lines = len(body.splitlines())
     if body_lines > BODY_LINE_LIMIT:
         add("S10", SHOULD, f"本文 {body_lines} 行超過 {BODY_LINE_LIMIT} 行，考慮把細節下放到子目錄")

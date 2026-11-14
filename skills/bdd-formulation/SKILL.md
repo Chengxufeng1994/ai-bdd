@@ -475,6 +475,17 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 `spec.md`、`plan.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
 就跟隨，沒有就用專案根的 `features/`。理由與例外 → `references/artifact-location.md`。
 
+## Verification
+
+交回前逐項確認；任何一項答「否」就不交——修好，或在回報裡明說哪一項沒過：
+
+- [ ] `spec.md` 狀態是 `已對焦` 才開始寫
+- [ ] 每個 AC 都有掛 `@example-<n>.<m>` 的場景，或在覆蓋表與 `.feature` 註解裡寫了為什麼沒有
+- [ ] 沒有 `spec.md` 以外的例子、場景或 `Then`——包括從 `acceptance/` 旅程抄來的
+- [ ] 每個 `.feature` 恰好一個狀態 tag、一個型別 tag；沒有 `規則:`
+- [ ] 跑了 `check_spec.py`，十七項全過，輸出貼在回報裡
+- [ ] 沒有寫入 `spec.md`、`discovery.md`、`plan.md`、`docs/CONTEXT.md` 或既有的 `.feature`
+
 ## 完成後
 
 告訴對方四件事：

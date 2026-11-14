@@ -177,6 +177,21 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 
 MUST: 不修改 `spec.md`、`discovery.md`、`plan.md` 的技術節（除了讀）、`.feature` 的任何場景文字。
 
+## Verification
+
+交回前逐項確認；任何一項答「否」就不交——修好，或在回報裡明說哪一項沒過：
+
+- [ ] 寫程式前看過這張票的場景紅（`step is undefined` 或斷言失敗，不是 parse error），每條有分支的規則的 table-driven 單元測試也先看過紅
+- [ ] 這張票的場景綠、專案的驗證閘門（實測場 `make verify`）綠，兩個命令與結果都在回報裡
+- [ ] 寫新步驟前 grep 過既有的 step definition（實測場 `make steps`），沒有同一句話兩種寫法
+- [ ] 測試替身回的是副本，不是活的指標
+- [ ] handler、mapper、presenter 裡沒有規則
+- [ ] `spec.md`、`discovery.md`、`plan.md` 的技術節、`.feature` 的場景文字都沒有被改
+- [ ] `.feature` 只有整個檔的場景都綠了才改 `@review`，否則留 `@wip`
+- [ ] `plan.md` 只勾了有測試驗過的驗收條件
+- [ ] 每個暫定行為都有一個測試釘住，註解寫明等哪一題的答案
+- [ ] 這個 session 只做了一張票
+
 ## 完成後
 
 告訴對方五件事：

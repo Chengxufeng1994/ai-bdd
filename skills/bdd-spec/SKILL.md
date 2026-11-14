@@ -231,6 +231,18 @@ features/<story-slug>.feature   由 bdd-formulation 寫
 MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何其他檔案**（含
 `docs/CONTEXT.md` 既有段落）。`discovery.md` 只動兩處：退回時的狀態與修訂歷史一列。
 
+## Verification
+
+交回前逐項確認；任何一項答「否」就不交——修好，或在回報裡明說哪一項沒過：
+
+- [ ] 每條 FR／AC 行尾都是 `← Q-<n>`（該題 `已答`）或 `← PRD §n`，沒有 `推論`
+- [ ] 每條 AC 的值都來自問答裡記下的例子；只有結論沒有例子的 FR 進了補問清單，沒有編一個
+- [ ] 跑了 `check_spec.py`，輸出貼在回報裡；`.feature` 已存在時，沒過的只有這一輪新改的 AC
+- [ ] 補問清單非空、或旅程有 `# [need clarification]` → 已走〈退回 discovery〉，沒有提就緒問句
+- [ ] `spec.md` 狀態是 `待對焦`——本 skill 沒有自己寫 `已對焦`
+- [ ] 再跑時 FR／AC 編號沒有重排，改動的每一條都記了修訂
+- [ ] `docs/CONTEXT.md` 只有新建或追加，既有段落沒動；`docs/` 底下其他檔案沒碰
+
 ## 完成後
 
 告訴對方：
