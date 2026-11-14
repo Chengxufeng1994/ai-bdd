@@ -336,6 +336,21 @@ class AcceptanceJourneys(unittest.TestCase):
             self.assertEqual(code, 1, out)
             self.assertIn("@covers-1", out)
 
+    def test_shipped_journey_example_passes(self):
+        skills = ROOT / "skills"
+        spec = (skills / "bdd-spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
+        disc = (skills / "bdd-discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
+        journey = (skills / "bdd-spec-by-example" / "examples" / "訪客出場結帳.feature").read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, spec, disc)
+            write_journey(root, "訪客出場結帳.feature", journey)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertNotIn("acceptance", out)
+
 
 class FindFeatures(unittest.TestCase):
     """Journeys are written before any features/ dir exists. The rglob
