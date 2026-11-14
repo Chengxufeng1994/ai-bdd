@@ -116,7 +116,7 @@ MUST NOT: 在這一節列「誰卡著哪幾題」。理由不是「那是算出�
 接受的風險：
 - <因此接受了什麼後果>
 
-推不出來、需要回頭問的缺口不在這裡列——它是一張紅卡，開進 `## Open Questions`。
+推不出來、需要回頭問的缺口不在這裡列——寫進 `## 回 DISCOVERY 補問`，由 `bdd-discovery` 開成一題。
 
 ## Personas：在三欄上加兩欄
 
@@ -339,7 +339,7 @@ NFR 的編號同樣全域唯一，而且跨越它的兩個家：story 專屬的 
   - Then 應收金額是 30 元
 ````
 
-**編號在這裡定版**——在 DISCOVERY 寫下的那一刻。`.feature` 的 `@example-<n>.<m>` tag 回指
+**編號在這裡定版**——在 `bdd-spec` 寫下的那一刻，之後不重排。`.feature` 的 `@example-<n>.<m>` tag 回指
 `AC-<n>.<m>`，這是這條鏈唯一的接縫。
 
 ### 接縫：兩份產物各用母語
@@ -436,9 +436,9 @@ criterion"——在 Example Mapping 的血統裡 **AC 是藍卡**；在主流 PR
 Constraints`，跟未驗證的假設放同一節，但意思不同：**假設是「沒問過、先當真
 的」，限制是「問過、答案是做不到或不准」。**
 
-前沿逐輪問到技術面向時，答得出來的量化屬性進 NFR、答得出來的不可協商限制
-進 Constraints、答不出來的一律進 `## Open Questions`——跟業務面的紅卡同一張
-表，不勉強塞進 NFR 或 Constraints 湊數。
+`bdd-spec` 寫這兩節時：`discovery.md` 裡答得出來的量化屬性進 NFR、答得出來的不可協商
+限制進 Constraints；問答裡沒有答案的進 `## 回 DISCOVERY 補問`，不勉強塞進 NFR 或
+Constraints 湊數。
 
 ---
 
