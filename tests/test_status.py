@@ -8,26 +8,11 @@ from _load import load
 
 status = load("skills/bdd-discovery/scripts/status.py")
 
-PRD = """# PRD: parking
+DISCOVERY = """# discovery: parking
 
 ## Document Overview
 
 **狀態**：澄清中　**最後更新**：2026-10-02
-
-## User Stories
-
-### US-1 · visitor-billing
-
-身為 P-1（訪客），我想在出場前知道要付多少 ← 推論
-
-#### FR
-
-**FR-1**  When 訪客車出場, the system shall 依停留時長計費。 ← PRD §3
-- **AC-1.1**  停 29 分 → 收 0 元 ← Q-1
-
-#### Q
-
-**Q-2**  跨午夜怎麼算 ← 擋住 FR-1
 
 ## Open Questions
 
@@ -42,6 +27,9 @@ PRD = """# PRD: parking
 §1 停車場要收費。
 """
 
+PRD = DISCOVERY  # old-layout fixtures only need a file to exist
+
+
 
 def run(root: Path) -> tuple[int, str]:
     buf = io.StringIO()
@@ -50,12 +38,12 @@ def run(root: Path) -> tuple[int, str]:
     return code, buf.getvalue()
 
 
-class StatusReadsSpec(unittest.TestCase):
-    def test_counts_rows_from_spec(self):
+class StatusReadsDiscovery(unittest.TestCase):
+    def test_counts_rows_from_discovery(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text(PRD, encoding="utf-8")
+            (root / "specs" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
 
             code, out = run(root)
 
@@ -64,16 +52,16 @@ class StatusReadsSpec(unittest.TestCase):
             self.assertIn("待答（1）", out)
             self.assertIn("2026-10-02-parking/Q-2", out)
 
-    def test_missing_spec_exits_1_and_names_discovery(self):
+    def test_missing_discovery_exits_1_and_names_discovery(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "design.md").write_text("# old", encoding="utf-8")
+            (root / "specs" / "2026-10-02-parking" / "plan.md").write_text("# plan", encoding="utf-8")
 
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("沒有任何 spec.md", out)
+            self.assertIn("沒有任何 discovery.md", out)
             self.assertIn("bdd-discovery", out)
             self.assertNotIn("bdd-capture", out)
 
@@ -102,6 +90,18 @@ class StatusReadsSpec(unittest.TestCase):
             self.assertIn("舊版佈局", out)
             self.assertIn("`git mv prd.md spec.md`", out)
             self.assertNotIn("design.md", out)
+
+    def test_1113_layout_exits_1_with_split_hint(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text(DISCOVERY, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("11-13 佈局", out)
+            self.assertIn("discovery.md", out)
 
 
 if __name__ == "__main__":

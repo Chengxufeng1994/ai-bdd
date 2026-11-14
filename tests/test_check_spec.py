@@ -8,7 +8,11 @@ from _load import ROOT, load
 
 check_spec = load("skills/bdd-formulation/scripts/check_spec.py")
 
-GOOD = """# PRD: parking
+GOOD = """# spec: parking
+
+## Document Overview
+
+**狀態**：待對焦
 
 ## User Stories
 
@@ -24,6 +28,13 @@ GOOD = """# PRD: parking
 #### Q
 
 **Q-2**  跨午夜怎麼算 ← 擋住 FR-1
+"""
+
+DISCOVERY = """# discovery: parking
+
+## Document Overview
+
+**狀態**：已收斂
 
 ## Open Questions
 
@@ -37,6 +48,9 @@ GOOD = """# PRD: parking
 §3 前 30 分鐘免費。
 """
 
+COMBINED_1113 = GOOD + "\n## Open Questions" + DISCOVERY.split("## Open Questions", 1)[1]
+
+
 
 def run(root: Path) -> tuple[int, str]:
     buf = io.StringIO()
@@ -45,10 +59,12 @@ def run(root: Path) -> tuple[int, str]:
     return code, buf.getvalue()
 
 
-def write_spec(root: Path, text: str) -> None:
+def write_spec(root: Path, text: str, discovery: str | None = DISCOVERY) -> None:
     d = root / "specs" / "2026-10-02-parking"
     d.mkdir(parents=True)
     (d / "spec.md").write_text(text, encoding="utf-8")
+    if discovery is not None:
+        (d / "discovery.md").write_text(discovery, encoding="utf-8")
 
 
 class UnsourcedRules(unittest.TestCase):
@@ -78,7 +94,7 @@ class UnsourcedRules(unittest.TestCase):
 
 class CitedParagraphs(unittest.TestCase):
     def test_all_cited_paragraphs_exist(self):
-        self.assertEqual(check_spec.missing_cited_paragraphs(GOOD), [])
+        self.assertEqual(check_spec.missing_cited_paragraphs(GOOD + DISCOVERY), [])
 
     def test_citation_to_absent_paragraph_is_reported(self):
         text = GOOD.replace("← PRD §3", "← PRD §9")
@@ -110,14 +126,14 @@ class CheckReadsSpec(unittest.TestCase):
     def test_missing_verbatim_section_reported(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_spec(root, GOOD.split("## 原文")[0])
+            write_spec(root, GOOD, DISCOVERY.split("## 原文")[0])
 
             code, out = run(root)
 
             self.assertEqual(code, 1)
             self.assertIn("## 原文", out)
 
-    def test_fresh_spec_points_at_discovery(self):
+    def test_spec_without_rules_points_at_bdd_spec(self):
         fresh = GOOD.replace(
             "**FR-1**  When 訪客車出場, the system shall 依停留時長計費。 ← PRD §3\n"
             "- **AC-1.1**  停 29 分 → 收 0 元 ← Q-1\n", "（空）\n")
@@ -128,7 +144,7 @@ class CheckReadsSpec(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("bdd-discovery", out)
+            self.assertIn("bdd-spec", out)
             self.assertNotIn("先跑 bdd-capture", out)
 
     def test_citation_to_absent_paragraph_fails_check(self):
@@ -141,11 +157,13 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertIn("§9", out)
 
+    @unittest.skip("examples land in Task 3")
     def test_shipped_example_spec_passes_spec_only_checks(self):
-        example = (ROOT / "skills" / "bdd-discovery" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
+        example = (ROOT / "skills" / "bdd-spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
+        disc = (ROOT / "skills" / "bdd-discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_spec(root, example)
+            write_spec(root, example, disc)
 
             code, out = run(root)
 
@@ -189,10 +207,53 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertIn("`git mv prd.md spec.md`", out)
             self.assertNotIn("design.md", out)
 
+    def test_q_marker_missing_from_discovery_fails(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD.replace("收 0 元 ← Q-1", "收 0 元 ← Q-9"))
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("Q-9", out)
+            self.assertIn("discovery.md", out)
+
+    def test_q_marker_pointing_at_unanswered_fails(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD.replace("收 0 元 ← Q-1", "收 0 元 ← Q-2"))
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("Q-2", out)
+            self.assertIn("已答", out)
+
+    def test_discovery_only_dir_is_a_notice(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "x").mkdir(parents=True)
+            (root / "specs" / "x" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertIn("先跑 bdd-spec", out)
+
+    def test_1113_layout_exits_1_with_split_hint(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, COMBINED_1113, discovery=None)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("11-13 佈局", out)
+            self.assertIn("discovery.md", out)
+
 
 if __name__ == "__main__":
     unittest.main()
-
 
 class StoriesNotYetFormulated(unittest.TestCase):
     """A features/ dir that holds only unrelated files (the walking skeleton's

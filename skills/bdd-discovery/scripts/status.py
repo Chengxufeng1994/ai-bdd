@@ -5,7 +5,7 @@
     python3 status.py [專案根目錄]        # 預設當前目錄
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
-`specs/<date>-<feature>/spec.md` 的 `## Open Questions` 表：已答／n/a／待答數自
+`specs/<date>-<feature>/discovery.md` 的 `## Open Questions` 表：已答／n/a／待答數自
 狀態欄，追問覆蓋（業務面向＋技術面向）數自面向欄。存一份儀表板的話，
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
@@ -52,7 +52,7 @@ def _field(label: str, width: int) -> str:
 def parse_open_questions(
     text: str,
 ) -> tuple[bool, list[dict[str, str]], list[str]]:
-    """spec.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
+    """discovery.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
 
     只讀那一節的表格列，不掃整份檔案：`## Document Overview` 底下也有表格，
     而**版本修訂歷史正好也是五欄**，跟下面用來擋壞列的欄數判斷相同——對整份
@@ -100,24 +100,41 @@ def coverage(dims: set[str]) -> str:
     return "".join("✓" if d in dims else "—" for d in DIMS)
 
 
+def legacy_hint(specs_dir: Path) -> str | None:
+    """舊佈局的退件訊息；沒有舊佈局回 None。
+
+    兩種舊佈局都會被新邏輯讀錯而不報錯，所以要在讀之前擋下：10-02 的
+    prd.md，與 11-13 把問答和原文放在 spec.md 裡、旁邊沒有 discovery.md 的。
+    """
+    for prd in sorted(specs_dir.glob("*/prd.md")):
+        # 技術 spec.md 還在旁邊時要先讓位，否則第一個 mv 就撞檔。
+        hint = ("先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`"
+                if (prd.parent / "spec.md").exists() else "`git mv prd.md spec.md`")
+        return f"{prd.parent} 是舊版佈局（prd.md）：{hint}"
+    for spec in sorted(specs_dir.glob("*/spec.md")):
+        if (spec.parent / "discovery.md").exists():
+            continue
+        text = spec.read_text(encoding="utf-8")
+        if re.search(r"^## (Open Questions|原文)\s*$", text, re.M):
+            return (f"{spec.parent} 是 11-13 佈局：把 `spec.md` 的 `## Open Questions` 與 "
+                    f"`## 原文` 搬到 `discovery.md`，`design.md` 的技術節併進 `plan.md`")
+    return None
+
+
 def main(root: Path) -> int:
     specs = root / "specs"
     if not specs.is_dir():
         print(f"找不到 {specs}")
         return 1
 
-    legacy = sorted(specs.glob("*/prd.md"))
-    if legacy:
-        # 兩種舊佈局，搬法不同：技術 spec.md 還在旁邊時要先讓位，否則第一個 mv 就撞檔。
-        old_dir = legacy[0].parent
-        hint = ("先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`"
-                if (old_dir / "spec.md").exists() else "`git mv prd.md spec.md`")
-        print(f"{old_dir} 是舊版佈局（prd.md）：{hint}")
+    hint = legacy_hint(specs)
+    if hint:
+        print(hint)
         return 1
 
-    specs_files = sorted(specs.glob("*/spec.md"))
+    specs_files = sorted(specs.glob("*/discovery.md"))
     if not specs_files:
-        print(f"{specs} 底下沒有任何 spec.md —— 先跑 bdd-discovery")
+        print(f"{specs} 底下沒有任何 discovery.md —— 先跑 bdd-discovery")
         return 1
 
     # 逐份先解析、逐份先報壞——三種壞法訊息分開講，因為修法不同：

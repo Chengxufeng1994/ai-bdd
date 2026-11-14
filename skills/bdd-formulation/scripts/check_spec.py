@@ -26,7 +26,7 @@
      種缺陷。層級寫錯（`#### US-1 · x`）與行內寫錯（少了 `·`）都算。
   9. 紅卡群組的形式——`#### Q` 與 `**Q-<n>**` 都是精確形式；偏掉的行會讓
      第 10、11 項一張紅卡都收不到，於是那兩項無法失敗。
- 10. 懸空的紅卡指標——`#### Q` 指向 `## Open Questions` 表裡沒有的題號。
+ 10. 懸空的紅卡指標——`#### Q` 指向 discovery.md `## Open Questions` 表裡沒有的題號。
  11. 紅卡只列待答——`#### Q` 指向表裡狀態不是「待答」的題號。已答的答案
      已經長成某條 FR 或 AC，留著會讓地圖上的紅卡數量永遠不歸零。
  12. AC 編號對帳——`AC-<n>.<m>` 的 `<n>` 必須等於它掛在底下的那條 FR。
@@ -34,10 +34,10 @@
      `.feature` 被要求帶它的 `@example-` tag，那些 AC 於是安靜地不見了。
      第 8 項抓標題本身寫壞，這一項抓對應關係斷掉：FR 擺在第一個 story 標題
      之前，每一行都合規，照樣沒有人認領。
- 14. 來源——`## User Stories` 底下每條 FR 與 AC 行尾都要有 `← PRD §x` 或
+ 14. 來源——spec.md `## User Stories` 底下每條 FR 與 AC 行尾都要有 `← PRD §x` 或
      `← Q-<n>`。`推論` 不算：規則或例子標推論，就是 agent 自己補的。
- 15. `## 原文` 一節在不在——它是 `PRD §x` 唯一的依據。
- 16. 引用的段落在不在——每個 `← PRD §n` 的 `§n` 都要在 `## 原文` 裡。
+ 15. discovery.md 的 `## 原文` 一節在不在——它是 `PRD §x` 唯一的依據。
+ 16. 引用的段落在不在——每個 `← PRD §n` 的 `§n` 都要在 discovery.md `## 原文` 裡。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 spec.md、
 `## User Stories` 底下沒有任何 story 也各自退出 1——那些是「先跑上一步」，
@@ -356,6 +356,39 @@ def outcome_coverage(text: str) -> list[tuple[str, int, int]]:
     return out
 
 
+def legacy_hint(specs_dir: Path) -> str | None:
+    """舊佈局的退件訊息；沒有舊佈局回 None。
+
+    兩種舊佈局都會被新邏輯讀錯而不報錯，所以要在讀之前擋下：10-02 的
+    prd.md，與 11-13 把問答和原文放在 spec.md 裡、旁邊沒有 discovery.md 的。
+    """
+    for prd in sorted(specs_dir.glob("*/prd.md")):
+        # 技術 spec.md 還在旁邊時要先讓位，否則第一個 mv 就撞檔。
+        hint = ("先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`"
+                if (prd.parent / "spec.md").exists() else "`git mv prd.md spec.md`")
+        return f"{prd.parent} 是舊版佈局（prd.md）：{hint}"
+    for spec in sorted(specs_dir.glob("*/spec.md")):
+        if (spec.parent / "discovery.md").exists():
+            continue
+        text = spec.read_text(encoding="utf-8")
+        if re.search(r"^## (Open Questions|原文)\s*$", text, re.M):
+            return (f"{spec.parent} 是 11-13 佈局：把 `spec.md` 的 `## Open Questions` 與 "
+                    f"`## 原文` 搬到 `discovery.md`，`design.md` 的技術節併進 `plan.md`")
+    return None
+
+
+
+def cited_qs(text: str) -> set[str]:
+    """`## User Stories` 底下 FR／AC 行尾 `← Q-<n>` 的 <n>。"""
+    section = text.split("## User Stories", 1)[-1] if "## User Stories" in text else ""
+    section = re.split(r"^## ", section, maxsplit=1, flags=re.M)[0]
+    out: set[str] = set()
+    for line in section.splitlines():
+        if re.match(r"^\s*(-\s*)?\*\*(FR|AC)-", line):
+            out.update(re.findall(r"←\s*Q-(\d+)", line))
+    return out
+
+
 def check(root: Path) -> int:
     specs_dir = root / "specs"
     feat_dir = find_features(root)
@@ -369,6 +402,11 @@ def check(root: Path) -> int:
     # 的先跑，跑不到的明講跳過」。
     spec_only = feat_dir is None
 
+    hint = legacy_hint(specs_dir)
+    if hint:
+        print(hint)
+        return 1
+
     problems = 0
     if spec_only:
         print(f"specs: {specs_dir}    feature: 找不到任何 .feature\n"
@@ -377,30 +415,36 @@ def check(root: Path) -> int:
     else:
         print(f"specs: {specs_dir}    feature: {feat_dir}\n")
 
-    legacy = sorted(specs_dir.glob("*/prd.md"))
-    if legacy:
-        # 兩種舊佈局，搬法不同：技術 spec.md 還在旁邊時要先讓位，否則第一個 mv 就撞檔。
-        old_dir = legacy[0].parent
-        hint = ("先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`"
-                if (old_dir / "spec.md").exists() else "`git mv prd.md spec.md`")
-        print(f"{old_dir} 是舊版佈局（prd.md）：{hint}")
-        return 1
+    # discovery 交件到 bdd-spec 寫完之間，目錄裡只有 discovery.md——那是流程裡
+    # 的正常位置，不是錯。跟「還沒有 .feature」同一個道理：明講，不算問題。
+    discoveries = sorted(specs_dir.glob("*/discovery.md"))
+    for disc in discoveries:
+        if not (disc.parent / "spec.md").exists():
+            print(f"— {disc.parent.name} 還沒寫 spec，先跑 bdd-spec")
 
     specs = sorted(specs_dir.glob("*/spec.md"))
-    if not specs:
+    if not specs and not discoveries:
         print(f"{specs_dir} 底下沒有 spec.md —— 先跑 bdd-discovery")
         return 1
 
     covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
     for spec_path in specs:
         stext = spec_path.read_text(encoding="utf-8")
+        disc_path = spec_path.parent / "discovery.md"
+        if not disc_path.exists():
+            print(f"✗ {spec_path.parent.name} 沒有 discovery.md，`← Q-<n>` 與 `← PRD §n` "
+                  f"無處可查 —— 先跑 bdd-discovery")
+            problems += 1
+            continue
+        dtext = disc_path.read_text(encoding="utf-8")
 
-        if not has_verbatim_section(stext):
-            print(f"✗ {spec_path.parent.name} 的 spec.md 沒有 `## 原文` 一節，"
-                  f"每個 `← PRD §x` 都指向不存在的話 —— DISCOVERY 開場沒建完")
+        if not has_verbatim_section(dtext):
+            print(f"✗ {spec_path.parent.name} 的 discovery.md 沒有 `## 原文` 一節，"
+                  f"每個 `← PRD §x` 都指向不存在的話 —— 先跑 bdd-discovery")
             problems += 1
         else:
-            absent = missing_cited_paragraphs(stext)
+            # 引用在 spec.md，被引用的段落在 discovery.md——接起來比對。
+            absent = missing_cited_paragraphs(stext + "\n" + dtext)
             if absent:
                 print(f"✗ {spec_path.parent.name} 引用了 `## 原文` 裡沒有的段落："
                       f"{', '.join('§' + n for n in absent)} —— 標記指向一句沒人說過的話")
@@ -412,6 +456,21 @@ def check(root: Path) -> int:
                   f"或 `← Q-<n>`，`推論` 不算）：")
             for line in unsourced:
                 print(f"    {line}")
+            problems += 1
+
+        # 第 14 項的跨檔延伸：標記指得到題，那題還得是已答——指到待答的題，
+        # 等於規則建立在一個還沒有人回答的問題上。
+        dq = qs_in_table(dtext)
+        cited = cited_qs(stext)
+        ghost = sorted(cited - set(dq), key=int)
+        if ghost:
+            print(f"✗ {spec_path.parent.name} 的 `← Q-<n>` 在 discovery.md 沒有這一題："
+                  f"{', '.join('Q-' + q for q in ghost)}")
+            problems += 1
+        open_ = sorted((q for q in cited & set(dq) if not dq[q].startswith("已答")), key=int)
+        if open_:
+            print(f"✗ {spec_path.parent.name} 的 `← Q-<n>` 指向還不是已答的題："
+                  f"{', '.join(f'Q-{q}（{dq[q]}）' for q in open_)}")
             problems += 1
 
         frs = frs_in_spec(stext)
@@ -435,10 +494,10 @@ def check(root: Path) -> int:
             # 一條 FR 都沒有，正是開場交出來的形狀——該跑的是 DISCOVERY 的輪次。
             if stories_in_spec(stext):
                 print(f"✗ {spec_path.parent.name} 的 spec.md 有 story 但底下沒有任何 FR "
-                      f"—— 開場的半成品，先跑 bdd-discovery")
+                      f"—— 規則還沒寫，先跑 bdd-spec")
             else:
                 print(f"✗ {spec_path.parent.name} 的 spec.md 沒有 `## User Stories` "
-                      f"一節、或該節底下沒有任何 story —— 先跑 bdd-discovery")
+                      f"一節、或該節底下沒有任何 story —— 先跑 bdd-spec")
             problems += 1
             continue
 
@@ -455,7 +514,7 @@ def check(root: Path) -> int:
         # 形式不對的紅卡群組收不到任何編號，下面兩個檢查因此無法失敗——
         # 所以形式本身要先報錯，不能被容納成「這則 story 沒有紅卡」。
         q_ids, q_malformed = qs_in_stories(stext)
-        q_table = qs_in_table(stext)
+        q_table = dq
         if q_malformed:
             print(f"✗ {spec_path.parent.name} 的 `#### Q` 形式不對，紅卡收不到："
                   f"{', '.join(q_malformed)}")
@@ -496,7 +555,7 @@ def check(root: Path) -> int:
         stories = stories_in_spec(stext)
         if not stories:
             print(f"✗ {spec_path.parent.name} 的 spec.md `## User Stories` 一節底下沒有任何 story "
-                  f"—— DISCOVERY 開場還沒切 story")
+                  f"—— bdd-spec 還沒寫 story")
             problems += 1
             continue
 
