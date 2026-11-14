@@ -414,7 +414,7 @@ def journey_covers(text: str) -> tuple[set[str], list[str]]:
             continue
         if not s or s.startswith("#"):
             continue
-        ex = re.match(r"(?:Example|Scenario(?: Outline)?):\s*(.*)", s)
+        ex = re.match(r"(?:Example|Scenario(?: Outline| Template)?):\s*(.*)", s)
         if ex and not pending:
             bare.append(ex.group(1))
         pending = []
@@ -587,7 +587,15 @@ def check(root: Path) -> int:
         # 第 17 項：驗收旅程不執行，`@covers-` 是它跟 spec.md 唯一的錨點。
         acs = {ac for exs in frs.values() for ac in exs}
         for jpath in sorted((spec_path.parent / "acceptance").glob("*.feature")):
-            jcovers, jbare = journey_covers(jpath.read_text(encoding="utf-8"))
+            jtext = jpath.read_text(encoding="utf-8")
+            jcovers, jbare = journey_covers(jtext)
+            # 沒有 covers 也沒有無錨點的 Example，代表一條旅程都沒認出來（中文關鍵字、
+            # 空檔）——這時上面兩項都無從失敗，要自己報出來。
+            if not jcovers and not jbare:
+                print(f"✗ {spec_path.parent.name} 的 acceptance/{jpath.name} 找不到任何 "
+                      f"`Example:`——關鍵字要用英文（Feature／Rule／Example）")
+                problems += 1
+                continue
             unknown = sorted(jcovers - acs)
             if unknown:
                 print(f"✗ {spec_path.parent.name} 的 acceptance/{jpath.name} 引用了 spec.md "

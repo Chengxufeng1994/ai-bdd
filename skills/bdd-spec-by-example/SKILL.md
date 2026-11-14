@@ -75,7 +75,7 @@ MUST NOT: 寫出 `spec.md` 沒有的結果、規則或例子。旅程不執行�
 ### 4. 跑 `check_spec.py`
 
 ```bash
-python3 ../bdd-formulation/scripts/check_spec.py <專案根>
+python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 ```
 
 第 17 項要過：每個 `@covers-` 都指得到 AC，每個 `Example:` 都有 `@covers-`。

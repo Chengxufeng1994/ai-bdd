@@ -336,6 +336,23 @@ class AcceptanceJourneys(unittest.TestCase):
             self.assertEqual(code, 1, out)
             self.assertIn("@covers-1", out)
 
+    def test_journey_without_recognisable_example_fails(self):
+        # zh-TW keywords parse as nothing to journey_covers: no covers, no bare
+        # Examples — check 17 would otherwise pass a journey it never read.
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            write_journey(root, "訪客出場.feature", "# language: zh-TW\n功能: x\n  場景: 沒標\n")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1, out)
+            self.assertIn("訪客出場.feature", out)
+
+    def test_scenario_template_counts_as_example(self):
+        self.assertEqual(check_spec.journey_covers("Feature: x\n  Scenario Template: y\n"),
+                         (set(), ["y"]))
+
     def test_shipped_journey_example_passes(self):
         skills = ROOT / "skills"
         spec = (skills / "bdd-spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
