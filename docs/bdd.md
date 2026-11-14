@@ -38,7 +38,8 @@ BDD 的核心是三個實踐，Cucumber 用三個時態區分它們：
 Example Mapping 的四色卡：黃＝story、藍＝rule、綠＝example、紅＝question。
 它是一場約 25 分鐘的對話，不是文件工作，結束時以**大拇指投票**決定就緒與否。
 
-出處：[Example Mapping introduction](https://cucumber.io/blog/bdd/example-mapping-introduction/)。
+出處：[Example Mapping introduction](https://cucumber.io/blog/bdd/example-mapping-introduction/)；
+完整轉述見 [example-mapping.md](./example-mapping.md)。
 以下幾點直接來自該文：
 
 - 25 分鐘內 map 不完 ＝ story 太大或不確定性太高

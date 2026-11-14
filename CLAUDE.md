@@ -90,11 +90,12 @@ the source.
 | File | Contains | Changes when |
 | --- | --- | --- |
 | `docs/bdd.md` | Cucumber's own definitions of Discovery / Formulation / Automation | A source changed the definition, or we misread it. **Never** to record a project opinion. |
+| `docs/example-mapping.md` | Matt Wynne's Example Mapping article — four cards, the table as feedback, the 25-minute box, rough examples | ″ |
 | `docs/tdd.md` | Canon TDD, the three laws, the two schools — BDD's parent, and the inner loop of `bdd.md`'s double-loop figure | ″ |
 | `docs/sdd.md` | Spec-Driven Development per Spec Kit / Kiro / Tessl, and why its "spec" is not BDD's | ″ |
 | `docs/ai-sdlc.md` | This project's position: why six steps, which parts are not BDD, the AI-specific constraints | Evolves with real runs |
 
-The first three transcribe outside sources and say so in their own opening paragraph. Each
+The first four transcribe outside sources and say so in their own opening paragraph. Each
 figure has exactly one owner: `tdd.md` points at `bdd.md` for the double-loop diagram
 rather than redrawing it.
 
