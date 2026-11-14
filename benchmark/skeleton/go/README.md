@@ -1,7 +1,7 @@
 # benchmark/skeleton/go
 
 A Go + godog project used to dogfood the `ai-bdd` skills end to end:
-**DISCOVERY → SPEC → PLAN → IMPLEMENT → VERIFY → REVIEW**.
+**DISCOVERY → SPEC → PLAN → IMPLEMENT → REVIEW → VERIFY**.
 
 It is not a product. Its job is to make the skills fail visibly when they are
 weak.

@@ -87,10 +87,13 @@ Runtime — one process, one protocol so far:
 Development — the chain the testbed exists to exercise:
 
 ```
-benchmark/cases/ ──▶ DISCOVERY ──▶ specs/<date>-<feature>/spec.md
+benchmark/cases/ ──▶ DISCOVERY ──▶ specs/<date>-<feature>/discovery.md
                               │
                               ▼
-                            SPEC ──▶ features/*.feature
+                            SPEC ──▶ specs/<date>-<feature>/spec.md ──▶ features/*.feature
+                              │
+                              ▼
+                            PLAN ──▶ specs/<date>-<feature>/plan.md
                                           │
              api/openapi.yaml ──▶ generate ──▶ apigen/
                                           │
@@ -307,7 +310,7 @@ DO NOT EDIT.
 
 ## 9. Future Considerations / Roadmap
 
-**`domain/` is empty by rule, and stays empty until DISCOVERY has produced a
+**`domain/` is empty by rule, and stays empty until DISCOVERY and SPEC have produced a
 `spec.md` at `已對焦`.** Every type in `domain/` must trace back to an FR in that file,
 and every scenario in `features/` back to a concrete example. Writing the model
 first would defeat the point of the testbed — it would prove the skills work by
@@ -363,7 +366,8 @@ a proven path.
 | **Example** | A concrete case illustrating a rule, with real data. `Example 1.1` is Rule 1's first |
 | **Question** | Something nobody could answer during discovery — the evidence that a story is not ready |
 | **Shared** | A rule that constrains several stories; an invariant lives in `specs/domain-model.md`, a behaviour in a `.feature`'s `Rule:` |
-| **spec.md** | The output of DISCOVERY: stories, rules, examples, open questions, status |
+| **discovery.md** | The output of DISCOVERY: the originator's words, rough stories, every question and answer, status |
+| **spec.md** | The output of SPEC: stories, rules, examples, each pointing back to `discovery.md`, status |
 
 Numbers in these identifiers are **references**. Downstream Gherkin scenarios tag
 themselves `@Example1.1`, so renumbering silently repoints them.
