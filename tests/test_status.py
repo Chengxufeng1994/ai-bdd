@@ -78,6 +78,18 @@ class StatusReadsDiscovery(unittest.TestCase):
             self.assertIn("git mv", out)
             self.assertIn("specs/ongoing/2026-10-02-parking", out)
 
+    def test_all_features_archived_exits_0(self):
+        # 全部 feature 都歸檔、specs/ongoing/ 被 git 清掉是正常狀態
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "sleeping" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "sleeping" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertIn("沒有進行中的 feature", out)
+
     def test_missing_discovery_exits_1_and_names_discovery(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)

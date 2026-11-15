@@ -4,7 +4,7 @@
 用法：
     python3 check_spec.py [專案根目錄]        # 預設當前目錄
 
-檢查十七件事，全部是機械性的：
+檢查十八件事，全部是機械性的：
 
   1. 覆蓋——雙向。spec.md 有例子而 feature 沒有的（漏做），
      以及 feature 指向 spec.md 裡不存在的例子（發明出來的驗收條件）。
@@ -15,7 +15,7 @@
   4. 方言陷阱——中文「規則:」不是關鍵字，會被解析成散文。
   5. 步驟樣板重用率——封閉文法有沒有真的套上。沒有及格線，只報數字：
      散文式實測 76 場景／208 樣板；封閉文法 7 場景／10 樣板。
-     十七項裡只有這一項不會把退出碼變成 1。
+     十八項裡只有這一項不會把退出碼變成 1。
   6. FR 完整性——spec.md 裡有沒有 FR 完全沒掛任何例子；沒有例子，
      FORMULATION 就無從寫出場景，只能發明。
   7. v2 殘留——`## User Stories` 底下還有 `#### FR-2` 這種標題形式的規則。
@@ -41,17 +41,18 @@
  17. 驗收旅程的引用——同目錄 `acceptance/*.feature` 每個 `@covers-<n>.<m>` 都要是
      spec.md 裡的 AC，每個 `Example:` 上方至少一個。沒有 `acceptance/` 就跳過。
      旅程不執行，不算 .feature：找 .feature 時排除 `specs/` 底下。
+ 18. `## Domain Model` 在不在——狀態是「已對焦」時要有這一節，沒改聚合寫「（無）」。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 spec.md、
 `## User Stories` 底下沒有任何 story 也各自退出 1——那些是「先跑上一步」，
-不算在上面十七項一致性檢查裡。
+不算在上面十八項一致性檢查裡。
 
-找不到 .feature 不在此列。第 6-17 項只讀 spec.md，而 DISCOVERY 交件到 FORMULATION
+找不到 .feature 不在此列。第 6-18 項只讀 spec.md，而 DISCOVERY 交件到 FORMULATION
 開跑之間正是它們最該跑的時候，所以那時只跳過需要 .feature 的第 1-5 項並在開頭
 明講跳過了哪幾項；spec.md 乾淨就退出 0。
 
 只讀不寫。找不到什麼就說找不到，不猜——但 specs/ 與 .feature 不對稱：
-前者是停，後者是照說不誤，然後把跑得到的十二項跑完。
+前者是停，後者是照說不誤，然後把跑得到的十三項跑完。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
 specs/ongoing/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
 story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
@@ -447,9 +448,9 @@ def check(root: Path) -> int:
     if not specs_root.is_dir():
         print(f"找不到 {specs_root} —— 沒有 DISCOVERY 的產物可以比對")
         return 1
-    # 十七項裡有十二項只讀 spec.md（第 6-17 項）。DISCOVERY 交件到 FORMULATION
+    # 十八項裡有十三項只讀 spec.md（第 6-18 項）。DISCOVERY 交件到 FORMULATION
     # 開跑之間還沒有任何 .feature，而那正是 spec.md 最需要被檢查的時刻——
-    # 早退會讓那十二項在整段空窗期一項都跑不到，壞掉的 spec.md 於是要等到
+    # 早退會讓那十三項在整段空窗期一項都跑不到，壞掉的 spec.md 於是要等到
     # 下一個 skill 才被發現。所以缺 .feature 不再是「不能跑」，是「跑得到
     # 的先跑，跑不到的明講跳過」。
     spec_only = feat_dir is None
@@ -462,7 +463,7 @@ def check(root: Path) -> int:
     problems = 0
     if spec_only:
         print(f"specs: {specs_dir}    feature: 找不到任何 .feature\n"
-              f"只跑 spec.md 自己的十二項檢查；覆蓋比對、狀態 tag、方言陷阱、"
+              f"只跑 spec.md 自己的十三項檢查；覆蓋比對、狀態 tag、方言陷阱、"
               f"缺口註解、樣板重用率五項需要 .feature，跳過。")
     else:
         print(f"specs: {specs_dir}    feature: {feat_dir}\n")
@@ -476,6 +477,11 @@ def check(root: Path) -> int:
 
     specs = sorted(specs_dir.glob("*/spec.md"))
     if not specs and not discoveries:
+        # 全部歸檔後 git 不留空的 ongoing/：那是做完了，不是還沒開始
+        archived = [p for p in (specs_root / "sleeping").glob("*") if p.is_dir()]
+        if archived:
+            print(f"沒有進行中的 feature（specs/sleeping/ 有 {len(archived)} 個已歸檔）")
+            return 0
         print(f"{specs_dir} 底下沒有 spec.md —— 先跑 discovery")
         return 1
 
@@ -539,6 +545,14 @@ def check(root: Path) -> int:
         if malformed:
             print(f"✗ {spec_path.parent.name} 的 `## User Stories` 底下有不合規的 "
                   f"story 標題，形式要是 `### US-<n> · <slug>`：{', '.join(malformed)}")
+            problems += 1
+
+        # 第 18 項：已對焦之後 archive 靠這一節判斷要不要動 docs/DOMAIN-MODEL.md。
+        # 缺這一節跟寫「（無）」對它是同一個結果，但前者可能是漏寫——所以要寫出來。
+        if (re.search(r"^\*\*狀態\*\*：已對焦", stext, re.M)
+                and not re.search(r"^## Domain Model\s*$", stext, re.M)):
+            print(f"✗ {spec_path.parent.name} 已對焦卻沒有 `## Domain Model` 一節——"
+                  f"沒改聚合也要寫「（無）」")
             problems += 1
 
         if not frs:

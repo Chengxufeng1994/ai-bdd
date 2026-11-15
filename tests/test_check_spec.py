@@ -297,6 +297,40 @@ class CheckReadsSpec(unittest.TestCase):
 
             self.assertEqual(code, 0, out)
 
+    def test_all_features_archived_exits_0(self):
+        # 全部 feature 都歸檔是正常狀態，不是「還沒開始」
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "sleeping" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "sleeping" / "2026-10-02-parking" / "spec.md").write_text(GOOD, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertIn("沒有進行中的 feature", out)
+            self.assertNotIn("先跑 discovery", out)
+
+    def test_focused_spec_without_domain_model_fails(self):
+        # 已對焦之後 archive 靠這一節判斷要不要動 docs/DOMAIN-MODEL.md；缺了就分不出「沒改聚合」與「漏寫」
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD.replace("**狀態**：待對焦", "**狀態**：已對焦"))
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1, out)
+            self.assertIn("## Domain Model", out)
+
+    def test_focused_spec_with_empty_domain_model_passes(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD.replace("**狀態**：待對焦", "**狀態**：已對焦")
+                       + "\n## Domain Model\n\n（無）——沒改聚合\n")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+
     def test_discovery_only_dir_is_a_notice(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)

@@ -131,7 +131,7 @@ MUST: AC 的值照小節裡記下的例子寫。小節只有結論、沒有例�
 python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 ```
 
-`.feature` 還不存在時跑得到十二項：`spec.md` 的形狀、它對 `discovery.md` 的引用，以及
+`.feature` 還不存在時跑得到十三項：`spec.md` 的形狀、它對 `discovery.md` 的引用，以及
 `acceptance/` 旅程的 `@covers-` tag，
 包含第 14 項：每條 FR／AC 有來源、`← Q-<n>` 在 `discovery.md` 找得到而且是 `已答`。
 抓到的每一條要嘛修 `spec.md`（寫錯了），要嘛進補問清單（問答裡沒有）。
@@ -282,6 +282,9 @@ FR／AC 不准 `推論` 的規則不變。
   從沒到過 `已對焦` 的不記——觸發條件見 `references/spec-format.md`
 - 補問清單裡被答掉的列刪除（判準：`discovery.md` 有一題的 `**來自**` 逐字引了它、而且已答）；
   引用了被「取代」的舊題的規則，改引新題
+- 舊版 `spec.md` 沒有 `## Domain Model` 的，補上這一節：聚合已經在 `docs/DOMAIN-MODEL.md`（從
+  `specs/domain-model.md` 搬過去的）而這次沒改的，寫「（無）——沿用 `docs/DOMAIN-MODEL.md`」。
+  `check_spec.py` 第 18 項在已對焦時擋缺這一節
 - 狀態回 `待對焦`，從第 2 步重跑
 
 ## 產物

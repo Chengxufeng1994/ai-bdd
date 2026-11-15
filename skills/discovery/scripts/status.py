@@ -151,6 +151,11 @@ def main(root: Path) -> int:
 
     specs_files = sorted(ongoing.glob("*/discovery.md"))
     if not specs_files:
+        # 全部歸檔後 git 不留空的 ongoing/：那是做完了，不是還沒開始
+        archived = [p for p in (specs / "sleeping").glob("*") if p.is_dir()]
+        if archived:
+            print(f"沒有進行中的 feature（specs/sleeping/ 有 {len(archived)} 個已歸檔）")
+            return 0
         print(f"{ongoing} 底下沒有任何 discovery.md —— 先跑 discovery")
         return 1
 

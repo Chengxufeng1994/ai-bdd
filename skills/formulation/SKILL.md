@@ -44,7 +44,7 @@ description: >
 | 要決定 seam（情境跑在哪一層測試） | `plan` |
 | 要寫 `docs/CONTEXT.md` 或切 story | `spec`（它用 `story-splitting`） |
 | 要決定實作順序、切票 | `task-breakdown` |
-| 要稽核既有 `.feature` 寫得好不好 | 目前沒有 skill 接手（`spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十七項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md` |
+| 要稽核既有 `.feature` 寫得好不好 | 目前沒有 skill 接手（`spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十八項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md` |
 
 產出是 `.feature`，**不是** `spec.md`、`plan.md`、`openapi.yaml`、migration 或任何可執行的檔案。
 
@@ -373,13 +373,13 @@ story 涵蓋哪些 FR，合起來才拼得出「這個 `.feature` 該有哪些 `
 python3 <skill>/scripts/check_spec.py <專案根>
 ```
 
-**`spec` 也會跑同一支腳本，但它看到的是十二項。** 沒有
+**`spec` 也會跑同一支腳本，但它看到的是十三項。** 沒有
 `.feature` 時，需要它的五項（雙向覆蓋、狀態 tag、方言陷阱、缺口註解、樣板重用率）
-會明講跳過。跑到這一步才是十七項全開——**這五項只有這裡驗得到**，所以這一步不能
+會明講跳過。跑到這一步才是十八項全開——**這五項只有這裡驗得到**，所以這一步不能
 因為「上游已經跑過了」而省略。
 
-十七項的完整清單與各自的理由在 `scripts/check_spec.py` 開頭的說明：前五項需要 `.feature`
-（上面那五項），其餘十二項只讀 `spec.md`、`discovery.md` 與 `acceptance/`——FR 有沒有掛 AC、
+十八項的完整清單與各自的理由在 `scripts/check_spec.py` 開頭的說明：前五項需要 `.feature`
+（上面那五項），其餘十三項只讀 `spec.md`、`discovery.md` 與 `acceptance/`——FR 有沒有掛 AC、
 標題形式、`#### Q` 紅卡、AC 編號對帳、無主的 FR、`← PRD §x`／`← Q-<n>` 來源（`推論` 不算）、
 `## 原文` 與它的段落、驗收旅程的 `@covers-`。只讀不寫，退出碼可直接進 CI。
 

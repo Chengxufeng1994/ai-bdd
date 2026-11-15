@@ -49,7 +49,8 @@ description: >
 ## 前置確認（Ask user）
 
 Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks/index.md` 列的每張票驗收條件都勾完；它涵蓋的
-每個 `.feature` 都是 `@review`。任何一項不成立就停下，說還差哪張票——還沒做完的東西寫進現況，
+每個 `.feature` 都是 `@review`——涵蓋哪些檔，看各票 `涵蓋場景` 寫的 `.feature` 路徑的聯集（不屬於任何票的，
+例如 walking skeleton 的 `version.feature`，不算）。任何一項不成立就停下，說還差哪張票——還沒做完的東西寫進現況，
 `docs/` 就不再是系統真正的樣子。
 
 ---
@@ -58,17 +59,27 @@ Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks/index.md` 列的�
 
 | 步驟 | 做什麼 | 要問使用者嗎 |
 | --- | --- | --- |
-| 1 | 讀這個 feature 的 `spec.md` 與 `docs/` 現況，列出要改的條目 | — |
-| 2 | 增修 `docs/` 三份檔的區塊，記修訂紀錄 | 衝突或區塊被手改過時要 |
+| 1 | 先查區塊有沒有被手改過，再讀 `spec.md` 與 `docs/` 現況，列出要改的條目 | 手改過、沒有區塊的舊檔、或衝突時要 |
+| 2 | 增修 `docs/` 三份檔的區塊，記修訂紀錄 | — |
 | 3 | `git mv` 到 `specs/sleeping/`，跟第 2 步同一個 commit | — |
 
 ### 1. 讀，列出要改的
+
+**先查手改，再比 `spec.md`。** 手改過的區塊跟 `spec.md` 不一樣，照字面比會被列成「改回 spec」——
+靜靜地丟掉別人的修改。查法見 `references/docs-format.md`〈手改過沒有〉；兩件事同時成立時以手改為準：
+
+| 碰到 | 怎麼辦 |
+| --- | --- |
+| 區塊被手改過 | **停**，列出差異問使用者要保留哪個。答「保留手改」：區塊照現在的樣子不動，`修訂紀錄` 記一列「保留手改：<區塊>（<手改的 commit>）」——這次的 archive commit 因此碰到這份檔，成為下一次的比對基準，下一次不會在同一行再停。`spec.md` 不改：下一個 feature 的技術部分從 `docs/TECH.md` 抄，自然跟上 |
+| 檔存在、一個 ai-bdd 區塊都沒有，內容卻是舊版 ai-bdd 寫的（從 `specs/domain-model.md` 搬來的 `DOMAIN-MODEL.md`） | **停**，問要不要先把每個聚合包進一個區塊（區塊名＝聚合名）、檔頭加「由 `archive` 維護」那一行，單獨一個 commit。不包就照「沒有這個區塊」在檔尾加——同一個聚合會寫兩次 |
+
+再填這張表：
 
 | `docs/` 的檔 | 從 `spec.md` 的哪裡來 | 怎麼比 |
 | --- | --- | --- |
 | `DOMAIN-MODEL.md` | `## Domain Model` | 新的聚合加進去；改了既有聚合的，`spec.md` 那一節寫了「原本是什麼、為什麼改」 |
 | `DATABASE-SCHEMA.md` | `## Implementation Decisions` 的 Schema | 新表加區塊；改了既有表的，照新的寫 |
-| `TECH.md` | `## Tech Stack` 到 `## Boundaries` | 只改跟現況不一樣的條目——多數 feature 這五節跟 `TECH.md` 一字不差，那就不動 |
+| `TECH.md` | `## Tech Stack` 到 `## Boundaries` | 只改跟現況不一樣的條目——多數 feature 這五節跟 `TECH.md` 一字不差，那就不動。`## Commands` 的 `替代閘門（本環境）` 不寫進去：它是那次環境的變通，不是專案的現況 |
 
 把要改的條目先攤成一張表（檔、區塊、原本、改成、來源），再動手。
 
@@ -78,16 +89,16 @@ Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks/index.md` 列的�
 加。每份改過的檔在 `修訂紀錄` 區塊追加一列。
 
 MUST: 只改 `<!-- ai-bdd:begin … -->` 到 `<!-- ai-bdd:end … -->` 之間的內容。區塊外是專案自己的文件，
-有人在維護；改到它就是替別人做決定。
+有人在維護；改到它就是替別人做決定。唯一例外是第 1 步使用者答應的「把舊檔包成區塊」：只加標記與檔頭那一行，
+內容一字不改。
 
-MUST: 區塊的內容跟上一次 `archive` 寫的不一樣（有人手改過）時停下回報，不覆蓋。判斷方法見
-`references/docs-format.md`〈區塊標記〉。
+MUST: 區塊的內容跟上一次 `archive` 寫的不一樣（有人手改過）時停下回報，不覆蓋——第 1 步查過了，
+這裡只照使用者的答案做。
 
 | 碰到 | 怎麼辦 |
 | --- | --- |
 | `spec.md` 跟 `docs/` 現況衝突（同一條，兩邊說法不同，而 `spec.md` 沒有記這是一次改動） | **停**，列出兩邊原文問使用者——可能是 spec 抄錯，也可能是現況過期 |
-| 區塊被手改過 | **停**，列出差異問使用者要保留哪個 |
-| `spec.md` 沒有 `## Domain Model`、或某節寫「（無）」 | 那份檔不動，回報裡說明 |
+| `spec.md` 的 `## Domain Model` 寫「（無）」、或某節寫「（無）」 | 那份檔不動，回報裡說明 |
 
 ### 3. 搬進 `specs/sleeping/`
 
@@ -102,6 +113,12 @@ MUST: 用 `git mv`，不用複製再刪——`git log --follow` 靠它追到搬�
 
 第 2 步與第 3 步放在同一個 commit：`docs/` 的現況與 feature 搬進 `sleeping/` 是同一件事，分開提交
 中間就有一個「現況已更新、feature 卻還在進行中」的狀態。
+
+MUST: commit 標題固定寫 `docs: archive <date>-<feature>`——下一次查手改時，靠它認出哪個 commit 是
+`archive` 寫的。
+
+`docs/` 不必改時（修正只動了 FR 與 Implementation Decisions 裡不進 `docs/` 的部分），這個 commit 只有
+搬家；這次交付了什麼的紀錄就是 `spec.md` 的 `### 版本修訂歷史`，不為了留痕去改 `docs/`。
 
 ## 產物
 
@@ -121,7 +138,8 @@ MUST NOT: 寫 `docs/` 底下這三份以外的任何檔，或改 `specs/` 底下
 - [ ] `docs/` 只改了三份檔、只改了 ai-bdd 區塊裡的內容；區塊外的 diff 是空的
 - [ ] 每條寫進 `docs/` 的內容都指得出來自 `spec.md` 的哪一節、保留了來源
 - [ ] 改過的檔都在 `修訂紀錄` 追加了一列
-- [ ] 衝突與手改過的區塊都停下來問了，沒有自己選
+- [ ] 先查了手改才填表；衝突、手改過的區塊、沒有區塊的舊檔都停下來問了，沒有自己選
+- [ ] commit 標題是 `docs: archive <date>-<feature>`
 - [ ] feature 目錄是 `git mv` 搬的，目錄裡的檔一個字都沒改；`docs/` 的改動與搬家在同一個 commit
 - [ ] 沒有寫 `docs/CONTEXT.md`、沒有改程式碼、`spec.md`、票檔或 `.feature`
 
@@ -132,3 +150,5 @@ MUST NOT: 寫 `docs/` 底下這三份以外的任何檔，或改 `specs/` 底下
 1. `docs/` 改了哪幾份、哪些區塊；哪幾份沒動、為什麼
 2. 有沒有停下來問的衝突或手改過的區塊
 3. 這個 feature 已搬到 `specs/sleeping/<date>-<feature>/`；之後要修正它，跑 `discovery` 喚醒
+4. `docs/` 只放結構（聚合、資料表、技術現況）；行為的現況——規則怎麼算——住在 `features/*.feature`
+   與 `specs/sleeping/` 裡那份 `spec.md`
