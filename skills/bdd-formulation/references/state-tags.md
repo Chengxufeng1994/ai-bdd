@@ -12,7 +12,7 @@
 | tag | 由誰寫入 | 意義 |
 | --- | --- | --- |
 | `@draft` | `bdd-formulation` | 來源 `spec.md` 狀態 `待對焦`（需求方還沒點頭，使用者要求先寫）。可用來對齊理解，**不是**講定的驗收條件 |
-| `@ready` | `bdd-formulation` | 來源 `spec.md` 狀態 `已對焦`，三方講定，等實作 |
+| `@ready` | `bdd-formulation`；`spec.md` 改過之後再跑、改到這個檔的場景時也寫回 `@ready` | 來源 `spec.md` 狀態 `已對焦`，三方講定，等實作 |
 | `@wip` | `bdd-implement` 開工時 | 正在實作這則 |
 | `@review` | `bdd-implement`，涵蓋這個檔的票全做完、整個檔全綠後；票在 worktree 裡做時，由讓最後一張涵蓋票完成的那次合回寫入 | 等 REVIEW |
 | `@done` | `bdd-verify` 通過後 | 六步走完 |

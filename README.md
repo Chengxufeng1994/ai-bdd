@@ -30,7 +30,7 @@
 | `discovery.md` | `<feature>/` | `bdd-discovery`（原文逐字、粗切 story、問答）；`clarify` 補答待答題 | `clarify`：收斂待答題；`bdd-spec`：從已收斂的問答寫規格；`bdd-plan`：讀技術面向的答案 |
 | `spec.md`（`待對焦`） | `<feature>/` | `bdd-spec` | `example-mapping`：攤四色卡、跑診斷、問就緒；`bdd-spec-by-example`：寫驗收旅程；`story-splitting`：重切 story |
 | `spec.md` `## 回 DISCOVERY 補問` | `<feature>/spec.md` | `bdd-spec`、`bdd-spec-by-example`、`example-mapping`（未就緒時） | `bdd-spec`：退回 discovery，把 `discovery.md` 改回 `澄清中`；`bdd-discovery`：再問 |
-| 切分紀錄（`## 切分：…`） | `specs/` 底下 | `story-splitting` | `bdd-spec`：照切法寫 story，FR 編號不重編 |
+| `splitting.md`（切分紀錄） | `<feature>/` | `story-splitting` | `bdd-spec`：照切法寫 story，FR 編號不重編 |
 | 驗收旅程 `*.feature`（不執行） | `<feature>/acceptance/` | `bdd-spec-by-example` | 需求方：對著旅程判就緒；`example-mapping`：提就緒問句；`bdd-formulation`：只借用語 |
 | `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `bdd-formulation`：寫可執行 `.feature`；`bdd-plan`：技術設計與切票 |
 | `docs/CONTEXT.md` | 專案 `docs/` | `bdd-spec`（建立或追加） | `bdd-spec-by-example`、`bdd-formulation`：用詞對齊 |

@@ -125,7 +125,8 @@ MUST: AC 的值照小節裡記下的例子寫。小節只有結論、沒有例�
 python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 ```
 
-`.feature` 還不存在時跑得到十二項，全部是 `spec.md` 的形狀與它對 `discovery.md` 的引用，
+`.feature` 還不存在時跑得到十二項：`spec.md` 的形狀、它對 `discovery.md` 的引用，以及
+`acceptance/` 旅程的 `@covers-` tag，
 包含第 14 項：每條 FR／AC 有來源、`← Q-<n>` 在 `discovery.md` 找得到而且是 `已答`。
 抓到的每一條要嘛修 `spec.md`（寫錯了），要嘛進補問清單（問答裡沒有）。
 
@@ -187,8 +188,8 @@ MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本�
 
 需求方答「就緒」、`example-mapping` 寫了 `已對焦`，呼叫 `bdd-formulation` 把 FR 與 AC
 寫成 `.feature`（`@ready`），`acceptance/` 的旅程只供它參考用語。`.feature` 已經存在
-（修補的情況）時，它照自己處理「規則改了」的方式改場景。寫完再跑一次 `check_spec.py`，
-十七項全過才算 to spec 完成。
+（修補的情況）時，它照自己的〈再跑：`spec.md` 改過之後〉，依修訂歷史只改對到的場景。寫完再跑一次
+`check_spec.py`，沒有任何一項失敗才算 to spec 完成。
 
 ### 7. 退回 discovery
 
@@ -208,7 +209,8 @@ MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本�
 
 - FR／AC 編號**不重排**——`.feature` 的 `@example-n.m` 掛在上面，重排會讓 tag 安靜地
   指到另一條規則。新的接著編號
-- 改動的每一條在 `### 版本修訂歷史` 記一列（改了什麼、為什麼、`← Q-<n>`）
+- 文件到過 `已對焦` 的，改動的每一條在 `### 版本修訂歷史` 記一列（改了什麼、為什麼、`← Q-<n>`）；
+  從沒到過 `已對焦` 的不記——觸發條件見 `references/spec-format.md`
 - 補問清單裡被答掉的列刪除（判準：`discovery.md` 有一題的 `**來自**` 逐字引了它、而且已答）；
   引用了被「取代」的舊題的規則，改引新題
 - 狀態回 `待對焦`，從第 2 步重跑

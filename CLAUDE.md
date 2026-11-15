@@ -183,7 +183,7 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/<date>-<feature>/` (`discovery.md`, `spec.md`, `acceptance/*.feature`, `plan.md`, `tasks/`), one directory that can be deleted whole. Two
+  `specs/<date>-<feature>/` (`discovery.md`, `spec.md`, `splitting.md`, `acceptance/*.feature`, `plan.md`, `tasks/`), one directory that can be deleted whole. Two
   exceptions: executable `.feature` files stay where the runner expects them (`features/` for
   Cucumber-family tools); `docs/CONTEXT.md` outlives any single feature, so SPEC may create
   it or append entries but must not rewrite its existing sections or write to anything else

@@ -85,7 +85,8 @@ MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺
 `## Open Questions` 還有待答時，那些對應的規則就寫不出來，不要順手決定掉。
 
 NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述直接寫 `.feature`。那會
-產出一份沒有人同意過的規格，而它看起來跟真的一模一樣。沒有 `spec.md` 就先跑
+產出一份沒有人同意過的規格，而它看起來跟真的一模一樣。唯一的例外是下面的 `@draft`：
+`spec.md` 存在、狀態 `待對焦`，而且使用者明說要先寫。沒有 `spec.md` 就先跑
 `bdd-spec`（還沒有 `discovery.md` 就先 `bdd-discovery`）。
 
 ---
@@ -124,11 +125,12 @@ IMPORTANT: `spec.md` 由 `bdd-spec` 維護，本 skill **不得寫入**。要補
 `bdd-spec` 在 `已對焦` 之後呼叫的。
 
 MUST: 只做 `spec.md` 的 `## Document Overview` 裡 `狀態` 已經是 `已對焦` 的 feature。
-還停在 `澄清中` 或 `待對焦` 的整份跳過，並明講該回哪個 skill——
+還停在 `澄清中` 或 `待對焦` 的整份跳過（例外只有下一段的 `@draft`），並明講該回哪個 skill——
 把還沒定案的東西寫成場景，等於**把不確定性從一個顯眼的問題檔搬進一份看起來
 已完成的規格**，之後沒有人會回頭質疑它。
 
-使用者要求「未就緒的也先寫」時就寫，標成 `@draft`——見下方「狀態 tag」。
+使用者明說「未就緒的也先寫」、而 `spec.md` 狀態是 `待對焦` 時就寫，標成 `@draft`——見下方
+「狀態 tag」。`澄清中` 的不寫：那時連 FR 都還沒有。
 
 ### 2. 規則對應 Rule，例子對應 Example
 
@@ -460,19 +462,36 @@ zh-TW 方言**沒有**「規則」這個字（`zh-CN` 有「规则」、`ja` 有
 ## 產物隔離
 
 MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既有的 `.feature`、
-`spec.md`、`plan.md`、`docs/CONTEXT.md`）。`.feature` 的位置由測試框架決定——有 `.feature`
+`spec.md`、`plan.md`、`docs/CONTEXT.md`）。唯一的例外是下面〈再跑：`spec.md` 改過之後〉——
+那時只改那些 `.feature` 裡對到改動的場景。`.feature` 的位置由測試框架決定——有 `.feature`
 就跟隨，沒有就用專案根的 `features/`。理由與例外 → `references/artifact-location.md`。
+
+### 再跑：`spec.md` 改過之後
+
+`spec.md` 到過 `已對焦`、`.feature` 已經寫了，之後 `bdd-spec` 照新的答案修補了 FR／AC，
+需求方又答「就緒」——這時 `bdd-spec` 再呼叫本 skill。照 `spec.md` 的 `### 版本修訂歷史`
+新增的列，只動對到的場景：
+
+| 修訂歷史說 | 對 `.feature` 做什麼 |
+| --- | --- |
+| 新增 FR／AC | 照步驟 2–4 加 `Rule:`／`Example:`，tag 接著編 |
+| 改了 FR／AC | 改掛同一個 `@example-<n>.<m>` 的場景，tag 不變 |
+| 刪了 FR／AC | 刪掉掛那個 tag 的場景，在原處留一行註解：刪了什麼、修訂歷史哪一列 |
+
+改過場景的 `.feature`，狀態 tag 改回 `@ready`——改過的場景還沒有人實作，舊的 `@wip`／
+`@review` 已經不是真的。回報裡列出改了哪些 tag，`bdd-tasks` 才知道要為它們開票。
+沒有對到修訂歷史的場景一個字都不動。
 
 ## Verification
 
 交回前逐項確認；任何一項答「否」就不交——修好，或在回報裡明說哪一項沒過：
 
-- [ ] `spec.md` 狀態是 `已對焦` 才開始寫
+- [ ] `spec.md` 狀態是 `已對焦` 才開始寫；`待對焦` 而寫了的，是使用者明說要先寫，且標 `@draft`
 - [ ] 每個 AC 都有掛 `@example-<n>.<m>` 的場景，或在覆蓋表與 `.feature` 註解裡寫了為什麼沒有
 - [ ] 沒有 `spec.md` 以外的例子、場景或 `Then`——包括從 `acceptance/` 旅程抄來的
 - [ ] 每個 `.feature` 恰好一個狀態 tag、一個型別 tag；沒有 `規則:`
-- [ ] 跑了 `check_spec.py`，十七項全過，輸出貼在回報裡
-- [ ] 沒有寫入 `spec.md`、`discovery.md`、`plan.md`、`docs/CONTEXT.md` 或既有的 `.feature`
+- [ ] 跑了 `check_spec.py`，沒有任何一項失敗，輸出貼在回報裡（只報數字的項目與跳過的項目照實列出）
+- [ ] 沒有寫入 `spec.md`、`discovery.md`、`plan.md`、`docs/CONTEXT.md`；既有的 `.feature` 只在再跑時、只改對到修訂歷史的場景
 
 ## 完成後
 
