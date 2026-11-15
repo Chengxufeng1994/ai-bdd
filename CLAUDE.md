@@ -137,7 +137,9 @@ Each of the first three steps holds because it runs in one main working mode:
   `bdd-plan` **does not change requirements**; holes go to `## 缺口`. `bdd-tasks` then
   slices tracer bullets and **does not change the design**; its holes go to the same
   `## 缺口`. `bdd-implement` writes only its own ticket file, never `plan.md` or
-  `tasks/index.md` — that is what lets tickets run in parallel.
+  `tasks/index.md` — that is what lets tickets run in parallel. A ticket done in a worktree
+  is merged back by the session that did it: generated files are regenerated, append-only
+  conflicts are unioned, and the gate re-runs on the merged code.
 
 This matters more for an agent than for a person: a human who finds a hole while writing a
 spec stops and asks; an agent supplies a plausible answer and continues.

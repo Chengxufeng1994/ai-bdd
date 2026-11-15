@@ -68,7 +68,7 @@ PLAN 的技術設計與切票、REVIEW、VERIFY 的交付證據）都不是補�
 | --- | --- | --- | --- |
 | **DISCOVERY**（`bdd-discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、問紅卡、記答案原話與誰答的 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
 | **SPEC**（`bdd-spec`／`bdd-spec-by-example`／`bdd-formulation`） | agent 寫、需求方審 | `已收斂` 的 `discovery.md` → `spec.md` → `acceptance/` 驗收旅程 →（`已對焦`）→ `.feature` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` 並退回 |
-| **PLAN**（`bdd-plan`／`bdd-tasks`） | agent 設計與切、工程師審 | 技術節 → tracer bullet ＋ blocking edges ＋ 共用檔案 | `bdd-plan` 不改需求、`bdd-tasks` 不改設計，有洞記進 `## 缺口` 並退回 |
+| **PLAN**（`bdd-plan`／`bdd-tasks`） | agent 設計與切、工程師審 | 技術節 → tracer bullet ＋ blocking edges ＋ 接合點 | `bdd-plan` 不改需求、`bdd-tasks` 不改設計，有洞記進 `## 缺口` 並退回 |
 
 三條互相支撐：SPEC 能「不訪談」是因為 DISCOVERY 把每個答案連原話記下來了；PLAN 能
 「不改需求」是因為 SPEC 寫下了需求方點過頭的規則；DISCOVERY 能只問不寫，是因為 SPEC

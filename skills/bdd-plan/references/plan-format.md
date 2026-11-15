@@ -26,6 +26,7 @@
 ## Implementation Decisions
 ## Testing Decisions
 ## Risks
+## Parallel Work
 
 ## 缺口
 
@@ -229,6 +230,32 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 設施，而那些不在規格裡。寫「兩種都可以，看部署形態」比寫「用 Redis」有用——
 後者看起來是決定，實際上是猜的。
 
+## Parallel Work
+
+這批票要不要同時做，以及同時做時哪些檔會在合回時相撞。`bdd-tasks` 照這一節標每張票的
+`接合點`，不自己編路徑。
+
+```markdown
+## Parallel Work
+
+**要不要並行**: 要 ← 使用者 2026-11-15
+
+| 接合點 | 種類 | 為什麼會共用 |
+| --- | --- | --- |
+| `api/openapi.yaml` | 追加 | 每個 operation 都加在這份契約 |
+| `internal/interfaces/http/apigen/api.gen.go` | 產生 | 由契約產生，內嵌整份 spec |
+| `internal/application/port/in/parking_service.go` ＋ 實作它的測試 stub | 追加 | 每個 use case 在同一個驅動埠加方法 |
+| `go.mod`／`go.sum` | 產生 | 第一個 path parameter 會帶進 runtime 套件 |
+| `internal/application/usecase/command/`（新建） | 新建 | 至少兩張票的 use case 住這裡，交給一張前置票建 |
+```
+
+- **要不要並行**是 `Ask user`，不是推論。預設不要——並行換到的是時間，代價是每張票都要
+  在合回時解衝突。選「不要」時只寫這一行，表格省略
+- 種類三選一加一個 `新建`，定義與合回時怎麼解 →
+  `../../bdd-tasks/references/tasks-format.md`〈接合點與同時跑〉。
+- 從 `## Implementation Decisions` 推：**會長大的介面連同它的測試 stub**、**第一次用到的
+  library 帶進來的依賴檔**、**兩個以上 use case 都要住的新 package**——這三類最常漏
+- 兩張票會改同一段既有邏輯的地方標 `爭用`，寫明是哪一段；`bdd-tasks` 會把它們排成先後
 
 ## 為什麼一個 feature 一份，不是一則 story 一份
 

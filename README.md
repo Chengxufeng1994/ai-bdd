@@ -36,8 +36,8 @@
 | `docs/CONTEXT.md` | 專案 `docs/` | `bdd-spec`（建立或追加） | `bdd-spec-by-example`、`bdd-formulation`：用詞對齊 |
 | `domain-model.md` | `specs/` | `bdd-spec`（增修） | 下一個 feature 的 `bdd-spec`：聚合與不變條件 |
 | 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `bdd-formulation` | `bdd-plan`：每個 AC 的測試層級；`bdd-tasks`：每張票涵蓋哪些場景；`bdd-implement`：讓場景由紅變綠 |
-| `plan.md` | `<feature>/` | `bdd-plan`（技術設計）；`bdd-tasks` 只在 `## 缺口` 加列 | `bdd-tasks`：拆成票；`bdd-implement`：讀技術節；`## 缺口` 的需求洞退回 `bdd-discovery` |
-| `tasks/index.md`（順序、Blocked by、共用檔案） | `<feature>/tasks/` | `bdd-tasks` | `bdd-implement`：挑下一張票、判斷能不能跟別張同時做 |
+| `plan.md` | `<feature>/` | `bdd-plan`（技術設計、要不要並行與接合點）；`bdd-tasks` 只在 `## 缺口` 加列 | `bdd-tasks`：拆成票；`bdd-implement`：讀技術節；`## 缺口` 的需求洞退回 `bdd-discovery` |
+| `tasks/index.md`（順序、Blocked by、接合點） | `<feature>/tasks/` | `bdd-tasks` | `bdd-implement`：挑下一張票、判斷能不能跟別張同時做 |
 | `tasks/<編號>-<slug>.md`（一張票一個檔） | `<feature>/tasks/` | `bdd-tasks` 建立；`bdd-implement` 勾驗收條件、寫 `## 缺口` | `bdd-implement`：一張票一個 session；`bdd-tasks` 再跑時把設計的洞搬進 `plan.md` |
 | 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `bdd-implement` | REVIEW／VERIFY（尚未實作，目前人工對照） |
 
