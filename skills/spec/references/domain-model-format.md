@@ -1,7 +1,7 @@
 # `domain-model.md` 的骨架
 
 路徑 `specs/domain-model.md`——**根層，跨 feature**。`spec` 每寫完一個 feature 的
-`spec.md` 就增修它。它比任何一份 `plan.md` 活得久：plan 的技術節實作一開始就會過期；
+`spec.md` 就增修它。它比任何一份 `spec.md` 的技術部分活得久：技術部分實作一開始就會過期；
 domain model 要留下來。
 
 每個 feature 只**增修**，不重寫。改了既有條目要寫「原本是什麼、為什麼改」。

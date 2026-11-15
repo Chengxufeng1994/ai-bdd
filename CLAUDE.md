@@ -14,12 +14,15 @@ The plugin's subject is a six-step pipeline:
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
-`plan` (technical design, `plan.md`) and `task-breakdown` (slices that design into one
-file per ticket under `tasks/`, so tickets can run in parallel). IMPLEMENT is served by
+`plan` (execution plan in `plan.md`: overview, risks, whether to parallelise and the
+join points) and `task-breakdown` (slices the design into one file per ticket under
+`tasks/`, so tickets can run in parallel). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
 that delegation or a manual `/bdd` runs it). SPEC is served by three skills —
-`spec` (writes `spec.md` from the recorded answers), `spec-by-example` (writes
+`spec` (writes a self-contained `spec.md` from the recorded answers: a requirements part,
+then, once `已對焦`, a technical part — Tech Stack, Commands, Project Structure, Code
+Style, Boundaries, Implementation and Testing Decisions), `spec-by-example` (writes
 business-language acceptance journeys under `acceptance/`, not executed) and
 `formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
 explains which steps map onto BDD's practices and which are this project's own additions.
@@ -113,9 +116,10 @@ projects individual skills borrowed from. Add a row there when a new reference i
 
 Each step reads what the previous step actually emitted: DISCOVERY writes
 `discovery.md` (原文, rough stories, questions and answers — no rules), SPEC writes
-`spec.md` from it and the `.feature` files once `已對焦`, PLAN writes `plan.md` (technical
-design) from `spec.md` and the `.feature` files, then `tasks/` (one file per ticket plus
-`index.md`) from `plan.md`, REVIEW audits the whole chain.
+`spec.md` from it (requirements, then the technical design once `已對焦`) and the
+`.feature` files, PLAN writes `plan.md` (execution plan) from `spec.md` and the `.feature`
+files, then `tasks/` (one file per ticket plus `index.md`) from both, REVIEW audits the
+whole chain.
 
 ```
 需求方的話（discovery.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
@@ -138,9 +142,11 @@ Each of the first three steps holds because it runs in one main working mode:
   **none of them interviews**; holes go into `spec.md`'s `## 回 DISCOVERY 補問` and send
   `discovery.md` back to `澄清中`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `discovery.md` — `check_spec.py`
-  check 14 rejects both.
-- **PLAN** owns the technical design (seam, modules, contracts, schema, test levels) —
-  `plan` **does not change requirements**; holes go to `## 缺口`. `task-breakdown` then
+  check 14 rejects both. The technical part (seam, modules, contracts, schema, test
+  levels) is also SPEC's, written after the originator says ready; the seam is the one
+  thing confirmed with the user, and technical lines may be `← 推論` or `← 專案 <path>`.
+- **PLAN** owns the execution plan (risks, parallel work, join points) — `plan` **does
+  not change `spec.md`**; holes go to `## 缺口` and back to `spec`. `task-breakdown` then
   slices tracer bullets and **does not change the design**; its holes go to the same
   `## 缺口`. `implement` writes only its own ticket file, never `plan.md` or
   `tasks/index.md` — that is what lets tickets run in parallel. A ticket done in a worktree

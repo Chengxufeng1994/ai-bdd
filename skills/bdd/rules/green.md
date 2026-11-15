@@ -10,7 +10,7 @@
 | G4 | `MUST` | 有分支的規則住 domain，而且先有一個看過紅的單元測試；step definition、handler、mapper 裡不放規則 | 規則散在接線層，場景綠了卻沒有任何單元測試說得出它為什麼對 |
 | G5 | `SHOULD` | 連續做幾個 slice 時，每個 slice 各有一次獨立的綠燈，才切下一個 | 「幾個相關的測試好像都過了」——哪一個真的綠了說不清 |
 
-G4 的層級照 `plan.md` 的 `## Testing Decisions`（每個例子在哪一層測）；規則放哪一層、怎麼
+G4 的層級照 `spec.md` 的 `## Testing Decisions`（每個 AC 在哪一層測）；規則放哪一層、怎麼
 接到 seam、測試替身怎麼寫 → `../references/inner-loop.md`。
 
 ## G2 的例子

@@ -30,12 +30,13 @@ feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`s
 | `## Non-Functional Requirements` | 跨 story 的品質屬性 | `spec` |
 | `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | `spec`（問過的引 `Q-<n>`，沒問過的引 `PRD §n`） |
 | `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | `spec` |
+| 技術部分七節：`## Tech Stack` 到 `## Testing Decisions` | 用什麼做、seam、模組、契約、每個 AC 在哪一層測 | `spec`，`已對焦` 之後（第 6 步） |
 | `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `spec`；`example-mapping` 與 `spec-by-example` 也會加列 |
 | `## Further Notes` | 放不進其他節、但下一個接手的人會想知道的 | 任何一步 |
 
-順序固定，不因為某節內容少而調換或省略標題。技術設計（seam、API、schema、
-測試層級、風險）不在這份文件裡，在 `plan.md`，格式見
-`../../plan/references/plan-format.md`。
+順序固定，不因為某節內容少而調換或省略標題。`## Background` 到 `## Success Metrics` 是**需求部分**，
+需求方判就緒只看它；技術部分在 `已對焦` 之後才寫，七節的寫法見 `tech-format.md`。風險、要不要並行、
+接合點不在這份文件裡，在 `plan.md`，格式見 `../../plan/references/plan-format.md`。
 
 ---
 
@@ -477,6 +478,12 @@ FR／AC 之後，這一節對應的列才刪。非空時 `example-mapping` 不�
 
 典型內容：試過但放棄的做法與放棄的理由、這個 feature 跟另一個進行中的工作
 會撞在哪、某個決定當時的氣氛（誰有疑慮、後來為什麼還是這樣定）。
+
+技術部分寫完之後再多兩小段，因為沒有別的節裝它們：
+
+- **推論的技術決定**：技術部分每條標 `← 推論` 的決定再列一次，一行一條指回它在哪一節——讀的人
+  一眼看出哪些技術決定沒人確認過
+- **留給 IMPLEMENT 的技術選擇**：寫技術部分時發現、但不影響任何 AC 的選擇（哪個 library、欄位叫什麼）
 
 MUST NOT: 把應該進其他節的東西丟進來。這一節是**最後手段**，不是收納箱——
 一條規則進了這裡，下游沒有任何東西會去讀它。判準：說得出它該進哪一節嗎？

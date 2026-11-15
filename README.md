@@ -32,11 +32,12 @@
 | `spec.md` `## 回 DISCOVERY 補問` | `<feature>/spec.md` | `spec`、`spec-by-example`、`example-mapping`（未就緒時） | `spec`：退回 discovery，把 `discovery.md` 改回 `澄清中`；`discovery`：再問 |
 | `splitting.md`（切分紀錄） | `<feature>/` | `story-splitting` | `spec`：照切法寫 story，FR 編號不重編 |
 | 驗收旅程 `*.feature`（不執行） | `<feature>/acceptance/` | `spec-by-example` | 需求方：對著旅程判就緒；`example-mapping`：提就緒問句；`formulation`：只借用語 |
-| `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `formulation`：寫可執行 `.feature`；`plan`：技術設計與切票 |
+| `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `spec` 第 6 步：寫技術部分；`formulation`：寫可執行 `.feature` |
 | `docs/CONTEXT.md` | 專案 `docs/` | `spec`（建立或追加） | `spec-by-example`、`formulation`：用詞對齊 |
 | `domain-model.md` | `specs/` | `spec`（增修） | 下一個 feature 的 `spec`：聚合與不變條件 |
 | 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`task-breakdown`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
-| `plan.md` | `<feature>/` | `plan`（概述、技術設計、風險與影響程度、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票、高風險排前面；`implement`：讀技術節；`## 缺口` 的需求洞退回 `discovery` |
+| `spec.md` 技術部分（Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions） | `<feature>/spec.md` | `spec`（`已對焦` 之後，seam 經使用者確認） | `plan`：推接合點；`task-breakdown`：抄模組、內迴圈、驗證命令；`implement`、`bdd`：照著寫程式 |
+| `plan.md`（執行計畫） | `<feature>/` | `plan`（概述、風險與影響程度、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票、高風險排前面；`## 缺口` 裡技術部分的洞交回 `spec` |
 | `tasks/index.md`（順序、大小、Blocked by、接合點、檢查點） | `<feature>/tasks/` | `task-breakdown` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點 |
 | `tasks/<編號>-<slug>.md`（一張票一個檔：行為、模組、大小、驗收條件、驗證命令） | `<feature>/tasks/` | `task-breakdown` 建立；`implement` 勾驗收條件、寫 `## 缺口` | `implement`：一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
 | 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `implement` | REVIEW／VERIFY（尚未實作，目前人工對照） |
@@ -51,7 +52,7 @@
 
 **職責**：把一段需求（想法或別人寫的 PRD）收成逐字原文與粗切 story，再一輪輪問到前沿空了，每個答案逐題記下
 
-- **上游**：無（可單獨使用）；`spec`／`plan` 把它退回 `澄清中` 時再跑
+- **上游**：無（可單獨使用）；`spec` 把它退回 `澄清中` 時再跑
 - **下游**：`spec`（從這份紀錄寫 `spec.md`）
 - **不做**：不寫 FR／AC／Gherkin／規則草稿、不自己填答案、不改寫 `## 原文`、不寫 `spec.md`／`plan.md`／`.feature`
 
@@ -79,18 +80,18 @@
 
 #### `spec`
 
-**職責**：把已收斂的問答寫成業務規格，帶到需求方說「就緒」，再交出去產 `.feature`
+**職責**：把已收斂的問答寫成一份讀完就能開工的規格：需求部分帶到需求方說「就緒」，再寫技術部分（用什麼做、seam、模組、契約、每個 AC 在哪一層測），交出去產 `.feature`
 
 - **上游**：`discovery`
-- **下游**：`example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後 `formulation` → `plan`
-- **不做**：不訪談、不標 `推論`、不自己寫 `已對焦`、不寫 `.feature`、不寫 seam／API／schema／測試層級
+- **下游**：`example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後寫技術部分 → `formulation` → `plan`
+- **不做**：不訪談、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature`、不排風險與並行（那是 `plan`）、不切票
 
 1. 寫 `spec.md`（`待對焦`）
 2. 收尾檢查，必要時重切 story
 3. 自檢 `check_spec.py`
 4. 詞彙 → `docs/CONTEXT.md`、聚合 → `specs/domain-model.md`
 5. `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句
-6. 需求方答「就緒」→ `已對焦` → `formulation` 產 `.feature`
+6. 需求方答「就緒」→ `已對焦` → 寫技術部分 → `formulation` 產 `.feature`
 7. 不就緒、補問清單非空、或旅程有 `# [need clarification]` → 退回 discovery
 
 #### `example-mapping`
@@ -98,7 +99,7 @@
 **職責**：把一則 story 攤成四色卡地圖、跑四條診斷，把就緒問句交給使用者
 
 - **上游**：`spec`（`spec.md` 寫完後呼叫）；也可單獨使用
-- **下游**：就緒 → `spec` 接著呼叫 `formulation`；未就緒 → `spec`「退回 discovery」
+- **下游**：就緒 → `spec` 接著呼叫 `formulation`；未就緒 → `spec`〈退回 discovery〉
 - **不做**：不替使用者判就緒、不把紅卡問到收斂、不切 story、不寫 Gherkin、不產出 `example-map.md`
 
 1. 認模式：流程內或單獨
@@ -111,7 +112,7 @@
 **職責**：把 `待對焦` 的規格寫成幾條可 demo、只用業務語言的長流程，讓需求方對著它判就緒
 
 - **上游**：`spec` 第 5 步（`example-mapping` 跑完診斷之後）
-- **下游**：`example-mapping` 提就緒問句；有 `# [need clarification]` → `spec`「退回 discovery」
+- **下游**：`example-mapping` 提就緒問句；有 `# [need clarification]` → `spec`〈退回 discovery〉
 - **不做**：不執行、不訪談、不改 FR／AC／狀態、不寫 `discovery.md`、不寫 `spec.md` 沒有的結果
 
 1. 讀 `spec.md`，挑旅程
@@ -126,7 +127,7 @@
 
 - **上游**：`spec`（`已對焦` 之後呼叫本 skill）
 - **下游**：`plan`（覆蓋表沒有大洞時）；洞多回 `spec`
-- **不做**：不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不決定 seam、不讀 `plan.md`
+- **不做**：不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不讀 `spec.md` 的技術部分、不讀 `plan.md`
 
 1. 讀四樣東西，只做 `已對焦` 的 feature
 2. FR → `Rule:`、AC → `Example:`、編號 → tag；歸象限、看三種結果、取場景名
@@ -154,30 +155,29 @@
 
 #### `plan`
 
-**職責**：把已對焦的規格變成技術設計：驗收測試打在哪一層、動哪些模組、契約與 schema 長怎樣、每個 AC 在哪一層測
+**職責**：把一份寫好技術部分的規格變成執行計畫：這批在做什麼、哪裡危險、能不能並行、合回時哪些檔會相撞
 
 - **上游**：`formulation`（`.feature` 寫好之後）
-- **下游**：`task-breakdown`（把這份設計拆成票）
-- **不做**：不改 FR／AC／story、不切票、不訪談、不寫程式
+- **下游**：`task-breakdown`（照 `spec.md` 技術部分與這份計畫拆成票）
+- **不做**：不改 `spec.md`（需求部分與技術部分都不改）、不切票、不訪談、不寫程式
 
 1. 一次讀完整批
-2. 決定 seam
-3. 寫技術節
-4. 問要不要並行、列接合點
+2. 寫 `## Risks`，再寫 `## Overview`
+3. 問要不要並行、列接合點
 
 #### `task-breakdown`
 
 **職責**：把技術設計拆成一疊 tracer bullet：一張票一個檔，每張穿過所有層、自己可 demo，標明誰卡誰、會碰哪些接合點
 
-- **上游**：`plan`（技術節與「要不要並行」寫好之後）
+- **上游**：`plan`（風險與「要不要並行」寫好之後）
 - **下游**：`implement <票號>`（一張票一個全新 session）
-- **不做**：不改 `plan.md` 的技術節、不改 FR／AC／story、不派工、不寫程式
+- **不做**：不改 `spec.md`（需求部分與技術部分）、不改 `plan.md` 的既有內容、不派工、不寫程式
 
 1. 一次讀完整批
 2. 切票：最薄的完整路徑先，其餘依 FR
 3. 標 Blocked by 與接合點
 4. 攤出來確認
-5. 寫 `tasks/`
+5. 寫 `tasks/`：票檔帶驗證命令，`index.md` 放檢查點
 
 ### IMPLEMENT
 
@@ -187,7 +187,7 @@
 
 - **上游**：`task-breakdown`（票切好之後）
 - **下游**：`bdd`（第 3、4 步委派）；做完之後是 REVIEW（未實作）
-- **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做技術節沒做的設計決定
+- **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做 `spec.md` 技術部分沒做的設計決定
 
 1. 讀票，標 `@wip`
 2. 測試層先紅：場景都接上 step definition，沒有 undefined step
@@ -211,7 +211,6 @@
 4. 照入口把這個 slice 做到完成條件
 5. 還有下一個 slice 就回到 3，否則停
 6. 回報
-
 ### 不在流程裡
 
 #### `skill-rules`

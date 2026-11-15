@@ -87,8 +87,9 @@ seam 確認，與原本 `plan` 相同。
   `## Testing Decisions`、`## Commands` 抄
 - `implement`、`bdd`：讀技術設計的地方從 `plan.md` 改成 `spec.md`；`implement` 的閘門命令改讀
   `spec.md` `## Commands`
-- `check_spec.py`：`## User Stories` 的解析停在下一個 `## `（現在會把後面全部當成 story）；
-  技術部分的來源標記先不檢查，跟現在的 `plan.md` 一樣——寫進「已知缺口」
+- `check_spec.py`：不用改。原本以為它會把 `## User Stories` 之後全部當成 story，讀了程式碼才知道
+  每個解析器都已經停在下一個 `## `；加一支測試釘住這件事。技術部分的來源標記先不檢查，跟原本的
+  `plan.md` 一樣——寫進「已知缺口」
 
 ## 非目標
 
@@ -111,7 +112,7 @@ seam 確認，與原本 `plan` 相同。
 - `skills/plan/SKILL.md`、`references/plan-format.md`（只留執行計畫）
 - `skills/discovery/references/technical-probes.md`、`references/discovery-format.md`（`歸屬`）
 - `skills/task-breakdown/`、`skills/implement/SKILL.md`、`skills/bdd/`（讀的位置）
-- `skills/formulation/scripts/check_spec.py` ＋ `tests/test_check_spec.py`（解析停在下一節，先寫失敗測試）
+- `tests/test_check_spec.py`（技術部分不被當成 story 的回歸測試）
 - README、CLAUDE.md、PLAN.md、docs/ai-sdlc.md、RESOURCES.md
 
 ## 怎麼驗

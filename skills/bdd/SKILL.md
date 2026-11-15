@@ -17,7 +17,7 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 在指定的 `.feature` 範疇裡，用 red／green／refactor 其中一個入口，一次一個 slice 把場景推進到那個入口的完成條件 |
-| **讀** | 指定的 `.feature`（`@ready` 或 `@wip`）、`plan.md` 的技術節、既有的 step definition／測試／產品程式碼；由票委派時加上那張票檔 |
+| **讀** | 指定的 `.feature`（`@ready` 或 `@wip`）、`spec.md` 的技術部分、既有的 step definition／測試／產品程式碼；由票委派時加上那張票檔 |
 | **寫** | step definition、測試、產品程式碼。**不寫 `specs/` 底下任何檔案** |
 | **上游** | `implement`（第 3 步委派 green、第 4 步委派 refactor，範疇是票的涵蓋場景），或使用者手動叫 `/bdd` |
 | **下游** | 回報給呼叫它的人，並建議下一次從哪個入口繼續 |
@@ -86,7 +86,7 @@ Check if: 指定的 `.feature` 存在，而且狀態 tag 是 `@ready` 或 `@wip`
 
 ### 1. 對齊範疇與入口
 
-讀指定的 `.feature` 範疇、`plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
+讀指定的 `.feature` 範疇、`spec.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
 （seam 在哪一層、每個例子在哪一層測）。由票委派時再讀票檔的 `涵蓋場景`——它就是範疇。
 
 ### 2. 盤點測試入口與既有抽象

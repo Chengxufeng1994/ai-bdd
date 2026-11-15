@@ -1,7 +1,7 @@
 # `discovery.md` 的骨架
 
 `discovery` 建檔與每一輪記答案時讀它；`clarify` 收斂紅卡時讀它；`spec` 從它寫
-`spec.md`、`plan` 從它讀技術面向的答案；`status.py` 從它的 `## Open Questions` 算進度，
+`spec.md`（需求部分與技術部分都是）；`status.py` 從它的 `## Open Questions` 算進度，
 `check_spec.py` 從它查 `← Q-<n>` 與 `← PRD §n`。
 
 一個 feature 一份，路徑 `specs/<date>-<feature>/discovery.md`。它是**問答紀錄，不是規格**：
@@ -26,7 +26,7 @@
 | --- | --- | --- |
 | `澄清中` | `discovery` | 建檔時 |
 | `已收斂` | `discovery` | 前沿空了、『待答』零列、結束方式 `收斂` |
-| `澄清中` | `spec`／`plan` | 退回來時（修訂歷史記一列「回頭：<原因>」） |
+| `澄清中` | `spec` | 退回來時（修訂歷史記一列「回頭：<原因>」） |
 
 `待對焦`／`已對焦` 是 `spec.md` 的狀態，不出現在這份檔。
 
@@ -64,9 +64,10 @@
 ````
 
 小節可以多兩個選填欄位：`**誰答的**：<關係人>`，以及 `**歸屬**：<這個答案要進哪一節>`。
-`歸屬` 的值域是 `spec.md` 的章節名，或 `plan.md` 的技術節名（`Implementation Decisions`／
-`Testing Decisions`／`Risks`／`Tech Preferences & Constraints`／`Known Boundaries`）——業務答案靠
-這一欄讓 `spec`、技術答案靠它讓 `plan` 知道該寫進哪一節，不必從問題文字猜。
+`歸屬` 的值域是 `spec.md` 的章節名——需求部分的節，或技術部分的七節（`Tech Stack`／`Commands`／
+`Project Structure`／`Code Style`／`Boundaries`／`Implementation Decisions`／`Testing Decisions`）；
+`Risks` 是 `plan.md` 的節，風險的答案標它。這一欄讓 `spec` 與 `plan` 知道該寫進哪一節，不必從
+問題文字猜。
 
 ### `面向` 的值域
 

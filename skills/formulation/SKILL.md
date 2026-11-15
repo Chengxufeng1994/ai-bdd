@@ -22,7 +22,7 @@ description: >
 | **寫** | `features/<story-slug>.feature`（測試框架已有位置就跟隨）；覆蓋表只回報、不落地 |
 | **上游** | `spec`（`已對焦` 之後呼叫本 skill） |
 | **下游** | `plan`（覆蓋表沒有大洞時）；洞多回 `spec` |
-| **不做** | 不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不決定 seam、不讀 `plan.md` |
+| **不做** | 不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不讀 `spec.md` 的技術部分、不讀 `plan.md` |
 
 **不發明例子。** `Rule:`、`Example:` 與 `@rule-`／`@example-` tag 只從 `spec.md` 來；覺得少了
 一個邊界，那是 DISCOVERY 的發現，回 `spec`，不在這裡順手補。覆蓋表要產，但它是回報給人的，

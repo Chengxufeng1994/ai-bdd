@@ -112,6 +112,24 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertEqual(code, 0, out)
             self.assertIn("全部通過", out)
 
+    def test_technical_part_after_stories_is_not_read_as_rules(self):
+        # spec.md 的技術部分接在需求部分之後；它的決定標 `← 推論`／`← 專案 <路徑>`，
+        # 不是 FR／AC，不該被第 14 項當成沒有來源的規則，也不該被當成 story
+        tech = (
+            "\n## Implementation Decisions\n\n"
+            "- **FR-9 不是規則**：只是一行長得像 FR 的技術決定 ← 推論\n"
+            "- **動哪些模組**：新增計費模組 ← 推論\n\n"
+            "## Commands\n\n- 閘門：`make verify` ← 專案 Makefile\n"
+        )
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD + tech)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertNotIn("FR-9", out)
+
     def test_unsourced_fr_fails(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)

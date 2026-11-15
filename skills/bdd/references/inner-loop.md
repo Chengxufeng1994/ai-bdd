@@ -9,7 +9,7 @@
 
 ## 內迴圈：規則先進 domain
 
-`plan.md` 的 `## Testing Decisions` 說了哪些例子在 unit 層。對每一條有分支的規則：
+`spec.md` 的 `## Testing Decisions` 說了哪些 AC 在 unit 層。對每一條有分支的規則：
 
 1. 在 domain 寫 **table-driven** 單元測試，列就是 `spec.md` 的 AC 值加上 AC 沒寫但
    規則隱含的邊界（24 小時又 1 分鐘、到期日的最後一秒）——跑，看它因為「還沒有這個
@@ -28,7 +28,7 @@ parking 實跑的第一個假紅就是這個。
 依 `docs/DATAFLOW.md`（或專案的同類文件）：埠（`port/out`）→ use case →
 driving port 與 service → contract（`openapi.yaml`）→ 產碼 → mapper → operation →
 presenter → bootstrap 組裝。每一段都是機械翻譯，**不做決定**；要做的決定都該在
-`plan.md` 的技術節，沒有就停下回報，由 `implement` 記進票檔的 `## 缺口`。
+`spec.md` 的技術部分，沒有就停下回報，由 `implement` 記進票檔的 `## 缺口`。
 
 - contract 改了就重新產碼（實測場 `make gen-api`），產出的介面多了方法，`Server`
   不實作就編不過——那是對的，讓編譯器告訴你還缺哪個 operation

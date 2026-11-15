@@ -17,15 +17,15 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把一張票做到綠：測試層先紅、委派 `bdd` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
-| **讀** | `tasks/<票>.md`、`tasks/index.md`、`plan.md` 的技術節、`spec.md`、這張票涵蓋的 `.feature`、專案的架構文件 |
+| **讀** | `tasks/<票>.md`、`tasks/index.md`、`spec.md`（技術部分與這張票的 FR／AC）、`plan.md`、這張票涵蓋的 `.feature`、專案的架構文件 |
 | **寫** | 產品程式碼與 step definition、這張票的票檔（勾選、`## 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
 | **上游** | `task-breakdown`（票切好之後） |
 | **下游** | `bdd`（第 3、4 步委派）；做完之後是 REVIEW（未實作） |
-| **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做技術節沒做的設計決定 |
+| **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做 `spec.md` 技術部分沒做的設計決定 |
 
 **外迴圈先紅，內迴圈先紅，然後才寫程式。** 外迴圈是 `.feature` 的場景（godog／
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
-才有理由。票裡的轉綠與整理委派給 `bdd`——它一次一個場景、一次一個入口。發現技術節的洞
+才有理由。票裡的轉綠與整理委派給 `bdd`——它一次一個場景、一次一個入口。發現技術部分的洞
 就記下來，不順手補。
 
 ## 使用時機
@@ -39,7 +39,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 | 情況 | 改用 |
 | --- | --- |
 | 還沒有 `.feature` | `formulation` |
-| `plan.md` 沒有技術節（seam、埠、契約） | `plan` |
+| `spec.md` 沒有技術部分（seam、埠、契約） | `spec` 第 6 步 |
 | 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式） | `task-breakdown` |
 | 票之間的順序、要不要再切、哪幾張能同時做 | `task-breakdown` |
 | 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/bdd`；本 skill 做票時第 3、4 步本來就委派它 |
@@ -53,7 +53,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 - `../bdd/SKILL.md` — 第 3、4 步委派的 green／refactor 入口；`../bdd/rules/red.md` 與
   `../bdd/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
 - `../task-breakdown/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
-- `../plan/references/plan-format.md` — 技術節各節裝什麼
+- `../spec/references/tech-format.md` — `spec.md` 技術部分各節裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
   ——分層、轉換、錯誤分類都照它，本 skill 不另訂
 
@@ -63,16 +63,16 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 
 1. **哪一張票**：`implement <票號>`。沒帶票號就取 `tasks/index.md` 裡第一張
    Blocked by 全部完成（那些票檔的驗收條件全勾）、自己還沒全勾的票，講出來讓對方改
-2. **驗證閘門是什麼命令**：票檔 `**驗證**` 寫了就用它；寫「（問使用者）」或沒寫，讀專案的
-   README／Makefile（實測場是 `make verify`），再沒有就問——一張票「做完」的定義就是這個命令綠，不能猜
+2. **驗證閘門是什麼命令**：票檔 `**驗證**` 寫了就用它；寫「（問使用者）」或沒寫，讀 `spec.md`
+   `## Commands` 的閘門，再讀專案的 README／Makefile（實測場是 `make verify`），再沒有就問——一張票「做完」的定義就是這個命令綠，不能猜
 3. **前面有沒有檢查點**：`index.md` 裡這張票的上方有 `**檢查點**`、而這是它之後的第一張票時，
    先照檢查點跑一次（已勾完的票的場景、閘門），結果給使用者看，使用者點頭才開工
 4. 讀得到 `specs/<date>-<feature>/tasks/` 的這張票檔、`plan.md`、`spec.md` 與這張票涵蓋的 `.feature`
 
-NEVER: `plan.md` 沒有技術節時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
+NEVER: `spec.md` 沒有技術部分時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
 
-MUST: 一個 session 一張票。撿起票的人只看過票檔與 `plan.md`——這是 `task-breakdown`
+MUST: 一個 session 一張票。撿起票的人只看過票檔與 `spec.md` 的技術部分——這是 `task-breakdown`
 切票的上界，也是這一步不要一次做三張的理由：做到第二張時第一張的脈絡已經在擠。
 
 SHOULD: 跟別張票同時做時，一張票一個 worktree。開工前看 `tasks/index.md`：這張票跟正在做
@@ -98,9 +98,9 @@ MUST: 開工時工作區是乾淨的；做完這張票一個 commit，只 stage 
 ### 1. 讀票，標 `@wip`
 
 讀票檔 `tasks/<票號>-<slug>.md`：交付什麼行為、涵蓋哪些 `@example-N.M`、內迴圈要寫哪些單元測試、
-驗收條件。再讀 `plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
-——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個例子在哪一層測。`spec.md` 只讀
-對應的 FR 與 AC，看規則的原話。
+驗收條件。再讀 `spec.md` 技術部分的 `## Implementation Decisions`、`## Testing Decisions`、
+`## Project Structure`、`## Code Style`——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個 AC
+在哪一層測、程式碼放哪、長什麼樣。需求部分只讀對應的 FR 與 AC，看規則的原話。
 
 把這張票涵蓋的 `.feature` 檔從 `@ready` 改成 `@wip`（`state-tags.md`）。下一個 session
 看到 `@wip` 就知道有人做到一半。
@@ -131,7 +131,7 @@ definition 已經被別的場景定義過，而它的斷言沒抓到這張票要
 | 入口 | `green` |
 | 範疇（Test Scope） | 這張票檔的 `涵蓋場景`，組成一個 tag 運算式（例 `@example-8.1 or @example-8.2`） |
 | 票 | `tasks/<票號>-<slug>.md` 的路徑 |
-| 設計 | `plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions` |
+| 設計 | `spec.md` 的 `## Implementation Decisions` 與 `## Testing Decisions` |
 
 `bdd` 一個場景一個場景轉綠：規則先進 domain、先看到單元測試紅（`../bdd/references/inner-loop.md`）。
 它停下來回報規格的洞或範疇外的耦合時，本 skill 把那一條記進票檔的 `## 缺口`，照
@@ -208,7 +208,7 @@ MUST NOT: 改 `spec.md` 或 `.feature` 的例子。例子跟規則打架、規�
 
 前面的票寫的程式碼可以改——這張票的場景需要時，就改。條件是那些票的場景照樣綠：第 5 步的
 閘門要跑主線上所有驗收條件已勾完的票的場景，不只這張。改不動、或改了會讓前面的票的
-`plan.md` 技術決定不成立 → 記進票檔的 `## 缺口` 並回報，不要改掉那張票的驗收條件或票檔。
+`spec.md` 技術決定不成立 → 記進票檔的 `## 缺口` 並回報，不要改掉那張票的驗收條件或票檔。
 
 MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪掉，哪個 domain
 單元測試會紅？沒有，它就不是規則，是接線；有，它放錯層了。
@@ -226,7 +226,7 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 
 MUST: 不修改 `spec.md`、`discovery.md`、`plan.md`、`tasks/index.md`、別張票的票檔、`.feature` 的任何場景文字。
 同時做的幾個 session 各寫各的票檔才不會互相覆寫；設計的洞由 `task-breakdown` 再跑時從票檔搬進
-`plan.md`。
+`plan.md` 的 `## 缺口`，再交回 `spec`。
 
 ## Verification
 
