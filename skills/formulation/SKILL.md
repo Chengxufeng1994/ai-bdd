@@ -18,7 +18,7 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把已對焦的 `spec.md` 翻成 Gherkin `.feature`：FR 變 `Rule:`、AC 變 `Example:`、編號變 tag，步驟套一組封閉文法 |
-| **讀** | `specs/<date>-<feature>/spec.md`（`已對焦`）、`docs/CONTEXT.md`、既有的 `.feature`、`specs/<date>-<feature>/acceptance/*.feature`（只取用語） |
+| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`已對焦`）、`docs/CONTEXT.md`、既有的 `.feature`、`specs/ongoing/<date>-<feature>/acceptance/*.feature`（只取用語） |
 | **寫** | `features/<story-slug>.feature`（測試框架已有位置就跟隨）；覆蓋表只回報、不落地 |
 | **上游** | `spec`（`已對焦` 之後呼叫本 skill） |
 | **下游** | `plan`（覆蓋表沒有大洞時）；洞多回 `spec` |
@@ -106,10 +106,10 @@ NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述�
 
 | 讀什麼 | 為了什麼 |
 | --- | --- |
-| `specs/<date>-<feature>/spec.md` | **唯一的規範來源**——`## User Stories` 底下的 FR 與 AC 是這一步要翻譯的全部內容，`## Personas` 是 `Feature:` 敘述裡角色的來源，`## Scope — In / Out` 劃出碰不得的界線 |
+| `specs/ongoing/<date>-<feature>/spec.md` | **唯一的規範來源**——`## User Stories` 底下的 FR 與 AC 是這一步要翻譯的全部內容，`## Personas` 是 `Feature:` 敘述裡角色的來源，`## Scope — In / Out` 劃出碰不得的界線 |
 | `docs/CONTEXT.md` | **措辭的來源**——同一個概念在不同 `.feature` 裡換一個說法，封閉文法的重用就從第一份開始漂移 |
 | 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
-| `specs/<date>-<feature>/acceptance/*.feature` | **用語的參考**——挑步驟句型、寫 `Feature:` 敘述、取參數名時，優先用業務方在驗收旅程裡讀過的詞，讓兩層講同一套話 |
+| `specs/ongoing/<date>-<feature>/acceptance/*.feature` | **用語的參考**——挑步驟句型、寫 `Feature:` 敘述、取參數名時，優先用業務方在驗收旅程裡讀過的詞，讓兩層講同一套話 |
 
 MUST NOT: 從驗收旅程新增 `spec.md` 沒有的例子、場景或 `Then`。旅程刻意少、句子不受
 封閉文法約束——當成來源的話，漏掉的 AC 與自由發揮的句子會流進可執行的那一層。

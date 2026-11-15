@@ -15,7 +15,7 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把一則 story 攤成四色卡地圖、跑四條診斷，把就緒問句交給使用者 |
-| **讀** | 流程內：`specs/<date>-<feature>/spec.md`（`待對焦`）與同目錄的 `acceptance/`；單獨：一段 story 的描述 |
+| **讀** | 流程內：`specs/ongoing/<date>-<feature>/spec.md`（`待對焦`）與同目錄的 `acceptance/`；單獨：一段 story 的描述 |
 | **寫** | 流程內：`spec.md` 的 `狀態`（使用者答「就緒」才寫 `已對焦`）或 `## 回 DISCOVERY 補問`；單獨：不寫檔。地圖只印在終端 |
 | **上游** | `spec`（`spec.md` 寫完後呼叫）；也可單獨使用 |
 | **下游** | 就緒 → `spec` 接著呼叫 `formulation`；未就緒 → `spec`〈退回 discovery〉 |
@@ -133,7 +133,7 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 非空時，`spec` 不會叫你——已知有洞的規格問「就緒了嗎」沒有意義。
 
 ```
-驗收旅程在 specs/2026-09-14-parking/acceptance/，照著讀一遍。
+驗收旅程在 specs/ongoing/2026-09-14-parking/acceptance/，照著讀一遍。
 還有 1 張紅卡（Q-2 消防法規），擋住 FR-2。
 我的判讀：未就緒——這條會改變出場放行的行為。
 

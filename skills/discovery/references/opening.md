@@ -1,6 +1,6 @@
 # 第 0 件事：建檔
 
-`specs/<date>-<feature>/discovery.md` 還不存在時，開場先把它建出來。**已經存在、而且有
+`specs/ongoing/<date>-<feature>/discovery.md` 還不存在時，開場先把它建出來。**已經存在、而且有
 `## 粗切 story` 的不重建**——告訴對方它在、狀態是什麼，跳過整份文件直接進開場的另外
 三件事。建出來的是一份狀態 `澄清中` 的問答紀錄：**原文逐字在裡面、story 粗切成一句一則、
 四題分析師開場題與需求方自己知道的開放問題已經是紅卡。**
@@ -15,7 +15,7 @@
 NEVER: 需求還沒拿到就自己想一個來跑。那會產出一份看似完整、實則憑空的
 紀錄，而錯誤全藏在專業的格式底下。
 
-Ask user: 這個 feature 的 slug（kebab-case，用來命名 `specs/<date>-<slug>/`）。
+Ask user: 這個 feature 的 slug（kebab-case，用來命名 `specs/ongoing/<date>-<slug>/`）。
 需求方沒有偏好就從原文的主詞取一個，講出來讓他改。
 
 「存在就不重建」的唯一例外是 `clarify` 單獨模式留下的三節檔（只有 `## Document Overview`、

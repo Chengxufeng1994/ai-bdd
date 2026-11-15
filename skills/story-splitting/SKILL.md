@@ -177,8 +177,8 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 
 ## 產物
 
-切分紀錄追加進呼叫它的那個 feature 目錄的 `splitting.md`（`specs/<date>-<feature>/splitting.md`；
-單獨使用時 `specs/<date>-<topic-slug>/splitting.md`），一次切分一個 `## 切分：` 區塊，舊的不刪。
+切分紀錄追加進呼叫它的那個 feature 目錄的 `splitting.md`（`specs/ongoing/<date>-<feature>/splitting.md`；
+單獨使用時 `specs/ongoing/<date>-<topic-slug>/splitting.md`），一次切分一個 `## 切分：` 區塊，舊的不刪。
 不放進 `discovery.md` 或 `spec.md`——那兩份的格式由各自的 skill 與腳本定義。不修改專案其他既有檔案：
 
 ```markdown

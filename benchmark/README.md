@@ -58,9 +58,9 @@ cat benchmark/cases/personal-memo/input-brief.md
 
 ```
 runs/<lang>-<case>/
-├── specs/<date>-<feature>/discovery.md     DISCOVERY 的問答紀錄，問到 已收斂
-├── specs/<date>-<feature>/spec.md          SPEC（spec）寫、判到 已對焦
-├── specs/<date>-<feature>/plan.md          PLAN（plan）的技術設計與票
+├── specs/ongoing/<date>-<feature>/discovery.md     DISCOVERY 的問答紀錄，問到 已收斂
+├── specs/ongoing/<date>-<feature>/spec.md          SPEC（spec）寫、判到 已對焦
+├── specs/ongoing/<date>-<feature>/plan.md          PLAN（plan）的技術設計與票
 └── features/                               SPEC（formulation）產出的 .feature
 ```
 

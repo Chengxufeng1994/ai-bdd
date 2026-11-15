@@ -1,7 +1,7 @@
 ---
 name: spec-by-example
 description: >
-  把 `待對焦` 的 `spec.md` 寫成業務語意的驗收旅程——`specs/<date>-<feature>/acceptance/*.feature`，
+  把 `待對焦` 的 `spec.md` 寫成業務語意的驗收旅程——`specs/ongoing/<date>-<feature>/acceptance/*.feature`，
   幾條可 demo 的長流程、只用業務語言、每條用 `@covers-<n>.<m>` 標出走過的 AC、未定的地方
   就地標 `# [need clarification]`——讓需求方對著旅程判就緒。不執行、不訪談、不改 FR／AC。
   BDD 六步流程 SPEC 步驟裡，診斷之後、就緒問句之前的一步。
@@ -17,8 +17,8 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把 `待對焦` 的規格寫成幾條可 demo、只用業務語言的長流程，讓需求方對著它判就緒 |
-| **讀** | `specs/<date>-<feature>/spec.md`（`待對焦`、`## 回 DISCOVERY 補問` 是「（無）」）、`docs/CONTEXT.md` |
-| **寫** | `specs/<date>-<feature>/acceptance/<旅程>.feature`；有標記時 `spec.md` `## 回 DISCOVERY 補問` 的新列 |
+| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`待對焦`、`## 回 DISCOVERY 補問` 是「（無）」）、`docs/CONTEXT.md` |
+| **寫** | `specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`；有標記時 `spec.md` `## 回 DISCOVERY 補問` 的新列 |
 | **上游** | `spec` 第 5 步（`example-mapping` 跑完診斷之後） |
 | **下游** | `example-mapping` 提就緒問句；有 `# [need clarification]` → `spec`〈退回 discovery〉 |
 | **不做** | 不執行、不訪談、不改 FR／AC／狀態、不寫 `discovery.md`、不寫 `spec.md` 沒有的結果 |
@@ -114,7 +114,7 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 
 ## 產物
 
-`specs/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
+`specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
 命名。骨架與六條規則見 `rules/journey-format.md`，完整範例見
 `examples/訪客出場結帳.feature`。有標記時另有 `spec.md` `## 回 DISCOVERY 補問` 的新列。
 

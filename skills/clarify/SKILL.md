@@ -15,8 +15,8 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把一疊未解的問題逐題問到收斂，交出「哪些解了、哪些還開著、還缺誰」 |
-| **讀** | `specs/<date>-<feature>/discovery.md` `## Open Questions` 裡 `待答` 的列；單獨使用時讀對方給的描述 |
-| **寫** | 同一份 `discovery.md` 的 `## Open Questions` 列與小節；單獨使用時新建 `specs/<date>-<topic-slug>/discovery.md`（三節） |
+| **讀** | `specs/ongoing/<date>-<feature>/discovery.md` `## Open Questions` 裡 `待答` 的列；單獨使用時讀對方給的描述 |
+| **寫** | 同一份 `discovery.md` 的 `## Open Questions` 列與小節；單獨使用時新建 `specs/ongoing/<date>-<topic-slug>/discovery.md`（三節） |
 | **上游** | `discovery`（它的紅卡）；也可單獨使用 |
 | **下游** | 收斂後進 SPEC（`spec`） |
 | **不做** | 不做決定、不寫 `spec.md`／`plan.md`／`.feature`、不改寫 `## 原文`、不改程式碼、不自己編題 |
@@ -204,7 +204,7 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 
 ### 單獨使用時
 
-寫入 `specs/<date>-<topic-slug>/discovery.md`（跟 `discovery` 同一個檔），只有三節：
+寫入 `specs/ongoing/<date>-<topic-slug>/discovery.md`（跟 `discovery` 同一個檔），只有三節：
 
 ```markdown
 # discovery: <主題>

@@ -87,13 +87,13 @@ Runtime — one process, one protocol so far:
 Development — the chain the testbed exists to exercise:
 
 ```
-benchmark/cases/ ──▶ DISCOVERY ──▶ specs/<date>-<feature>/discovery.md
+benchmark/cases/ ──▶ DISCOVERY ──▶ specs/ongoing/<date>-<feature>/discovery.md
                               │
                               ▼
-                            SPEC ──▶ specs/<date>-<feature>/spec.md ──▶ features/*.feature
+                            SPEC ──▶ specs/ongoing/<date>-<feature>/spec.md ──▶ features/*.feature
                               │
                               ▼
-                            PLAN ──▶ specs/<date>-<feature>/plan.md
+                            PLAN ──▶ specs/ongoing/<date>-<feature>/plan.md
                                           │
              api/openapi.yaml ──▶ generate ──▶ apigen/
                                           │

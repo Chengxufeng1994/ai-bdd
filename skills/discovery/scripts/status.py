@@ -5,7 +5,7 @@
     python3 status.py [專案根目錄]        # 預設當前目錄
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
-`specs/<date>-<feature>/discovery.md` 的 `## Open Questions` 表：已答／n/a／待答數自
+`specs/ongoing/<date>-<feature>/discovery.md` 的 `## Open Questions` 表：已答／n/a／待答數自
 狀態欄，追問覆蓋（業務面向＋技術面向）數自面向欄。存一份儀表板的話，
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
@@ -100,6 +100,19 @@ def coverage(dims: set[str]) -> str:
     return "".join("✓" if d in dims else "—" for d in DIMS)
 
 
+def flat_layout_hint(specs: Path) -> str | None:
+    """2026-11-15 以前的平鋪佈局（feature 直接放在 `specs/` 底下）的退件訊息；不是就回 None。
+
+    新佈局的 feature 住 `specs/ongoing/`，做完搬到 `specs/sleeping/`。平鋪的目錄不擋下來
+    就會被安靜地略過——腳本報「沒有任何 feature」，看起來像是還沒開始。
+    """
+    for d in sorted(p for p in specs.iterdir() if p.is_dir() and p.name not in ("ongoing", "sleeping")):
+        if any((d / f).exists() for f in ("discovery.md", "spec.md", "prd.md")):
+            return (f"{d} 是舊佈局（feature 直接放在 specs/ 底下）："
+                    f"`git mv specs/{d.name} specs/ongoing/{d.name}`")
+    return None
+
+
 def legacy_hint(specs_dir: Path) -> str | None:
     """舊佈局的退件訊息；沒有舊佈局回 None。
 
@@ -127,14 +140,15 @@ def main(root: Path) -> int:
         print(f"找不到 {specs}")
         return 1
 
-    hint = legacy_hint(specs)
+    ongoing = specs / "ongoing"
+    hint = flat_layout_hint(specs) or (legacy_hint(ongoing) if ongoing.is_dir() else None)
     if hint:
         print(hint)
         return 1
 
-    specs_files = sorted(specs.glob("*/discovery.md"))
+    specs_files = sorted(ongoing.glob("*/discovery.md"))
     if not specs_files:
-        print(f"{specs} 底下沒有任何 discovery.md —— 先跑 discovery")
+        print(f"{ongoing} 底下沒有任何 discovery.md —— 先跑 discovery")
         return 1
 
     # 逐份先解析、逐份先報壞——三種壞法訊息分開講，因為修法不同：

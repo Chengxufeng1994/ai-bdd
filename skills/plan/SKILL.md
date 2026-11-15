@@ -16,7 +16,7 @@ description: >
 | --- | --- |
 | **職責** | 把一份寫好技術部分的規格變成執行計畫：這批在做什麼、哪裡危險、能不能並行、合回時哪些檔會相撞 |
 | **讀** | `spec.md`（`已對焦`、技術部分已寫）、涵蓋的 `.feature`、專案既有的結構 |
-| **寫** | `specs/<date>-<feature>/plan.md` |
+| **寫** | `specs/ongoing/<date>-<feature>/plan.md` |
 | **上游** | `formulation`（`.feature` 寫好之後） |
 | **下游** | `task-breakdown`（照 `spec.md` 技術部分與這份計畫拆成票） |
 | **不做** | 不改 `spec.md`（需求部分與技術部分都不改）、不切票、不訪談、不寫程式 |
@@ -114,9 +114,9 @@ MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story，或 `spec
 
 ## 產物
 
-一個 feature 一份 `specs/<date>-<feature>/plan.md`。骨架照抄 `references/plan-format.md`。
+一個 feature 一份 `specs/ongoing/<date>-<feature>/plan.md`。骨架照抄 `references/plan-format.md`。
 
-MUST: 只寫入 `specs/<date>-<feature>/plan.md`，**不修改專案既有的任何檔案**，包括 `spec.md`
+MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md`，**不修改專案既有的任何檔案**，包括 `spec.md`
 與 `discovery.md`。
 
 ## Verification

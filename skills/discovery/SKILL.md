@@ -20,8 +20,8 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把一段需求（想法或別人寫的 PRD）收成逐字原文與粗切 story，再一輪輪問到前沿空了，每個答案逐題記下 |
-| **讀** | 需求本身（描述、文件內容或路徑），或狀態 `澄清中` 的 `specs/<date>-<feature>/discovery.md`；續跑時加同目錄 `spec.md` 的 `## 回 DISCOVERY 補問` |
-| **寫** | `specs/<date>-<feature>/discovery.md`（`澄清中` → `已收斂`） |
+| **讀** | 需求本身（描述、文件內容或路徑），或狀態 `澄清中` 的 `specs/ongoing/<date>-<feature>/discovery.md`；續跑時加同目錄 `spec.md` 的 `## 回 DISCOVERY 補問` |
+| **寫** | `specs/ongoing/<date>-<feature>/discovery.md`（`澄清中` → `已收斂`） |
 | **上游** | 無（可單獨使用）；`spec` 把它退回 `澄清中` 時再跑 |
 | **下游** | `spec`（從這份紀錄寫 `spec.md`） |
 | **不做** | 不寫 FR／AC／Gherkin／規則草稿、不自己填答案、不改寫 `## 原文`、不寫 `spec.md`／`plan.md`／`.feature` |
@@ -67,7 +67,7 @@ description: >
 ## 前置確認（Ask user）
 
 **唯一必要的輸入是需求本身**：一段描述、一份文件的內容或路徑，或已經存在的
-`specs/<date>-<feature>/discovery.md`。沒有 `discovery.md`、或只有 `clarify` 留下的三節
+`specs/ongoing/<date>-<feature>/discovery.md`。沒有 `discovery.md`、或只有 `clarify` 留下的三節
 （沒有 `## 粗切 story`），就先建（開場的第 0 件事，`references/opening.md`）；
 建好的，它要有 `## 原文` 一節、`## 粗切 story` 至少一則、狀態 `澄清中`，而且
 `### 版本修訂歷史` 有「需求方確認建檔」那一列——沒有就是他還沒點頭，第 0 件事從收尾接著做。
@@ -410,7 +410,7 @@ IMPORTANT: 小節不是規則的定案來源——規則以 `spec.md` story 底�
 ## 產物
 
 ```
-specs/<date>-<feature>/
+specs/ongoing/<date>-<feature>/
 └── discovery.md   DISCOVERY  ★ 第 0 件事建檔，從 澄清中 寫到 已收斂
 ```
 
@@ -435,7 +435,7 @@ MUST NOT: 另存一份進度儀表板或 `clarify-log.md`。進度是**算出來
 | 只寫入 `specs/` 底下 | `MUST` |
 | 不修改專案既有的任何檔案 | `MUST` |
 
-本 skill 只寫 `specs/<date>-<feature>/discovery.md`（`clarify` 單獨使用時另建一份），不碰
+本 skill 只寫 `specs/ongoing/<date>-<feature>/discovery.md`（`clarify` 單獨使用時另建一份），不碰
 `docs/`。
 
 ## Verification

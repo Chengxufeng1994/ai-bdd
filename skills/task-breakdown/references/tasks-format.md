@@ -2,7 +2,7 @@
 
 照抄即可。讀這份的時機：票的清單跟使用者確認過，準備寫檔的時候。
 
-一個 feature 一個 `specs/<date>-<feature>/tasks/`，跟同目錄的 `plan.md`、`spec.md` 配對。
+一個 feature 一個 `specs/ongoing/<date>-<feature>/tasks/`，跟同目錄的 `plan.md`、`spec.md` 配對。
 它裝一份 `index.md` 與一張票一個檔。
 
 ## `index.md` —— 順序只住這裡

@@ -53,7 +53,7 @@
 只讀不寫。找不到什麼就說找不到，不猜——但 specs/ 與 .feature 不對稱：
 前者是停，後者是照說不誤，然後把跑得到的十二項跑完。
 FR／AC 的定版編號與 story 由哪些 FR 組成，都讀自
-specs/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
+specs/ongoing/<date>-<feature>/spec.md 同一個 `## User Stories` 段——FR 掛在它的
 story 底下，一次遍歷就同時拿到兩者，不再是兩份文件、兩份清單。
 """
 import re
@@ -68,7 +68,7 @@ def find_features(root: Path) -> Path:
     for c in (root / "features", root / "test" / "features", root / "tests" / "features"):
         if c.is_dir():
             return c
-    # specs/<dir>/acceptance/ 是不執行的驗收旅程，寫的時候 features/ 往往還不存在。
+    # specs/ongoing/<dir>/acceptance/ 是不執行的驗收旅程，寫的時候 features/ 往往還不存在。
     specs = root / "specs"
     hits = {p.parent for p in root.rglob("*.feature") if specs not in p.parents}
     return sorted(hits, key=lambda p: len(p.parts))[0] if hits else None
@@ -363,6 +363,19 @@ def outcome_coverage(text: str) -> list[tuple[str, int, int]]:
     return out
 
 
+def flat_layout_hint(specs: Path) -> str | None:
+    """2026-11-15 以前的平鋪佈局（feature 直接放在 `specs/` 底下）的退件訊息；不是就回 None。
+
+    新佈局的 feature 住 `specs/ongoing/`，做完搬到 `specs/sleeping/`。平鋪的目錄不擋下來
+    就會被安靜地略過——腳本報「沒有任何 feature」，看起來像是還沒開始。
+    """
+    for d in sorted(p for p in specs.iterdir() if p.is_dir() and p.name not in ("ongoing", "sleeping")):
+        if any((d / f).exists() for f in ("discovery.md", "spec.md", "prd.md")):
+            return (f"{d} 是舊佈局（feature 直接放在 specs/ 底下）："
+                    f"`git mv specs/{d.name} specs/ongoing/{d.name}`")
+    return None
+
+
 def legacy_hint(specs_dir: Path) -> str | None:
     """舊佈局的退件訊息；沒有舊佈局回 None。
 
@@ -425,10 +438,11 @@ def journey_covers(text: str) -> tuple[set[str], list[str]]:
 
 
 def check(root: Path) -> int:
-    specs_dir = root / "specs"
+    specs_root = root / "specs"
+    specs_dir = specs_root / "ongoing"
     feat_dir = find_features(root)
-    if not specs_dir.is_dir():
-        print(f"找不到 {specs_dir} —— 沒有 DISCOVERY 的產物可以比對")
+    if not specs_root.is_dir():
+        print(f"找不到 {specs_root} —— 沒有 DISCOVERY 的產物可以比對")
         return 1
     # 十七項裡有十二項只讀 spec.md（第 6-17 項）。DISCOVERY 交件到 FORMULATION
     # 開跑之間還沒有任何 .feature，而那正是 spec.md 最需要被檢查的時刻——
@@ -437,7 +451,7 @@ def check(root: Path) -> int:
     # 的先跑，跑不到的明講跳過」。
     spec_only = feat_dir is None
 
-    hint = legacy_hint(specs_dir)
+    hint = flat_layout_hint(specs_root) or (legacy_hint(specs_dir) if specs_dir.is_dir() else None)
     if hint:
         print(hint)
         return 1

@@ -69,7 +69,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
    那一行。沒有、也沒有人在開工說明裡帶來，就在主線上照檢查點跑一次（已勾完的票的場景、閘門），
    結果給使用者看，使用者點頭才開工，並把那一行寫進這張票檔。一波只跑一次
    （`../task-breakdown/references/tasks-format.md`〈檢查點〉）
-4. 讀得到 `specs/<date>-<feature>/tasks/` 的這張票檔、`plan.md`、`spec.md` 與這張票涵蓋的 `.feature`
+4. 讀得到 `specs/ongoing/<date>-<feature>/tasks/` 的這張票檔、`plan.md`、`spec.md` 與這張票涵蓋的 `.feature`
 
 NEVER: `spec.md` 沒有技術部分時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
@@ -238,7 +238,7 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 ├── api/openapi.yaml           新的 operation（若 seam 是 HTTP）
 ├── test/acceptance/steps_*.go 新的 step definition，按領域名詞分檔
 ├── features/<story>.feature   只改第一行的狀態 tag
-└── specs/<date>-<feature>/tasks/<票>.md   只勾驗收條件、寫缺口
+└── specs/ongoing/<date>-<feature>/tasks/<票>.md   只勾驗收條件、寫缺口
 ```
 
 MUST: 不修改 `spec.md`、`discovery.md`、`plan.md`、`tasks/index.md`、別張票的票檔、`.feature` 的任何場景文字。

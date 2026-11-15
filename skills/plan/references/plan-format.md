@@ -2,7 +2,7 @@
 
 照抄即可。讀這份的時機：步驟 2，準備寫執行計畫的時候。
 
-一個 feature 一份，路徑 `specs/<date>-<feature>/plan.md`，跟同目錄的 `spec.md`、
+一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/plan.md`，跟同目錄的 `spec.md`、
 `discovery.md` 配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
 
 它只裝**執行計畫**：這批怎麼排、哪裡危險、能不能並行，以及 `## 缺口`。技術設計（Tech Stack、

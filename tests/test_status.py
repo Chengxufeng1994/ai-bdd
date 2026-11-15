@@ -42,8 +42,8 @@ class StatusReadsDiscovery(unittest.TestCase):
     def test_counts_rows_from_discovery(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
 
             code, out = run(root)
 
@@ -52,11 +52,24 @@ class StatusReadsDiscovery(unittest.TestCase):
             self.assertIn("待答（1）", out)
             self.assertIn("2026-10-02-parking/Q-2", out)
 
-    def test_missing_discovery_exits_1_and_names_discovery(self):
+    def test_flat_layout_exits_1_and_names_git_mv(self):
+        # 2026-11-15 以前 feature 直接放在 specs/ 底下；新佈局在 specs/ongoing/
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "plan.md").write_text("# plan", encoding="utf-8")
+            (root / "specs" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("git mv", out)
+            self.assertIn("specs/ongoing/2026-10-02-parking", out)
+
+    def test_missing_discovery_exits_1_and_names_discovery(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "plan.md").write_text("# plan", encoding="utf-8")
 
             code, out = run(root)
 
@@ -68,9 +81,9 @@ class StatusReadsDiscovery(unittest.TestCase):
     def test_old_layout_prd_beside_spec_exits_1_and_names_git_mv(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(PRD, encoding="utf-8")
-            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text("# old technical", encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "prd.md").write_text(PRD, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "spec.md").write_text("# old technical", encoding="utf-8")
 
             code, out = run(root)
 
@@ -81,8 +94,8 @@ class StatusReadsDiscovery(unittest.TestCase):
     def test_prd_only_dir_names_single_git_mv(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(PRD, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "prd.md").write_text(PRD, encoding="utf-8")
 
             code, out = run(root)
 
@@ -94,8 +107,8 @@ class StatusReadsDiscovery(unittest.TestCase):
     def test_1113_layout_exits_1_with_split_hint(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "spec.md").write_text(DISCOVERY, encoding="utf-8")
 
             code, out = run(root)
 

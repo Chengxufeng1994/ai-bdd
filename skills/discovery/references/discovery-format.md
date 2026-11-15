@@ -4,7 +4,7 @@
 `spec.md`（需求部分與技術部分都是）；`status.py` 從它的 `## Open Questions` 算進度，
 `check_spec.py` 從它查 `← Q-<n>` 與 `← PRD §n`。
 
-一個 feature 一份，路徑 `specs/<date>-<feature>/discovery.md`。它是**問答紀錄，不是規格**：
+一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/discovery.md`。它是**問答紀錄，不是規格**：
 這裡沒有 FR、沒有 AC、沒有 Gherkin。規則由 `spec` 寫在 `spec.md`，每一條行尾指回這裡。
 
 完整範例：[`../examples/minimal-discovery.md`](../examples/minimal-discovery.md)。

@@ -17,7 +17,7 @@ description: >
 | --- | --- |
 | **職責** | 把技術設計拆成一疊 tracer bullet：一張票一個檔，每張穿過所有層、自己可 demo，標明誰卡誰、會碰哪些接合點 |
 | **讀** | `spec.md`（`## User Stories` 與技術部分）、`plan.md`（`## Risks`、`## Parallel Work`）、涵蓋的 `.feature` |
-| **寫** | `specs/<date>-<feature>/tasks/`（票檔＋`index.md`）；`plan.md` 只在 `## 缺口` 加列 |
+| **寫** | `specs/ongoing/<date>-<feature>/tasks/`（票檔＋`index.md`）；`plan.md` 只在 `## 缺口` 加列 |
 | **上游** | `plan`（風險與「要不要並行」寫好之後） |
 | **下游** | `implement <票號>`（一張票一個全新 session） |
 | **不做** | 不改 `spec.md`（需求部分與技術部分）、不改 `plan.md` 的既有內容、不派工、不寫程式 |
@@ -167,13 +167,13 @@ MUST NOT: 在這一步新增、刪除或改寫 `spec.md` 技術部分的任何�
 ## 產物
 
 ```
-specs/<date>-<feature>/tasks/
+specs/ongoing/<date>-<feature>/tasks/
 ├── index.md         順序表 ＋ 哪幾張可以同時開始
 ├── 00-<slug>.md     前置整理（有才建）
 └── 01-<slug>.md     一張票一個檔
 ```
 
-MUST: 只寫入 `specs/<date>-<feature>/tasks/`，以及 `plan.md` `## 缺口` 的新列。不修改專案
+MUST: 只寫入 `specs/ongoing/<date>-<feature>/tasks/`，以及 `plan.md` `## 缺口` 的新列。不修改專案
 既有的任何其他檔案。
 
 ## Verification

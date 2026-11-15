@@ -60,7 +60,7 @@ def run(root: Path) -> tuple[int, str]:
 
 
 def write_spec(root: Path, text: str, discovery: str | None = DISCOVERY) -> None:
-    d = root / "specs" / "2026-10-02-parking"
+    d = root / "specs" / "ongoing" / "2026-10-02-parking"
     d.mkdir(parents=True)
     (d / "spec.md").write_text(text, encoding="utf-8")
     if discovery is not None:
@@ -203,8 +203,8 @@ class CheckReadsSpec(unittest.TestCase):
     def test_spec_only_dir_exits_1(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "x").mkdir(parents=True)
-            (root / "specs" / "x" / "design.md").write_text("# old", encoding="utf-8")
+            (root / "specs" / "ongoing" / "x").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "x" / "design.md").write_text("# old", encoding="utf-8")
 
             code, out = run(root)
 
@@ -217,7 +217,7 @@ class CheckReadsSpec(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, GOOD)
-            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(GOOD, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "prd.md").write_text(GOOD, encoding="utf-8")
 
             code, out = run(root)
 
@@ -228,8 +228,8 @@ class CheckReadsSpec(unittest.TestCase):
     def test_prd_only_dir_names_single_git_mv(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "prd.md").write_text(GOOD, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "prd.md").write_text(GOOD, encoding="utf-8")
 
             code, out = run(root)
 
@@ -260,11 +260,36 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertIn("Q-2", out)
             self.assertIn("已答", out)
 
+    def test_flat_layout_exits_1_and_names_git_mv(self):
+        # 2026-11-15 以前 feature 直接放在 specs/ 底下；新佈局在 specs/ongoing/
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text(GOOD, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("git mv", out)
+            self.assertIn("specs/ongoing/2026-10-02-parking", out)
+
+    def test_sleeping_features_are_not_checked_as_in_flight(self):
+        # 做完的 feature 搬到 specs/sleeping/；它不算進行中，也不是舊佈局
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            (root / "specs" / "sleeping" / "old").mkdir(parents=True)
+            (root / "specs" / "sleeping" / "old" / "spec.md").write_text("# broken", encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+
     def test_discovery_only_dir_is_a_notice(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "x").mkdir(parents=True)
-            (root / "specs" / "x" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "ongoing" / "x").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "x" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
 
             code, out = run(root)
 
@@ -296,7 +321,7 @@ JOURNEY = """Feature: 訪客出場
 
 
 def write_journey(root: Path, name: str, text: str) -> None:
-    d = root / "specs" / "2026-10-02-parking" / "acceptance"
+    d = root / "specs" / "ongoing" / "2026-10-02-parking" / "acceptance"
     d.mkdir(parents=True, exist_ok=True)
     (d / name).write_text(text, encoding="utf-8")
 
@@ -403,7 +428,7 @@ class AcceptanceJourneys(unittest.TestCase):
 
 class FindFeatures(unittest.TestCase):
     """Journeys are written before any features/ dir exists. The rglob
-    fallback must not mistake specs/<dir>/acceptance/ for the runner's
+    fallback must not mistake specs/ongoing/<dir>/acceptance/ for the runner's
     feature directory, or every journey is reported as an orphan."""
 
     def test_acceptance_only_returns_none(self):

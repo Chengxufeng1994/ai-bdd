@@ -1,7 +1,7 @@
 # ai-bdd 路線圖
 
 > **這份是 ai-bdd 這個 plugin 自己**要建什麼、怎麼切、什麼順序。
-> 它**不是**本流程的產物——流程產出的計畫叫 `specs/<date>-<feature>/plan.md`，
+> 它**不是**本流程的產物——流程產出的計畫叫 `specs/ongoing/<date>-<feature>/plan.md`，
 > 那是使用端 repo 裡的東西。看到「plan」先分清楚是哪一個。
 
 四份背景筆記，分工不同：
@@ -80,7 +80,8 @@ IMPLEMENT／VERIFY 需要綁定技術棧；REVIEW 部分需要。
 ```
 specs/
 ├── domain-model.md     SPEC      聚合、不變條件；跨 feature，活得比任何一份 spec 的技術部分久
-└── <date>-<feature>/
+├── sleeping/           做完的 feature 整個目錄搬到這裡（第二期的 `archive`，尚未實作）
+└── ongoing/<date>-<feature>/   還在做的 feature
     ├── discovery.md    DISCOVERY 原文、粗切 story、問答。決策史，活得比實作久
     ├── spec.md         SPEC      需求部分（story、FR、AC、角色、範圍；活得比實作久）＋ 技術部分（Tech Stack 到 Testing Decisions；實作開始就過期）
     ├── acceptance/     SPEC      <旅程>.feature：業務語意的驗收旅程，不執行；就緒判定對著它答
@@ -282,12 +283,12 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 條件**，否則會在非 BDD 情境被誤觸發。
 
 **`slice` 與 `feature` 是兩個粒度，不共用同一個字。**
-`specs/<slice-slug>/` 裝的是一批（好幾則 story）；`features/*.feature` 是
+`specs/ongoing/<slice-slug>/` 裝的是一批（好幾則 story）；`features/*.feature` 是
 一則 story 一個檔。用同一個字會製造「部分對齊」——讀的人會假設兩邊指同一件事，
 然後在其中幾處讀錯。`feature` 這個字純粹留給 `.feature`。
 
 **三個 plan。** 根層 `PLAN.md`（這個 repo 要建什麼）、步驟 PLAN、產物
-`specs/<date>-<feature>/plan.md`。後兩者保留，因為「PLAN ＝ 把 spec 拆成可逐條
+`specs/ongoing/<date>-<feature>/plan.md`。後兩者保留，因為「PLAN ＝ 把 spec 拆成可逐條
 執行的任務、寫進 `plan.md`」是既有慣例；歧義靠這份文件開頭那段話消解。
 
 ---

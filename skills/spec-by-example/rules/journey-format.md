@@ -1,6 +1,6 @@
 # 驗收旅程的格式
 
-`specs/<date>-<feature>/acceptance/<旅程>.feature`。它是規格，不是測試：不執行、沒有
+`specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`。它是規格，不是測試：不執行、沒有
 step definition、不進 `features/`。寫給業務方讀，讓他對著能 demo 的流程判就緒。
 
 ## 六條規則

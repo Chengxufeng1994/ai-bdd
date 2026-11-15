@@ -3,7 +3,7 @@
 照抄即可。`spec` 寫它時讀這份；`example-mapping` 讀它攤地圖、`formulation` 翻
 `.feature`、`plan` 做技術設計、`task-breakdown` 切票時讀它寫出來的東西。
 
-一個 feature 一份，路徑 `specs/<date>-<feature>/spec.md`。一份 `spec.md` 裝這個
+一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/spec.md`。一份 `spec.md` 裝這個
 feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`spec` 寫規則時
 可以用 `story-splitting` 沿規則重切（`已對焦` 之前）。
 

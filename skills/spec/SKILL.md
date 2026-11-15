@@ -20,8 +20,8 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把已收斂的問答寫成一份讀完就能開工的規格：需求部分帶到需求方說「就緒」，再寫技術部分（用什麼做、seam、模組、契約、每個 AC 在哪一層測），交出去產 `.feature` |
-| **讀** | `specs/<date>-<feature>/discovery.md`（`已收斂`，或 `澄清中` 且結束方式 `喊停`）；寫技術部分時加專案既有的結構與文件（Makefile、`CLAUDE.md`、架構文件），或上一份 `spec.md` 的技術部分 |
-| **寫** | `specs/<date>-<feature>/spec.md`、`specs/domain-model.md`（增修）、`docs/CONTEXT.md`（建立或追加）；退回時 `discovery.md` 的狀態與修訂歷史一列 |
+| **讀** | `specs/ongoing/<date>-<feature>/discovery.md`（`已收斂`，或 `澄清中` 且結束方式 `喊停`）；寫技術部分時加專案既有的結構與文件（Makefile、`CLAUDE.md`、架構文件），或上一份 `spec.md` 的技術部分 |
+| **寫** | `specs/ongoing/<date>-<feature>/spec.md`、`specs/domain-model.md`（增修）、`docs/CONTEXT.md`（建立或追加）；退回時 `discovery.md` 的狀態與修訂歷史一列 |
 | **上游** | `discovery` |
 | **下游** | `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後寫技術部分 → `formulation` → `plan` |
 | **不做** | 不訪談、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature`、不排風險與並行（那是 `plan`）、不切票 |
@@ -65,7 +65,7 @@ description: >
 
 ## 前置確認（Ask user）
 
-不必問輸入的位置。`discovery.md` 在 `specs/<date>-<feature>/`。收兩種：
+不必問輸入的位置。`discovery.md` 在 `specs/ongoing/<date>-<feature>/`。收兩種：
 
 | 狀態／結束方式 | 怎麼做 |
 | --- | --- |
@@ -287,10 +287,10 @@ FR／AC 不准 `推論` 的規則不變。
 
 | 產物 | 格式 |
 | --- | --- |
-| `specs/<date>-<feature>/spec.md`（需求部分＋技術部分） | `references/spec-format.md`、`references/tech-format.md` |
+| `specs/ongoing/<date>-<feature>/spec.md`（需求部分＋技術部分） | `references/spec-format.md`、`references/tech-format.md` |
 | `specs/domain-model.md`（增修） | `references/domain-model-format.md` |
 | `docs/CONTEXT.md`（建立或追加） | 第 4 步「詞彙表」 |
-| `specs/<date>-<feature>/discovery.md` | DISCOVERY 的產物；本 skill 只讀，退回時改狀態與修訂歷史 |
+| `specs/ongoing/<date>-<feature>/discovery.md` | DISCOVERY 的產物；本 skill 只讀，退回時改狀態與修訂歷史 |
 | `features/<story-slug>.feature` | 由 `formulation` 寫 |
 
 MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何其他檔案**（含
