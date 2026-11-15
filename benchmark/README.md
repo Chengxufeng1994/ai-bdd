@@ -41,8 +41,8 @@ cp -r benchmark/skeleton/go runs/go-personal-memo
 
 `runs/` 是 gitignored，所以新 clone 上不存在——`mkdir -p` 不能省。
 
-然後把該 case 的輸入檔**整份**交給 `bdd-discovery`（開場會逐字收進 `discovery.md` 的 `## 原文`），
-再跑 `bdd-discovery`：
+然後把該 case 的輸入檔**整份**交給 `discovery`（開場會逐字收進 `discovery.md` 的 `## 原文`），
+再跑 `discovery`：
 
 ```bash
 cat benchmark/cases/personal-memo/input-brief.md
@@ -59,9 +59,9 @@ cat benchmark/cases/personal-memo/input-brief.md
 ```
 runs/<lang>-<case>/
 ├── specs/<date>-<feature>/discovery.md     DISCOVERY 的問答紀錄，問到 已收斂
-├── specs/<date>-<feature>/spec.md          SPEC（bdd-spec）寫、判到 已對焦
-├── specs/<date>-<feature>/plan.md          PLAN（bdd-plan）的技術設計與票
-└── features/                               SPEC（bdd-formulation）產出的 .feature
+├── specs/<date>-<feature>/spec.md          SPEC（spec）寫、判到 已對焦
+├── specs/<date>-<feature>/plan.md          PLAN（plan）的技術設計與票
+└── features/                               SPEC（formulation）產出的 .feature
 ```
 
 ## 兩條規則

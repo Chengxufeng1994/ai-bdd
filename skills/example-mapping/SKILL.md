@@ -2,7 +2,7 @@
 name: example-mapping
 description: >
   用四色卡把一則 story 攤成規則與例子——黃卡 story、藍卡規則、綠卡例子、紅卡問題，
-  攤完跑四條診斷並提出就緒判定。可讀 `bdd-spec` 剛寫好的 `spec.md`，
+  攤完跑四條診斷並提出就緒判定。可讀 `spec` 剛寫好的 `spec.md`，
   也可單獨對一段描述跑（單獨時不寫任何檔案）。
   觸發詞：「攤成四色卡」「example mapping」「跑一次 mapping」「這則 story 就緒了嗎」
   「規則跟例子攤開來看」「地圖長什麼樣」「紅卡還剩幾張」「這則可以開工了嗎」。
@@ -17,15 +17,15 @@ description: >
 | **職責** | 把一則 story 攤成四色卡地圖、跑四條診斷，把就緒問句交給使用者 |
 | **讀** | 流程內：`specs/<date>-<feature>/spec.md`（`待對焦`）與同目錄的 `acceptance/`；單獨：一段 story 的描述 |
 | **寫** | 流程內：`spec.md` 的 `狀態`（使用者答「就緒」才寫 `已對焦`）或 `## 回 DISCOVERY 補問`；單獨：不寫檔。地圖只印在終端 |
-| **上游** | `bdd-spec`（`spec.md` 寫完後呼叫）；也可單獨使用 |
-| **下游** | 就緒 → `bdd-spec` 接著呼叫 `bdd-formulation`；未就緒 → `bdd-spec`〈退回 discovery〉 |
+| **上游** | `spec`（`spec.md` 寫完後呼叫）；也可單獨使用 |
+| **下游** | 就緒 → `spec` 接著呼叫 `formulation`；未就緒 → `spec`〈退回 discovery〉 |
 | **不做** | 不替使用者判就緒、不把紅卡問到收斂、不切 story、不寫 Gherkin、不產出 `example-map.md` |
 
 **票不是你投的。** 本 skill 攤牌、診斷、提問；就緒與否由使用者判，`已對焦` 寫的是他的決定。
 
 ## 使用時機
 
-- `bdd-spec` 寫完 `spec.md`，要跑就緒判定
+- `spec` 寫完 `spec.md`，要跑就緒判定
 - 想知道一則 story 就緒了沒
 - 手上有一份 `spec.md`，想看它的形狀而不是讀它的字
 - 單獨拿一則 story 來攤，不走 BDD 流程
@@ -36,7 +36,7 @@ description: >
 | --- | --- |
 | 要把紅卡逐一問到收斂 | `clarify`，本 skill 只指出還剩幾張 |
 | 要把 story 切小 | `story-splitting` |
-| 要把例子寫成 Gherkin | `bdd-formulation` |
+| 要把例子寫成 Gherkin | `formulation` |
 
 ## 流程
 
@@ -51,7 +51,7 @@ description: >
 
 | 模式 | 輸入 | 輸出 |
 | --- | --- | --- |
-| 流程內 | `spec.md` 狀態 `待對焦`，由 `bdd-spec` 寫完後呼叫或使用者指定 | 地圖 ＋ 四條診斷 ＋ 就緒問句；使用者答「就緒」才寫 `已對焦` |
+| 流程內 | `spec.md` 狀態 `待對焦`，由 `spec` 寫完後呼叫或使用者指定 | 地圖 ＋ 四條診斷 ＋ 就緒問句；使用者答「就緒」才寫 `已對焦` |
 | 單獨 | 一段 story 的描述 | 同樣的地圖、診斷、判讀與就緒問句；回答只回報，**不寫任何檔案** |
 
 ### 2. 怎麼攤
@@ -107,7 +107,7 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 | --- | --- | --- | --- |
 | 🟥 還有紅卡 | 不確定性高，未就緒 | 同左 | `clarify` |
 | 🟦 一則 story 掛太多 FR | story 太大，該切 | 同左 | `story-splitting` |
-| 🟩 AC 堆在同一條 FR | 這條規則該拆 | 同左 | `bdd-spec`（用 `story-splitting`） |
+| 🟩 AC 堆在同一條 FR | 這條規則該拆 | 同左 | `spec`（用 `story-splitting`） |
 | ⏱ 25 分鐘 map 不完 | 太大或太不確定 | **沒有時鐘** ← 見下 | `clarify` |
 
 🟦 這條之所以照原意當阻塞：分組只有一層，`spec.md` 的一個 `### US-<n> · <slug>` 直接對應一個 `.feature` 檔。
@@ -123,10 +123,10 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 
 原始實踐用**大拇指投票**：三方各自表態。這裡沒有三方，而 `docs/ai-sdlc.md` 已經定調：agent 取代三方對話
 當提問者，但「**沒有業務脈絡的最終裁量權——它問得出問題，答不了**」。所以流程是：攤開地圖 → 跑完四條診斷 →
-（流程內）`bdd-spec-by-example` 寫好 `acceptance/` 的驗收旅程 → **給出判讀** → **問使用者**，請他對著旅程答。
+（流程內）`spec-by-example` 寫好 `acceptance/` 的驗收旅程 → **給出判讀** → **問使用者**，請他對著旅程答。
 
 **這一節在 `流程內` 與 `單獨` 兩種模式都成立**；單獨模式只是不寫狀態。`spec.md` 的 `## 回 DISCOVERY 補問`
-非空時，`bdd-spec` 不會叫你——已知有洞的規格問「就緒了嗎」沒有意義。
+非空時，`spec` 不會叫你——已知有洞的規格問「就緒了嗎」沒有意義。
 
 ```
 驗收旅程在 specs/2026-09-14-parking/acceptance/，照著讀一遍。
@@ -139,11 +139,11 @@ US-1  身為 P-1（訪客），我想在出場前知道要付多少
 | 使用者回答 | 怎麼做 |
 | --- | --- |
 | 就緒 | `spec.md` `## Document Overview` 的 `狀態` 寫 `已對焦` |
-| 未就緒，或選了去問別人 | 把他要問的事寫進 `spec.md` 的 `## 回 DISCOVERY 補問`，狀態留 `待對焦`，交回 `bdd-spec` 走它的〈退回 discovery〉——由它把 `discovery.md` 改回 `澄清中`。紅卡（`#### Q` 指到的 `discovery.md` 待答題）只在喊停時會出現 |
+| 未就緒，或選了去問別人 | 把他要問的事寫進 `spec.md` 的 `## 回 DISCOVERY 補問`，狀態留 `待對焦`，交回 `spec` 走它的〈退回 discovery〉——由它把 `discovery.md` 改回 `澄清中`。紅卡（`#### Q` 指到的 `discovery.md` 待答題）只在喊停時會出現 |
 
 MUST NOT: agent 自己把 `spec.md` `## Document Overview` 的 `狀態` 推到 `已對焦`。
 
-**代演模式**（需求方不在場，見 `bdd-discovery` 的同名一節）：代演可以答「就緒」，但版本修訂歷史那一列的「誰」
+**代演模式**（需求方不在場，見 `discovery` 的同名一節）：代演可以答「就緒」，但版本修訂歷史那一列的「誰」
 必須寫代演、「為什麼」寫待誰驗收。沒有那一列的 `已對焦` 視同偽造。
 
 ## 產物
@@ -152,12 +152,12 @@ MUST NOT: agent 自己把 `spec.md` `## Document Overview` 的 `狀態` 推到 `
 
 | 狀態 | 誰寫 | 什麼時候 |
 | --- | --- | --- |
-| `待對焦` | `bdd-spec` | `spec.md` 寫完或修補完 |
+| `待對焦` | `spec` | `spec.md` 寫完或修補完 |
 | `已對焦` | 本 skill | 使用者在就緒問句回答「就緒」 |
 | `已凍結` | 尚無寫入者 | PLAN 消費過之後 |
 
 MUST NOT: 單獨模式產出一份 `example-map.md`。**第二個裝規則與例子的地方會跟 `spec.md` 漂移**。要留下來就走
-`bdd-discovery` → `bdd-spec`，讓規則寫進 `spec.md`。
+`discovery` → `spec`，讓規則寫進 `spec.md`。
 
 ## Verification
 
@@ -167,5 +167,5 @@ MUST NOT: 單獨模式產出一份 `example-map.md`。**第二個裝規則與例
 - [ ] 四條診斷都給了結果，觸發的那幾條指名了該交給哪個 skill
 - [ ] 流程內模式：就緒問句提到 `acceptance/` 的路徑，並給了判讀與選項
 - [ ] `已對焦` 只在使用者答「就緒」之後才寫；代演時修訂歷史那一列寫了代演與待誰驗收
-- [ ] 使用者答未就緒 → 要問的事寫進了 `## 回 DISCOVERY 補問`，狀態留 `待對焦`，交回 `bdd-spec`
+- [ ] 使用者答未就緒 → 要問的事寫進了 `## 回 DISCOVERY 補問`，狀態留 `待對焦`，交回 `spec`
 - [ ] 單獨模式沒有寫任何檔案，沒有產出 `example-map.md`

@@ -14,14 +14,14 @@ The plugin's subject is a six-step pipeline:
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
-`bdd-plan` (technical design, `plan.md`) and `bdd-tasks` (slices that design into one
+`plan` (technical design, `plan.md`) and `tasks` (slices that design into one
 file per ticket under `tasks/`, so tickets can run in parallel). IMPLEMENT is served by
-`bdd-implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
-(green and refactor, delegated by `bdd-implement`; `disable-model-invocation`, so only
+`implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
+(green and refactor, delegated by `implement`; `disable-model-invocation`, so only
 that delegation or a manual `/bdd` runs it). SPEC is served by three skills —
-`bdd-spec` (writes `spec.md` from the recorded answers), `bdd-spec-by-example` (writes
+`spec` (writes `spec.md` from the recorded answers), `spec-by-example` (writes
 business-language acceptance journeys under `acceptance/`, not executed) and
-`bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
+`formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
 explains which steps map onto BDD's practices and which are this project's own additions.
 
 ## Commands
@@ -66,16 +66,16 @@ To check it: `go vet -tags generate .`.
 Both take a project root and default to `.`; both exit 1 and name what is missing rather
 than inferring anything from zero input.
 
-`status.py` belongs to `bdd-discovery`:
+`status.py` belongs to `discovery`:
 
 ```bash
-python3 skills/bdd-discovery/scripts/status.py [root]   # red cards and probe coverage per feature, read from discovery.md
+python3 skills/discovery/scripts/status.py [root]   # red cards and probe coverage per feature, read from discovery.md
 ```
 
-`check_spec.py` belongs to `bdd-formulation`:
+`check_spec.py` belongs to `formulation`:
 
 ```bash
-python3 skills/bdd-formulation/scripts/check_spec.py [root]   # spec.md shape + source markers resolved against discovery.md; checks acceptance journeys' @covers- tags; adds .feature ↔ spec.md coverage once features exist
+python3 skills/formulation/scripts/check_spec.py [root]   # spec.md shape + source markers resolved against discovery.md; checks acceptance journeys' @covers- tags; adds .feature ↔ spec.md coverage once features exist
 ```
 
 Both have stdlib unit tests:
@@ -132,17 +132,17 @@ Each of the first three steps holds because it runs in one main working mode:
   agent records `## 原文` verbatim and rough stories, asks at most four analyst questions)
   and then interrogates. Every answer is recorded on the spot in `discovery.md` with the
   originator's words and who answered. **It writes no FR/AC.**
-- **SPEC** is writing mode: `bdd-spec` turns an `已收斂` `discovery.md` into `spec.md`,
-  `bdd-spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
-  takes it to `已對焦`, then `bdd-formulation` writes `.feature` files —
+- **SPEC** is writing mode: `spec` turns an `已收斂` `discovery.md` into `spec.md`,
+  `spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
+  takes it to `已對焦`, then `formulation` writes `.feature` files —
   **none of them interviews**; holes go into `spec.md`'s `## 回 DISCOVERY 補問` and send
   `discovery.md` back to `澄清中`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `discovery.md` — `check_spec.py`
   check 14 rejects both.
 - **PLAN** owns the technical design (seam, modules, contracts, schema, test levels) —
-  `bdd-plan` **does not change requirements**; holes go to `## 缺口`. `bdd-tasks` then
+  `plan` **does not change requirements**; holes go to `## 缺口`. `tasks` then
   slices tracer bullets and **does not change the design**; its holes go to the same
-  `## 缺口`. `bdd-implement` writes only its own ticket file, never `plan.md` or
+  `## 缺口`. `implement` writes only its own ticket file, never `plan.md` or
   `tasks/index.md` — that is what lets tickets run in parallel. A ticket done in a worktree
   is merged back by the session that did it: generated files are regenerated, append-only
   conflicts are unioned, and the gate re-runs on the merged code.

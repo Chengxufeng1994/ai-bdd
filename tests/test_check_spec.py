@@ -6,7 +6,7 @@ from pathlib import Path
 
 from _load import ROOT, load
 
-check_spec = load("skills/bdd-formulation/scripts/check_spec.py")
+check_spec = load("skills/formulation/scripts/check_spec.py")
 
 GOOD = """# spec: parking
 
@@ -144,7 +144,7 @@ class CheckReadsSpec(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("bdd-spec", out)
+            self.assertIn("spec", out)
             self.assertNotIn("先跑 bdd-capture", out)
 
     def test_citation_to_absent_paragraph_fails_check(self):
@@ -158,8 +158,8 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertIn("§9", out)
 
     def test_shipped_example_spec_passes_spec_only_checks(self):
-        example = (ROOT / "skills" / "bdd-spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
-        disc = (ROOT / "skills" / "bdd-discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
+        example = (ROOT / "skills" / "spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
+        disc = (ROOT / "skills" / "discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, example, disc)
@@ -178,7 +178,7 @@ class CheckReadsSpec(unittest.TestCase):
 
             self.assertEqual(code, 1)
             self.assertIn("沒有 spec.md", out)
-            self.assertIn("bdd-discovery", out)
+            self.assertIn("discovery", out)
             self.assertNotIn("bdd-capture", out)
 
     def test_old_layout_prd_beside_spec_exits_1_and_names_git_mv(self):
@@ -237,7 +237,7 @@ class CheckReadsSpec(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 0, out)
-            self.assertIn("先跑 bdd-spec", out)
+            self.assertIn("先跑 spec", out)
 
     def test_1113_layout_exits_1_with_split_hint(self):
         with tempfile.TemporaryDirectory() as d:
@@ -355,9 +355,9 @@ class AcceptanceJourneys(unittest.TestCase):
 
     def test_shipped_journey_example_passes(self):
         skills = ROOT / "skills"
-        spec = (skills / "bdd-spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
-        disc = (skills / "bdd-discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
-        journey = (skills / "bdd-spec-by-example" / "examples" / "訪客出場結帳.feature").read_text(encoding="utf-8")
+        spec = (skills / "spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
+        disc = (skills / "discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
+        journey = (skills / "spec-by-example" / "examples" / "訪客出場結帳.feature").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, spec, disc)

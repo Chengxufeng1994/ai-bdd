@@ -132,7 +132,7 @@ skeleton/
 │   └── DATAFLOW.md          every conversion on the path, and who owns it
 ├── features/                .feature files — specifications, not test code
 │   ├── version.feature      the walking skeleton — implemented, green
-│   └── <story files>        @ready once bdd-formulation writes them — red until IMPLEMENT
+│   └── <story files>        @ready once formulation writes them — red until IMPLEMENT
 └── test/acceptance/         the godog harness that executes them
     ├── godogs_test.go       runner, suite and scenario hooks
     ├── world_test.go        per-scenario state, carried in context.Context
@@ -146,16 +146,16 @@ skeleton/
 clarified and specified, but IMPLEMENT has not run, so no step definitions exist
 and every scenario reports `step is undefined`. (The committed skeleton holds only
 `version.feature`, so a fresh copy is green; a run's copy goes red the moment
-`bdd-formulation` writes its first story file.)
+`formulation` writes its first story file.)
 
-That is what `@ready` means. `bdd-formulation` states the rule it follows from: a
+That is what `@ready` means. `formulation` states the rule it follows from: a
 scenario that goes green the moment it is written verified nothing. The plan for
 turning these green is `docs/bdd/workout-tracking/plan.md` — nine tickets, in
 dependency order.
 
 The runner has no tag filter; it takes every file under `features/`. Adding one
 that excludes unimplemented states would make the suite green, and it is
-deliberately not done yet: the filter's design depends on what `bdd-implement`
+deliberately not done yet: the filter's design depends on what `implement`
 does with `@wip`, and choosing now would be guessing. The risk it trades against
 is the worse one — a filter wide enough to hide a scenario nobody ever runs.
 

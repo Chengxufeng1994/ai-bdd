@@ -6,7 +6,7 @@ from pathlib import Path
 
 from _load import load
 
-status = load("skills/bdd-discovery/scripts/status.py")
+status = load("skills/discovery/scripts/status.py")
 
 DISCOVERY = """# discovery: parking
 
@@ -62,7 +62,7 @@ class StatusReadsDiscovery(unittest.TestCase):
 
             self.assertEqual(code, 1)
             self.assertIn("沒有任何 discovery.md", out)
-            self.assertIn("bdd-discovery", out)
+            self.assertIn("discovery", out)
             self.assertNotIn("bdd-capture", out)
 
     def test_old_layout_prd_beside_spec_exits_1_and_names_git_mv(self):

@@ -2,7 +2,7 @@
 name: clarify
 description: >
   多輪迭代把未解問題逐一問到收斂——每題四個選項、必要時附提案與理由，答不出來就
-  記成紅卡並繼續下一題，每輪結束給進度。可接手 bdd-discovery 的紅卡，也可單獨用在
+  記成紅卡並繼續下一題，每輪結束給進度。可接手 discovery 的紅卡，也可單獨用在
   任何「一疊問題需要收斂」的場合。
   觸發詞：「還有哪些沒釐清」「把問題問完」「紅卡清一清」「再問一輪」
   「繼續澄清」「還有幾張紅卡」「這些問題怎麼收斂」「問到不能再問為止」「clarify」。
@@ -17,15 +17,15 @@ description: >
 | **職責** | 把一疊未解的問題逐題問到收斂，交出「哪些解了、哪些還開著、還缺誰」 |
 | **讀** | `specs/<date>-<feature>/discovery.md` `## Open Questions` 裡 `待答` 的列；單獨使用時讀對方給的描述 |
 | **寫** | 同一份 `discovery.md` 的 `## Open Questions` 列與小節；單獨使用時新建 `specs/<date>-<topic-slug>/discovery.md`（三節） |
-| **上游** | `bdd-discovery`（它的紅卡）；也可單獨使用 |
-| **下游** | 收斂後進 SPEC（`bdd-spec`） |
+| **上游** | `discovery`（它的紅卡）；也可單獨使用 |
+| **下游** | 收斂後進 SPEC（`spec`） |
 | **不做** | 不做決定、不寫 `spec.md`／`plan.md`／`.feature`、不改寫 `## 原文`、不改程式碼、不自己編題 |
 
 跑幾輪不由題數決定，由**問題是否還在減少**決定。
 
 ## 使用時機
 
-- `bdd-discovery` 產出了紅卡，要把它們逐一問掉
+- `discovery` 產出了紅卡，要把它們逐一問掉
 - 上一輪澄清之後又冒出新問題，需要再跑一輪
 - 手上有一疊模糊的問題，想知道哪些能當場解決、哪些必須去問別人
 - 想知道「還差多少才能開工」
@@ -34,8 +34,8 @@ description: >
 
 | 情況 | 改用 |
 | --- | --- |
-| 要從零開始**找出**問題（抽規則、配例子） | `bdd-discovery`，本 skill 接手它的產出 |
-| 要把例子寫成 Gherkin | `bdd-formulation` |
+| 要從零開始**找出**問題（抽規則、配例子） | `discovery`，本 skill 接手它的產出 |
+| 要把例子寫成 Gherkin | `formulation` |
 | 通用的需求訪談、不涉及 `discovery.md` 與紅卡 | 環境中另有同名的外部 skill `clarify-loop`，以「最多五題」為終止條件；本 skill 以「紅卡清空」為終止條件 |
 
 ## 前置確認（Ask user）
@@ -43,7 +43,7 @@ description: >
 Ask user: 若以下不明確，先問清楚。
 
 1. **要收斂哪一疊問題**：`discovery.md` `## Open Questions` 裡狀態為「待答」的列。
-   `python3 skills/bdd-discovery/scripts/status.py` 列得出每個 feature 還剩哪幾題。
+   `python3 skills/discovery/scripts/status.py` 列得出每個 feature 還剩哪幾題。
    單獨使用時，一段模糊的描述也可以——本 skill 會先把它拆成問題，逐題記錄答案
 2. **這一輪想推進到哪**：全部問完，還是先清掉能當場決定的。**先知道範圍，
    才不會把一輪拖成沒有終點的訪談**
@@ -81,7 +81,7 @@ IMPORTANT: 阻塞的題目**不要換句話說再問一次**。使用者答不�
 先讀那個原因再決定怎麼問：
 
 ```bash
-python3 skills/bdd-discovery/scripts/status.py   # 列出每個 feature 還待答的問題
+python3 skills/discovery/scripts/status.py   # 列出每個 feature 還待答的問題
 ```
 
 | 跳過的原因 | 這一輪怎麼處理 |
@@ -90,14 +90,14 @@ python3 skills/bdd-discovery/scripts/status.py   # 列出每個 feature 還待�
 | 這題不該問 | 先確認它真的不影響任何規則。是 → 狀態改 `n/a`，答案欄寫清楚為什麼不用問 |
 
 一次跑多個 feature 時，**跨 feature 的共用規則會浮現**——這是逐一處理單一 feature 時
-看不到的收穫，見 `bdd-discovery` 對這件事的說明。
+看不到的收穫，見 `discovery` 對這件事的說明。
 
 MUST: 一個問題確定就**立刻**在 `discovery.md` `## Open Questions` 把那一列狀態改 `已答`、
 答案欄填結論，小節補 `**誰答的**` 與答案原話——格式見
-`../bdd-discovery/references/discovery-format.md`。這跟 `bdd-discovery` 的記錄紀律是同一條。
+`../discovery/references/discovery-format.md`。這跟 `discovery` 的記錄紀律是同一條。
 
 MUST NOT: 寫 `spec.md`、`plan.md`、`.feature`，或改寫 `discovery.md` 的 `## 原文`。答案只有
-一個家：`## Open Questions` 的列與它的小節；規則由 `bdd-spec` 之後從這裡寫。
+一個家：`## Open Questions` 的列與它的小節；規則由 `spec` 之後從這裡寫。
 
 不要累積到一輪結束才一次更新：剛答完那一刻你還記得它跟哪條規則有關，隔了十題再回來
 併，漏掉的機率高得多；而且中途停下時，記錄應該永遠是完整可用的。
@@ -153,7 +153,7 @@ SHOULD: 一輪 3–5 題。但真正的判準不是數字，是**回答品質**�
 
 ### 這輪解決的
 - Q-3 熱身組不計入 → 已答
-- Q-5 單位一律存公斤 → 已答（跨 feature 的規則，由 `bdd-spec` 寫進規格時處理）
+- Q-5 單位一律存公斤 → 已答（跨 feature 的規則，由 `spec` 寫進規格時處理）
 
 ### 還開著
 | | 問題 | 該問誰 |
@@ -204,7 +204,7 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 
 ### 單獨使用時
 
-寫入 `specs/<date>-<topic-slug>/discovery.md`（跟 `bdd-discovery` 同一個檔），只有三節：
+寫入 `specs/<date>-<topic-slug>/discovery.md`（跟 `discovery` 同一個檔），只有三節：
 
 ```markdown
 # discovery: <主題>
@@ -229,7 +229,7 @@ IMPORTANT: **「新發現」要單獨列，不要混進「開啟中」。** 前�
 <對方給的那段描述，逐字>
 ```
 
-被推翻的提案記在對應題的小節。用同一個檔名與格式，是為了之後 `bdd-discovery` 開場
+被推翻的提案記在對應題的小節。用同一個檔名與格式，是為了之後 `discovery` 開場
 補粗切 story 時，問答不必搬家。
 
 產物一律寫在 `specs/` 底下，不修改專案既有的任何檔案。

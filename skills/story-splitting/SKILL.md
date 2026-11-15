@@ -16,8 +16,8 @@ description: >
 | **職責** | 把一則太大的 story 切成數則**各自都還能交付價值**的小 story，並寫下切分依據 |
 | **讀** | 要切的 story（一句話，或 `spec.md` 的某幾條 `FR-<n>`）與已知的規則 |
 | **寫** | 看誰呼叫：`discovery.md` 的 `## 粗切 story` 或 `spec.md` 的 `## User Stories`；切分紀錄追加進同目錄的 `splitting.md` |
-| **上游** | `bdd-discovery`（粗切）、`bdd-spec`（`已對焦` 前重切）；也可單獨使用 |
-| **下游** | 回到呼叫它的 skill；`spec.md` 改完由 `bdd-formulation` 寫成 `.feature` |
+| **上游** | `discovery`（粗切）、`spec`（`已對焦` 前重切）；也可單獨使用 |
+| **下游** | 回到呼叫它的 skill；`spec.md` 改完由 `formulation` 寫成 `.feature` |
 | **不做** | 不排順序、不估點數、不寫規格、`spec.md` 已經 `已對焦` 時不切 |
 
 **切開的是價值，不是工作量。** 每一則都要還能單獨交付價值，否則只是把工作分段。
@@ -33,9 +33,9 @@ description: >
 
 | 情況 | 改用 |
 | --- | --- |
-| 要從需求問出規則與例子，或要寫成 FR／AC | 前者 `bdd-discovery`，後者 `bdd-spec`。本 skill 只管切分 |
+| 要從需求問出規則與例子，或要寫成 FR／AC | 前者 `discovery`，後者 `spec`。本 skill 只管切分 |
 | 要把紅卡問到收斂 | `clarify` |
-| 要決定切完之後**先做哪一則** | 那是排序，屬於 `bdd-tasks`。本 skill 只切，不排 |
+| 要決定切完之後**先做哪一則** | 那是排序，屬於 `tasks`。本 skill 只切，不排 |
 | 要跑四色卡診斷、或判定這則 story 就不就緒 | `example-mapping` |
 
 ## 前置確認（Ask user）
@@ -86,7 +86,7 @@ Example Mapping 的診斷訊號裡，跟切分有關的是**藍卡（規則）�
 **一條規則掛太多例子不是切分訊號。** 例子多不代表 story 大，可能只是規則講得太粗
 ——先試著把那條規則拆成兩三條，再看還需不需要切。
 
-由 `bdd-discovery` 粗切時呼叫、還沒有任何規則：這一步與第 3 步都不適用，直接到第 4 步的九種
+由 `discovery` 粗切時呼叫、還沒有任何規則：這一步與第 3 步都不適用，直接到第 4 步的九種
 模式。
 
 ### 3. 優先沿規則切
@@ -136,7 +136,7 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 先過一條硬性的，再套兩條偏好的。
 
 **規則零（硬性）：命令與查詢不同住一則。** 一則 story 就是一個 `.feature`，而
-`.feature` 一檔只能標 `@command` 或 `@query`（`bdd-formulation`）。任何一種切法切出
+`.feature` 一檔只能標 `@command` 或 `@query`（`formulation`）。任何一種切法切出
 一則同時含「改變世界」與「只讀」的規則，先沿型別切開，再比較下面兩條。parking
 實跑撞過：US-1 混了一條查詢、US-4 混了一條命令，到 FORMULATION 才發現，回頭重切。
 
@@ -218,11 +218,11 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 ## 完成後
 
 - 告訴對方切成幾則、依據是什麼、哪一則你認為可以不做
-- **不要順便排順序**——那是 `bdd-tasks` 的事。切分只回答「分成哪幾則」，不回答「先做哪一則」
+- **不要順便排順序**——那是 `tasks` 的事。切分只回答「分成哪幾則」，不回答「先做哪一則」
 - 切完改哪一份看是誰呼叫的：
 
 | 誰呼叫 | 改哪一份 |
 | --- | --- |
-| `bdd-discovery`（還沒有規則） | `discovery.md` 的 `## 粗切 story`，一則一行 |
-| `bdd-spec`（規則已寫、`spec.md` 還沒 `已對焦`） | `spec.md` 的 `## User Stories`：搬 FR 到它的新 story 底下，編號不變；之後由 `bdd-formulation` 寫成 `.feature` |
-| `spec.md` 已經 `已對焦` | 不切。`.feature` 的檔名與 tag 已經掛在舊的切法上；回 `bdd-discovery` 開一題，走一輪再改 |
+| `discovery`（還沒有規則） | `discovery.md` 的 `## 粗切 story`，一則一行 |
+| `spec`（規則已寫、`spec.md` 還沒 `已對焦`） | `spec.md` 的 `## User Stories`：搬 FR 到它的新 story 底下，編號不變；之後由 `formulation` 寫成 `.feature` |
+| `spec.md` 已經 `已對焦` | 不切。`.feature` 的檔名與 tag 已經掛在舊的切法上；回 `discovery` 開一題，走一輪再改 |

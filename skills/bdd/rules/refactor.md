@@ -13,7 +13,7 @@
 
 | 訊號 | 整理成 |
 | --- | --- |
-| 兩支 step 只差一個字（`應付金額為` / `應付金額應為`） | 留一支。照 `../../bdd-formulation/references/step-grammar.md` 的句型，另一支的場景**不改文字**——所以只能在兩句本來就該是同一句時合併；不是的話回報 |
+| 兩支 step 只差一個字（`應付金額為` / `應付金額應為`） | 留一支。照 `../../formulation/references/step-grammar.md` 的句型，另一支的場景**不改文字**——所以只能在兩句本來就該是同一句時合併；不是的話回報 |
 | 好幾支 step 各自把字串轉成金額、時間 | 抽成一個轉換函式，或 runner 的參數型別 |
 | step 裡直接操作 store 擺狀態，到處重複 | 下沉成 fixture／建態 helper |
 | helper 的名字是它怎麼做的（`insertRowAndSetFlag`） | 改成它擺出什麼狀態（`aPaidStay`） |

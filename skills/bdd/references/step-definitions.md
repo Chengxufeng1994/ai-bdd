@@ -1,6 +1,6 @@
 # step definitions：先找再寫
 
-`red` 寫步驟骨架、`green` 補步驟實作、`refactor` 整理步驟時都適用。`bdd-implement` 在票的
+`red` 寫步驟骨架、`green` 補步驟實作、`refactor` 整理步驟時都適用。`implement` 在票的
 測試層先紅時也照這份寫。
 
 MUST: 寫新步驟之前 `grep` 既有的 step definition（實測場 `make steps`）。同一句話兩種
