@@ -14,18 +14,19 @@ description: >
 
 # IMPLEMENT — 一張票，從紅到綠
 
-一張 `tasks/` 的票進來，出去的是：那張票涵蓋的場景全綠、專案的驗證閘門綠、票檔的驗收
-條件打勾；涵蓋同一個 `.feature` 的票都做完時，`.feature` 標 `@review`。
+| | |
+| --- | --- |
+| **職責** | 把一張票做到綠：測試層先紅、委派 `bdd` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
+| **讀** | `tasks/<票>.md`、`tasks/index.md`、`plan.md` 的技術節、`spec.md`、這張票涵蓋的 `.feature`、專案的架構文件 |
+| **寫** | 產品程式碼與 step definition、這張票的票檔（勾選、`## 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
+| **上游** | `bdd-tasks`（票切好之後） |
+| **下游** | `bdd`（第 3、4 步委派）；做完之後是 REVIEW（未實作） |
+| **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做技術節沒做的設計決定 |
 
 **外迴圈先紅，內迴圈先紅，然後才寫程式。** 外迴圈是 `.feature` 的場景（godog／
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
-才有理由。
-
-本 skill 管**整張票**：標 tag、讓測試層先紅、跑閘門、勾驗收條件、合回主線。票裡的轉綠與整理
-委派給 `bdd`——它一次一個場景、一次一個入口。
-
-不改 `spec.md`。不改 `.feature` 的例子。不做 `plan.md` 技術節沒做的設計決定——發現有洞就
-記下來，不順手補。
+才有理由。票裡的轉綠與整理委派給 `bdd`——它一次一個場景、一次一個入口。發現技術節的洞
+就記下來，不順手補。
 
 ## 使用時機
 
@@ -35,15 +36,16 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 
 ## Skill Boundaries
 
-- 還沒有 `.feature` → `bdd-formulation`；`plan.md` 沒有技術節（seam、埠、契約）→ `bdd-plan`
-- 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式）→ `bdd-tasks`
-- 票之間的順序、要不要再切、哪幾張能同時做 → `bdd-tasks`
-- 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 → 使用者手動叫 `/bdd`。
-  本 skill 做票時第 3、4 步本來就委派它
-- 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」→ REVIEW（`bdd-review`，未實作）
-- 紅的是 bug 還是規格過期 → VERIFY（`bdd-verify`，未實作）；本 skill 只處理自己這張票
-  讓紅變綠，不判讀別人的紅
-- 要改規則或例子 → 回 `bdd-discovery` 開一題；本 skill 不碰 `spec.md`、不碰 `.feature` 的例子
+| 情況 | 改用 |
+| --- | --- |
+| 還沒有 `.feature` | `bdd-formulation` |
+| `plan.md` 沒有技術節（seam、埠、契約） | `bdd-plan` |
+| 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式） | `bdd-tasks` |
+| 票之間的順序、要不要再切、哪幾張能同時做 | `bdd-tasks` |
+| 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/bdd`；本 skill 做票時第 3、4 步本來就委派它 |
+| 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」 | REVIEW（`bdd-review`，未實作） |
+| 紅的是 bug 還是規格過期 | VERIFY（`bdd-verify`，未實作）；本 skill 只處理自己這張票讓紅變綠，不判讀別人的紅 |
+| 要改規則或例子 | 回 `bdd-discovery` 開一題；本 skill 不碰 `spec.md`、不碰 `.feature` 的例子 |
 
 ## 參考檔案
 
@@ -80,6 +82,16 @@ MUST: 開工時工作區是乾淨的；做完這張票一個 commit，只 stage 
 ---
 
 ## 流程
+
+| 步驟 | 做什麼 | 誰做 | 要問使用者嗎 |
+| --- | --- | --- | --- |
+| 1 | 讀票，標 `@wip` | 本 skill | — |
+| 2 | 測試層先紅：場景都接上 step definition，沒有 undefined step | 本 skill | — |
+| 3 | green：一個場景一個場景轉綠 | 委派 `bdd` | — |
+| 4 | refactor：在綠燈下整理 | 委派 `bdd` | — |
+| 5 | 外迴圈綠，閘門綠 | 本 skill | — |
+| 6 | 收尾：勾驗收條件、寫缺口、判斷 `@review` | 本 skill | — |
+| 7 | 合回主線（只在 worktree 裡做時） | 本 skill | 碰到 `爭用` 或沒列到的衝突時停下回報 |
 
 ### 1. 讀票，標 `@wip`
 

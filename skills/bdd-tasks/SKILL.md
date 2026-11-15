@@ -13,9 +13,14 @@ description: >
 
 # TASKS — 把怎麼做拆成票
 
-一份寫好技術節的 `plan.md`、已對焦的 `spec.md` 與涵蓋的 `.feature` 進來，出去的是同目錄的
-`tasks/`：**一張票一個檔**——每張是穿過所有層的 tracer bullet——加一份 `index.md`，記誰卡誰、
-誰跟誰會動到同一個檔、哪幾張可以同時開始。
+| | |
+| --- | --- |
+| **職責** | 把技術設計拆成一疊 tracer bullet：一張票一個檔，每張穿過所有層、自己可 demo，標明誰卡誰、會碰哪些接合點 |
+| **讀** | `plan.md`（有技術節與 `## Parallel Work`）、`spec.md` 的 `## User Stories`、涵蓋的 `.feature` |
+| **寫** | `specs/<date>-<feature>/tasks/`（票檔＋`index.md`）；`plan.md` 只在 `## 缺口` 加列 |
+| **上游** | `bdd-plan`（技術節與「要不要並行」寫好之後） |
+| **下游** | `bdd-implement <票號>`（一張票一個全新 session） |
+| **不做** | 不改 `plan.md` 的技術節、不改 FR／AC／story、不派工、不寫程式 |
 
 **不改設計。** seam、模組、契約、schema 是 `bdd-plan` 定的；這一步只把它們拆開排序。
 拆的時候發現設計有洞，寫進 `plan.md` 的 `## 缺口`，不要順手補。
@@ -28,11 +33,14 @@ description: >
 
 ## Skill Boundaries
 
-- 還沒有 `plan.md`、或它沒有技術節（seam、模組、契約）→ `bdd-plan`
-- 要改 seam、介面、schema → `bdd-plan`；要改 FR、AC、story → `bdd-spec`
-- 要把太大的 **story** 切小 → `story-splitting`，它切的是需求，本 skill 切的是實作
-- 要實際做某一張票 → `bdd-implement`
-- 派幾個 agent、誰做哪一張 → 不在本 skill；這裡只講哪幾張**可以**同時做
+| 情況 | 改用 |
+| --- | --- |
+| 還沒有 `plan.md`、或它沒有技術節（seam、模組、契約） | `bdd-plan` |
+| 要改 seam、介面、schema | `bdd-plan` |
+| 要改 FR、AC、story | `bdd-spec` |
+| 要把太大的 **story** 切小 | `story-splitting`——它切的是需求，本 skill 切的是實作 |
+| 要實際做某一張票 | `bdd-implement` |
+| 派幾個 agent、誰做哪一張 | 不在本 skill；這裡只講哪幾張**可以**同時做 |
 
 ## 參考檔案
 
@@ -49,18 +57,15 @@ Check if: `specs/<date>-<feature>/plan.md` 讀得到，而且有 `## Implementat
 
 ---
 
-## 不改設計
-
-MUST NOT: 在這一步新增、刪除或改寫 `plan.md` 的技術節，或任何 FR、AC、story。
-
-判準：指著票裡的任何一句話，說得出它來自 `spec.md` 的哪條 FR、技術節的哪一個決定、
-或哪個 `@example-N.M` 嗎？說不出來就是這一步僭越了。
-
-切票時發現需要、但技術節沒定案的（兩張票對同一個介面的假設不一樣、某個場景不知道在
-哪一層測），在 `plan.md` 的 `## 缺口` 加一列，告訴使用者，請他跑 `bdd-plan` 補——這是本
-skill 唯一寫 `plan.md` 的地方。
-
 ## 流程
+
+| 步驟 | 做什麼 | 要問使用者嗎 |
+| --- | --- | --- |
+| 1 | 一次讀完整批 | — |
+| 2 | 切票：最薄的完整路徑先，其餘依 FR | — |
+| 3 | 標 Blocked by 與接合點 | — |
+| 4 | 攤出來確認 | 要 |
+| 5 | 寫 `tasks/` | — |
 
 ### 1. 讀
 
@@ -119,6 +124,17 @@ IMPORTANT: **切太細是這一步最常見的失效**，而且它不會自己�
 
 照 `references/tasks-format.md`：先票檔，後 `index.md`；`index.md` 的 `Blocked by`、
 `接合點` 兩欄跟票檔一字不差。
+
+## 不改設計：有洞怎麼辦
+
+MUST NOT: 在這一步新增、刪除或改寫 `plan.md` 的技術節，或任何 FR、AC、story。
+
+判準：指著票裡的任何一句話，說得出它來自 `spec.md` 的哪條 FR、技術節的哪一個決定、
+或哪個 `@example-N.M` 嗎？說不出來就是這一步僭越了。
+
+切票時發現需要、但技術節沒定案的（兩張票對同一個介面的假設不一樣、某個場景不知道在
+哪一層測），在 `plan.md` 的 `## 缺口` 加一列，告訴使用者，請他跑 `bdd-plan` 補——這是本
+skill 唯一寫 `plan.md` 的地方。
 
 ## 再跑：重切，不重編
 
