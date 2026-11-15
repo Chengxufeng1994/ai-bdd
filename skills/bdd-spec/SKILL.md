@@ -13,15 +13,18 @@ description: >
 
 # SPEC — 把問答寫成規格
 
-一份 `已收斂` 的 `discovery.md` 進來，出去的是同目錄的 `spec.md`（`已對焦`）與它的
-`.feature`：**每則 story 底下有規則有例子、每一條行尾指得出 `discovery.md` 裡的哪一題或
-哪一段原文、需求方看過說「就緒」。**
+| | |
+| --- | --- |
+| **職責** | 把已收斂的問答寫成業務規格，帶到需求方說「就緒」，再交出去產 `.feature` |
+| **讀** | `specs/<date>-<feature>/discovery.md`（`已收斂`，或 `澄清中` 且結束方式 `喊停`） |
+| **寫** | `specs/<date>-<feature>/spec.md`、`specs/domain-model.md`（增修）、`docs/CONTEXT.md`（建立或追加）；退回時 `discovery.md` 的狀態與修訂歷史一列 |
+| **上游** | `bdd-discovery` |
+| **下游** | `example-mapping` ＋ `bdd-spec-by-example`（判就緒）→ `已對焦` 後 `bdd-formulation` → `bdd-plan` |
+| **不做** | 不訪談、不標 `推論`、不自己寫 `已對焦`、不寫 `.feature`、不寫 seam／API／schema／測試層級 |
 
 **不訪談。** 這一步只寫已經有答案的東西。問答推不出來的，寫進 `spec.md` 的
 `## 回 DISCOVERY 補問`，把 `discovery.md` 退回 `澄清中`，不要順手問掉——這一步沒有把答案
 寫進 `discovery.md` 的權限，順口問到的答案只活在這一次對話裡。
-
-不寫 seam、API、schema、測試層級——那是 `bdd-plan` 的事，寫在 `plan.md`。
 
 ## 使用時機
 
@@ -31,14 +34,17 @@ description: >
 
 ## Skill Boundaries
 
-- `discovery.md` 還有待答、或結束方式是 `阻塞`／`零進展` → 回 `bdd-discovery`
-- 要把 FR 與 AC 寫成 `.feature` → `bdd-formulation`，本 skill 在 `已對焦` 之後呼叫它
-- 要攤四色卡、判就緒 → `example-mapping`，本 skill 寫完 `spec.md` 之後呼叫它
-- 要把規格寫成業務方讀的驗收旅程 → `bdd-spec-by-example`，本 skill 在診斷之後、就緒問句之前呼叫它
-- 寫規則時 story 切得不對 → `story-splitting`，`已對焦` 之前本 skill 可以呼叫它重切
-- 要決定 seam、模組、契約 → `bdd-plan`；實作順序與切票 → `bdd-tasks`
-- 產出是 `spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是**
-  `discovery.md`、`plan.md`、程式碼；`.feature` 由 `bdd-formulation` 寫
+| 情況 | 改用 |
+| --- | --- |
+| `discovery.md` 還有待答、或結束方式是 `阻塞`／`零進展` | `bdd-discovery` |
+| 要把 FR 與 AC 寫成 `.feature` | `bdd-formulation`，本 skill 在 `已對焦` 之後呼叫它 |
+| 要攤四色卡、判就緒 | `example-mapping`，本 skill 寫完 `spec.md` 之後呼叫它 |
+| 要把規格寫成業務方讀的驗收旅程 | `bdd-spec-by-example`，本 skill 在診斷之後、就緒問句之前呼叫它 |
+| 寫規則時 story 切得不對 | `story-splitting`，`已對焦` 之前本 skill 可以呼叫它重切 |
+| 要決定 seam、API、schema、測試層級、模組、契約 | `bdd-plan`（寫在 `plan.md`）；實作順序與切票 → `bdd-tasks` |
+
+產出是 `spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是**
+`discovery.md`、`plan.md`、程式碼；`.feature` 由 `bdd-formulation` 寫。
 
 ## 參考檔案
 
@@ -53,9 +59,7 @@ description: >
 
 ## 前置確認（Ask user）
 
-不必問輸入的位置。`discovery.md` 在 `specs/<date>-<feature>/`。
-
-收兩種 `discovery.md`：
+不必問輸入的位置。`discovery.md` 在 `specs/<date>-<feature>/`。收兩種：
 
 | 狀態／結束方式 | 怎麼做 |
 | --- | --- |
@@ -69,17 +73,15 @@ NEVER: `discovery.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是�
 
 ## 流程
 
-```
-discovery.md（已收斂 或 喊停）
-   ↓ 1. 寫 spec.md（待對焦）
-   ↓ 2. 收尾檢查（可重切 story）
-   ↓ 3. 自檢 check_spec.py
-   ↓ 4. 詞彙 → docs/CONTEXT.md、聚合 → specs/domain-model.md
-   ↓ 5. example-mapping 地圖、四條診斷 → bdd-spec-by-example 寫 acceptance/ 旅程
-        → example-mapping 就緒問句
-   ├─ 需求方答「就緒」→ 已對焦 → 6. bdd-formulation 產 .feature
-   └─ 不就緒／補問清單非空／旅程有 # [need clarification] → 7. 退回 discovery
-```
+| 步驟 | 做什麼 | 要問使用者嗎 |
+| --- | --- | --- |
+| 1 | 寫 `spec.md`（`待對焦`） | — |
+| 2 | 收尾檢查，必要時重切 story | — |
+| 3 | 自檢 `check_spec.py` | — |
+| 4 | 詞彙 → `docs/CONTEXT.md`、聚合 → `specs/domain-model.md` | — |
+| 5 | `example-mapping` 診斷 → `bdd-spec-by-example` 寫旅程 → 就緒問句 | 要，由 `example-mapping` 問需求方 |
+| 6 | 需求方答「就緒」→ `已對焦` → `bdd-formulation` 產 `.feature` | — |
+| 7 | 不就緒、補問清單非空、或旅程有 `# [need clarification]` → 退回 discovery | — |
 
 ### 1. 寫 `spec.md`
 
@@ -93,6 +95,7 @@ discovery.md（已收斂 或 喊停）
 | 角色那幾題的小節 | `## Personas` 的五欄 |
 | `## 粗切 story` | `### US-<n> · <slug>` 與 `身為…` 那一句（slug 照抄，`.feature` 檔名靠它） |
 | `### 核心關係人` | **照抄**，不增列也不改寫 `決策權` |
+| `歸屬` 是 `plan.md` 技術節的題 | 不寫進這裡，留給 `bdd-plan` |
 
 MUST: FR 與 AC 的行尾**只准** `← Q-<n>`（那一題必須是 `已答`）或 `← PRD §n`。一條規則
 找不到來源，就是問答裡沒有它——寫進 `## 回 DISCOVERY 補問`，不要標 `推論` 把它寫出來。
@@ -100,20 +103,17 @@ MUST: FR 與 AC 的行尾**只准** `← Q-<n>`（那一題必須是 `已答`）
 MUST: AC 的值照小節裡記下的例子寫。小節只有結論、沒有例子的，那條 FR 的 AC 寫不出來
 ——進補問清單，不要從結論編一個例子。
 
-`歸屬` 是 `plan.md` 技術節的題不寫進這裡，留給 `bdd-plan`。
-
 狀態寫 `待對焦`。
 
 ### 2. 收尾檢查
 
 只有寫出 FR 之後才做得了的檢查，原本在 discovery 收尾，現在在這裡：
 
-- **角色**：`## Personas` 的每個角色至少被一條 FR 的主詞或一則 story 的 `身為` 用到；
-  FR 與 story 用到的角色都在 `## Personas` 裡
-- **型別**：每則 story 底下的 FR 要嘛全是改變世界的（命令），要嘛全是只讀的（查詢）。
-  混著的那則用 `story-splitting` 沿型別切開——`.feature` 一檔只能是 `@command` 或 `@query`
-- **大小**：一則 story 的 FR（藍卡）多到 `example-mapping` 會判「太大」，先用
-  `story-splitting` 切
+| 檢查 | 要成立的 | 不成立時 |
+| --- | --- | --- |
+| **角色** | `## Personas` 的每個角色至少被一條 FR 的主詞或一則 story 的 `身為` 用到；FR 與 story 用到的角色都在 `## Personas` 裡 | 要的資訊問答裡沒有 → 第 7 步 |
+| **型別** | 每則 story 底下的 FR 要嘛全是改變世界的（命令），要嘛全是只讀的（查詢） | 用 `story-splitting` 沿型別切開——`.feature` 一檔只能是 `@command` 或 `@query` |
+| **大小** | 一則 story 的 FR（藍卡）不多到 `example-mapping` 會判「太大」 | 先用 `story-splitting` 切 |
 
 **`已對焦` 之前可以重切 story**：還沒有 `.feature` 掛在舊的切法上。`discovery.md` 的
 `## 粗切 story` 是起點，不跟著改——story 的定案位置是 `spec.md` 的 `## User Stories`。
@@ -186,17 +186,21 @@ MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本�
 ### 6. `已對焦` → 呼叫 `bdd-formulation`
 
 需求方答「就緒」、`example-mapping` 寫了 `已對焦`，呼叫 `bdd-formulation` 把 FR 與 AC
-寫成 `.feature`（`@ready`），`acceptance/` 的旅程只供它參考用語。`.feature` 已經存在（修補的情況）時，它照自己處理
-「規則改了」的方式改場景。寫完再跑一次 `check_spec.py`，十七項全過才算 to spec 完成。
+寫成 `.feature`（`@ready`），`acceptance/` 的旅程只供它參考用語。`.feature` 已經存在
+（修補的情況）時，它照自己處理「規則改了」的方式改場景。寫完再跑一次 `check_spec.py`，
+十七項全過才算 to spec 完成。
 
 ### 7. 退回 discovery
 
 四種情況：補問清單非空、`bdd-spec-by-example` 在旅程裡標了 `# [need clarification]`、
 `example-mapping` 判不就緒、收尾檢查要的資訊問答裡沒有。
 
-- `spec.md`：`## 回 DISCOVERY 補問` 一條一列，寫清楚影響什麼定不下來；狀態留 `待對焦`
-- `discovery.md`：狀態改回 `澄清中`，`### 版本修訂歷史` 記一列「回頭：<原因>」
-- 告訴使用者跑 `bdd-discovery`——它續跑時會讀這份補問清單，把每一條開成新題
+| 檔案 | 寫什麼 |
+| --- | --- |
+| `spec.md` | `## 回 DISCOVERY 補問` 一條一列，寫清楚影響什麼定不下來；狀態留 `待對焦` |
+| `discovery.md` | 狀態改回 `澄清中`，`### 版本修訂歷史` 記一列「回頭：<原因>」 |
+
+告訴使用者跑 `bdd-discovery`——它續跑時會讀這份補問清單，把每一條開成新題。
 
 ### 再跑：修補，不重寫
 
@@ -205,28 +209,19 @@ MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本�
 - FR／AC 編號**不重排**——`.feature` 的 `@example-n.m` 掛在上面，重排會讓 tag 安靜地
   指到另一條規則。新的接著編號
 - 改動的每一條在 `### 版本修訂歷史` 記一列（改了什麼、為什麼、`← Q-<n>`）
-- 補問清單裡被答掉的列刪除（判準：`discovery.md` 有一題的 `**來自**` 逐字引了它、而且已答）；引用了被「取代」的舊題的規則，改引新題
+- 補問清單裡被答掉的列刪除（判準：`discovery.md` 有一題的 `**來自**` 逐字引了它、而且已答）；
+  引用了被「取代」的舊題的規則，改引新題
 - 狀態回 `待對焦`，從第 2 步重跑
 
-## 產物格式
-
-```
-specs/<date>-<feature>/
-├── discovery.md      DISCOVERY 的產物；本 skill 只讀，退回時改狀態與修訂歷史
-└── spec.md           SPEC  ★ 業務規格
-
-specs/domain-model.md           增修
-docs/CONTEXT.md                 建立或追加
-features/<story-slug>.feature   由 bdd-formulation 寫
-```
+## 產物
 
 | 產物 | 格式 |
 | --- | --- |
-| `specs/<date>-<feature>/spec.md` | `references/spec-format.md` |
+| `specs/<date>-<feature>/spec.md`（業務規格） | `references/spec-format.md` |
 | `specs/domain-model.md`（增修） | `references/domain-model-format.md` |
 | `docs/CONTEXT.md`（建立或追加） | 第 4 步「詞彙表」 |
-
-## 產物隔離
+| `specs/<date>-<feature>/discovery.md` | DISCOVERY 的產物；本 skill 只讀，退回時改狀態與修訂歷史 |
+| `features/<story-slug>.feature` | 由 `bdd-formulation` 寫 |
 
 MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何其他檔案**（含
 `docs/CONTEXT.md` 既有段落）。`discovery.md` 只動兩處：退回時的狀態與修訂歷史一列。

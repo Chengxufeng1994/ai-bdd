@@ -15,65 +15,53 @@ description: >
 
 # FORMULATION — 把 `spec.md` 翻成可執行的規格
 
-一份已對焦的 `spec.md` 進來，出去的是 `.feature`：**FR 變成 `Rule:` 區塊、
-AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋表也要產，
-但它是回報給人的，不是落地的檔案——缺口同時要就地註解進 `.feature`。
+| | |
+| --- | --- |
+| **職責** | 把已對焦的 `spec.md` 翻成 Gherkin `.feature`：FR 變 `Rule:`、AC 變 `Example:`、編號變 tag，步驟套一組封閉文法 |
+| **讀** | `specs/<date>-<feature>/spec.md`（`已對焦`）、`docs/CONTEXT.md`、既有的 `.feature`、`specs/<date>-<feature>/acceptance/*.feature`（只取用語） |
+| **寫** | `features/<story-slug>.feature`（測試框架已有位置就跟隨）；覆蓋表只回報、不落地 |
+| **上游** | `bdd-spec`（`已對焦` 之後呼叫本 skill） |
+| **下游** | `bdd-plan`（覆蓋表沒有大洞時）；洞多回 `bdd-spec` |
+| **不做** | 不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不決定 seam、不讀 `plan.md` |
 
-不訪談。不發明新的例子。不寫 step definition。不決定情境跑在哪一層——seam 是
-`bdd-plan` 的事，寫在 `plan.md` 裡，本 skill 不讀它。
-
-這一步也是**跟 PM 對答案**的那一步。`.feature` 就是對答案用的那一份，不另做第二
-份給人讀的版本——那是 Cucumber 的前提。PM 讀不動就修 `references/step-grammar.md`。
+**不發明例子。** `Rule:`、`Example:` 與 `@rule-`／`@example-` tag 只從 `spec.md` 來；覺得少了
+一個邊界，那是 DISCOVERY 的發現，回 `bdd-spec`，不在這裡順手補。覆蓋表要產，但它是回報給人的，
+不是落地的檔案——缺口同時要就地註解進 `.feature`。
 
 ## 使用時機
 
 - `spec.md` 已對焦，要把 FR 與 AC 變成 `.feature`
-- 要跟 PM 或需求方對答案——攤開規則與例子請他點頭
+- 要跟 PM 或需求方對答案——攤開規則與例子請他點頭。`.feature` 就是對答案用的那一份，不另做第二
+  份給人讀的版本——那是 Cucumber 的前提。PM 讀不動就修 `references/step-grammar.md`
 - 準備進 IMPLEMENT，需要先有紅燈的情境
 
 ## Skill Boundaries
 
-- `spec.md` 不存在 → `bdd-spec`（`discovery.md` 也沒有就先 `bdd-discovery`）；狀態不是 `已對焦` → `bdd-spec` 會先交 `example-mapping` 判就緒
-- 要決定 seam → `bdd-plan`；要寫 `docs/CONTEXT.md` 或切 story → `bdd-spec`（它用 `story-splitting`）
-- 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十五項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md`
-- 情境跑在哪一層測試（seam）→ 改用 `bdd-plan`；要決定實作順序、切票 → `bdd-tasks`
-- 產出是 `.feature`，**不是** `spec.md`、`plan.md`、`openapi.yaml`、migration 或任何可執行的檔案
+| 情況 | 改用 |
+| --- | --- |
+| `spec.md` 不存在 | `bdd-spec`（`discovery.md` 也沒有就先 `bdd-discovery`） |
+| `spec.md` 狀態不是 `已對焦` | `bdd-spec`——它會先交 `example-mapping` 判就緒 |
+| 要決定 seam（情境跑在哪一層測試） | `bdd-plan` |
+| 要寫 `docs/CONTEXT.md` 或切 story | `bdd-spec`（它用 `story-splitting`） |
+| 要決定實作順序、切票 | `bdd-tasks` |
+| 要稽核既有 `.feature` 寫得好不好 | 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十七項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md` |
+
+產出是 `.feature`，**不是** `spec.md`、`plan.md`、`openapi.yaml`、migration 或任何可執行的檔案。
 
 ## 參考檔案
 
-- `references/step-grammar.md` — 四種步驟形狀的完整理由與邊界
-- `references/rule-taxonomy.md` — 四象限分類與覆蓋盤點
-- `references/state-tags.md` — 狀態 tag 的完整詞彙表
-- `references/coverage-report.md` — 覆蓋表的格式
-- `references/artifact-location.md` — `.feature` 該放哪裡
-- `examples/anti-patterns.md` — 寫完自檢
-- `scripts/check_spec.py` — 稽核 `spec.md` 自己的形狀；有 `.feature` 之後再加上兩者的一致性
+| 讀哪一份 | 什麼時候 |
+| --- | --- |
+| `references/step-grammar.md` | 四種步驟形狀的完整理由與邊界；某條步驟規則想不通為什麼，或準備破例之前 |
+| `references/rule-taxonomy.md` | 四象限分類與覆蓋盤點；排規則之前，以及寫完做覆蓋盤點 |
+| `references/rule-example-conflict.md` | 規則與它自己的例子打架時（步驟 2） |
+| `references/state-tags.md` | 狀態 tag 的完整詞彙表 |
+| `references/coverage-report.md` | 覆蓋表的格式 |
+| `references/artifact-location.md` | `.feature` 該放哪裡 |
+| `examples/anti-patterns.md` | 寫完自檢；或樣板數看起來不對 |
+| `scripts/check_spec.py` | 稽核 `spec.md` 自己的形狀；有 `.feature` 之後再加上兩者的一致性 |
 
-十一份逐案範例的索引在下面「這份 `.feature` 是寫給誰讀的」。
-
-## 前置確認（Ask user）
-
-不必問。`.feature` 的位置偵測得到（見「產物隔離」），要跑哪些 story 有預設值。
-
-MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺陷。`discovery.md` 的
-`## Open Questions` 還有待答時，那些對應的規則就寫不出來，不要順手決定掉。
-
-NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述直接寫 `.feature`。那會
-產出一份沒有人同意過的規格，而它看起來跟真的一模一樣。沒有 `spec.md` 就先跑
-`bdd-spec`（還沒有 `discovery.md` 就先 `bdd-discovery`）。
-
-## 這份 `.feature` 是寫給誰讀的
-
-寫給**下一個要實作 step definition 的人或模型**讀的。看得懂不是目標——**規律**才是。
-
-| | 場景 | 不重複步驟樣板 | 只出現一次的 |
-| --- | --- | --- | --- |
-| 散文式（封閉文法之前，`bdd-spec` 的產出） | 76 | **208** | 172 |
-| 封閉文法（`examples/1-video-progress.md`） | 7 | **10** | 3 |
-
-172 支只會被呼叫一次的 step definition——**step def 比場景還多**，因為每個場景都把
-同一件事講得不太一樣，而那些寫法遲早會分岔。封閉文法不隨規模衰減：再加二十個
-場景，樣板表幾乎不會變長。兩組數字都是 `check_spec.py` 量的，不是估的。
+十一份逐案範例：
 
 | 讀哪一份 | 什麼時候 |
 | --- | --- |
@@ -88,13 +76,30 @@ NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述�
 | `examples/9-pay-order.md` | 副作用最重的一份；七個 Example 如何收斂成兩個 |
 | `examples/10-cancel-order.md` | 狀態守衛。`Given` 用狀態還是用動作鋪陳 |
 | `examples/11-query-user-roles.md` | 空清單、軟刪除；弱動詞如何逼出多餘的例子 |
-| `references/step-grammar.md` | 某條步驟規則想不通為什麼，或準備破例之前 |
-| `examples/anti-patterns.md` | 寫完自檢；或樣板數看起來不對 |
-| `references/rule-taxonomy.md` | 排規則之前，以及寫完做覆蓋盤點 |
+
+## 前置確認（Ask user）
+
+不必問。`.feature` 的位置偵測得到（見「產物隔離」），要跑哪些 story 有預設值。
+
+MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺陷。`discovery.md` 的
+`## Open Questions` 還有待答時，那些對應的規則就寫不出來，不要順手決定掉。
+
+NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述直接寫 `.feature`。那會
+產出一份沒有人同意過的規格，而它看起來跟真的一模一樣。沒有 `spec.md` 就先跑
+`bdd-spec`（還沒有 `discovery.md` 就先 `bdd-discovery`）。
 
 ---
 
 ## 流程
+
+| 步驟 | 做什麼 | 要問使用者嗎 |
+| --- | --- | --- |
+| 1 | 讀四樣東西，只做 `已對焦` 的 feature | 不問 |
+| 2 | FR → `Rule:`、AC → `Example:`、編號 → tag；歸象限、看三種結果、取場景名 | 不問；規則與例子打架時回報 |
+| 3 | 每個步驟套四種形狀之一 | 不問 |
+| 4 | 句子只差資料的例子收成 `Scenario Outline` | 不問 |
+| 5 | 一則 story 一個 `.feature` | 不問 |
+| 6 | 跑 `check_spec.py`、產覆蓋表 | 不問；缺口回報 |
 
 ### 1. 讀四樣東西
 
@@ -231,39 +236,35 @@ MUST: 每條規則的三種結果，在覆蓋表裡各標**有／無／不適用
 
 測試紅了的時候，讀到的是這一行。它要能單獨說明壞了什麼。
 
-### 規則與它自己的例子打架時
+#### 規則與它自己的例子打架時
 
-把規則套回它的例子，是這一步會做的事。有時候會發現**算不出來**——例子裡的
-數字在它自己那條規則下不可能出現。實測撞過兩次：一條「每小時 30 元、不足一
-小時進位」的規則，例子寫「原本算出 350 元」（只可能是 30 的倍數）；一個跨日
-分段的例子把 22:00–24:00 寫成「1 小時 30 分鐘」。
+把規則套回它的例子，有時候會發現**算不出來**——例子裡的數字在它自己那條規則下不可能出現。
 
-處置：**規則為準。**
+| 情況 | 怎麼做 |
+| --- | --- |
+| 例子的錯**可以從規則推導出來**（算術錯誤） | 規則為準，照規則算出來的數字寫場景；就地註解算式與差異，回報建議回 `bdd-spec` |
+| 規則本身含糊，兩種讀法都說得通（規格衝突） | 不要挑：跳過那個例子、就地註解、回報要回 `bdd-spec` 寫進補問清單 |
 
-在 Example Mapping 的模型裡，例子是用來**說明**規則的，規則才是規範性的。
-一個跟自己的規則矛盾的例子，是壞掉的說明，不是另一條競爭的規則。所以照規則
-算出來的數字寫場景，不是本 skill 在裁決——是那個模型本來就這樣定義的。
-
-MUST: 在 `.feature` 就地留註解，寫出算式與差異。回報會隨對話消失，檔案會留著，
-而下一個人拿 `.feature` 與原始輸入的數字一對，第一個念頭會是「SPEC 亂編」。
-
-MUST: 同時回報給使用者，建議回 `bdd-spec` 寫進補問清單，標明來源要更正。
-`.feature` 改了不代表 `spec.md` 就對了——它仍然是錯的，沒有人去更正過；本 skill
-與 `bdd-spec` 都不得改 `spec.md`。
-
-MUST NOT: 照抄壞掉的數字。那會產出一個**任何正確實作都永遠過不了**的場景，
-而它看起來跟其他場景一模一樣。
-
-MUST NOT: 寫入 `spec.md` 或 `discovery.md`——前者是 `bdd-spec` 的產物，後者是 DISCOVERY 的。
-
-**判準的界線：** 只有在**例子的錯可以從規則推導出來**時才適用。規則本身含糊、
-兩種讀法都說得通的時候，你無法知道是規則寫錯還是例子寫錯——那時候不要挑，
-跳過那個例子、就地註解、回報要回 `bdd-spec` 寫進補問清單。**能推導的是算術錯誤，
-不能推導的是規格衝突，兩者的處置相反。**
+撞到時先讀 `references/rule-example-conflict.md`——規則、理由與判準的界線都在那裡。
 
 ### 3. 步驟文法 —— 四種形狀
 
-這一步是本 skill 的核心。每個步驟套下列四種形狀之一：
+這一步是本 skill 的核心。
+
+#### 這份 `.feature` 是寫給誰讀的
+
+寫給**下一個要實作 step definition 的人或模型**讀的。看得懂不是目標——**規律**才是。
+
+| | 場景 | 不重複步驟樣板 | 只出現一次的 |
+| --- | --- | --- | --- |
+| 散文式（封閉文法之前，`bdd-spec` 的產出） | 76 | **208** | 172 |
+| 封閉文法（`examples/1-video-progress.md`） | 7 | **10** | 3 |
+
+172 支只會被呼叫一次的 step definition——**step def 比場景還多**，因為每個場景都把
+同一件事講得不太一樣，而那些寫法遲早會分岔。封閉文法不隨規模衰減：再加二十個
+場景，樣板表幾乎不會變長。兩組數字都是 `check_spec.py` 量的，不是估的。
+
+每個步驟套下列四種形狀之一：
 
 | # | 形狀 | 位置 | 樣板 |
 | --- | --- | --- | --- |
@@ -293,7 +294,7 @@ Feature: 增加影片進度
       And 用戶 "Alice" 在課程 1 的進度應為 70%，狀態應為 "進行中"
 ```
 
-### 每一條規則
+#### 每一條規則
 
 | | 規則 | 為什麼 |
 | --- | --- | --- |
@@ -360,12 +361,8 @@ IMPORTANT: 一個 Outline 涵蓋 Example 3.1 到 3.3 時，**三個 tag 都要�
 ### 6. 稽核，然後才算完成
 
 **這一步跑在最後**——它比對 `spec.md` `## User Stories` 段與寫好的
-`.feature`，兩者都要存在才對得起來。
-
-`spec.md` 的 `## User Stories` 段一次裝下兩件事：FR／AC 的定版內容，與
-這則 story 涵蓋哪些 FR——FR 掛在它的 story 底下，走一遍就同時拿到兩者，
-不再是兩份文件、兩份清單。合起來才拼得出「這個 `.feature` 該有哪些
-`@example` tag」。
+`.feature`，兩者都要存在才對得起來。`## User Stories` 段一次裝下 FR／AC 的定版內容與這則
+story 涵蓋哪些 FR，合起來才拼得出「這個 `.feature` 該有哪些 `@example` tag」。
 
 ```bash
 python3 <skill>/scripts/check_spec.py <專案根>
@@ -376,19 +373,10 @@ python3 <skill>/scripts/check_spec.py <專案根>
 會明講跳過。跑到這一步才是十七項全開——**這五項只有這裡驗得到**，所以這一步不能
 因為「上游已經跑過了」而省略。
 
-檢查十七件事：雙向覆蓋比對（漏做／發明）、每個檔恰好一個狀態 tag、
-中文「規則:」誤用、缺口有沒有就地註解、**步驟樣板重用率**、`spec.md` 裡有沒有
-FR 完全沒掛任何 AC（沒有例子，這一步就無從寫出場景，只能發明）、`## User Stories`
-底下有沒有 `#### FR-2` 這種 v2 標題形式（對解析器是「不存在」不是「錯」）、
-`### US-<n> · <slug>` 這種 story 標題形式對不對（差一點的標題對解析器也是
-「不存在」）、`#### Q` 與 `**Q-<n>**` 的形式對不對、`#### Q` 有沒有指向
-`## Open Questions` 表裡不存在的題號、`#### Q` 有沒有列狀態不是「待答」的
-題號、`AC-<n>.<m>` 的 `<n>` 對不對得上它所屬的 FR、`## User Stories` 底下有沒有 FR
-不屬於任何一則 story（沒有 story 認領它，就沒有任何 `.feature` 被要求帶它的
-`@example-` tag，那些 AC 於是安靜地不見了）、每條 FR／AC 行尾有沒有 `← PRD §x` 或
-`← Q-<n>` 來源（`推論` 不算——那是寫規格的人自己補的規則）、`## 原文` 一節在不在、每個 `← PRD §n` 的段落在不在 `## 原文` 裡、
-`acceptance/` 驗收旅程的 `@covers-` 指不指得到 AC、每條旅程有沒有 `@covers-`。
-只讀不寫，退出碼可直接進 CI。
+十七項的完整清單與各自的理由在 `scripts/check_spec.py` 開頭的說明：前五項需要 `.feature`
+（上面那五項），其餘十二項只讀 `spec.md`、`discovery.md` 與 `acceptance/`——FR 有沒有掛 AC、
+標題形式、`#### Q` 紅卡、AC 編號對帳、無主的 FR、`← PRD §x`／`← Q-<n>` 來源（`推論` 不算）、
+`## 原文` 與它的段落、驗收旅程的 `@covers-`。只讀不寫，退出碼可直接進 CI。
 
 **發明比漏做更該優先看。** 漏一條會被覆蓋數字抓到；憑空多一條看起來很完整，
 沒有人有理由懷疑它。

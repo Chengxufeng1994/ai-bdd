@@ -14,12 +14,18 @@ description: >
 
 # 驗收旅程 — 把 `spec.md` 寫成業務方讀得懂的流程
 
-一份 `待對焦`、補問清單是「（無）」的 `spec.md` 進來，出去的是同目錄
-`acceptance/<旅程>.feature`：**幾條可 demo 的長流程，只用業務語言，每條旅程標出它走過哪幾條
-AC，每個結果都是 `spec.md` 裡已經有的。**
+| | |
+| --- | --- |
+| **職責** | 把 `待對焦` 的規格寫成幾條可 demo、只用業務語言的長流程，讓需求方對著它判就緒 |
+| **讀** | `specs/<date>-<feature>/spec.md`（`待對焦`、`## 回 DISCOVERY 補問` 是「（無）」）、`docs/CONTEXT.md` |
+| **寫** | `specs/<date>-<feature>/acceptance/<旅程>.feature`；有標記時 `spec.md` `## 回 DISCOVERY 補問` 的新列 |
+| **上游** | `bdd-spec` 第 5 步（`example-mapping` 跑完診斷之後） |
+| **下游** | `example-mapping` 提就緒問句；有 `# [need clarification]` → `bdd-spec`〈退回 discovery〉 |
+| **不做** | 不執行、不訪談、不改 FR／AC／狀態、不寫 `discovery.md`、不寫 `spec.md` 沒有的結果 |
 
-它是規格，不是測試。不執行、沒有 step definition、不進 `features/`。程式版本的
+**它是規格，不是測試。** 不執行、沒有 step definition、不進 `features/`。程式版本的
 `features/*.feature` 照舊由 `bdd-formulation` 在 `已對焦` 之後寫，來源照舊只有 `spec.md`。
+每條旅程標出它走過哪幾條 AC，每個結果都是 `spec.md` 裡已經有的。
 
 ## 使用時機
 
@@ -29,11 +35,11 @@ AC，每個結果都是 `spec.md` 裡已經有的。**
 
 ## Skill Boundaries
 
-- `spec.md` 不存在或還有洞 → `bdd-spec`；`discovery.md` 沒收斂 → `bdd-discovery`
-- 判就緒、寫 `已對焦` → `example-mapping`，本 skill 寫完旅程交回給它
-- 寫可執行的 `features/*.feature` → `bdd-formulation`
-- 產出只有 `acceptance/*.feature`，以及（有標記時）`spec.md` `## 回 DISCOVERY 補問` 的新列。
-  **不改** FR、AC、狀態，不寫 `discovery.md`
+| 情況 | 改用 |
+| --- | --- |
+| `spec.md` 不存在或還有洞 | `bdd-spec`；`discovery.md` 沒收斂 → `bdd-discovery` |
+| 判就緒、寫 `已對焦` | `example-mapping`，本 skill 寫完旅程交回給它 |
+| 寫可執行的 `features/*.feature` | `bdd-formulation` |
 
 ## 參考檔案
 
@@ -47,6 +53,14 @@ Check if: `spec.md` 狀態是 `待對焦`，`## 回 DISCOVERY 補問` 是「（�
 說該回哪個 skill——有洞的規格寫成旅程，洞會被流暢的句子蓋住。
 
 ## 流程
+
+| 步驟 | 做什麼 | 要問使用者嗎 |
+| --- | --- | --- |
+| 1 | 讀 `spec.md`，挑旅程 | — |
+| 2 | 照 `rules/journey-format.md` 寫旅程 | — |
+| 3 | 定不下來的，就地標記並同時寫進補問清單 | 不問——不訪談 |
+| 4 | 跑 `check_spec.py`，第 17 項要過 | — |
+| 5 | 交回 `bdd-spec` 或 `example-mapping` | — |
 
 ### 1. 讀 `spec.md`，挑旅程
 
@@ -87,24 +101,22 @@ python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 
 ### 5. 交回
 
-- 有任何 `# [need clarification]` → 交回 `bdd-spec` 的〈退回 discovery〉，由它把
-  `discovery.md` 改回 `澄清中`
-- 沒有 → 交回 `example-mapping` 提就緒問句，告訴需求方旅程在 `acceptance/`
+| 旅程裡 | 交給 |
+| --- | --- |
+| 有任何 `# [need clarification]` | `bdd-spec` 的〈退回 discovery〉，由它把 `discovery.md` 改回 `澄清中` |
+| 沒有 | `example-mapping` 提就緒問句，告訴需求方旅程在 `acceptance/` |
 
-## 產物格式
-
-`specs/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
-命名。骨架與六條規則見 `rules/journey-format.md`，完整範例見
-`examples/訪客出場結帳.feature`。有標記時另有 `spec.md` `## 回 DISCOVERY 補問` 的新列。
-
-交件時告訴使用者：寫了幾個檔、幾條旅程、各自 cover 哪些 AC、有沒有 `# [need clarification]`
-（有的話列出來）、交回給誰。
-
-## 再跑：修補，不重寫
+### 再跑：修補，不重寫
 
 `bdd-spec` 修補了 `spec.md` 之後再跑：動到的旅程改、`@covers-` 跟著改；答掉的
 `# [need clarification]` 刪掉；新的 AC 視需要加一條旅程或併進既有的。沒動到的旅程不碰——
 需求方已經讀過它們，重寫等於要他再讀一次。
+
+## 產物
+
+`specs/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
+命名。骨架與六條規則見 `rules/journey-format.md`，完整範例見
+`examples/訪客出場結帳.feature`。有標記時另有 `spec.md` `## 回 DISCOVERY 補問` 的新列。
 
 ## Verification
 
@@ -117,3 +129,8 @@ python3 <ai-bdd>/skills/bdd-formulation/scripts/check_spec.py <專案根>
 - [ ] 跑了 `check_spec.py`，第 17 項過，輸出貼在回報裡
 - [ ] 沒有改 `spec.md` 的 FR／AC，也沒有自己答或去問需求方
 - [ ] 再跑時沒動到的旅程沒有被重寫
+
+## 完成後
+
+告訴使用者：寫了幾個檔、幾條旅程、各自 cover 哪些 AC、有沒有 `# [need clarification]`
+（有的話列出來）、交回給誰。
