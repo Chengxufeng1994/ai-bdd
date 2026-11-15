@@ -1,5 +1,5 @@
 # 驗收旅程範例：不執行，沒有 step definition。
-# 規則與例子來自 ../../bdd-spec/examples/minimal-spec.md 的 US-1（FR-1、AC-1.1–1.3）。
+# 規則與例子來自 ../../spec/examples/minimal-spec.md 的 US-1（FR-1、AC-1.1–1.3）。
 
 Feature: 訪客出場結帳
   訪客進場抽紙票，出場前在繳費機結帳，付完就能開走。

@@ -256,14 +256,17 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 
 ## 命名與結構的決定
 
-**扁平目錄 ＋ `bdd-` 前綴。** 三個理由：
+**扁平目錄，名字不加前綴。** 2026-11-15 拿掉了原本的 `bdd-` 前綴（使用者的決定）：
 
 1. skill 名稱在執行時是**全域扁平**的——`claude plugin details` 列出的是名字，
-   目錄層級不存在。分組若不寫進名字就完全看不見。
-2. 前綴讓它們在字母排序時自然聚在一起，這是扁平命名空間裡唯一還能保住分組的方式。
-3. **`claude plugin validate` 不遞迴。** 巢狀目錄（`skills/<分類>/<名稱>/SKILL.md`）
+   目錄層級不存在。分組因此只寫在上面的表與 README，不寫進名字。安裝後的 plugin skill
+   會帶 plugin 名（`ai-bdd:plan`），跟別的 plugin 撞名時用它區分。
+2. **`claude plugin validate` 不遞迴。** 巢狀目錄（`skills/<分類>/<名稱>/SKILL.md`）
    在 runtime 有效，但 validate 掃不到，等於那些 skill 永遠不會被檢查。
    扁平換來的是每個 skill 都在 CI 的守備範圍內。
+
+拿掉前綴的代價是字母排序不再把它們聚在一起，而 `plan`、`spec` 這類名字更通用。
+`tasks` 因此改名 `task-breakdown`：它寫的 `tasks/` 目錄與它同名，讀起來分不清是 skill 還是目錄。
 
 通用字眼（`story-splitting`、`failure-triage`）要在 `description` 裡寫明**排除
 條件**，否則會在非 BDD 情境被誤觸發。
