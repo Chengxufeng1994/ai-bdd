@@ -65,7 +65,7 @@ Check if: `specs/<date>-<feature>/plan.md` 讀得到，而且有 `## Implementat
 | 2 | 切票：最薄的完整路徑先，其餘依 FR | — |
 | 3 | 標 Blocked by 與接合點 | — |
 | 4 | 攤出來確認 | 要 |
-| 5 | 寫 `tasks/` | — |
+| 5 | 寫 `tasks/`：票檔帶驗證命令，`index.md` 放檢查點 | — |
 
 ### 1. 讀
 
@@ -83,6 +83,13 @@ Check if: `specs/<date>-<feature>/plan.md` 讀得到，而且有 `## Implementat
 其餘依 `spec.md` 的 FR 切，一張票一組相關的 `@example-N.M`。每張票問一次「做完之後我能
 demo 什麼」，答不出來就是切錯了。每張票的**內迴圈**從 `plan.md` `## Testing Decisions` 的
 測試分層來。
+
+每張票再標兩樣：
+
+- **模組**：照抄 `plan.md` `## Implementation Decisions`「動哪些模組」裡這張票碰的那幾個，不寫檔案路徑
+- **大小**：XS／S／M／L／XL（尺寸表 → `references/tasks-format.md`〈大小〉）
+
+MUST NOT: 交出標 XL 的票——再拆。L 也 SHOULD 再拆，拆不開就在攤出來確認時講明為什麼。
 
 三條規則、驗收條件要能失敗、wide refactor 的例外 → `references/tasks-format.md`。
 
@@ -107,10 +114,10 @@ IMPORTANT: `plan.md` 的 `## Parallel Work` 沒寫到、切票時才發現的接
 
 ### 4. 攤出來確認（Ask user）
 
-MUST: 寫檔之前先把票的清單攤給使用者看——編號、標題、Blocked by、接合點、交付什麼行為、
+MUST: 寫檔之前先把票的清單攤給使用者看——編號、標題、大小、Blocked by、接合點、交付什麼行為、
 哪幾張可以同時開始——並問三件事：
 
-1. 粒度對不對（太粗／太細）
+1. 粒度對不對（太粗／太細；大小標 L 的是哪幾張）
 2. Blocked by 是不是真的卡住，還是只是「先做比較順」
 3. 有沒有該合併或該再拆的
 
@@ -122,8 +129,12 @@ IMPORTANT: **切太細是這一步最常見的失效**，而且它不會自己�
 
 ### 5. 寫 `tasks/`
 
-照 `references/tasks-format.md`：先票檔，後 `index.md`；`index.md` 的 `Blocked by`、
-`接合點` 兩欄跟票檔一字不差。
+照 `references/tasks-format.md`：先票檔，後 `index.md`；`index.md` 的 `大小`、`Blocked by`、
+`接合點` 三欄跟票檔一字不差。
+
+- 每張票寫 `**驗證**`：這張票的場景命令（tag 運算式由 `涵蓋場景` 組成）與閘門命令——`implement`
+  照著跑，不自己組（〈驗證〉）
+- `index.md` 一波一張表，波與波之間放檢查點；不並行時每 2–3 張票一個（〈檢查點〉）
 
 ## 不改設計：有洞怎麼辦
 
@@ -164,7 +175,10 @@ MUST: 只寫入 `specs/<date>-<feature>/tasks/`，以及 `plan.md` `## 缺口` �
 
 - [ ] 票裡每一句都指得出來自哪條 FR、技術節哪個決定、或哪個 `@example-N.M`
 - [ ] 每張票答得出「做完之後我能 demo 什麼」
-- [ ] 每張票都有 `Blocked by` 與 `接合點` 兩欄（沒有就寫「無」），每個接合點標了種類且照抄 `plan.md` `## Parallel Work`，`index.md` 的同名欄位跟票檔一字不差
+- [ ] 每張票都有 `Blocked by` 與 `接合點` 兩欄（沒有就寫「無」），每個接合點標了種類且照抄 `plan.md` `## Parallel Work`，`index.md` 的 `大小`、`Blocked by`、`接合點` 跟票檔一字不差
+- [ ] 每張票標了模組（照抄 `plan.md`，沒有檔案路徑）與大小，沒有 XL
+- [ ] 每張票的 `**驗證**` 有閘門命令；有 `涵蓋場景` 的票另有場景命令，tag 運算式跟 `涵蓋場景` 一一對應
+- [ ] `index.md` 每一波（不並行時每 2–3 張票）之後有檢查點
 - [ ] `index.md` 寫了哪幾張可以同時開始（或「不適用」），那幾張沒有共同的 `爭用` 接合點、也沒有兩張都要新建的東西
 - [ ] 寫檔前把票的清單攤給使用者、問過粒度／Blocked by／合併或再拆三件事，使用者確認了
 - [ ] `plan.md` 的技術節與 `spec.md` 的 FR、AC、story 沒有任何新增、刪除或改寫；設計的洞進了 `plan.md` 的 `## 缺口`
