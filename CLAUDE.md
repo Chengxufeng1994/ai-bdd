@@ -15,7 +15,9 @@ The plugin's subject is a six-step pipeline:
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
 `bdd-plan` (technical design, `plan.md`) and `bdd-tasks` (slices that design into one
-file per ticket under `tasks/`, so tickets can run in parallel). SPEC is served by three skills —
+file per ticket under `tasks/`, so tickets can run in parallel). IMPLEMENT is served by
+`bdd-implement` (one ticket end to end) and `bdd` (one scenario slice through a single
+red / green / refactor entry). SPEC is served by three skills —
 `bdd-spec` (writes `spec.md` from the recorded answers), `bdd-spec-by-example` (writes
 business-language acceptance journeys under `acceptance/`, not executed) and
 `bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
@@ -102,6 +104,9 @@ figure has exactly one owner: `tdd.md` points at `bdd.md` for the double-loop di
 rather than redrawing it.
 
 `PLAN.md` is the roadmap and is explicitly labelled a hypothesis, not a decision.
+
+`RESOURCES.md` lists every outside source: the articles `docs/` transcribes and the skill
+projects individual skills borrowed from. Add a row there when a new reference is used.
 
 ### Artifact format is the interface
 

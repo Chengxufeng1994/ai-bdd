@@ -35,6 +35,8 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 - 還沒有 `.feature` → `bdd-formulation`；`plan.md` 沒有技術節（seam、埠、契約）→ `bdd-plan`
 - 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式）→ `bdd-tasks`
 - 票之間的順序、要不要再切、哪幾張能同時做 → `bdd-tasks`
+- 只推進票裡的**一個場景**、只做 red／green／refactor 其中一步 → `bdd`。本 skill 管整張票（標 tag、
+  跑閘門、勾驗收條件、合回主線）；票裡每個場景的紅→綠→整理可以照 `bdd` 的三個入口做
 - 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」→ REVIEW（`bdd-review`，未實作）
 - 紅的是 bug 還是規格過期 → VERIFY（`bdd-verify`，未實作）；本 skill 只處理自己這張票
   讓紅變綠，不判讀別人的紅

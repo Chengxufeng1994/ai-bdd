@@ -15,7 +15,7 @@
 | DISCOVERY | `bdd-discovery`、`clarify` |
 | SPEC | `bdd-spec`、`example-mapping`、`bdd-spec-by-example`、`bdd-formulation`、`story-splitting` |
 | PLAN | `bdd-plan`、`bdd-tasks` |
-| IMPLEMENT | `bdd-implement` |
+| IMPLEMENT | `bdd-implement`（一張票）、`bdd`（票裡的一個 slice：red／green／refactor） |
 | REVIEW／VERIFY | 尚未實作 |
 
 `skill-rules` 不在流程裡：它是本專案撰寫與稽核 skill 的房規。哪幾步對應 BDD 的哪個實踐、
@@ -48,6 +48,7 @@ ai-bdd/
 ├── .claude-plugin/
 │   └── plugin.json       manifest：name、description、version、author
 ├── PLAN.md               要做什麼、先後順序
+├── RESOURCES.md          參考來源：方法論的原文、借鏡的 skill 專案
 ├── docs/
 │   ├── bdd.md            BDD 本身是什麼——外部來源轉述
 │   ├── example-mapping.md  Example Mapping 原文轉述
@@ -66,6 +67,7 @@ ai-bdd/
 │   ├── bdd-plan/
 │   ├── bdd-tasks/
 │   ├── bdd-implement/
+│   ├── bdd/
 │   └── skill-rules/
 ├── tests/                skill 腳本的 stdlib unittest
 ├── benchmark/
