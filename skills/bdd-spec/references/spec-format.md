@@ -1,7 +1,7 @@
 # `spec.md` 的骨架
 
 照抄即可。`bdd-spec` 寫它時讀這份；`example-mapping` 讀它攤地圖、`bdd-formulation` 翻
-`.feature`、`bdd-plan` 切票時讀它寫出來的東西。
+`.feature`、`bdd-plan` 做技術設計、`bdd-tasks` 切票時讀它寫出來的東西。
 
 一個 feature 一份，路徑 `specs/<date>-<feature>/spec.md`。一份 `spec.md` 裝這個
 feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`bdd-spec` 寫規則時

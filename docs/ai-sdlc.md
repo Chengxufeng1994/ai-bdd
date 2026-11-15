@@ -46,7 +46,7 @@ Automation 重合，因為 Automation 的產物本來就是程式碼而不是膠
 | --- | --- | --- |
 | **DISCOVERY** | brainstorming：開場把需求方的話逐字收進 `discovery.md`、粗切 story（不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 問到規則與例子都有人答過（BDD 的 Discovery）。**只記問答，不寫規格**——每個答案記原話與誰答的。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
 | **SPEC** | to spec：把已收斂的問答寫成 `spec.md`（FR／AC 每一條行尾指回 `discovery.md`，`bdd-spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`bdd-spec-by-example`）＋就緒判定（`example-mapping`）＋可執行規格（BDD 的 Formulation，`bdd-formulation`） | Formulation ＋ 額外 |
-| **PLAN** | to plan：技術設計（seam、模組、契約、schema、測試層級、風險）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰（`bdd-plan`，寫 `plan.md`） | **無**——BDD 明確沒有排序指引 |
+| **PLAN** | to plan：技術設計（seam、模組、契約、schema、測試層級、風險）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`bdd-plan` 寫 `plan.md`，`bdd-tasks` 拆成 `tasks/`） | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`bdd-implement`） | Automation |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？全新的 reviewer 對照 `spec.md`／`.feature` 審整批 | **無**——治理不在三個實踐裡 |
 | **VERIFY** | 最後一次驗證：閘門、全部情境、鏈稽核都有輸出當證據才算交付；紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
@@ -68,7 +68,7 @@ PLAN 的技術設計與切票、REVIEW、VERIFY 的交付證據）都不是補�
 | --- | --- | --- | --- |
 | **DISCOVERY**（`bdd-discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、問紅卡、記答案原話與誰答的 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
 | **SPEC**（`bdd-spec`／`bdd-spec-by-example`／`bdd-formulation`） | agent 寫、需求方審 | `已收斂` 的 `discovery.md` → `spec.md` → `acceptance/` 驗收旅程 →（`已對焦`）→ `.feature` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` 並退回 |
-| **PLAN**（`bdd-plan`） | agent 設計與切、工程師審 | 技術節 ＋ tracer bullet ＋ blocking edges | 不改需求，有洞記進 `## 缺口` 並退回 |
+| **PLAN**（`bdd-plan`／`bdd-tasks`） | agent 設計與切、工程師審 | 技術節 → tracer bullet ＋ blocking edges ＋ 共用檔案 | `bdd-plan` 不改需求、`bdd-tasks` 不改設計，有洞記進 `## 缺口` 並退回 |
 
 三條互相支撐：SPEC 能「不訪談」是因為 DISCOVERY 把每個答案連原話記下來了；PLAN 能
 「不改需求」是因為 SPEC 寫下了需求方點過頭的規則；DISCOVERY 能只問不寫，是因為 SPEC
@@ -120,7 +120,8 @@ skill，等於要求同一次判斷既收斂**語意**（這句話夠不夠、�
 
 PLAN 要獨立的理由：它做的是**工程判斷**——seam、契約、依賴與規模——不是懂不懂停車場
 怎麼收費。把技術設計放在 PLAN 而不是 SPEC，讓 SPEC 只收斂業務語意，PLAN 只收斂工程；
-技術決定也跟著用到它的票走，實作者讀一份 `plan.md` 就夠。
+技術決定也跟著用到它的票走，實作者讀 `plan.md` 與自己那張票檔就夠（票由 `bdd-tasks`
+拆到 `tasks/`，一張一個檔，讓幾張票能同時做而不共寫任何檔案）。
 
 ---
 

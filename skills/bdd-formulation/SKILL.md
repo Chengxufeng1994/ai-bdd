@@ -36,7 +36,7 @@ AC 變成 `Example:`、編號變成 tag**，步驟套一組封閉文法。覆蓋
 - `spec.md` 不存在 → `bdd-spec`（`discovery.md` 也沒有就先 `bdd-discovery`）；狀態不是 `已對焦` → `bdd-spec` 會先交 `example-mapping` 判就緒
 - 要決定 seam → `bdd-plan`；要寫 `docs/CONTEXT.md` 或切 story → `bdd-spec`（它用 `story-splitting`）
 - 要稽核既有 `.feature` 寫得好不好 → 目前沒有 skill 接手（`bdd-spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十五項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md`
-- 要決定實作順序、切票，或情境跑在哪一層測試（seam）→ 改用 `bdd-plan`
+- 情境跑在哪一層測試（seam）→ 改用 `bdd-plan`；要決定實作順序、切票 → `bdd-tasks`
 - 產出是 `.feature`，**不是** `spec.md`、`plan.md`、`openapi.yaml`、migration 或任何可執行的檔案
 
 ## 參考檔案
@@ -499,4 +499,4 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
 綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。
 
-覆蓋表沒有大洞 → `bdd-plan` 切票。洞多 → 回 `bdd-spec`。
+覆蓋表沒有大洞 → `bdd-plan` 做技術設計，再由 `bdd-tasks` 切票。洞多 → 回 `bdd-spec`。

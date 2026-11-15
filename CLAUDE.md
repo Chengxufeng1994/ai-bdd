@@ -13,7 +13,9 @@ The plugin's subject is a six-step pipeline:
 **DISCOVERY → SPEC → PLAN → IMPLEMENT → REVIEW → VERIFY**
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
-steps exist as skills; REVIEW and VERIFY are planned. SPEC is served by three skills —
+steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
+`bdd-plan` (technical design, `plan.md`) and `bdd-tasks` (slices that design into one
+file per ticket under `tasks/`, so tickets can run in parallel). SPEC is served by three skills —
 `bdd-spec` (writes `spec.md` from the recorded answers), `bdd-spec-by-example` (writes
 business-language acceptance journeys under `acceptance/`, not executed) and
 `bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
@@ -106,7 +108,8 @@ rather than redrawing it.
 Each step reads what the previous step actually emitted: DISCOVERY writes
 `discovery.md` (原文, rough stories, questions and answers — no rules), SPEC writes
 `spec.md` from it and the `.feature` files once `已對焦`, PLAN writes `plan.md` (technical
-design + tickets) from `spec.md` and the `.feature` files, REVIEW audits the whole chain.
+design) from `spec.md` and the `.feature` files, then `tasks/` (one file per ticket plus
+`index.md`) from `plan.md`, REVIEW audits the whole chain.
 
 ```
 需求方的話（discovery.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
@@ -130,8 +133,11 @@ Each of the first three steps holds because it runs in one main working mode:
   `discovery.md` back to `澄清中`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `discovery.md` — `check_spec.py`
   check 14 rejects both.
-- **PLAN** owns the technical design (seam, modules, contracts, schema, test levels) and
-  slices tracer bullets — it **does not change requirements**; holes go to `## 缺口`.
+- **PLAN** owns the technical design (seam, modules, contracts, schema, test levels) —
+  `bdd-plan` **does not change requirements**; holes go to `## 缺口`. `bdd-tasks` then
+  slices tracer bullets and **does not change the design**; its holes go to the same
+  `## 缺口`. `bdd-implement` writes only its own ticket file, never `plan.md` or
+  `tasks/index.md` — that is what lets tickets run in parallel.
 
 This matters more for an agent than for a person: a human who finds a hole while writing a
 spec stops and asks; an agent supplies a plausible answer and continues.
@@ -169,7 +175,7 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/<date>-<feature>/` (`discovery.md`, `spec.md`, `acceptance/*.feature`, `plan.md`), one directory that can be deleted whole. Two
+  `specs/<date>-<feature>/` (`discovery.md`, `spec.md`, `acceptance/*.feature`, `plan.md`, `tasks/`), one directory that can be deleted whole. Two
   exceptions: executable `.feature` files stay where the runner expects them (`features/` for
   Cucumber-family tools); `docs/CONTEXT.md` outlives any single feature, so SPEC may create
   it or append entries but must not rewrite its existing sections or write to anything else

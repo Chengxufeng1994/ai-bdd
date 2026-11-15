@@ -1,9 +1,9 @@
 ---
 name: bdd-implement
 description: >
-  照 `plan.md` 一張票一個 session，outside-in 把票做到綠：先讓這張票的場景紅、
+  照 `tasks/` 的票一張一個 session，outside-in 把票做到綠：先讓這張票的場景紅、
   domain 規則先寫 table-driven 單元測試、再接 use case／契約／step definition，
-  場景全綠後把 `.feature` 從 `@ready` 翻到 `@review`、勾掉 `plan.md` 的驗收條件、
+  場景全綠後把 `.feature` 從 `@ready` 翻到 `@review`、勾掉票檔的驗收條件、
   跑專案的驗證閘門。不改 `spec.md`、不改 `.feature` 的例子、不在 handler 放規則。
   BDD 六步流程的 IMPLEMENT 步驟。
   觸發詞：「做第 N 張票」「開始實作」「bdd-implement 03」「把這張票做綠」
@@ -14,8 +14,8 @@ description: >
 
 # IMPLEMENT — 一張票，從紅到綠
 
-一張 `plan.md` 的票進來（或者沒有 `plan.md` 時，一則 `.feature`），出去的是：那張票
-涵蓋的場景全綠、專案的驗證閘門綠、`.feature` 標 `@review`、`plan.md` 的驗收條件打勾。
+一張 `tasks/` 的票進來，出去的是：那張票涵蓋的場景全綠、專案的驗證閘門綠、票檔的驗收
+條件打勾；涵蓋同一個 `.feature` 的票都做完時，`.feature` 標 `@review`。
 
 **外迴圈先紅，內迴圈先紅，然後才寫程式。** 外迴圈是 `.feature` 的場景（godog／
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
@@ -26,14 +26,15 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 
 ## 使用時機
 
-- `plan.md` 寫好了，要做第一張（或下一張 Blocked by 全完成的）票
-- 整批小到不需要 `bdd-plan`，直接從 `.feature` 與 `plan.md` 的技術節做
+- `tasks/` 切好了，要做第一張（或下一張 Blocked by 全完成的）票
+- 幾張票同時做，每張各開一個 session 與 worktree
 - 上一個 session 做到一半，要從 `@wip` 的檔接手
 
 ## Skill Boundaries
 
 - 還沒有 `.feature` → `bdd-formulation`；`plan.md` 沒有技術節（seam、埠、契約）→ `bdd-plan`
-- 票之間的順序、要不要再切 → `bdd-plan`
+- 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式）→ `bdd-tasks`
+- 票之間的順序、要不要再切、哪幾張能同時做 → `bdd-tasks`
 - 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」→ REVIEW（`bdd-review`，未實作）
 - 紅的是 bug 還是規格過期 → VERIFY（`bdd-verify`，未實作）；本 skill 只處理自己這張票
   讓紅變綠，不判讀別人的紅
@@ -42,7 +43,8 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 ## 參考檔案
 
 - `../bdd-formulation/references/state-tags.md` — `@wip`／`@review` 什麼時候寫
-- `../bdd-plan/references/plan-format.md` — 票的欄位，驗收條件為什麼要能失敗
+- `../bdd-tasks/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，共用檔案與同時跑
+- `../bdd-plan/references/plan-format.md` — 技術節各節裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
   ——分層、轉換、錯誤分類都照它，本 skill 不另訂
 
@@ -50,17 +52,20 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 
 ## 前置確認（Ask user）
 
-1. **哪一張票**：`bdd-implement <票號>`。沒帶票號就取 `plan.md` 裡第一張
-   Blocked by 全部完成、驗收條件還沒全勾的票，講出來讓對方改
+1. **哪一張票**：`bdd-implement <票號>`。沒帶票號就取 `tasks/index.md` 裡第一張
+   Blocked by 全部完成（那些票檔的驗收條件全勾）、自己還沒全勾的票，講出來讓對方改
 2. **驗證閘門是什麼命令**：讀專案的 README／Makefile（實測場是 `make verify`）。
    沒有就問——一張票「做完」的定義就是這個命令綠，不能猜
-3. 讀得到 `specs/<date>-<feature>/plan.md`、`spec.md` 與這張票涵蓋的 `.feature`
+3. 讀得到 `specs/<date>-<feature>/tasks/` 的這張票檔、`plan.md`、`spec.md` 與這張票涵蓋的 `.feature`
 
 NEVER: `plan.md` 沒有技術節時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
 
-MUST: 一個 session 一張票。撿起票的人沒看過 `plan.md` 以外的脈絡——這是 `bdd-plan`
+MUST: 一個 session 一張票。撿起票的人只看過票檔與 `plan.md`——這是 `bdd-tasks`
 切票的上界，也是這一步不要一次做三張的理由：做到第二張時第一張的脈絡已經在擠。
+
+SHOULD: 跟別張票同時做時，一張票一個 worktree。開工前看 `tasks/index.md`：這張票的
+`共用檔案` 跟正在做的票有交集就不要同時開——那兩張票做完會合不回來。
 
 ---
 
@@ -68,7 +73,7 @@ MUST: 一個 session 一張票。撿起票的人沒看過 `plan.md` 以外的脈
 
 ### 1. 讀票，標 `@wip`
 
-讀 `plan.md` 那一節：交付什麼行為、涵蓋哪些 `@example-N.M`、內迴圈要寫哪些單元測試、
+讀票檔 `tasks/<票號>-<slug>.md`：交付什麼行為、涵蓋哪些 `@example-N.M`、內迴圈要寫哪些單元測試、
 驗收條件。再讀 `plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
 ——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個例子在哪一層測。`spec.md` 只讀
 對應的 FR 與 AC，看規則的原話。
@@ -110,7 +115,7 @@ parking 實跑的第一個假紅就是這個。
 依 `docs/DATAFLOW.md`（或專案的同類文件）：埠（`port/out`）→ use case →
 driving port 與 service → contract（`openapi.yaml`）→ 產碼 → mapper → operation →
 presenter → bootstrap 組裝。每一段都是機械翻譯，**不做決定**；要做的決定都該在
-`plan.md` 的技術節，沒有就記進 `plan.md` 的 `## 缺口`。
+`plan.md` 的技術節，沒有就記進票檔的 `## 缺口`。
 
 - contract 改了就重新產碼（實測場 `make gen-api`），產出的介面多了方法，`Server`
   不實作就編不過——那是對的，讓編譯器告訴你還缺哪個 operation
@@ -148,17 +153,18 @@ is stale」。
 ### 7. 收尾
 
 - `.feature`：這張票做完後，**整個檔的場景都綠了**才從 `@wip` 改 `@review`；還有別張
-  票涵蓋同一檔的場景就留 `@wip`
-- `plan.md`：勾掉這張票的驗收條件。只勾驗過的——「手動驗」要寫是哪個測試驗的，
+  票涵蓋同一檔的場景就留 `@wip`。在 worktree 裡同時做時看不到別張票的進度——留 `@wip`，
+  合回主線後再判一次，由合回去的那個 session 翻
+- 票檔：勾掉這張票的驗收條件。只勾驗過的——「手動驗」要寫是哪個測試驗的，
   沒有測試就不要勾
-- 暫定行為（`plan.md` 的 `## 缺口` 或 `spec.md` 的 `## 回 DISCOVERY 補問` 裡的洞，實作時不得不選一個）：
+- 暫定行為（票檔或 `plan.md` 的 `## 缺口`、或 `spec.md` 的 `## 回 DISCOVERY 補問` 裡的洞，實作時不得不選一個）：
   **用一個測試釘住**，測試的註解寫明它是暫定、等哪一題的答案。沒釘住的暫定行為
   會在答案出來之後被當成規格
 
 ### 不越界
 
 MUST NOT: 改 `spec.md` 或 `.feature` 的例子。例子跟規則打架、規則有洞、少一個邊界——
-記進 `plan.md` 的 `## 缺口`，回報，然後
+記進票檔的 `## 缺口`，回報，然後
 照現在的規格做。一個人在 IMPLEMENT 改掉驗收條件，等於沒有人同意過那條規格。
 
 MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪掉，哪個 domain
@@ -172,10 +178,12 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 ├── api/openapi.yaml           新的 operation（若 seam 是 HTTP）
 ├── test/acceptance/steps_*.go 新的 step definition，按領域名詞分檔
 ├── features/<story>.feature   只改第一行的狀態 tag
-└── specs/<date>-<feature>/plan.md   只勾驗收條件、寫缺口
+└── specs/<date>-<feature>/tasks/<票>.md   只勾驗收條件、寫缺口
 ```
 
-MUST: 不修改 `spec.md`、`discovery.md`、`plan.md` 的技術節（除了讀）、`.feature` 的任何場景文字。
+MUST: 不修改 `spec.md`、`discovery.md`、`plan.md`、`tasks/index.md`、別張票的票檔、`.feature` 的任何場景文字。
+同時做的幾個 session 各寫各的票檔才不會互相覆寫；設計的洞由 `bdd-tasks` 再跑時從票檔搬進
+`plan.md`。
 
 ## Verification
 
@@ -186,9 +194,9 @@ MUST: 不修改 `spec.md`、`discovery.md`、`plan.md` 的技術節（除了讀�
 - [ ] 寫新步驟前 grep 過既有的 step definition（實測場 `make steps`），沒有同一句話兩種寫法
 - [ ] 測試替身回的是副本，不是活的指標
 - [ ] handler、mapper、presenter 裡沒有規則
-- [ ] `spec.md`、`discovery.md`、`plan.md` 的技術節、`.feature` 的場景文字都沒有被改
+- [ ] `spec.md`、`discovery.md`、`plan.md`、`tasks/index.md`、別張票的票檔、`.feature` 的場景文字都沒有被改
 - [ ] `.feature` 只有整個檔的場景都綠了才改 `@review`，否則留 `@wip`
-- [ ] `plan.md` 只勾了有測試驗過的驗收條件
+- [ ] 票檔只勾了有測試驗過的驗收條件
 - [ ] 每個暫定行為都有一個測試釘住，註解寫明等哪一題的答案
 - [ ] 這個 session 只做了一張票
 
@@ -198,9 +206,9 @@ MUST: 不修改 `spec.md`、`discovery.md`、`plan.md` 的技術節（除了讀�
 
 1. 票號、涵蓋的場景幾個綠、閘門命令與結果
 2. 新增了哪些檔、動了哪一層（一句話，不是檔案清單）
-3. `plan.md` 勾了哪幾條、哪一條沒勾與為什麼
+3. 票檔勾了哪幾條、哪一條沒勾與為什麼；票檔 `## 缺口` 記了什麼
 4. 暫定的決定有哪些、各被哪個測試釘住
-5. 下一張票是哪一張（`plan.md` 裡 Blocked by 剛被解開的那張）
+5. 下一張票是哪一張（`tasks/index.md` 裡 Blocked by 剛被解開的那張）；這個 `.feature` 還在 `@wip` 的話，等哪幾張票
 
 全部票做完 → `.feature` 全部 `@review`，下一步 REVIEW（未實作：先人工對照
 `spec.md` 的 AC 與 `.feature`，跑 `check_spec.py` 看鏈有沒有斷）。

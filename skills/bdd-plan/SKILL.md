@@ -1,24 +1,21 @@
 ---
 name: bdd-plan
 description: >
-  SPEC 說要做成什麼，PLAN 說怎麼做、先做哪一塊——讀已對焦的 `spec.md`、它的 `.feature`
-  與 `discovery.md` 裡技術面向的答案，寫 `plan.md`：先定技術設計（seam、模組、介面與
-  API 契約、schema、每個 AC 的測試層級、風險），再切成一疊 tracer bullet：每張票穿過
-  所有層、自己可 demo、塞得進一個全新 session，並宣告它被哪幾張票 block。
-  不改需求。BDD 六步流程的 PLAN 步驟。
-  觸發詞：「這批要怎麼切」「拆成幾張票」「先做哪一個」「排實作順序」「決定 seam」
-  「驗收測試打在哪一層」「API 契約要怎麼定」「這個 feature 動哪些模組」
-  「spec 寫完了下一步」「這些票誰卡誰」「開工順序」「寫 plan」。
+  SPEC 說要做成什麼，PLAN 說怎麼做——讀已對焦的 `spec.md`、它的 `.feature` 與
+  `discovery.md` 裡技術面向的答案，寫 `plan.md`：技術設計（seam、模組、介面與 API 契約、
+  schema、每個 AC 的測試層級、風險）。不改需求、不切票——拆成票交給 `bdd-tasks`。
+  BDD 六步流程的 PLAN 步驟。
+  觸發詞：「決定 seam」「驗收測試打在哪一層」「API 契約要怎麼定」
+  「這個 feature 動哪些模組」「技術設計」「schema 怎麼定」「spec 寫完了下一步」「寫 plan」。
   English: write the plan, decide the acceptance test seam, technical design,
-  break this spec into tickets, slice the work, what order should I build these,
-  vertical slices, what can I start first.
+  which modules does this touch, define the API contract.
 ---
 
-# PLAN — 怎麼做、先做哪一塊
+# PLAN — 怎麼做
 
 一份已對焦的 `spec.md`（FR 與 story）與涵蓋的 `.feature` 進來，出去的是 `plan.md`：
 **技術設計**——驗收測試打在哪一層 seam、動哪些模組、介面與契約、schema、每個 AC 在哪一層
-測、風險——加上**票**：切成幾張 tracer bullet、每張穿過所有層、彼此怎麼 block、先做哪一張。
+測、風險。把這份設計拆成票是下一個 skill `bdd-tasks` 的事。
 
 **不改需求。** 技術決定是這一步的工作；FR、AC、story 不是。需求有洞寫進 `## 缺口`，
 回 discovery，不要順手補。
@@ -26,20 +23,20 @@ description: >
 ## 使用時機
 
 - `spec.md` 已對焦、`.feature` 寫好了，要決定 seam 與技術設計
-- 要決定切成幾塊、先做哪一塊
-- 一批工作大到一個 session 做不完，需要拆給多個 session 接力
+- `bdd-tasks` 拆票時在 `## 缺口` 記了設計的洞，要補技術節
 
 ## Skill Boundaries
 
 - 還沒有 `spec.md`、或不是 `已對焦` → `bdd-spec`（`discovery.md` 也沒有就先 `bdd-discovery`）；
   還沒有 `.feature` → `bdd-formulation`
 - **要改 FR、AC、story → 那是 `bdd-spec` 的工作**，不是這裡
-- 整批塞得進一個 context window 而且技術決定一句話講得完 → 技術節寫短，票只有一張
+- 要切成幾張票、排順序、看哪幾張能同時做 → `bdd-tasks`，本 skill 寫完 `plan.md` 交給它
+- 整批塞得進一個 context window 而且技術決定一句話講得完 → 技術節寫短
 - 要實際寫 step definition 與產品程式碼 → `bdd-implement`
 
 ## 參考檔案
 
-- `references/plan-format.md` — `plan.md` 的骨架、技術節怎麼寫、切票規則、範例
+- `references/plan-format.md` — `plan.md` 的骨架、技術節怎麼寫、範例
 - `../bdd-discovery/references/technical-probes.md` — 五個技術面向問了什麼
 
 ---
@@ -49,10 +46,10 @@ description: >
 MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story。它們已經在 `spec.md` 裡、
 需求方說過「就緒」；這裡再決定一次，只會產生一份跟規格不一樣的規格。
 
-判準：指著票裡的任何一句話，說得出它來自 `spec.md` 的哪條 FR、技術節的哪一個決定、
-或哪個 `@example-N.M` 嗎？說不出來就是這一步僭越了。
+判準：指著技術節裡的任何一個決定，說得出它是為了 `spec.md` 的哪條 FR、哪個 AC，
+或來自 `discovery.md` 的哪一題嗎？說不出來就是這一步僭越了。
 
-`spec.md` 沒寫到而切票時發現需要的，寫進 `## 缺口`：
+`spec.md` 沒寫到而做技術設計時發現需要的，寫進 `## 缺口`：
 
 - **技術選擇**（哪個 library、欄位叫什麼）→ 留給 IMPLEMENT 決定
 - **需求洞**（某條規則在某個情況下該怎麼做沒人說過）→ 把同目錄 `discovery.md` 改回
@@ -74,15 +71,14 @@ MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story。它們已
 | 讀什麼 | 為了什麼 |
 | --- | --- |
 | `spec.md` 的 `## User Stories` | 每條 FR 與 AC——seam 要看過具體的 AC 才推得出來，測試層級要逐個 AC 標 |
-| 涵蓋的每個 `.feature` | 場景與 tag，票的「涵蓋場景」 |
+| 涵蓋的每個 `.feature` | 場景與 tag——每個 Example 的測試層級要對著它標 |
 | `discovery.md` `## Open Questions` 技術面向、狀態 `已答` 的題 | **技術決定的原始素材**——小節的 `歸屬` 說它該進技術節哪一節，行尾 `← Q-<n>` |
 | `spec.md` 的 `## Assumptions / Constraints`、`## Non-Functional Requirements` | 外部限制與品質屬性，`## Tech Preferences & Constraints` 與 `## Risks` 的來源 |
 | `discovery.md` 的 `### 核心關係人` | **照抄**進 `plan.md` |
 
-**一次讀完整批。** 票之間的依賴只有並排時才看得見；分批切會各自長出一套順序，
-然後在實作時發現它們互相卡住。
+**一次讀完整批。** API 契約與 schema 天生跨 story，只有並排才看得見衝突。
 
-順便看一眼專案既有的結構——找 prefactoring 的機會，也找既有的 seam。
+順便看一眼專案既有的結構——找既有的 seam。
 
 ### 2. 決定 seam —— 驗收測試打在哪一層
 
@@ -116,32 +112,6 @@ seam」當成 finding。這個綁定穿過 `plan.md` 這份文件；所以這一
 `## Known Boundaries`、`## Implementation Decisions`、`## Testing Decisions`、`## Risks`。
 每個決定行尾標來源；`推論` 可以用，但每一條同時列進 `## 缺口`。
 
-### 4. 切票
-
-先切出**最薄的完整路徑**當第一張票：碰到每一層、邏輯最少。它證明的是接線，
-不是行為。專案已經有骨架就跳過。
-
-其餘依 `spec.md` 的 FR 切，一張票一組相關的 `@example-N.M`。
-每張票問一次「做完之後我能 demo 什麼」，答不出來就是切錯了。每張票的**內迴圈**從
-`## Testing Decisions` 的測試分層來。
-
-三條規則與 wide refactor 的例外 → `references/plan-format.md`。
-
-### 5. 攤出來確認（Ask user）
-
-MUST: 寫檔之前先把票的清單攤給使用者看——編號、標題、Blocked by、
-交付什麼行為——並問三件事：
-
-1. 粒度對不對（太粗／太細）
-2. Blocked by 是不是真的卡住，還是只是「先做比較順」
-3. 有沒有該合併或該再拆的
-
-IMPORTANT: **切太細是這一步最常見的失效**，而且它不會自己被發現——
-一疊原子化的小票看起來很專業，實際上把「這幾件事其實是同一件」的資訊丟掉了。
-這個確認點就是為它存在的。
-
-使用者確認之後才寫檔。
-
 ---
 
 ## 產物
@@ -156,11 +126,9 @@ MUST: 只寫入 `specs/`，**不修改專案既有的任何檔案**。`discovery
 交回前逐項確認；任何一項答「否」就不交——修好，或在回報裡明說哪一項沒過：
 
 - [ ] `spec.md` 的 FR、AC、story 沒有任何新增、刪除或改寫
-- [ ] 票裡每一句都指得出來自哪條 FR、技術節哪個決定、或哪個 `@example-N.M`
 - [ ] 每個技術決定行尾都有來源；每一條 `← 推論` 同時列在 `## 缺口`
 - [ ] seam 寫進了 `plan.md`：是 `← Q-<n>` 確認過的，或標 `← 推論` 並在 `## 缺口` 記了「seam 沒問過」
-- [ ] 每張票答得出「做完之後我能 demo 什麼」
-- [ ] 寫檔前把票的清單攤給使用者、問過粒度／Blocked by／合併或再拆三件事，使用者確認了
+- [ ] `plan.md` 裡沒有票——沒有 `## 票`、沒有編號的工作項
 - [ ] 談 seam 時發現的需求洞進了 `## 缺口`，沒有在對話裡順口問掉
 - [ ] 只寫入 `specs/`；`discovery.md` 只在退回需求洞時動了狀態（改回 `澄清中`）與修訂歷史一列
 - [ ] 再跑時，`discovery.md` 已答且 `**來自**` 逐字引用的需求洞已從 `## 缺口` 刪掉
@@ -170,7 +138,7 @@ MUST: 只寫入 `specs/`，**不修改專案既有的任何檔案**。`discovery
 告訴對方：
 
 1. **seam 是哪一層**、是確認 `discovery.md` 裡問過的還是這一步推的
-2. 幾張票、第一張是哪一張（以及**為什麼是它**）、有沒有 prefactoring
+2. 動哪些模組、新的契約有哪些、幾個決定標了 `推論`
 3. `## 缺口` 有幾條，其中幾條是需求洞（已退回 discovery）
 
-下一步 `bdd-implement <票號>`，一張票一個全新 session。退回了需求洞 → 先 `bdd-discovery`。
+下一步 `bdd-tasks` 把這份設計拆成票。退回了需求洞 → 先 `bdd-discovery`。

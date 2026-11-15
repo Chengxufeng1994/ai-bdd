@@ -14,7 +14,7 @@
 | `@draft` | `bdd-formulation` | 來源 `spec.md` 狀態 `待對焦`（需求方還沒點頭，使用者要求先寫）。可用來對齊理解，**不是**講定的驗收條件 |
 | `@ready` | `bdd-formulation` | 來源 `spec.md` 狀態 `已對焦`，三方講定，等實作 |
 | `@wip` | `bdd-implement` 開工時 | 正在實作這則 |
-| `@review` | `bdd-implement` 全綠後 | 等 REVIEW |
+| `@review` | `bdd-implement`，涵蓋這個檔的票全做完、整個檔全綠後（票同時做時，在合回主線之後判） | 等 REVIEW |
 | `@done` | `bdd-verify` 通過後 | 六步走完 |
 
 三個設計決定，各有理由：

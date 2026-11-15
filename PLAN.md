@@ -42,7 +42,7 @@
 | --- | --- | --- | --- |
 | **DISCOVERY**（`bdd-discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、問紅卡、記答案原話與誰答的 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
 | **SPEC**（`bdd-spec`／`bdd-formulation`） | agent 寫、需求方審 | `已收斂` 的 `discovery.md` → `spec.md`（`已對焦`）→ `.feature` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` 並退回 |
-| **PLAN**（`bdd-plan`） | agent 設計與切、工程師審 | 技術節 ＋ tracer bullet ＋ blocking edges | 不改需求，有洞記進 `## 缺口` 並退回 |
+| **PLAN**（`bdd-plan`／`bdd-tasks`） | agent 設計與切、工程師審 | 技術節 → tracer bullet ＋ blocking edges ＋ 共用檔案 | `bdd-plan` 不改需求、`bdd-tasks` 不改設計，有洞記進 `## 缺口` 並退回 |
 
 「agent 補一個合理的答案然後繼續」這個風險，舊版靠「DISCOVERY 不寫檔」擋，
 而 2026-09-14 的設計承認那條從來沒真的成立過。現在改靠「每條 FR／AC 必須指得出
@@ -84,7 +84,8 @@ specs/
     ├── discovery.md    DISCOVERY 原文、粗切 story、問答。決策史，活得比實作久
     ├── spec.md         SPEC      story、FR、AC、角色、範圍。業務規則，活得比實作久
     ├── acceptance/     SPEC      <旅程>.feature：業務語意的驗收旅程，不執行；就緒判定對著它答
-    └── plan.md         PLAN      seam、模組、契約、schema、測試層級、風險 ＋ 票。實作開始就過期
+    ├── plan.md         PLAN      seam、模組、契約、schema、測試層級、風險。實作開始就過期
+    └── tasks/          PLAN      index.md（順序、Blocked by、共用檔案）＋ 一張票一個檔
 
 features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 docs/CONTEXT.md                  SPEC  詞彙，跨 feature
@@ -128,7 +129,7 @@ feature 的事實；seam 與 schema 在第一個 commit 之後就開始過期，
 | Implementation Decisions | 動哪些模組、介面長怎樣、API 契約、schema、架構決定 | 技術面向的答案 |
 | Testing Decisions | **seam** ＋ 每個 AC 的測試層級 ＋ 既有測試的 prior art | 技術面向的答案 |
 | Risks | 規格沒說但實作一定撞到的（併發、冪等、交易邊界） | 從規則推出來 |
-| 前置整理／票／缺口 | prefactoring、tracer bullet、推不出來的 | — |
+| 缺口 | 推不出來的（票與前置整理 2026-11-15 起住 `tasks/`） | — |
 
 **一批一份，不是一則 story 一份。** 這不是新決定：`bdd-plan` 的
 `references/plan-format.md` 記錄過「每 feature 一份 ＋ 共用檔」試過並且壞掉——
@@ -142,15 +143,20 @@ feature 的事實；seam 與 schema 在第一個 commit 之後就開始過期，
 例外：prototype 產出的、比散文更精確地編碼了某個決定的片段（狀態機、reducer、
 schema、型別形狀），可以內嵌並註明來自 prototype。
 
-### `plan.md`
+### `tasks/`
 
-一張票一節，依賴序排列，blockers 在前。每張票要有：
+格式契約在 `skills/bdd-tasks/references/tasks-format.md`。`index.md` 依賴序排列，blockers
+在前；一張票一個檔，每張票要有：
 
 - **交付什麼行為**——從使用者角度，不是分層清單
 - **Blocked by**——哪幾張票要先完成，或「無，可立即開始」
+- **共用檔案**——這張票會改、別張票也可能改的檔案；沒有交集的票才能同時做
 - **驗收條件**——每一條都要能在起點 commit 上**失敗**
 
 prefactoring（「make the change easy, then make the easy change」）排最前面。
+
+2026-11-15 之前票住在 `plan.md` 裡。拆出來是為了並行：做票的 session 只寫自己那張票檔，
+沒有任何一份檔案被兩個 session 寫（`docs/superpowers/specs/2026-11-15-bdd-tasks-design.md`）。
 
 ---
 
@@ -211,7 +217,8 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `bdd-spec-by-example` | `spec.md` → `acceptance/*.feature` 業務語意驗收旅程，`@covers-` 標 AC | **已實作**；2026-11-14，參考 aixbdd `spec-by-example`；由 `bdd-spec` 在診斷與就緒問句之間呼叫 |
 | | `bdd-formulation` | `spec.md` → `.feature` | **已實作** |
 | | `bdd-spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
-| PLAN | `bdd-plan` | `spec.md` ＋ `.feature` ＋ 技術面向的答案 → 技術節 ＋ tracer bullet ＋ blocking edges | **已實作**；2026-11-14 接手原 `design.md` 的技術設計 |
+| PLAN | `bdd-plan` | `spec.md` ＋ `.feature` ＋ 技術面向的答案 → 技術節 | **已實作**；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `bdd-tasks` |
+| | `bdd-tasks` | `plan.md` ＋ `.feature` → `tasks/`：tracer bullet ＋ blocking edges ＋ 共用檔案 | **已實作**（2026-11-15，從 `bdd-plan` 拆出；還沒實跑過） |
 | IMPLEMENT | `bdd-implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | REVIEW | `bdd-review`、`bdd-review-acceptance`、`bdd-review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 | VERIFY | `bdd-verify`、`bdd-verify-failure-triage` | 跑閘門與情境並回報、真 bug vs 規格過期 | 未實作 |

@@ -36,7 +36,7 @@ description: >
 - 要攤四色卡、判就緒 → `example-mapping`，本 skill 寫完 `spec.md` 之後呼叫它
 - 要把規格寫成業務方讀的驗收旅程 → `bdd-spec-by-example`，本 skill 在診斷之後、就緒問句之前呼叫它
 - 寫規則時 story 切得不對 → `story-splitting`，`已對焦` 之前本 skill 可以呼叫它重切
-- 要決定 seam、模組、契約、實作順序 → `bdd-plan`
+- 要決定 seam、模組、契約 → `bdd-plan`；實作順序與切票 → `bdd-tasks`
 - 產出是 `spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是**
   `discovery.md`、`plan.md`、程式碼；`.feature` 由 `bdd-formulation` 寫
 

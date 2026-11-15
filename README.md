@@ -14,7 +14,7 @@
 | --- | --- |
 | DISCOVERY | `bdd-discovery`、`clarify` |
 | SPEC | `bdd-spec`、`example-mapping`、`bdd-spec-by-example`、`bdd-formulation`、`story-splitting` |
-| PLAN | `bdd-plan` |
+| PLAN | `bdd-plan`、`bdd-tasks` |
 | IMPLEMENT | `bdd-implement` |
 | REVIEW／VERIFY | 尚未實作 |
 
@@ -35,9 +35,11 @@
 | `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `bdd-formulation`：寫可執行 `.feature`；`bdd-plan`：技術設計與切票 |
 | `docs/CONTEXT.md` | 專案 `docs/` | `bdd-spec`（建立或追加） | `bdd-spec-by-example`、`bdd-formulation`：用詞對齊 |
 | `domain-model.md` | `specs/` | `bdd-spec`（增修） | 下一個 feature 的 `bdd-spec`：聚合與不變條件 |
-| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `bdd-formulation` | `bdd-plan`：每個 AC 的測試層級、切票；`bdd-implement`：讓場景由紅變綠 |
-| `plan.md` | `<feature>/` | `bdd-plan`（技術設計＋票） | `bdd-implement`：一張票一個 session；`## 缺口` 退回 `bdd-spec` |
-| 產品程式碼、step definition、`@review` tag、`plan.md` 勾選 | 專案程式碼、`features/` | `bdd-implement` | REVIEW／VERIFY（尚未實作，目前人工對照） |
+| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `bdd-formulation` | `bdd-plan`：每個 AC 的測試層級；`bdd-tasks`：每張票涵蓋哪些場景；`bdd-implement`：讓場景由紅變綠 |
+| `plan.md` | `<feature>/` | `bdd-plan`（技術設計）；`bdd-tasks` 只在 `## 缺口` 加列 | `bdd-tasks`：拆成票；`bdd-implement`：讀技術節；`## 缺口` 的需求洞退回 `bdd-discovery` |
+| `tasks/index.md`（順序、Blocked by、共用檔案） | `<feature>/tasks/` | `bdd-tasks` | `bdd-implement`：挑下一張票、判斷能不能跟別張同時做 |
+| `tasks/<編號>-<slug>.md`（一張票一個檔） | `<feature>/tasks/` | `bdd-tasks` 建立；`bdd-implement` 勾驗收條件、寫 `## 缺口` | `bdd-implement`：一張票一個 session；`bdd-tasks` 再跑時把設計的洞搬進 `plan.md` |
+| 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `bdd-implement` | REVIEW／VERIFY（尚未實作，目前人工對照） |
 
 ## 目錄
 
@@ -62,6 +64,7 @@ ai-bdd/
 │   ├── bdd-formulation/
 │   ├── story-splitting/
 │   ├── bdd-plan/
+│   ├── bdd-tasks/
 │   ├── bdd-implement/
 │   └── skill-rules/
 ├── tests/                skill 腳本的 stdlib unittest
