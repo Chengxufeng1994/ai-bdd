@@ -5,7 +5,7 @@ description: >
   `← Q-<n>`／`← PRD §n`、角色、範圍、假設與限制）交 `example-mapping` 判就緒；需求方點頭後
   寫技術部分（Tech Stack、Commands、Project Structure、Code Style、Boundaries、
   Implementation Decisions、Testing Decisions，seam 攤給使用者確認），再呼叫 `formulation`
-  產 `.feature`；並把詞彙抬進 `docs/CONTEXT.md`、聚合增修進 `specs/domain-model.md`。
+  產 `.feature`；並把詞彙抬進 `docs/CONTEXT.md`、這個 feature 的聚合寫進 `spec.md` 的 `## Domain Model`。
   不訪談，有洞就退回 `discovery`。BDD 六步流程的 to spec 步驟。
   觸發詞：「寫 spec」「to spec」「把問答寫成規格」「discovery 問完了，接下來」
   「寫成 FR 跟 AC」「這個 feature 的規格」「spec.md」「寫詞彙表」「決定 seam」
@@ -21,7 +21,7 @@ description: >
 | --- | --- |
 | **職責** | 把已收斂的問答寫成一份讀完就能開工的規格：需求部分帶到需求方說「就緒」，再寫技術部分（用什麼做、seam、模組、契約、每個 AC 在哪一層測），交出去產 `.feature` |
 | **讀** | `specs/ongoing/<date>-<feature>/discovery.md`（`已收斂`，或 `澄清中` 且結束方式 `喊停`）；寫技術部分時加專案既有的結構與文件（Makefile、`CLAUDE.md`、架構文件），或上一份 `spec.md` 的技術部分 |
-| **寫** | `specs/ongoing/<date>-<feature>/spec.md`、`specs/domain-model.md`（增修）、`docs/CONTEXT.md`（建立或追加）；退回時 `discovery.md` 的狀態與修訂歷史一列 |
+| **寫** | `specs/ongoing/<date>-<feature>/spec.md`、`docs/CONTEXT.md`（建立或追加）；退回時 `discovery.md` 的狀態與修訂歷史一列 |
 | **上游** | `discovery` |
 | **下游** | `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後寫技術部分 → `formulation` → `plan` |
 | **不做** | 不訪談、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature`、不排風險與並行（那是 `plan`）、不切票 |
@@ -48,14 +48,14 @@ description: >
 | 要排風險、決定要不要並行、列接合點 | `plan`（寫在 `plan.md`） |
 | 要切票、排實作順序 | `task-breakdown` |
 
-產出是 `spec.md` ＋ `specs/domain-model.md` ＋ `docs/CONTEXT.md` 的追加，**不是**
+產出是 `spec.md` ＋ `docs/CONTEXT.md` 的追加，**不是**
 `discovery.md`、`plan.md`、程式碼；`.feature` 由 `formulation` 寫。
 
 ## 參考檔案
 
 - `references/spec-format.md` — `spec.md` 需求部分的骨架、來源標記、編號規則
 - `references/tech-format.md` — `spec.md` 技術部分七節的骨架、四選一的來源標記、範例。**第 6 步寫技術部分之前先讀**
-- `references/domain-model-format.md` — `specs/domain-model.md` 的骨架
+- `../archive/references/domain-model-format.md` — `## Domain Model` 一節的骨架（與 `docs/DOMAIN-MODEL.md` 共用）
 - `examples/minimal-spec.md` — 一份 `已對焦` 的 `spec.md`；它的問答在
   `../discovery/examples/minimal-discovery.md`
 - `../discovery/references/discovery-format.md` — 讀 `discovery.md` 時對照它的節
@@ -84,7 +84,7 @@ NEVER: `discovery.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是�
 | 1 | 寫 `spec.md`（`待對焦`） | — |
 | 2 | 收尾檢查，必要時重切 story | — |
 | 3 | 自檢 `check_spec.py` | — |
-| 4 | 詞彙 → `docs/CONTEXT.md`、聚合 → `specs/domain-model.md` | — |
+| 4 | 詞彙 → `docs/CONTEXT.md`、聚合 → `spec.md` 的 `## Domain Model` | — |
 | 5 | `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句 | 要，由 `example-mapping` 問需求方 |
 | 6 | 需求方答「就緒」→ `已對焦` → 寫技術部分 → `formulation` 產 `.feature` | 要，seam 攤給使用者確認 |
 | 7 | 不就緒、補問清單非空、或旅程有 `# [need clarification]` → 退回 discovery | — |
@@ -170,13 +170,14 @@ MUST NOT: 改寫該檔既有的任何段落；寫入 `docs/` 底下其他任何�
 runner 決定）。理由是**壽命**：刪掉某個 feature 的 spec 目錄之後，「訪客」的
 定義應該還在。
 
-#### 聚合 —— `specs/domain-model.md`
+#### 聚合 —— `spec.md` 的 `## Domain Model`
 
-根層一份，跨 feature 累積，骨架見 `references/domain-model-format.md`。這個 feature
-長出來的聚合與不變條件加進去。
+先讀 `docs/DOMAIN-MODEL.md`（專案的現況；沒有就是第一個 feature），再把這個 feature 新增或改動的聚合
+與不變條件寫進 `spec.md` 的 `## Domain Model`，骨架見 `../archive/references/domain-model-format.md`。
+`docs/DOMAIN-MODEL.md` 本身不在這裡改——這個 feature 做完時由 `archive` 併進去：`docs/` 只放做出來了的東西。
 
-MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本是什麼、為什麼改」——
-那張表記錄的是這個領域被理解的過程，而下一個 feature 的人靠它判斷某個決定還算不算數。
+MUST: 動到現況裡既有的聚合，要在這一節寫「原本是什麼、為什麼改」——`archive` 照它記修訂紀錄，
+而下一個 feature 的人靠那張表判斷某個決定還算不算數。
 
 判準（哪些該進來）：這條規則**跨 feature 仍然成立**嗎？只在這個 feature 的情境下為真的，
 留在 `spec.md` 的 FR。
@@ -206,7 +207,7 @@ MUST: 只增修，不重寫。動到既有條目要在修訂紀錄寫「原本�
 | `discovery.md` `## Open Questions` 裡技術面向、狀態 `已答` 的題 | **技術決定的原始素材**——小節的 `歸屬` 說它該進技術部分哪一節，行尾標 `← Q-<n>` |
 | `spec.md` 的 `## Assumptions / Constraints`、`## Non-Functional Requirements` | 外部限制與品質屬性，`## Tech Stack` 與 `## Boundaries` 的來源 |
 | 專案的 Makefile、README、`CLAUDE.md`、架構文件、既有程式碼 | `## Commands`、`## Project Structure`、`## Code Style` 的來源，標 `← 專案 <路徑>`；找既有的 seam |
-| 上一份 `spec.md` 的技術部分（有的話） | 抄過來，逐條確認現在還成立 |
+| `docs/TECH.md`（有的話） | 專案的技術現況：Tech Stack 到 Boundaries 從這裡抄來，逐條確認現在還成立，標 `← 專案 docs/TECH.md` |
 
 **一次讀完整批，不分批。** API 契約與 schema 天生跨 story，只有並排才看得見衝突。
 
@@ -288,7 +289,7 @@ FR／AC 不准 `推論` 的規則不變。
 | 產物 | 格式 |
 | --- | --- |
 | `specs/ongoing/<date>-<feature>/spec.md`（需求部分＋技術部分） | `references/spec-format.md`、`references/tech-format.md` |
-| `specs/domain-model.md`（增修） | `references/domain-model-format.md` |
+| `spec.md` 的 `## Domain Model` | `../archive/references/domain-model-format.md` |
 | `docs/CONTEXT.md`（建立或追加） | 第 4 步「詞彙表」 |
 | `specs/ongoing/<date>-<feature>/discovery.md` | DISCOVERY 的產物；本 skill 只讀，退回時改狀態與修訂歷史 |
 | `features/<story-slug>.feature` | 由 `formulation` 寫 |
@@ -317,7 +318,7 @@ MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何
 
 1. `spec.md` 寫了幾則 story、幾條 FR、幾條 AC；收尾檢查重切了哪幾則、為什麼
 2. `check_spec.py` 跑出什麼——過了就說「全過」，抓到就說抓到哪幾條、怎麼處理
-3. `domain-model.md` 新增了哪些聚合與不變條件、`docs/CONTEXT.md` 追加了哪些詞彙
+3. `## Domain Model` 新增或改了哪些聚合與不變條件、`docs/CONTEXT.md` 追加了哪些詞彙
 4. 就緒問句的結果：`已對焦` 並已產 `.feature`，或退回 discovery 的原因與補問條數
 5. 技術部分：**seam 是哪一層**、是確認 `discovery.md` 裡問過的還是推的、使用者確認了沒；
    動哪些模組、新的契約有哪些、幾個決定標了 `推論`

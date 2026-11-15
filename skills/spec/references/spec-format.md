@@ -29,6 +29,7 @@ feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`s
 | `## User Stories` | `### US-<n> · <slug>`，底下三個分組 `#### FR`／`#### NFR`／`#### Q` | `spec` |
 | `## Non-Functional Requirements` | 跨 story 的品質屬性 | `spec` |
 | `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | `spec`（問過的引 `Q-<n>`，沒問過的引 `PRD §n`） |
+| `## Domain Model` | 這個 feature 新增或改動的聚合與不變條件；骨架見 `../../archive/references/domain-model-format.md` | `spec`（第 4 步）；做完時 `archive` 併進 `docs/DOMAIN-MODEL.md` |
 | `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | `spec` |
 | 技術部分七節：`## Tech Stack` 到 `## Testing Decisions` | 用什麼做、seam、模組、契約、每個 AC 在哪一層測 | `spec`，`已對焦` 之後（第 6 步） |
 | `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `spec`；`example-mapping` 與 `spec-by-example` 也會加列 |

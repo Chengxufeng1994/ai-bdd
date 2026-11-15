@@ -52,6 +52,19 @@ class StatusReadsDiscovery(unittest.TestCase):
             self.assertIn("待答（1）", out)
             self.assertIn("2026-10-02-parking/Q-2", out)
 
+    def test_root_domain_model_exits_1_and_names_git_mv(self):
+        # 2026-11-15 起聚合的現況住 docs/DOMAIN-MODEL.md，specs/ 根層不再放它
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "domain-model.md").write_text("# Domain Model", encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("git mv specs/domain-model.md docs/DOMAIN-MODEL.md", out)
+
     def test_flat_layout_exits_1_and_names_git_mv(self):
         # 2026-11-15 以前 feature 直接放在 specs/ 底下；新佈局在 specs/ongoing/
         with tempfile.TemporaryDirectory() as d:

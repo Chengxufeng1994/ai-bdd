@@ -26,8 +26,9 @@
 
 **每份 spec 自成一體。** `## Tech Stack`、`## Commands`、`## Project Structure`、`## Code Style`
 跟這個 feature 無關，每份照樣寫——讀者不必去翻別的檔。專案自己有這些文件（`CLAUDE.md`、
-`docs/ARCHITECTURE.md`、Makefile）時照它們寫，標 `← 專案 <路徑>`；第二個 feature 起，從上一份
-`spec.md` 抄過來，逐條確認現在還成立再寫。它們是寫的當下的快照：專案之後改了，舊 spec 不會跟著改。
+`docs/ARCHITECTURE.md`、Makefile）時照它們寫，標 `← 專案 <路徑>`；有 `docs/TECH.md`（前面的 feature
+做完時 `archive` 寫的現況）就從它抄過來，逐條確認現在還成立再寫，標 `← 專案 docs/TECH.md`。這次
+要改的條目照常標它自己的來源——`archive` 做完時照它更新 `docs/TECH.md`。它們是寫的當下的快照：專案之後改了，舊 spec 不會跟著改。
 
 **技術部分改了要留紀錄**：票已經切出去之後，任何動到 seam、介面、schema 的改動都在
 `### 版本修訂歷史` 記一列——實作者可能已經照舊的做了一半。

@@ -19,7 +19,9 @@ join points) and `task-breakdown` (slices the design into one file per ticket un
 `tasks/`, so tickets can run in parallel). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
-that delegation or a manual `/bdd` runs it). SPEC is served by three skills —
+that delegation or a manual `/bdd` runs it). When all of a feature's tickets are merged,
+`archive` writes what it delivered into the project's current truth under `docs/` and moves
+its directory from `specs/ongoing/` to `specs/sleeping/`. SPEC is served by three skills —
 `spec` (writes a self-contained `spec.md` from the recorded answers: a requirements part,
 then, once `已對焦`, a technical part — Tech Stack, Commands, Project Structure, Code
 Style, Boundaries, Implementation and Testing Decisions), `spec-by-example` (writes
@@ -189,9 +191,13 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/ongoing/<date>-<feature>/` (`discovery.md`, `spec.md`, `splitting.md`, `acceptance/*.feature`, `plan.md`, `tasks/`), one directory that can be deleted whole; a finished feature's directory is to be moved to `specs/sleeping/` (phase two of `docs/superpowers/specs/2026-11-15-ongoing-and-sleeping-layout-design.md`, not built yet). Two
-  exceptions: executable `.feature` files stay where the runner expects them (`features/` for
-  Cucumber-family tools); `docs/CONTEXT.md` outlives any single feature, so SPEC may create
-  it or append entries but must not rewrite its existing sections or write to anything else
-  under `docs/`.
+  `specs/ongoing/<date>-<feature>/` (`discovery.md`, `spec.md`, `splitting.md`, `acceptance/*.feature`, `plan.md`, `tasks/`), one directory that can be deleted whole. When all its
+  tickets are merged, `archive` `git mv`s that directory to `specs/sleeping/`; `discovery`
+  moves it back to `ongoing/` (only when the user says so) to correct it. Exceptions:
+  executable `.feature` files stay where the runner expects them (`features/` for
+  Cucumber-family tools); the project's current truth lives in `docs/` — `spec` may create
+  `docs/CONTEXT.md` or append entries but must not rewrite its existing sections; `archive`
+  may create `docs/DOMAIN-MODEL.md`, `docs/DATABASE-SCHEMA.md` and `docs/TECH.md` or change
+  only the `<!-- ai-bdd:begin … -->` blocks inside them. Nothing else under `docs/` is
+  written.
 - Renames use `git mv` so `git log --follow` keeps working; the testbed's history depends on it.

@@ -369,6 +369,9 @@ def flat_layout_hint(specs: Path) -> str | None:
     新佈局的 feature 住 `specs/ongoing/`，做完搬到 `specs/sleeping/`。平鋪的目錄不擋下來
     就會被安靜地略過——腳本報「沒有任何 feature」，看起來像是還沒開始。
     """
+    if (specs / "domain-model.md").exists():
+        # 聚合的現況改住 docs/DOMAIN-MODEL.md，由 archive 在 feature 做完時增修
+        return "specs/domain-model.md 是舊佈局：`git mv specs/domain-model.md docs/DOMAIN-MODEL.md`"
     for d in sorted(p for p in specs.iterdir() if p.is_dir() and p.name not in ("ongoing", "sleeping")):
         if any((d / f).exists() for f in ("discovery.md", "spec.md", "prd.md")):
             return (f"{d} 是舊佈局（feature 直接放在 specs/ 底下）："

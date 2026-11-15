@@ -60,7 +60,7 @@ already made, not a place where new ones get made.」
 | 步驟 | 這一步在問什麼 | 作法 | 產物 |
 | --- | --- | --- | --- |
 | **DISCOVERY** | 需求方想要什麼？還有哪些不知道？問到不能再問為止（brainstorming） | 開場當書記：原文逐字、粗切 story；之後設計樹＋前沿，答案逐題記下 | `discovery.md`（澄清中 → 已收斂） |
-| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？用什麼做？（to spec） | `discovery.md` → `spec.md` 需求部分（`spec`）→ 就緒判定（`example-mapping`）→ 技術部分（`spec`，seam 經使用者確認）→ Gherkin（`formulation`） | `spec.md`（待對焦 → 已對焦，含技術部分）＋ `.feature`（可執行）＋ `domain-model.md` |
+| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？用什麼做？（to spec） | `discovery.md` → `spec.md` 需求部分（`spec`）→ 就緒判定（`example-mapping`）→ 技術部分（`spec`，seam 經使用者確認）→ Gherkin（`formulation`） | `spec.md`（待對焦 → 已對焦，含 `## Domain Model` 與技術部分）＋ `.feature`（可執行） |
 | **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | 風險、接合點（`plan`）＋ tracer bullet 垂直切片 ＋ blocking edges（`task-breakdown`） | `plan.md` ＋ `tasks/` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | 全新 reviewer 對照情境驗收 ＋ 鏈稽核 | 審查結論 ＋ 稽核報告 |
@@ -79,8 +79,7 @@ IMPLEMENT／VERIFY 需要綁定技術棧；REVIEW 部分需要。
 
 ```
 specs/
-├── domain-model.md     SPEC      聚合、不變條件；跨 feature，活得比任何一份 spec 的技術部分久
-├── sleeping/           做完的 feature 整個目錄搬到這裡（第二期的 `archive`，尚未實作）
+├── sleeping/<date>-<feature>/  做完的 feature：`archive` 整個目錄 git mv 過來；要修正時 `discovery` 喚醒、搬回 ongoing/
 └── ongoing/<date>-<feature>/   還在做的 feature
     ├── discovery.md    DISCOVERY 原文、粗切 story、問答。決策史，活得比實作久
     ├── spec.md         SPEC      需求部分（story、FR、AC、角色、範圍；活得比實作久）＋ 技術部分（Tech Stack 到 Testing Decisions；實作開始就過期）
@@ -90,6 +89,9 @@ specs/
 
 features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 docs/CONTEXT.md                  SPEC  詞彙，跨 feature
+docs/DOMAIN-MODEL.md             ARCHIVE  聚合與不變條件的現況（只動 ai-bdd 區塊）
+docs/DATABASE-SCHEMA.md          ARCHIVE  資料表的現況
+docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 ```
 
 **技術設計與需求同住 `spec.md`（2026-11-15 起）。** 原本分檔的理由是壽命——FR、AC 在實作完成後
@@ -232,6 +234,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `task-breakdown` | `spec.md` 技術部分 ＋ `plan.md` ＋ `.feature` → `tasks/`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
 | IMPLEMENT | `implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | | `bdd` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`implement` 委派 green 與 refactor，red 由 `implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `bdd` 與 `implement` 的委派方式；還沒實跑過） |
+| | `archive` | 票全部合回後：`spec.md` 的 `## Domain Model` 與技術部分併進 `docs/DOMAIN-MODEL.md`／`DATABASE-SCHEMA.md`／`TECH.md` 的 ai-bdd 區塊，整個目錄 `git mv` 到 `specs/sleeping/` | **已實作**（2026-11-15，照 OpenSpec 的 changes／archive；還沒實跑過） |
 | REVIEW | `review`、`review-acceptance`、`review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 | VERIFY | `verify`、`verify-failure-triage` | 跑閘門與情境並回報、真 bug vs 規格過期 | 未實作 |
 

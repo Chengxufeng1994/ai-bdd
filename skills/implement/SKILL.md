@@ -20,7 +20,7 @@ description: >
 | **讀** | `tasks/<票>.md`、`tasks/index.md`、`spec.md`（技術部分與這張票的 FR／AC）、`plan.md`、這張票涵蓋的 `.feature`、專案的架構文件 |
 | **寫** | 產品程式碼與 step definition、這張票的票檔（勾選、`## 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
 | **上游** | `task-breakdown`（票切好之後） |
-| **下游** | `bdd`（第 3、4 步委派）；做完之後是 REVIEW（未實作） |
+| **下游** | `bdd`（第 3、4 步委派）；全部票做完之後是 `archive` |
 | **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做 `spec.md` 技術部分沒做的設計決定 |
 
 **外迴圈先紅，內迴圈先紅，然後才寫程式。** 外迴圈是 `.feature` 的場景（godog／
@@ -274,5 +274,6 @@ MUST: 不修改 `spec.md`、`discovery.md`、`plan.md`、`tasks/index.md`、別�
 5. 下一張票是哪一張（`tasks/index.md` 裡 Blocked by 剛被解開的那張）；這個 `.feature` 還在 `@wip` 的話，等哪幾張票
 6. 在 worktree 裡做的：合回時解了哪些衝突、各是哪一種，合併後的閘門命令與結果
 
-全部票做完 → `.feature` 全部 `@review`，下一步 REVIEW（未實作：先人工對照
-`spec.md` 的 AC 與 `.feature`，跑 `check_spec.py` 看鏈有沒有斷）。
+全部票做完 → `.feature` 全部 `@review`，下一步 `archive`：把這個 feature 寫回 `docs/` 的現況、搬進
+`specs/sleeping/`。REVIEW 還沒實作，在那之前先人工對照 `spec.md` 的 AC 與 `.feature`，跑
+`check_spec.py` 看鏈有沒有斷。

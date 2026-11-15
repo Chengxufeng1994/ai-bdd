@@ -1,10 +1,13 @@
-# `domain-model.md` 的骨架
+# `docs/DOMAIN-MODEL.md` 的骨架
 
-路徑 `specs/domain-model.md`——**根層，跨 feature**。`spec` 每寫完一個 feature 的
-`spec.md` 就增修它。它比任何一份 `spec.md` 的技術部分活得久：技術部分實作一開始就會過期；
-domain model 要留下來。
+路徑 `docs/DOMAIN-MODEL.md`——**專案的現況，跨 feature**。`archive` 在一個 feature 的票全部合回之後，
+把它 `spec.md` 的 `## Domain Model` 一節併進來。它比任何一份 `spec.md` 的技術部分活得久：技術部分實作
+一開始就會過期；domain model 要留下來。
 
-每個 feature 只**增修**，不重寫。改了既有條目要寫「原本是什麼、為什麼改」。
+每個 feature 只**增修**，不重寫。改了既有條目要寫「原本是什麼、為什麼改」。專案已經有這份檔時，
+只增修 `<!-- ai-bdd:begin … -->` 區塊（`docs-format.md`〈區塊標記〉）。
+
+`spec.md` 的 `## Domain Model` 用同一個骨架，只是只寫這個 feature 新增或改動的聚合、沒有 `## 修訂紀錄`。
 
 ```markdown
 # Domain Model
@@ -26,7 +29,7 @@ domain model 要留下來。
 | 一個使用者最多一筆進行中的訓練 | 2026-09-09-log-a-workout FR-1 | Workout 聚合 |
 
 `被誰保證` 只寫哪個聚合（或哪條跨聚合的規則）負責守住它，不寫怎麼守——資料庫索引、鎖這類做法是
-技術決定，寫在那個 feature 的 `spec.md` 技術部分。
+技術決定，寫在那個 feature 的 `spec.md` 技術部分，做完時併進 `docs/DATABASE-SCHEMA.md` 或 `docs/TECH.md`。
 
 ## 跨聚合的規則
 

@@ -260,6 +260,18 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertIn("Q-2", out)
             self.assertIn("已答", out)
 
+    def test_root_domain_model_exits_1_and_names_git_mv(self):
+        # 2026-11-15 起聚合的現況住 docs/DOMAIN-MODEL.md，specs/ 根層不再放它
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            (root / "specs" / "domain-model.md").write_text("# Domain Model", encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1)
+            self.assertIn("git mv specs/domain-model.md docs/DOMAIN-MODEL.md", out)
+
     def test_flat_layout_exits_1_and_names_git_mv(self):
         # 2026-11-15 以前 feature 直接放在 specs/ 底下；新佈局在 specs/ongoing/
         with tempfile.TemporaryDirectory() as d:

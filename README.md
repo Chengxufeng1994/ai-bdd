@@ -15,7 +15,7 @@
 | DISCOVERY | `discovery`、`clarify` |
 | SPEC | `spec`、`example-mapping`、`spec-by-example`、`formulation`、`story-splitting` |
 | PLAN | `plan`、`task-breakdown` |
-| IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`bdd`（由 `implement` 委派 green／refactor，模型不自動觸發） |
+| IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`bdd`（由 `implement` 委派 green／refactor，模型不自動觸發）、`archive`（票全部合回後：寫回 `docs/` 現況、搬進 `specs/sleeping/`） |
 | REVIEW／VERIFY | 尚未實作 |
 
 `skill-rules` 不在流程裡：它是本專案撰寫與稽核 skill 的房規。哪幾步對應 BDD 的哪個實踐、
@@ -34,13 +34,15 @@
 | 驗收旅程 `*.feature`（不執行） | `<feature>/acceptance/` | `spec-by-example` | 需求方：對著旅程判就緒；`example-mapping`：提就緒問句；`formulation`：只借用語 |
 | `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `spec` 第 6 步：寫技術部分；`formulation`：寫可執行 `.feature` |
 | `docs/CONTEXT.md` | 專案 `docs/` | `spec`（建立或追加） | `spec-by-example`、`formulation`：用詞對齊 |
-| `domain-model.md` | `specs/` | `spec`（增修） | 下一個 feature 的 `spec`：聚合與不變條件 |
+| `spec.md` `## Domain Model` | `<feature>/spec.md` | `spec`（第 4 步，先讀 `docs/DOMAIN-MODEL.md`） | `archive`：併進 `docs/DOMAIN-MODEL.md` |
 | 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`task-breakdown`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
 | `spec.md` 技術部分（Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions） | `<feature>/spec.md` | `spec`（`已對焦` 之後，seam 經使用者確認） | `plan`：推接合點；`task-breakdown`：抄模組、內迴圈、驗證命令；`implement`、`bdd`：照著寫程式 |
 | `plan.md`（執行計畫） | `<feature>/` | `plan`（概述、風險與影響程度、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票、高風險排前面；`## 缺口` 裡技術部分的洞交回 `spec` |
 | `tasks/index.md`（順序、大小、Blocked by、接合點、檢查點） | `<feature>/tasks/` | `task-breakdown` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點 |
 | `tasks/<編號>-<slug>.md`（一張票一個檔：行為、模組、大小、驗收條件、驗證命令） | `<feature>/tasks/` | `task-breakdown` 建立；`implement` 勾驗收條件、寫 `## 缺口` | `implement`：一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
-| 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `implement` | REVIEW／VERIFY（尚未實作，目前人工對照） |
+| 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
+| `docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md`（專案現況，只動 ai-bdd 區塊） | 專案 `docs/` | `archive` | 下一個 feature 的 `spec`：聚合與技術現況從這裡讀 |
+| `specs/sleeping/<date>-<feature>/`（做完的 feature 整個目錄） | `specs/sleeping/` | `archive`（`git mv`） | 要修正時，`discovery` 喚醒、搬回 `specs/ongoing/` |
 
 ## 每個 skill：職責與流程
 
@@ -89,7 +91,7 @@
 1. 寫 `spec.md`（`待對焦`）
 2. 收尾檢查，必要時重切 story
 3. 自檢 `check_spec.py`
-4. 詞彙 → `docs/CONTEXT.md`、聚合 → `specs/domain-model.md`
+4. 詞彙 → `docs/CONTEXT.md`、聚合 → `spec.md` 的 `## Domain Model`
 5. `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句
 6. 需求方答「就緒」→ `已對焦` → 寫技術部分 → `formulation` 產 `.feature`
 7. 不就緒、補問清單非空、或旅程有 `# [need clarification]` → 退回 discovery
@@ -186,7 +188,7 @@
 **職責**：把一張票做到綠：測試層先紅、委派 `bdd` 轉綠與整理、閘門綠、勾驗收條件、合回主線
 
 - **上游**：`task-breakdown`（票切好之後）
-- **下游**：`bdd`（第 3、4 步委派）；做完之後是 REVIEW（未實作）
+- **下游**：`bdd`（第 3、4 步委派）；全部票做完之後是 `archive`
 - **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做 `spec.md` 技術部分沒做的設計決定
 
 1. 讀票，標 `@wip`
@@ -211,6 +213,18 @@
 4. 照入口把這個 slice 做到完成條件
 5. 還有下一個 slice 就回到 3，否則停
 6. 回報
+
+#### `archive`
+
+**職責**：把一個做完的 feature 併進專案的真實來源：`docs/` 三份現況檔照它增修，再把它的目錄搬進 `specs/sleeping/`
+
+- **上游**：`implement`（讓最後一張票完成的那次合回之後）
+- **下游**：無；要修正時由 `discovery` 喚醒，搬回 `specs/ongoing/`
+- **不做**：不訪談、不改 `spec.md`／票檔／`.feature`、不改程式碼、不寫 `docs/CONTEXT.md`、不動區塊外的內容、不判斷實作對不對
+
+1. 讀這個 feature 的 `spec.md` 與 `docs/` 現況，列出要改的條目
+2. 增修 `docs/` 三份檔的區塊，記修訂紀錄
+3. `git mv` 到 `specs/sleeping/`，跟第 2 步同一個 commit
 ### 不在流程裡
 
 #### `skill-rules`
@@ -262,6 +276,7 @@ ai-bdd/
 │   ├── task-breakdown/
 │   ├── implement/
 │   ├── bdd/
+│   ├── archive/
 │   └── skill-rules/
 ├── tests/                skill 腳本的 stdlib unittest
 ├── benchmark/
