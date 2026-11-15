@@ -143,8 +143,8 @@ SHOULD: 一輪 3–5 題。但真正的判準不是數字，是**回答品質**�
 | **新發現** | — | 2 | ← 回答揭露的新問題 |
 
 ### 這輪解決的
-- Question 3 熱身組不計入 → 已寫成 FR-4 ← Q-3
-- Question 5 單位一律存公斤 → 已寫成 FR-1 ← Q-5（跨 feature 的規則另記進 `specs/domain-model.md`，由 `bdd-spec` 處理）
+- Question 3 熱身組不計入 → Q-3 已答
+- Question 5 單位一律存公斤 → Q-5 已答（跨 feature 的規則，由 `bdd-spec` 寫進規格時處理）
 
 ### 還開著
 | | 問題 |
