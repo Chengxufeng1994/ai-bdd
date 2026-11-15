@@ -61,7 +61,7 @@ already made, not a place where new ones get made.」
 | --- | --- | --- | --- |
 | **DISCOVERY** | 需求方想要什麼？還有哪些不知道？問到不能再問為止（brainstorming） | 開場當書記：原文逐字、粗切 story；之後設計樹＋前沿，答案逐題記下 | `discovery.md`（澄清中 → 已收斂） |
 | **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？用什麼做？（to spec） | `discovery.md` → `spec.md` 需求部分（`spec`）→ 就緒判定（`example-mapping`）→ 技術部分（`spec`，seam 經使用者確認）→ Gherkin（`formulation`） | `spec.md`（待對焦 → 已對焦，含 `## Domain Model` 與技術部分）＋ `.feature`（可執行） |
-| **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | 風險、接合點（`plan`）＋ tracer bullet 垂直切片 ＋ blocking edges（`task-breakdown`） | `plan.md` ＋ `tasks/` |
+| **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | 風險、接合點（`plan`）＋ tracer bullet 垂直切片 ＋ blocking edges（`task-breakdown`） | `plan.md` ＋ `tasks.md` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | 全新 reviewer 對照情境驗收 ＋ 鏈稽核 | 審查結論 ＋ 稽核報告 |
 | **VERIFY** | 交付前最後一次：綠了嗎？紅的是 bug 還是規格過期？ | 跑閘門與全部情境 ＋ 失敗判讀 | 測試結果 ＋ 判讀結論 |
@@ -85,7 +85,7 @@ specs/
     ├── spec.md         SPEC      需求部分（story、FR、AC、角色、範圍；活得比實作久）＋ 技術部分（Tech Stack 到 Testing Decisions；實作開始就過期）
     ├── acceptance/     SPEC      <旅程>.feature：業務語意的驗收旅程，不執行；就緒判定對著它答
     ├── plan.md         PLAN      概述、風險、要不要並行與接合點。實作開始就過期
-    └── tasks/          PLAN      index.md（順序、Blocked by、接合點）＋ 一張票一個檔
+    └── tasks.md        PLAN      一波一節、一張票一個票節（順序由上而下、Blocked by、接合點、檢查點）
 
 features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 docs/CONTEXT.md                  SPEC  詞彙，跨 feature
@@ -156,10 +156,10 @@ docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 例外：prototype 產出的、比散文更精確地編碼了某個決定的片段（狀態機、reducer、
 schema、型別形狀），可以內嵌並註明來自 prototype。
 
-### `tasks/`
+### `tasks.md`
 
-格式契約在 `skills/task-breakdown/references/tasks-format.md`。`index.md` 依賴序排列，blockers
-在前；一張票一個檔，每張票要有：
+格式契約在 `skills/task-breakdown/references/tasks-format.md`。一份檔，依賴序排列，blockers
+在前；一張票一個票節，每張票要有：
 
 - **交付什麼行為**——從使用者角度，不是分層清單
 - **Blocked by**——哪幾張票要先完成，或「無，可立即開始」
@@ -170,6 +170,8 @@ prefactoring（「make the change easy, then make the easy change」）排最前
 
 2026-11-15 之前票住在 `plan.md` 裡。拆出來是為了並行：做票的 session 只寫自己那張票檔，
 沒有任何一份檔案被兩個 session 寫（`docs/superpowers/specs/2026-11-15-bdd-tasks-design.md`）。
+2026-11-16 併回一份 `tasks.md`：十幾個檔加一份 `index.md` 難讀、三欄要兩邊同步；並行的保護改成
+「做票的 session 只改自己的票節」，合回時 `tasks.md` 的衝突取聯集。
 
 ---
 
@@ -231,7 +233,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `formulation` | `spec.md` → `.feature` | **已實作** |
 | | `spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
 | PLAN | `plan` | `spec.md`（含技術部分）＋ `.feature` → 執行計畫：風險、要不要並行、接合點 | **已實作**；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `task-breakdown`，技術設計搬到 `spec.md` |
-| | `task-breakdown` | `spec.md` 技術部分 ＋ `plan.md` ＋ `.feature` → `tasks/`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
+| | `task-breakdown` | `spec.md` 技術部分 ＋ `plan.md` ＋ `.feature` → `tasks.md`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
 | IMPLEMENT | `implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | | `bdd` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`implement` 委派 green 與 refactor，red 由 `implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `bdd` 與 `implement` 的委派方式；還沒實跑過） |
 | | `archive` | 票全部合回後：`spec.md` 的 `## Domain Model` 與技術部分併進 `docs/DOMAIN-MODEL.md`／`DATABASE-SCHEMA.md`／`TECH.md` 的 ai-bdd 區塊，整個目錄 `git mv` 到 `specs/sleeping/` | **已實作**（2026-11-15，照 OpenSpec 的 changes／archive；還沒實跑過） |
@@ -376,6 +378,7 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] `implement`——2026-10-03，從那次實跑抽出
 - [x] 2026-11-13 砍掉 CAPTURE 與 `prd.md`；2026-11-14 六步流程：DISCOVERY 只寫 `discovery.md`、SPEC 從問答寫 `spec.md`、`design.md` 併進 `plan.md`、REVIEW 排到 VERIFY 前
 - [x] 2026-11-14 `spec-by-example`：就緒判定前先寫 `acceptance/` 驗收旅程，`check_spec.py` 第 17 項稽核 `@covers-`
+- [x] 2026-11-16 `task-breakdown` 改寫單一 `tasks.md`（一張票一個票節），取代 `tasks/` 目錄與 `index.md`
 - [ ] `verify`、`review`
 - [ ] 用 `implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣
 

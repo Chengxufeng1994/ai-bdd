@@ -8,7 +8,7 @@
 它只裝**執行計畫**：這批怎麼排、哪裡危險、能不能並行，以及 `## 缺口`。技術設計（Tech Stack、
 seam、模組、契約、schema、測試層級）在 `spec.md` 的技術部分，格式見
 `../../spec/references/tech-format.md`。票不在這裡——`task-breakdown` 從 `spec.md` 的技術部分與這份
-計畫拆到同目錄的 `tasks/`，格式見 `../../task-breakdown/references/tasks-format.md`。
+計畫拆到同目錄的 `tasks.md`，格式見 `../../task-breakdown/references/tasks-format.md`。
 `plan.md` 是拋棄式快照，實作一開始就會過期。
 
 ```markdown

@@ -38,9 +38,8 @@
 | 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`task-breakdown`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
 | `spec.md` 技術部分（Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions） | `<feature>/spec.md` | `spec`（`已對焦` 之後，seam 經使用者確認） | `plan`：推接合點；`task-breakdown`：抄模組、內迴圈、驗證命令；`implement`、`bdd`：照著寫程式 |
 | `plan.md`（執行計畫） | `<feature>/` | `plan`（概述、風險與影響程度、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票、高風險排前面；`## 缺口` 裡技術部分的洞交回 `spec` |
-| `tasks/index.md`（順序、大小、Blocked by、接合點、檢查點） | `<feature>/tasks/` | `task-breakdown` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點 |
-| `tasks/<編號>-<slug>.md`（一張票一個檔：行為、模組、大小、驗收條件、驗證命令） | `<feature>/tasks/` | `task-breakdown` 建立；`implement` 勾驗收條件、寫 `## 缺口` | `implement`：一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
-| 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
+| `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `task-breakdown` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
+| 產品程式碼、step definition、`@review` tag、票節勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
 | `docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md`（專案現況，只動 ai-bdd 區塊） | 專案 `docs/` | `archive` | 下一個 feature 的 `spec`：聚合與技術現況從這裡讀 |
 | `specs/sleeping/<date>-<feature>/`（做完的 feature 整個目錄） | `specs/sleeping/` | `archive`（`git mv`） | 要修正時，`discovery` 喚醒、搬回 `specs/ongoing/` |
 
@@ -169,7 +168,7 @@
 
 #### `task-breakdown`
 
-**職責**：把技術設計拆成一疊 tracer bullet：一張票一個檔，每張穿過所有層、自己可 demo，標明誰卡誰、會碰哪些接合點
+**職責**：把技術設計拆成一疊 tracer bullet：一張票一節，每張穿過所有層、自己可 demo，標明誰卡誰、會碰哪些接合點
 
 - **上游**：`plan`（風險與「要不要並行」寫好之後）
 - **下游**：`implement <票號>`（一張票一個全新 session）
@@ -179,7 +178,7 @@
 2. 切票：最薄的完整路徑先，其餘依 FR
 3. 標 Blocked by 與接合點
 4. 攤出來確認
-5. 寫 `tasks/`：票檔帶驗證命令，`index.md` 放檢查點
+5. 寫 `tasks.md`：票節帶驗證命令，波與波之間放檢查點
 
 ### IMPLEMENT
 
@@ -189,7 +188,7 @@
 
 - **上游**：`task-breakdown`（票切好之後）
 - **下游**：`bdd`（第 3、4 步委派）；全部票做完之後是 `archive`
-- **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做 `spec.md` 技術部分沒做的設計決定
+- **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `spec.md` 技術部分沒做的設計決定
 
 1. 讀票，標 `@wip`
 2. 測試層先紅：場景都接上 step definition，沒有 undefined step
@@ -220,7 +219,7 @@
 
 - **上游**：`implement`（讓最後一張票完成的那次合回之後）
 - **下游**：無；要修正時由 `discovery` 喚醒，搬回 `specs/ongoing/`
-- **不做**：不訪談、不改 `spec.md`／票檔／`.feature`、不改程式碼、不寫 `docs/CONTEXT.md`、不動區塊外的內容、不判斷實作對不對
+- **不做**：不訪談、不改 `spec.md`／票節／`.feature`、不改程式碼、不寫 `docs/CONTEXT.md`、不動區塊外的內容、不判斷實作對不對
 
 1. 讀這個 feature 的 `spec.md` 與 `docs/` 現況，列出要改的條目
 2. 增修 `docs/` 三份檔的區塊，記修訂紀錄

@@ -15,8 +15,8 @@ The plugin's subject is a six-step pipeline:
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
 `plan` (execution plan in `plan.md`: overview, risks, whether to parallelise and the
-join points) and `task-breakdown` (slices the design into one file per ticket under
-`tasks/`, so tickets can run in parallel). IMPLEMENT is served by
+join points) and `task-breakdown` (slices the design into one section per ticket in a
+single `tasks.md`, so tickets can run in parallel). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
 that delegation or a manual `/bdd` runs it). When all of a feature's tickets are merged,
@@ -120,7 +120,7 @@ Each step reads what the previous step actually emitted: DISCOVERY writes
 `discovery.md` (原文, rough stories, questions and answers — no rules), SPEC writes
 `spec.md` from it (requirements, then the technical design once `已對焦`) and the
 `.feature` files, PLAN writes `plan.md` (execution plan) from `spec.md` and the `.feature`
-files, then `tasks/` (one file per ticket plus `index.md`) from both, REVIEW audits the
+files, then `tasks.md` (one section per ticket, in dependency order) from both, REVIEW audits the
 whole chain.
 
 ```
@@ -150,8 +150,8 @@ Each of the first three steps holds because it runs in one main working mode:
 - **PLAN** owns the execution plan (risks, parallel work, join points) — `plan` **does
   not change `spec.md`**; holes go to `## 缺口` and back to `spec`. `task-breakdown` then
   slices tracer bullets and **does not change the design**; its holes go to the same
-  `## 缺口`. `implement` writes only its own ticket file, never `plan.md` or
-  `tasks/index.md` — that is what lets tickets run in parallel. A ticket done in a worktree
+  `## 缺口`. `implement` writes only its own ticket's section of `tasks.md`, never `plan.md` or
+  another ticket's section — that is what lets tickets run in parallel. A ticket done in a worktree
   is merged back by the session that did it: generated files are regenerated, append-only
   conflicts are unioned, and the gate re-runs on the merged code.
 
@@ -191,7 +191,7 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/ongoing/<date>-<feature>/` (`discovery.md`, `spec.md`, `splitting.md`, `acceptance/*.feature`, `plan.md`, `tasks/`), one directory that can be deleted whole. When all its
+  `specs/ongoing/<date>-<feature>/` (`discovery.md`, `spec.md`, `splitting.md`, `acceptance/*.feature`, `plan.md`, `tasks.md`), one directory that can be deleted whole. When all its
   tickets are merged, `archive` `git mv`s that directory to `specs/sleeping/`; `discovery`
   moves it back to `ongoing/` (only when the user says so) to correct it. Exceptions:
   executable `.feature` files stay where the runner expects them (`features/` for

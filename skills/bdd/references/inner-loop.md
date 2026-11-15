@@ -35,7 +35,7 @@ parking 實跑的第一個假紅就是這個。
 依 `docs/DATAFLOW.md`（或專案的同類文件）：埠（`port/out`）→ use case →
 driving port 與 service → contract（`openapi.yaml`）→ 產碼 → mapper → operation →
 presenter → bootstrap 組裝。每一段都是機械翻譯，**不做決定**；要做的決定都該在
-`spec.md` 的技術部分，沒有就停下回報，由 `implement` 記進票檔的 `## 缺口`。
+`spec.md` 的技術部分，沒有就停下回報，由 `implement` 記進票節的 `#### 缺口`。
 
 - contract 改了就重新產碼（實測場 `make gen-api`），產出的介面多了方法，`Server`
   不實作就編不過——那是對的，讓編譯器告訴你還缺哪個 operation

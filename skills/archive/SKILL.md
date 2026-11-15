@@ -17,11 +17,11 @@ description: >
 | | |
 | --- | --- |
 | **職責** | 把一個做完的 feature 併進專案的真實來源：`docs/` 三份現況檔照它增修，再把它的目錄搬進 `specs/sleeping/` |
-| **讀** | `specs/ongoing/<date>-<feature>/` 的 `spec.md`（`## Domain Model` 與技術部分）、`tasks/`（全部勾完）、涵蓋的 `.feature`（`@review`）、`docs/` 既有的三份檔 |
+| **讀** | `specs/ongoing/<date>-<feature>/` 的 `spec.md`（`## Domain Model` 與技術部分）、`tasks.md`（全部勾完）、涵蓋的 `.feature`（`@review`）、`docs/` 既有的三份檔 |
 | **寫** | `docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md` 裡 ai-bdd 維護的區塊；`git mv` 這個 feature 的目錄到 `specs/sleeping/` |
 | **上游** | `implement`（讓最後一張票完成的那次合回之後） |
 | **下游** | 無；要修正時由 `discovery` 喚醒，搬回 `specs/ongoing/` |
-| **不做** | 不訪談、不改 `spec.md`／票檔／`.feature`、不改程式碼、不寫 `docs/CONTEXT.md`、不動區塊外的內容、不判斷實作對不對 |
+| **不做** | 不訪談、不改 `spec.md`／票節／`.feature`、不改程式碼、不寫 `docs/CONTEXT.md`、不動區塊外的內容、不判斷實作對不對 |
 
 **只搬已經講定、已經做出來的東西。** `docs/` 是系統現在長怎樣；這一步不做任何新決定。
 `spec.md` 跟 `docs/` 的現況衝突時（`TECH.md` 說 Go 1.23、這次的 spec 說 1.24），不自己選——停下回報。
@@ -48,7 +48,7 @@ description: >
 
 ## 前置確認（Ask user）
 
-Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks/index.md` 列的每張票驗收條件都勾完；它涵蓋的
+Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks.md` 列的每張票驗收條件都勾完；它涵蓋的
 每個 `.feature` 都是 `@review`——涵蓋哪些檔，看各票 `涵蓋場景` 寫的 `.feature` 路徑的聯集（不屬於任何票的，
 例如 walking skeleton 的 `version.feature`，不算）。任何一項不成立就停下，說還差哪張票——還沒做完的東西寫進現況，
 `docs/` 就不再是系統真正的樣子。
@@ -108,7 +108,7 @@ git mv specs/ongoing/<date>-<feature> specs/sleeping/<date>-<feature>
 
 MUST: 用 `git mv`，不用複製再刪——`git log --follow` 靠它追到搬家前的歷史；喚醒時搬回來也一樣。
 
-目錄裡的東西一個字都不改：`discovery.md`、`spec.md`、`plan.md`、`tasks/` 就是這個 feature 交付了什麼、
+目錄裡的東西一個字都不改：`discovery.md`、`spec.md`、`plan.md`、`tasks.md` 就是這個 feature 交付了什麼、
 為什麼這樣決定的紀錄，不另寫一份交付紀錄。
 
 第 2 步與第 3 步放在同一個 commit：`docs/` 的現況與 feature 搬進 `sleeping/` 是同一件事，分開提交
@@ -141,7 +141,7 @@ MUST NOT: 寫 `docs/` 底下這三份以外的任何檔，或改 `specs/` 底下
 - [ ] 先查了手改才填表；衝突、手改過的區塊、沒有區塊的舊檔都停下來問了，沒有自己選
 - [ ] commit 標題是 `docs: archive <date>-<feature>`
 - [ ] feature 目錄是 `git mv` 搬的，目錄裡的檔一個字都沒改；`docs/` 的改動與搬家在同一個 commit
-- [ ] 沒有寫 `docs/CONTEXT.md`、沒有改程式碼、`spec.md`、票檔或 `.feature`
+- [ ] 沒有寫 `docs/CONTEXT.md`、沒有改程式碼、`spec.md`、票節或 `.feature`
 
 ## 完成後
 
