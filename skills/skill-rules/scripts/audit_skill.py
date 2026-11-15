@@ -29,6 +29,7 @@ from pathlib import Path
 ALLOWED_SUBDIRS = {"rules", "references", "examples", "scripts"}
 REQUIRED_SECTIONS = ("## 使用時機", "## Skill Boundaries")
 NAME_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+CARD_ROWS = ("職責", "讀", "寫", "上游", "下游", "不做")
 BODY_LINE_LIMIT = 500
 
 MUST, SHOULD = "MUST", "SHOULD"
@@ -132,6 +133,12 @@ def audit(skill_dir: Path) -> list[Finding]:
         add("S15", MUST, "缺少「## Verification」章節 —— 交回前逐項確認的清單")
     elif not re.search(r"^\s*- \[ \] ", verification.group(1), re.M):
         add("S15", MUST, "「## Verification」底下沒有任何 `- [ ]` 項目")
+
+    # S16: 職責卡在標題底下、第一個 `## ` 之前，六列都要有
+    preamble = re.split(r"^## ", body, maxsplit=1, flags=re.M)[0]
+    missing = [row for row in CARD_ROWS if not re.search(rf"^\|\s*\*\*{row}\*\*\s*\|", preamble, re.M)]
+    if missing:
+        add("S16", SHOULD, f"標題底下的職責卡缺少：{'、'.join(missing)}")
 
     body_lines = len(body.splitlines())
     if body_lines > BODY_LINE_LIMIT:
