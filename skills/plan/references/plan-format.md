@@ -86,8 +86,10 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
   在合回時解衝突。選「不要」時只寫這一行，表格省略
 - 種類三選一加一個 `新建`，定義與合回時怎麼解 →
   `../../task-breakdown/references/tasks-format.md`〈接合點與同時跑〉。
-- 從 `spec.md` 的 `## Implementation Decisions` 推：**會長大的介面連同它的測試 stub**、**第一次用到的
-  library 帶進來的依賴檔**、**兩個以上 use case 都要住的新 package**——這三類最常漏
+- 從 `spec.md` 的 `## Implementation Decisions` 推，最常漏的有六類（清單與例子 →
+  `tasks-format.md`〈接合點與同時跑〉）：會長大的介面連同它的測試 stub、第一次用到的 library 帶進來的
+  依賴檔、兩個以上 use case 都要住的新 package、新的必填組裝欄位連同每個組它的測試、按 feature 分的
+  mapper／presenter 與共用的步驟檔、跨 feature 共用的步驟句子
 - 兩張票會改同一段既有邏輯的地方標 `爭用`，寫明是哪一段；`task-breakdown` 會把它們排成先後
 
 ## 為什麼一個 feature 一份，不是一則 story 一份

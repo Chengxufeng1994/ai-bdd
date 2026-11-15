@@ -12,8 +12,8 @@
 `spec.md` 的 `## Testing Decisions` 說了哪些 AC 在 unit 層。對每一條有分支的規則：
 
 1. 在 domain 寫 **table-driven** 單元測試，列就是 `spec.md` 的 AC 值加上 AC 沒寫但
-   規則隱含的邊界（24 小時又 1 分鐘、到期日的最後一秒）——跑，看它因為「還沒有這個
-   套件／函式」而紅
+   規則隱含的邊界（24 小時又 1 分鐘、到期日的最後一秒）。先照 `../rules/red.md`〈R3：最小通路的界線〉
+   寫一個編得過的空殼（回傳零值），跑，看它紅在**斷言**——編譯錯誤不算對的紅
 2. 寫最少的 domain 程式讓它綠。規則只住這裡；use case 與 handler 裡出現算式就是
    跑錯層
 3. use case 的測試只驗**分類**：domain 回的錯變成哪個 `Kind`、哪個 message key、

@@ -273,8 +273,10 @@ def orphan_frs(text: str) -> list[str]:
 
 # 標記後面允許一個全形或半形括號的註記（`← Q-4（30 分整算免費）`、
 # `← PRD §5（限制：問過）`），格式參考檔自己的範例就這樣寫；其餘散文不算。
-SOURCED = re.compile(r"←\s*(PRD §\S+?|Q-\d+)\s*(?:[（(][^（()）]*[)）])?\s*$")
-CITED = re.compile(r"←\s*PRD §(\d+)")
+# 一條規則可以並列幾個來源：`← Q-18、Q-35`（改過之後同時依據兩題答案）
+MARKER = r"(?:PRD §[^\s、]+?|Q-\d+)"
+SOURCED = re.compile(rf"←\s*{MARKER}(?:、{MARKER})*\s*(?:[（(][^（()）]*[)）])?\s*$")
+CITED = re.compile(r"(?:←\s*|、)PRD §(\d+)")
 
 
 def unsourced_rules(text: str) -> list[str]:
@@ -390,7 +392,8 @@ def cited_qs(text: str) -> set[str]:
     out: set[str] = set()
     for line in section.splitlines():
         if re.match(r"^\s*(-\s*)?\*\*(FR|AC)-", line):
-            out.update(re.findall(r"←\s*Q-(\d+)", line))
+            for marker in re.findall(r"←\s*([^（(]*)", line):
+                out.update(re.findall(r"Q-(\d+)", marker))
     return out
 
 

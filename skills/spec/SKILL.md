@@ -143,6 +143,9 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 
 ### 4. 詞彙與聚合
 
+補問清單非空、接下來要走第 7 步退回時，這一步**先不做**：詞彙與聚合要建立在收斂的規則上，退回
+之後的答案可能改掉它們。退回、再收斂、修補完之後再做。
+
 #### 詞彙表 —— `docs/CONTEXT.md`
 
 `formulation` 寫 `.feature` 時措辭必須一致，所以詞彙在這一步就要定下來。把

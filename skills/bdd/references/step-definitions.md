@@ -3,7 +3,8 @@
 `red` 寫步驟骨架、`green` 補步驟實作、`refactor` 整理步驟時都適用。`implement` 在票的
 測試層先紅時也照這份寫。
 
-MUST: 寫新步驟之前 `grep` 既有的 step definition（實測場 `make steps`）。同一句話兩種
+MUST: 寫新步驟之前 `grep` 既有的 step definition（實測場 `make steps`；它不加 `-v` 只印 `ok`，
+這時直接 `grep -rn 'sc\.\(Given\|When\|Then\|Step\)' test/acceptance/`）。同一句話兩種
 寫法就是兩支函式，而它們會分岔。
 
 - 一個樣板一支函式；`操作成功`／`操作失敗`／`應付金額應為` 這類跨 feature 的句子

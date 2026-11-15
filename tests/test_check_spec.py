@@ -87,6 +87,16 @@ class UnsourcedRules(unittest.TestCase):
                     .replace("← Q-1", "← Q-1（30 分整算免費）"))
         self.assertEqual(check_spec.unsourced_rules(text), [])
 
+    def test_joined_q_markers_are_sourced(self):
+        # 一條規則改過之後同時依據兩題答案：`← Q-1、Q-2`
+        text = GOOD.replace("← Q-1", "← Q-1、Q-2")
+        self.assertEqual(check_spec.unsourced_rules(text), [])
+
+    def test_every_q_in_a_joined_marker_is_cited(self):
+        # 並列的每一題都要拿去對 discovery.md，不能只查第一題
+        text = GOOD.replace("← Q-1", "← Q-1、Q-2")
+        self.assertIn("2", check_spec.cited_qs(text))
+
     def test_prose_after_marker_is_unsourced(self):
         text = GOOD.replace("← PRD §3", "← PRD §3 — 另見 Q-2")
         self.assertEqual(len(check_spec.unsourced_rules(text)), 1)
@@ -95,6 +105,10 @@ class UnsourcedRules(unittest.TestCase):
 class CitedParagraphs(unittest.TestCase):
     def test_all_cited_paragraphs_exist(self):
         self.assertEqual(check_spec.missing_cited_paragraphs(GOOD + DISCOVERY), [])
+
+    def test_paragraph_after_a_joined_marker_is_checked(self):
+        text = GOOD.replace("← Q-1", "← Q-1、PRD §9") + DISCOVERY
+        self.assertEqual(check_spec.missing_cited_paragraphs(text), ["9"])
 
     def test_citation_to_absent_paragraph_is_reported(self):
         text = GOOD.replace("← PRD §3", "← PRD §9")

@@ -122,12 +122,13 @@ MUST NOT: 在這一節寫「已經決定好的技術事項」——那是 `## Im
 
 - 建置：`go build ./...` ← 專案 Makefile
 - 單元測試：`go test -race ./internal/... ./pkg/...` ← 專案 Makefile
-- 跑場景：`go test -count=1 ./test/acceptance/ -godog.tags='<tag 運算式>'` ← 專案 Makefile
+- 跑場景：`go test -count=1 ./test/acceptance/ -v -godog.format=progress -godog.tags='<tag 運算式，或用逗號>'` ← 專案 Makefile
 - 閘門：`make verify` ← 專案 Makefile
 - 產碼：`make gen` ← 專案 Makefile
 ```
 
-`跑場景` 與 `閘門` 兩行一定要有——`task-breakdown` 把它們抄進每張票的 `**驗證**`，`implement`
+`跑場景` 要寫出 runner 的 tag 語法（「或」怎麼寫），並帶會印出場景數的旗標——寫錯的運算式常常
+選到 0 個場景、照樣成功結束。`跑場景` 與 `閘門` 兩行一定要有——`task-breakdown` 把它們抄進每張票的 `**驗證**`，`implement`
 照著跑。專案裡找不到閘門命令就寫「（沒有——要問使用者）」，並在 `## 回 DISCOVERY 補問` 記一條；
 不要猜一個看起來合理的命令。
 
