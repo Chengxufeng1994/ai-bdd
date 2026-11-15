@@ -36,7 +36,7 @@
 | `docs/CONTEXT.md` | 專案 `docs/` | `spec`（建立或追加） | `spec-by-example`、`formulation`：用詞對齊 |
 | `domain-model.md` | `specs/` | `spec`（增修） | 下一個 feature 的 `spec`：聚合與不變條件 |
 | 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`task-breakdown`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
-| `plan.md` | `<feature>/` | `plan`（技術設計、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票；`implement`：讀技術節；`## 缺口` 的需求洞退回 `discovery` |
+| `plan.md` | `<feature>/` | `plan`（概述、技術設計、風險與影響程度、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票、高風險排前面；`implement`：讀技術節；`## 缺口` 的需求洞退回 `discovery` |
 | `tasks/index.md`（順序、大小、Blocked by、接合點、檢查點） | `<feature>/tasks/` | `task-breakdown` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點 |
 | `tasks/<編號>-<slug>.md`（一張票一個檔：行為、模組、大小、驗收條件、驗證命令） | `<feature>/tasks/` | `task-breakdown` 建立；`implement` 勾驗收條件、寫 `## 缺口` | `implement`：一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
 | 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `implement` | REVIEW／VERIFY（尚未實作，目前人工對照） |

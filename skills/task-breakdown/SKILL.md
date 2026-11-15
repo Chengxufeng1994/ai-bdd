@@ -80,7 +80,8 @@ Check if: `specs/<date>-<feature>/plan.md` 讀得到，而且有 `## Implementat
 先切出**最薄的完整路徑**當第一張票：碰到每一層、邏輯最少。它證明的是接線，不是行為。
 專案已經有骨架就跳過。
 
-其餘依 `spec.md` 的 FR 切，一張票一組相關的 `@example-N.M`。每張票問一次「做完之後我能
+其餘依 `spec.md` 的 FR 切，一張票一組相關的 `@example-N.M`。碰到 `plan.md` `## Risks` 裡影響程度
+「高」的票，在 `Blocked by` 允許的範圍內排前面——越早撞到越便宜。每張票問一次「做完之後我能
 demo 什麼」，答不出來就是切錯了。每張票的**內迴圈**從 `plan.md` `## Testing Decisions` 的
 測試分層來。
 
@@ -175,6 +176,7 @@ MUST: 只寫入 `specs/<date>-<feature>/tasks/`，以及 `plan.md` `## 缺口` �
 
 - [ ] 票裡每一句都指得出來自哪條 FR、技術節哪個決定、或哪個 `@example-N.M`
 - [ ] 每張票答得出「做完之後我能 demo 什麼」
+- [ ] 碰到 `## Risks` 影響程度「高」的票，在 `Blocked by` 允許的範圍內排在前面
 - [ ] 每張票都有 `Blocked by` 與 `接合點` 兩欄（沒有就寫「無」），每個接合點標了種類且照抄 `plan.md` `## Parallel Work`，`index.md` 的 `大小`、`Blocked by`、`接合點` 跟票檔一字不差
 - [ ] 每張票標了模組（照抄 `plan.md`，沒有檔案路徑）與大小，沒有 XL
 - [ ] 每張票的 `**驗證**` 有閘門命令；有 `涵蓋場景` 的票另有場景命令，tag 運算式跟 `涵蓋場景` 一一對應

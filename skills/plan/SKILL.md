@@ -107,7 +107,8 @@ seam」當成 finding。這個綁定穿過 `plan.md` 這份文件；所以這一
 ### 3. 寫技術節
 
 照 `references/plan-format.md`〈技術節怎麼寫〉填五節：`## Tech Preferences & Constraints`、
-`## Known Boundaries`、`## Implementation Decisions`、`## Testing Decisions`、`## Risks`。
+`## Known Boundaries`、`## Implementation Decisions`、`## Testing Decisions`、`## Risks`（每條標影響程度）。
+五節寫完，再在最前面寫 `## Overview`——一段摘要，不做新決定。
 
 每個決定行尾標來源。`推論` 可以用，但每一條同時列進 `## 缺口`。
 
@@ -162,6 +163,7 @@ MUST: 只寫入 `specs/`，**不修改專案既有的任何檔案**。`discovery
 - [ ] `spec.md` 的 FR、AC、story 沒有任何新增、刪除或改寫
 - [ ] 每個技術決定行尾都有來源；每一條 `← 推論` 同時列在 `## 缺口`
 - [ ] seam 寫進了 `plan.md`：是 `← Q-<n>`（`已答` 或 `n/a`）確認過的，或標 `← 推論` 並在 `## 缺口` 記了「seam 沒問過」
+- [ ] `## Overview` 只摘要下面各節已經寫的東西，沒有任何新決定；`## Risks` 每條都標了影響程度
 - [ ] `plan.md` 裡沒有票——沒有 `## 票`、沒有編號的工作項
 - [ ] `## Parallel Work` 記了使用者對「要不要並行」的回答；答「要」時每個接合點都有路徑與種類
 - [ ] 談 seam 時發現的需求洞進了 `## 缺口`，沒有在對話裡順口問掉
