@@ -9,6 +9,7 @@
 | G3 | `MUST` | step definition 保持薄：匹配步驟、解析參數、呼叫 helper 或斷言。共用的行為下沉到 helper、fixture、domain | step 變成完整劇本，改一個流程要改十支 step |
 | G4 | `MUST` | 有分支的規則住 domain，而且先有一個看過紅的單元測試；step definition、handler、mapper 裡不放規則 | 規則散在接線層，場景綠了卻沒有任何單元測試說得出它為什麼對 |
 | G5 | `SHOULD` | 連續做幾個 slice 時，每個 slice 各有一次獨立的綠燈，才切下一個 | 「幾個相關的測試好像都過了」——哪一個真的綠了說不清 |
+| G6 | `SHOULD` | 場景用 `Given` 播種出某個狀態（「卡在場內」），但沒有任何場景或票會讓系統**自己**產生它時，由單元測試驅動那段產生它的程式，並回報請 `implement` 在票檔 `## 缺口` 記一列「沒有場景驗得到」 | 照 G2 那段程式永遠不會被要求，正式路徑上那個狀態就從來不會出現 |
 
 G4 的層級照 `spec.md` 的 `## Testing Decisions`（每個 AC 在哪一層測）；規則放哪一層、怎麼
 接到 seam、測試替身怎麼寫 → `../references/inner-loop.md`。

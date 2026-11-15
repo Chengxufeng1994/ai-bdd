@@ -15,3 +15,5 @@ MUST: 寫新步驟之前 `grep` 既有的 step definition（實測場 `make step
   bootstrap，走**跟 binary 同一個組裝函式**；不要為測試另開一條接線
 - 播種步驟直接寫 store，不經 use case——場景要擺出的狀態（付過款、票已過期）
   不一定是 use case 走得到的
+- 斷言**算出來的狀態**（「已付清」）時，讀回應或存下來的欄位（付款紀錄、金額），不要在 `Then` 裡呼叫
+  domain 方法來判斷——那是拿被測的程式斷言它自己

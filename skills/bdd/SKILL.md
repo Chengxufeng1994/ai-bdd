@@ -95,7 +95,7 @@ Check if: 指定的 `.feature` 存在，而且狀態 tag 是 `@ready` 或 `@wip`
 
 | 盤點什麼 | 為什麼 |
 | --- | --- |
-| **最窄的重跑命令**——能只跑一個場景嗎？一條 `Rule`？一個檔？ | 回饋越窄，失敗越好歸因。實測場：`go test -count=1 ./test/acceptance/ -v -godog.format=progress -godog.tags=@example-2.1`，看輸出的場景數不是 0 |
+| **最窄的重跑命令**——能只跑一個場景嗎？一條 `Rule`？一個檔？ | 回饋越窄，失敗越好歸因。實測場：`go test -count=1 ./test/acceptance/ -v -godog.format=progress -godog.tags=@example-2.1`，看輸出的場景數不是 0；`Scenario Outline` 最窄只能到整張 `Examples:` 表 |
 | 既有的 step definition（實測場 `make steps`） | 同一句話兩種寫法就是兩支函式，而它們會分岔 |
 | 既有的 fixture、測試替身、建態的 helper | `Given` 要擺的狀態，多半已經有人擺過 |
 | 測試與產品程式碼的落點 | 沿用既有結構，不另起一套平行目錄 |
