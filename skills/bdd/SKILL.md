@@ -4,11 +4,12 @@ description: >
   在一個已經寫好的 `.feature`（或它的一段）裡，用 red／green／refactor 三個入口之一，一次
   一個 slice 推進實作：red 只建立對應這個 slice 的失敗訊號、green 只補目前 failure 需要的
   最小程式、refactor 只在綠燈保護下整理。不產 `.feature`、不改場景文字、不翻狀態 tag、
-  不跨出指定範疇；規格有洞就停下回交。可由 `bdd-implement` 的一張票委派，也可單獨使用。
+  不跨出指定範疇；規格有洞就停下回交。由 `bdd-implement` 委派 green／refactor，或使用者手動叫 `/bdd`。
   觸發詞：「先讓它紅」「讓這個場景紅」「讓這個場景變綠」「紅綠重構」「bdd red」「bdd green」
   「bdd refactor」「這個 scenario 做到綠」「在綠燈下整理 step definition」「一個 slice 一個 slice 做」。
   English: red green refactor, make this scenario fail first, make this scenario pass,
   refactor under green, drive one scenario at a time, bdd red, bdd green, bdd refactor.
+disable-model-invocation: true
 ---
 
 # BDD — 一個 slice，一個入口
@@ -18,7 +19,7 @@ description: >
 | **職責** | 在指定的 `.feature` 範疇裡，用 red／green／refactor 其中一個入口，一次一個 slice 把場景推進到那個入口的完成條件 |
 | **讀** | 指定的 `.feature`（`@ready` 或 `@wip`）、`plan.md` 的技術節、既有的 step definition／測試／產品程式碼；由票委派時加上那張票檔 |
 | **寫** | step definition、測試、產品程式碼。**不寫 `specs/` 底下任何檔案** |
-| **上游** | `bdd-implement`（一張票委派一個範疇與一個入口），或使用者直接指定 |
+| **上游** | `bdd-implement`（第 3 步委派 green、第 4 步委派 refactor，範疇是票的涵蓋場景），或使用者手動叫 `/bdd` |
 | **下游** | 回報給呼叫它的人，並建議下一次從哪個入口繼續 |
 | **不做** | 不產或改 `.feature`、不改 `spec.md`／`plan.md`、不翻狀態 tag、不勾票、不跨出指定範疇、一次不進兩個入口 |
 
@@ -27,9 +28,12 @@ description: >
 
 ## 使用時機
 
-- `.feature` 寫好了，要讓某個場景先紅、再綠、再整理
-- `bdd-implement` 做一張票時，把其中一個場景的紅／綠／整理交給本 skill
-- 場景已經綠了，想在不改行為的前提下整理 step definition 與支撐層
+- `bdd-implement` 做一張票時委派：第 3 步 `green`、第 4 步 `refactor`。`red` 不委派——票的測試層
+  由 `bdd-implement` 自己先紅
+- 使用者手動叫 `/bdd`：只推進一個場景的某一步，不做整張票。三個入口都可以用
+
+本 skill 設了 `disable-model-invocation: true`，模型不會自己觸發它：它的觸發詞跟
+`bdd-implement` 重疊，兩個都能被觸發時，使用者看不出模型挑了哪一個。
 
 ## Skill Boundaries
 
@@ -50,9 +54,13 @@ description: >
 - `rules/red.md` — `red` 入口。**進 red 之前讀**
 - `rules/green.md` — `green` 入口。**進 green 之前讀**
 - `rules/refactor.md` — `refactor` 入口。**進 refactor 之前讀**
+- `references/inner-loop.md` — green 補產品程式碼時規則放哪一層、怎麼接到 seam
+- `references/step-definitions.md` — 寫或整理 step definition 的做法
 - `../bdd-formulation/references/step-grammar.md` — 步驟的封閉文法；新步驟要照它寫
 
 ## 前置確認（Ask user）
+
+由 `bdd-implement` 委派時，範疇與入口由它給，不必問。使用者手動叫 `/bdd` 時：
 
 Ask user: 以下兩項不明確就先問，不要自己挑。
 

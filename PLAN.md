@@ -220,7 +220,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | PLAN | `bdd-plan` | `spec.md` ＋ `.feature` ＋ 技術面向的答案 → 技術節 | **已實作**；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `bdd-tasks` |
 | | `bdd-tasks` | `plan.md` ＋ `.feature` → `tasks/`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `bdd-plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
 | IMPLEMENT | `bdd-implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
-| | `bdd` | 一個 `.feature` 範疇內一次一個 slice，red／green／refactor 三個入口擇一 | **已實作**（2026-11-15，參考 aixbdd `bdd`；還沒實跑過） |
+| | `bdd` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`bdd-implement` 委派 green 與 refactor，red 由 `bdd-implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `bdd` 與 `implement` 的委派方式；還沒實跑過） |
 | REVIEW | `bdd-review`、`bdd-review-acceptance`、`bdd-review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 | VERIFY | `bdd-verify`、`bdd-verify-failure-triage` | 跑閘門與情境並回報、真 bug vs 規格過期 | 未實作 |
 

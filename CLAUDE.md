@@ -16,8 +16,9 @@ The plugin's subject is a six-step pipeline:
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
 `bdd-plan` (technical design, `plan.md`) and `bdd-tasks` (slices that design into one
 file per ticket under `tasks/`, so tickets can run in parallel). IMPLEMENT is served by
-`bdd-implement` (one ticket end to end) and `bdd` (one scenario slice through a single
-red / green / refactor entry). SPEC is served by three skills —
+`bdd-implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
+(green and refactor, delegated by `bdd-implement`; `disable-model-invocation`, so only
+that delegation or a manual `/bdd` runs it). SPEC is served by three skills —
 `bdd-spec` (writes `spec.md` from the recorded answers), `bdd-spec-by-example` (writes
 business-language acceptance journeys under `acceptance/`, not executed) and
 `bdd-formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`

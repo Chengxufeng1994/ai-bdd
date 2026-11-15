@@ -15,7 +15,7 @@
 | DISCOVERY | `bdd-discovery`、`clarify` |
 | SPEC | `bdd-spec`、`example-mapping`、`bdd-spec-by-example`、`bdd-formulation`、`story-splitting` |
 | PLAN | `bdd-plan`、`bdd-tasks` |
-| IMPLEMENT | `bdd-implement`（一張票）、`bdd`（票裡的一個 slice：red／green／refactor） |
+| IMPLEMENT | `bdd-implement`（一張票：測試層先紅、閘門、合回）、`bdd`（由 `bdd-implement` 委派 green／refactor，模型不自動觸發） |
 | REVIEW／VERIFY | 尚未實作 |
 
 `skill-rules` 不在流程裡：它是本專案撰寫與稽核 skill 的房規。哪幾步對應 BDD 的哪個實踐、

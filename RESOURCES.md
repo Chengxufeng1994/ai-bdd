@@ -30,7 +30,7 @@
 
 | 專案 | 參考的 skill | 用在哪 | 取了什麼、改了什麼 |
 | --- | --- | --- | --- |
-| [Waterball-Software-Academy/aixbdd](https://github.com/Waterball-Software-Academy/aixbdd) | [`bdd`](https://github.com/Waterball-Software-Academy/aixbdd/tree/main/.agents/skills/bdd) | `skills/bdd` | red／green／refactor 三個入口、一次一個 slice、最窄的重跑入口、規格有洞就回交。本專案沒有 `dsl.md`，上游改成 `.feature` 與 `plan.md` 的技術節；回交對象改成 `bdd-implement` 的票檔 |
+| [Waterball-Software-Academy/aixbdd](https://github.com/Waterball-Software-Academy/aixbdd) | [`bdd`](https://github.com/Waterball-Software-Academy/aixbdd/tree/main/.agents/skills/bdd) | `skills/bdd`、`skills/bdd-implement` | red／green／refactor 三個入口、一次一個 slice、最窄的重跑入口、規格有洞就回交；委派方式照它的 `implement`：模型不自動觸發 `bdd`，只委派 green 與 refactor，測試層先紅由呼叫者自己做。本專案沒有 `dsl.md`，上游改成 `.feature` 與 `plan.md` 的技術節；它按層切的 Phase 3（先寫完所有步驟再寫產品碼）沒有採用，票仍是垂直切片 |
 | 同上 | `spec-by-example` | `skills/bdd-spec-by-example` | 業務語意的驗收旅程、`# [need clarification]` 標記。不做它的 UI 雛形與前後端拆分 |
 | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | `planning-and-task-breakdown`、`incremental-implementation` | `skills/bdd-tasks`、`skills/bdd-implement` | 一票一 commit、合併後重跑閘門。對照後列出的其餘差距（票的大小上限、高風險先做）尚未採用 |
 | [sirius-cc-wu/sirius-skills](https://github.com/sirius-cc-wu/sirius-skills) | [`walkthrough-me`](https://github.com/sirius-cc-wu/sirius-skills/blob/main/skills/walkthrough-me/SKILL.md) | `skills/skill-rules`（S15）與每個 skill 的 `## Verification` | 交回前逐項確認的 `- [ ]` 清單，同時驗產物與「不該發生的事沒有發生」 |

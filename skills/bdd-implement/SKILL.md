@@ -1,9 +1,9 @@
 ---
 name: bdd-implement
 description: >
-  照 `tasks/` 的票一張一個 session，outside-in 把票做到綠：先讓這張票的場景紅、
-  domain 規則先寫 table-driven 單元測試、再接 use case／契約／step definition，
-  場景全綠後把 `.feature` 從 `@ready` 翻到 `@review`、勾掉票檔的驗收條件、
+  照 `tasks/` 的票一張一個 session，outside-in 把票做到綠：先把這張票的場景接上 step
+  definition、看到對的紅，再把 green 與 refactor 委派給 `bdd`（規則先進 domain、table-driven
+  單元測試先紅），場景全綠後把 `.feature` 從 `@ready` 翻到 `@review`、勾掉票檔的驗收條件、
   跑專案的驗證閘門。不改 `spec.md`、不改 `.feature` 的例子、不在 handler 放規則。
   BDD 六步流程的 IMPLEMENT 步驟。
   觸發詞：「做第 N 張票」「開始實作」「bdd-implement 03」「把這張票做綠」
@@ -21,6 +21,9 @@ description: >
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
 才有理由。
 
+本 skill 管**整張票**：標 tag、讓測試層先紅、跑閘門、勾驗收條件、合回主線。票裡的轉綠與整理
+委派給 `bdd`——它一次一個場景、一次一個入口。
+
 不改 `spec.md`。不改 `.feature` 的例子。不做 `plan.md` 技術節沒做的設計決定——發現有洞就
 記下來，不順手補。
 
@@ -35,8 +38,8 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 - 還沒有 `.feature` → `bdd-formulation`；`plan.md` 沒有技術節（seam、埠、契約）→ `bdd-plan`
 - 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式）→ `bdd-tasks`
 - 票之間的順序、要不要再切、哪幾張能同時做 → `bdd-tasks`
-- 只推進票裡的**一個場景**、只做 red／green／refactor 其中一步 → `bdd`。本 skill 管整張票（標 tag、
-  跑閘門、勾驗收條件、合回主線）；票裡每個場景的紅→綠→整理可以照 `bdd` 的三個入口做
+- 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 → 使用者手動叫 `/bdd`。
+  本 skill 做票時第 3、4 步本來就委派它
 - 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」→ REVIEW（`bdd-review`，未實作）
 - 紅的是 bug 還是規格過期 → VERIFY（`bdd-verify`，未實作）；本 skill 只處理自己這張票
   讓紅變綠，不判讀別人的紅
@@ -45,6 +48,8 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 ## 參考檔案
 
 - `../bdd-formulation/references/state-tags.md` — `@wip`／`@review` 什麼時候寫
+- `../bdd/SKILL.md` — 第 3、4 步委派的 green／refactor 入口；`../bdd/rules/red.md` 與
+  `../bdd/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
 - `../bdd-tasks/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
 - `../bdd-plan/references/plan-format.md` — 技術節各節裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
@@ -86,10 +91,11 @@ MUST: 開工時工作區是乾淨的；做完這張票一個 commit，只 stage 
 把這張票涵蓋的 `.feature` 檔從 `@ready` 改成 `@wip`（`state-tags.md`）。下一個 session
 看到 `@wip` 就知道有人做到一半。
 
-### 2. 外迴圈先紅
+### 2. 測試層先紅（本 skill 自己做，不委派）
 
-只跑這張票的場景，確認它們是**紅的、而且是對的紅**——`step is undefined` 或斷言失敗，
-不是 parse error：
+把這張票涵蓋的每個場景都接上 step definition，直到**沒有任何 undefined step**、失敗只能是
+斷言或產品行為。寫步驟照 `../bdd/references/step-definitions.md`；判斷紅得對不對照
+`../bdd/rules/red.md`〈什麼是「對的紅」〉。只寫測試層，不寫產品程式碼。
 
 ```bash
 go test -count=1 ./test/acceptance/ -godog.tags=@rule-2          # 一條規則
@@ -99,50 +105,30 @@ go test -test.v ./test/acceptance/ -test.run "^TestFeatures/停留"  # 用名字
 MUST: 沒看到紅就不要寫程式。一個一寫就綠的場景沒有驗到任何東西——通常是 step
 definition 已經被別的場景定義過，而它的斷言沒抓到這張票要做的事。
 
-### 3. 內迴圈：規則先進 domain
+這張票所有場景都紅得對了，才進第 3 步。測試層沒對齊就改產品程式碼，綠了也說不出是哪個
+斷言在保護它。
 
-`plan.md` 的 `## Testing Decisions` 說了哪些例子在 unit 層。對每一條有分支的規則：
+### 3. 委派 `bdd` 的 green
 
-1. 在 domain 寫 **table-driven** 單元測試，列就是 `spec.md` 的 AC 值加上 AC 沒寫但
-   規則隱含的邊界（24 小時又 1 分鐘、到期日的最後一秒）——跑，看它因為「還沒有這個
-   套件／函式」而紅
-2. 寫最少的 domain 程式讓它綠。規則只住這裡；use case 與 handler 裡出現算式就是
-   跑錯層
-3. use case 的測試只驗**分類**：domain 回的錯變成哪個 `Kind`、哪個 message key、
-   帶哪些 Params；repository 失敗變成什麼。用手刻 stub，一個埠一個 struct
+讀 `../bdd/SKILL.md`，照它的 `green` 入口做，範疇與輸入由本 skill 給：
 
-MUST: 測試替身要回**副本**，不回活的指標。repository 的 stub 若把同一個聚合指標交出去，
-use case 在 `Save` 失敗前做的修改會留在「儲存」裡，測不出「失敗時狀態不變」——
-parking 實跑的第一個假紅就是這個。
+| 交給 `bdd` 的 | 內容 |
+| --- | --- |
+| 入口 | `green` |
+| 範疇（Test Scope） | 這張票檔的 `涵蓋場景`，組成一個 tag 運算式（例 `@example-8.1 or @example-8.2`） |
+| 票 | `tasks/<票號>-<slug>.md` 的路徑 |
+| 設計 | `plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions` |
 
-### 4. 接線：照架構文件的轉換走一遍
+`bdd` 一個場景一個場景轉綠：規則先進 domain、先看到單元測試紅（`../bdd/references/inner-loop.md`）。
+它停下來回報規格的洞或範疇外的耦合時，本 skill 把那一條記進票檔的 `## 缺口`，照
+〈不越界〉處理——`bdd` 自己不寫 `specs/` 底下任何檔案。
 
-依 `docs/DATAFLOW.md`（或專案的同類文件）：埠（`port/out`）→ use case →
-driving port 與 service → contract（`openapi.yaml`）→ 產碼 → mapper → operation →
-presenter → bootstrap 組裝。每一段都是機械翻譯，**不做決定**；要做的決定都該在
-`plan.md` 的技術節，沒有就記進票檔的 `## 缺口`。
+### 4. 委派 `bdd` 的 refactor
 
-- contract 改了就重新產碼（實測場 `make gen-api`），產出的介面多了方法，`Server`
-  不實作就編不過——那是對的，讓編譯器告訴你還缺哪個 operation
-- 失敗路徑：operation 用 errmap 認得的 status 選 contract 宣告的 response 型別，
-  其餘落 500；不要在 operation 裡 switch `Kind`
-- 錯誤訊息的 message key 要有翻譯；場景斷言的 `錯誤訊息應為` 就是那句翻譯
+範疇全綠之後，同樣的範疇交給 `bdd` 的 `refactor` 入口：在綠燈保護下整理這張票留下的重複
+步驟、轉換與支撐層。沒有要整理的就跳過，在回報裡寫「無」。
 
-### 5. step definitions：先找再寫
-
-MUST: 寫新步驟之前 `grep` 既有的 step definition（實測場 `make steps`）。同一句話兩種
-寫法就是兩支函式，而它們會分岔。
-
-- 一個樣板一支函式；`操作成功`／`操作失敗`／`應付金額應為` 這類跨 feature 的句子
-  一定已經有了
-- 每個場景的狀態住 world（`context.Context` 裡），不住 package 變數——並行跑的套件
-  一個共用變數就是間歇性紅
-- 時間、ID、會失敗的 repository 這類「場景要控制的東西」用測試端的替身注入
-  bootstrap，走**跟 binary 同一個組裝函式**；不要為測試另開一條接線
-- 播種步驟直接寫 store，不經 use case——場景要擺出的狀態（付過款、票已過期）
-  不一定是 use case 走得到的
-
-### 6. 外迴圈綠，閘門綠
+### 5. 外迴圈綠，閘門綠
 
 ```bash
 go test -count=1 ./test/acceptance/ -godog.tags=@rule-2   # 這張票的場景
@@ -155,7 +141,7 @@ MUST: 兩個都綠才算做完。閘門包含 fmt、產碼是否過期、lint、
 跑閘門時產碼工具會重跑（mockery 之類），新的埠要讓它產一次，否則「generated code
 is stale」。
 
-### 7. 收尾
+### 6. 收尾
 
 - `.feature`：在主線上做時，這張票做完後**整個檔的場景都綠了**才從 `@wip` 改 `@review`；
   還有別張票涵蓋同一檔的場景就留 `@wip`。在 worktree 裡做時一律留 `@wip`，到〈合回主線〉
@@ -166,7 +152,7 @@ is stale」。
   **用一個測試釘住**，測試的註解寫明它是暫定、等哪一題的答案。沒釘住的暫定行為
   會在答案出來之後被當成規格
 
-### 8. 合回主線（只在 worktree 裡做時）
+### 7. 合回主線（只在 worktree 裡做時）
 
 這張票由做它的這個 session 自己合回，不交給別人——衝突要靠這張票的脈絡才解得對。
 
