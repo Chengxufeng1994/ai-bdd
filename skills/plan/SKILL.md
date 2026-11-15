@@ -3,7 +3,7 @@ name: plan
 description: >
   SPEC 說要做成什麼，PLAN 說怎麼做——讀已對焦的 `spec.md`、它的 `.feature` 與
   `discovery.md` 裡技術面向的答案，寫 `plan.md`：技術設計（seam、模組、介面與 API 契約、
-  schema、每個 AC 的測試層級、風險）。不改需求、不切票——拆成票交給 `tasks`。
+  schema、每個 AC 的測試層級、風險）。不改需求、不切票——拆成票交給 `task-breakdown`。
   BDD 六步流程的 PLAN 步驟。
   觸發詞：「決定 seam」「驗收測試打在哪一層」「API 契約要怎麼定」
   「這個 feature 動哪些模組」「技術設計」「schema 怎麼定」「spec 寫完了下一步」「寫 plan」。
@@ -19,7 +19,7 @@ description: >
 | **讀** | `spec.md`（`已對焦`）、涵蓋的 `.feature`、`discovery.md` 技術面向的答案與核心關係人 |
 | **寫** | `specs/<date>-<feature>/plan.md` |
 | **上游** | `formulation`（`.feature` 寫好之後） |
-| **下游** | `tasks`（把這份設計拆成票） |
+| **下游** | `task-breakdown`（把這份設計拆成票） |
 | **不做** | 不改 FR／AC／story、不切票、不訪談、不寫程式 |
 
 **不改需求。** 技術決定是這一步的工作；FR、AC、story 不是。需求有洞寫進 `plan.md` 的
@@ -28,7 +28,7 @@ description: >
 ## 使用時機
 
 - `spec.md` 已對焦、`.feature` 寫好了，要決定 seam 與技術設計
-- `tasks` 拆票時在 `## 缺口` 記了設計的洞，要補技術節
+- `task-breakdown` 拆票時在 `## 缺口` 記了設計的洞，要補技術節
 
 ## Skill Boundaries
 
@@ -37,7 +37,7 @@ description: >
 | 還沒有 `spec.md`，或狀態不是 `已對焦` | `spec`（連 `discovery.md` 都沒有就先 `discovery`） |
 | 還沒有 `.feature` | `formulation` |
 | **要改 FR、AC、story** | `spec`——不是這裡 |
-| 要切成幾張票、排順序、看哪幾張能同時做 | `tasks`，本 skill 寫完 `plan.md` 交給它 |
+| 要切成幾張票、排順序、看哪幾張能同時做 | `task-breakdown`，本 skill 寫完 `plan.md` 交給它 |
 | 要實際寫 step definition 與產品程式碼 | `implement` |
 
 整批塞得進一個 context window、技術決定一句話講得完時，仍然用本 skill，技術節寫短即可。
@@ -120,7 +120,7 @@ seam」當成 finding。這個綁定穿過 `plan.md` 這份文件；所以這一
 | **不要**（預設） | 只寫那一行 |
 | **要** | 從 `## Implementation Decisions` 列出接合點：路徑、種類（`產生`／`追加`／`爭用`／`新建`）、為什麼會共用。寫法 → `references/plan-format.md`〈Parallel Work〉 |
 
-IMPORTANT: 接合點要寫**路徑**，不是模組名。`tasks` 只照抄這一節；這裡寫「HTTP 層」，
+IMPORTANT: 接合點要寫**路徑**，不是模組名。`task-breakdown` 只照抄這一節；這裡寫「HTTP 層」，
 下一步就只能自己編路徑，而編出來的路徑在試跑中漏掉的正是合回時出事的那幾個檔。
 
 ---
@@ -176,4 +176,4 @@ MUST: 只寫入 `specs/`，**不修改專案既有的任何檔案**。`discovery
 2. 動哪些模組、新的契約有哪些、幾個決定標了 `推論`；要不要並行，要的話有幾個 `爭用` 接合點
 3. `## 缺口` 有幾條，其中幾條是需求洞（已退回 discovery）
 
-下一步 `tasks` 把這份設計拆成票。退回了需求洞 → 先 `discovery`。
+下一步 `task-breakdown` 把這份設計拆成票。退回了需求洞 → 先 `discovery`。

@@ -14,7 +14,7 @@ The plugin's subject is a six-step pipeline:
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
-`plan` (technical design, `plan.md`) and `tasks` (slices that design into one
+`plan` (technical design, `plan.md`) and `task-breakdown` (slices that design into one
 file per ticket under `tasks/`, so tickets can run in parallel). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
@@ -140,7 +140,7 @@ Each of the first three steps holds because it runs in one main working mode:
   defect**, and a `← Q-<n>` must name an answered row in `discovery.md` — `check_spec.py`
   check 14 rejects both.
 - **PLAN** owns the technical design (seam, modules, contracts, schema, test levels) —
-  `plan` **does not change requirements**; holes go to `## 缺口`. `tasks` then
+  `plan` **does not change requirements**; holes go to `## 缺口`. `task-breakdown` then
   slices tracer bullets and **does not change the design**; its holes go to the same
   `## 缺口`. `implement` writes only its own ticket file, never `plan.md` or
   `tasks/index.md` — that is what lets tickets run in parallel. A ticket done in a worktree

@@ -6,8 +6,8 @@
 `discovery.md` 配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
 
 它只裝**技術設計**（seam、模組、契約、schema、測試層級、風險）與 `## 缺口`；寫法見後面
-〈技術節怎麼寫〉。票不在這裡——`tasks` 從這份設計拆到同目錄的 `tasks/`，格式見
-`../../tasks/references/tasks-format.md`。
+〈技術節怎麼寫〉。票不在這裡——`task-breakdown` 從這份設計拆到同目錄的 `tasks/`，格式見
+`../../task-breakdown/references/tasks-format.md`。
 `plan.md` 是拋棄式快照，實作一開始就會過期；業務規則住 `spec.md`，活得比它久。
 
 ```markdown
@@ -30,7 +30,7 @@
 
 ## 缺口
 
-`spec.md` 沒定案、但做技術設計時發現需要的；以及 `tasks` 拆票時發現技術節沒定案的。
+`spec.md` 沒定案、但做技術設計時發現需要的；以及 `task-breakdown` 拆票時發現技術節沒定案的。
 技術節裡每個標 `推論` 的決定也列在這裡。
 沒有就寫「沒有——`spec.md` 與技術節涵蓋了這批需要的一切」。
 
@@ -233,7 +233,7 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 
 ## Parallel Work
 
-這批票要不要同時做，以及同時做時哪些檔會在合回時相撞。`tasks` 照這一節標每張票的
+這批票要不要同時做，以及同時做時哪些檔會在合回時相撞。`task-breakdown` 照這一節標每張票的
 `接合點`，不自己編路徑。
 
 ```markdown
@@ -253,10 +253,10 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 - **要不要並行**是 `Ask user`，不是推論。預設不要——並行換到的是時間，代價是每張票都要
   在合回時解衝突。選「不要」時只寫這一行，表格省略
 - 種類三選一加一個 `新建`，定義與合回時怎麼解 →
-  `../../tasks/references/tasks-format.md`〈接合點與同時跑〉。
+  `../../task-breakdown/references/tasks-format.md`〈接合點與同時跑〉。
 - 從 `## Implementation Decisions` 推：**會長大的介面連同它的測試 stub**、**第一次用到的
   library 帶進來的依賴檔**、**兩個以上 use case 都要住的新 package**——這三類最常漏
-- 兩張票會改同一段既有邏輯的地方標 `爭用`，寫明是哪一段；`tasks` 會把它們排成先後
+- 兩張票會改同一段既有邏輯的地方標 `爭用`，寫明是哪一段；`task-breakdown` 會把它們排成先後
 
 ## 為什麼一個 feature 一份，不是一則 story 一份
 

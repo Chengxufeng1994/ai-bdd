@@ -19,7 +19,7 @@ description: >
 | **職責** | 把一張票做到綠：測試層先紅、委派 `bdd` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
 | **讀** | `tasks/<票>.md`、`tasks/index.md`、`plan.md` 的技術節、`spec.md`、這張票涵蓋的 `.feature`、專案的架構文件 |
 | **寫** | 產品程式碼與 step definition、這張票的票檔（勾選、`## 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
-| **上游** | `tasks`（票切好之後） |
+| **上游** | `task-breakdown`（票切好之後） |
 | **下游** | `bdd`（第 3、4 步委派）；做完之後是 REVIEW（未實作） |
 | **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做技術節沒做的設計決定 |
 
@@ -40,8 +40,8 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 | --- | --- |
 | 還沒有 `.feature` | `formulation` |
 | `plan.md` 沒有技術節（seam、埠、契約） | `plan` |
-| 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式） | `tasks` |
-| 票之間的順序、要不要再切、哪幾張能同時做 | `tasks` |
+| 還沒有 `tasks/index.md`（包括票還寫在 `plan.md` `## 票` 裡的舊格式） | `task-breakdown` |
+| 票之間的順序、要不要再切、哪幾張能同時做 | `task-breakdown` |
 | 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/bdd`；本 skill 做票時第 3、4 步本來就委派它 |
 | 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」 | REVIEW（`review`，未實作） |
 | 紅的是 bug 還是規格過期 | VERIFY（`verify`，未實作）；本 skill 只處理自己這張票讓紅變綠，不判讀別人的紅 |
@@ -52,7 +52,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 - `../formulation/references/state-tags.md` — `@wip`／`@review` 什麼時候寫
 - `../bdd/SKILL.md` — 第 3、4 步委派的 green／refactor 入口；`../bdd/rules/red.md` 與
   `../bdd/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
-- `../tasks/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
+- `../task-breakdown/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
 - `../plan/references/plan-format.md` — 技術節各節裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
   ——分層、轉換、錯誤分類都照它，本 skill 不另訂
@@ -70,7 +70,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 NEVER: `plan.md` 沒有技術節時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
 
-MUST: 一個 session 一張票。撿起票的人只看過票檔與 `plan.md`——這是 `tasks`
+MUST: 一個 session 一張票。撿起票的人只看過票檔與 `plan.md`——這是 `task-breakdown`
 切票的上界，也是這一步不要一次做三張的理由：做到第二張時第一張的脈絡已經在擠。
 
 SHOULD: 跟別張票同時做時，一張票一個 worktree。開工前看 `tasks/index.md`：這張票跟正在做
@@ -173,16 +173,16 @@ is stale」。
 這張票由做它的這個 session 自己合回，不交給別人——衝突要靠這張票的脈絡才解得對。
 
 1. **先把主線拉進 worktree**（rebase 或 merge 主線），衝突在這裡解，不在主線上解
-2. **照接合點的種類解**（`../tasks/references/tasks-format.md`〈接合點與同時跑〉）：
+2. **照接合點的種類解**（`../task-breakdown/references/tasks-format.md`〈接合點與同時跑〉）：
    - `產生` → 不手動合：先解完原始檔，再跑產碼工具重新產生（實測場 `make gen`）；`go.sum`
      用 `go mod tidy`
    - `追加` → 取聯集：兩邊加的都留，然後檢查有沒有重複宣告
    - `爭用`、或票檔與 `index.md` 都沒列到的衝突 → **停下來回報**，不自己判——那是切票時
-     沒預料到的耦合，要回 `tasks` 重排。停下來時：
+     沒預料到的耦合，要回 `task-breakdown` 重排。停下來時：
      - 撤掉這次合併（`git merge --abort` 或 `git rebase --abort`），worktree 回到這張票自己的
        commit，不留半解的衝突
      - 在票檔 `## 缺口` 記一列：衝突的檔、跟哪張票撞、為什麼不是 `產生`／`追加`
-     - 告訴使用者跑 `tasks`：它把這一列搬進 `plan.md` 的 `## 缺口`，`plan` 補上
+     - 告訴使用者跑 `task-breakdown`：它把這一列搬進 `plan.md` 的 `## 缺口`，`plan` 補上
        接合點的種類後再重排；這張票等重排完再回到第 1 步
 3. **在合併後的程式碼上重跑閘門**，場景範圍是主線上所有驗收條件已勾完的票加上這張票
    （照 `index.md` 列出的票，從各票檔的 `涵蓋場景` 把 `@example-N.M` 組成一個 tag 運算式）。
@@ -220,7 +220,7 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 ```
 
 MUST: 不修改 `spec.md`、`discovery.md`、`plan.md`、`tasks/index.md`、別張票的票檔、`.feature` 的任何場景文字。
-同時做的幾個 session 各寫各的票檔才不會互相覆寫；設計的洞由 `tasks` 再跑時從票檔搬進
+同時做的幾個 session 各寫各的票檔才不會互相覆寫；設計的洞由 `task-breakdown` 再跑時從票檔搬進
 `plan.md`。
 
 ## Verification

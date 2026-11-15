@@ -1,7 +1,7 @@
 ---
-name: tasks
+name: task-breakdown
 description: >
-  PLAN 說怎麼做，TASKS 把怎麼做拆開——讀 `plan.md` 的技術設計、已對焦的 `spec.md` 與
+  PLAN 說怎麼做，TASK BREAKDOWN 把怎麼做拆開——讀 `plan.md` 的技術設計、已對焦的 `spec.md` 與
   `.feature`，切成一疊 tracer bullet 寫進 `tasks/`：一張票一個檔，每張穿過所有層、自己可
   demo、塞得進一個全新 session，宣告被哪幾張票 block、會碰哪些接合點，`index.md` 記順序
   與哪幾張可以同時做。不改設計、不改需求。BDD 六步流程 PLAN 步驟的第二個 skill。
@@ -11,7 +11,7 @@ description: >
   I build these, vertical slices, which tickets can run in parallel, what can I start first.
 ---
 
-# TASKS — 把怎麼做拆成票
+# TASK BREAKDOWN — 把怎麼做拆成票
 
 | | |
 | --- | --- |

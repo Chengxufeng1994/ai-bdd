@@ -43,7 +43,7 @@ description: >
 | `spec.md` 狀態不是 `已對焦` | `spec`——它會先交 `example-mapping` 判就緒 |
 | 要決定 seam（情境跑在哪一層測試） | `plan` |
 | 要寫 `docs/CONTEXT.md` 或切 story | `spec`（它用 `story-splitting`） |
-| 要決定實作順序、切票 | `tasks` |
+| 要決定實作順序、切票 | `task-breakdown` |
 | 要稽核既有 `.feature` 寫得好不好 | 目前沒有 skill 接手（`spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十七項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md` |
 
 產出是 `.feature`，**不是** `spec.md`、`plan.md`、`openapi.yaml`、migration 或任何可執行的檔案。
@@ -479,7 +479,7 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 | 刪了 FR／AC | 刪掉掛那個 tag 的場景，在原處留一行註解：刪了什麼、修訂歷史哪一列 |
 
 改過場景的 `.feature`，狀態 tag 改回 `@ready`——改過的場景還沒有人實作，舊的 `@wip`／
-`@review` 已經不是真的。回報裡列出改了哪些 tag，`tasks` 才知道要為它們開票。
+`@review` 已經不是真的。回報裡列出改了哪些 tag，`task-breakdown` 才知道要為它們開票。
 沒有對到修訂歷史的場景一個字都不動。
 
 ## Verification
@@ -506,4 +506,4 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
 綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。
 
-覆蓋表沒有大洞 → `plan` 做技術設計，再由 `tasks` 切票。洞多 → 回 `spec`。
+覆蓋表沒有大洞 → `plan` 做技術設計，再由 `task-breakdown` 切票。洞多 → 回 `spec`。

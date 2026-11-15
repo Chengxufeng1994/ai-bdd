@@ -42,7 +42,7 @@
 | --- | --- | --- | --- |
 | **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、問紅卡、記答案原話與誰答的 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
 | **SPEC**（`spec`／`formulation`） | agent 寫、需求方審 | `已收斂` 的 `discovery.md` → `spec.md`（`已對焦`）→ `.feature` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` 並退回 |
-| **PLAN**（`plan`／`tasks`） | agent 設計與切、工程師審 | 技術節 → tracer bullet ＋ blocking edges ＋ 接合點 | `plan` 不改需求、`tasks` 不改設計，有洞記進 `## 缺口` 並退回 |
+| **PLAN**（`plan`／`task-breakdown`） | agent 設計與切、工程師審 | 技術節 → tracer bullet ＋ blocking edges ＋ 接合點 | `plan` 不改需求、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並退回 |
 
 「agent 補一個合理的答案然後繼續」這個風險，舊版靠「DISCOVERY 不寫檔」擋，
 而 2026-09-14 的設計承認那條從來沒真的成立過。現在改靠「每條 FR／AC 必須指得出
@@ -145,7 +145,7 @@ schema、型別形狀），可以內嵌並註明來自 prototype。
 
 ### `tasks/`
 
-格式契約在 `skills/tasks/references/tasks-format.md`。`index.md` 依賴序排列，blockers
+格式契約在 `skills/task-breakdown/references/tasks-format.md`。`index.md` 依賴序排列，blockers
 在前；一張票一個檔，每張票要有：
 
 - **交付什麼行為**——從使用者角度，不是分層清單
@@ -217,8 +217,8 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `spec-by-example` | `spec.md` → `acceptance/*.feature` 業務語意驗收旅程，`@covers-` 標 AC | **已實作**；2026-11-14，參考 aixbdd `spec-by-example`；由 `spec` 在診斷與就緒問句之間呼叫 |
 | | `formulation` | `spec.md` → `.feature` | **已實作** |
 | | `spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
-| PLAN | `plan` | `spec.md` ＋ `.feature` ＋ 技術面向的答案 → 技術節 | **已實作**；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `tasks` |
-| | `tasks` | `plan.md` ＋ `.feature` → `tasks/`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
+| PLAN | `plan` | `spec.md` ＋ `.feature` ＋ 技術面向的答案 → 技術節 | **已實作**；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `task-breakdown` |
+| | `task-breakdown` | `plan.md` ＋ `.feature` → `tasks/`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
 | IMPLEMENT | `implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | | `bdd` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`implement` 委派 green 與 refactor，red 由 `implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `bdd` 與 `implement` 的委派方式；還沒實跑過） |
 | REVIEW | `review`、`review-acceptance`、`review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |

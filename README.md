@@ -14,7 +14,7 @@
 | --- | --- |
 | DISCOVERY | `discovery`、`clarify` |
 | SPEC | `spec`、`example-mapping`、`spec-by-example`、`formulation`、`story-splitting` |
-| PLAN | `plan`、`tasks` |
+| PLAN | `plan`、`task-breakdown` |
 | IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`bdd`（由 `implement` 委派 green／refactor，模型不自動觸發） |
 | REVIEW／VERIFY | 尚未實作 |
 
@@ -35,10 +35,10 @@
 | `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `formulation`：寫可執行 `.feature`；`plan`：技術設計與切票 |
 | `docs/CONTEXT.md` | 專案 `docs/` | `spec`（建立或追加） | `spec-by-example`、`formulation`：用詞對齊 |
 | `domain-model.md` | `specs/` | `spec`（增修） | 下一個 feature 的 `spec`：聚合與不變條件 |
-| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`tasks`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
-| `plan.md` | `<feature>/` | `plan`（技術設計、要不要並行與接合點）；`tasks` 只在 `## 缺口` 加列 | `tasks`：拆成票；`implement`：讀技術節；`## 缺口` 的需求洞退回 `discovery` |
-| `tasks/index.md`（順序、Blocked by、接合點） | `<feature>/tasks/` | `tasks` | `implement`：挑下一張票、判斷能不能跟別張同時做 |
-| `tasks/<編號>-<slug>.md`（一張票一個檔） | `<feature>/tasks/` | `tasks` 建立；`implement` 勾驗收條件、寫 `## 缺口` | `implement`：一張票一個 session；`tasks` 再跑時把設計的洞搬進 `plan.md` |
+| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`task-breakdown`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
+| `plan.md` | `<feature>/` | `plan`（技術設計、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票；`implement`：讀技術節；`## 缺口` 的需求洞退回 `discovery` |
+| `tasks/index.md`（順序、Blocked by、接合點） | `<feature>/tasks/` | `task-breakdown` | `implement`：挑下一張票、判斷能不能跟別張同時做 |
+| `tasks/<編號>-<slug>.md`（一張票一個檔） | `<feature>/tasks/` | `task-breakdown` 建立；`implement` 勾驗收條件、寫 `## 缺口` | `implement`：一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
 | 產品程式碼、step definition、`@review` tag、票檔勾選 | 專案程式碼、`features/` | `implement` | REVIEW／VERIFY（尚未實作，目前人工對照） |
 
 ## 每個 skill：職責與流程
@@ -157,7 +157,7 @@
 **職責**：把已對焦的規格變成技術設計：驗收測試打在哪一層、動哪些模組、契約與 schema 長怎樣、每個 AC 在哪一層測
 
 - **上游**：`formulation`（`.feature` 寫好之後）
-- **下游**：`tasks`（把這份設計拆成票）
+- **下游**：`task-breakdown`（把這份設計拆成票）
 - **不做**：不改 FR／AC／story、不切票、不訪談、不寫程式
 
 1. 一次讀完整批
@@ -165,7 +165,7 @@
 3. 寫技術節
 4. 問要不要並行、列接合點
 
-#### `tasks`
+#### `task-breakdown`
 
 **職責**：把技術設計拆成一疊 tracer bullet：一張票一個檔，每張穿過所有層、自己可 demo，標明誰卡誰、會碰哪些接合點
 
@@ -185,7 +185,7 @@
 
 **職責**：把一張票做到綠：測試層先紅、委派 `bdd` 轉綠與整理、閘門綠、勾驗收條件、合回主線
 
-- **上游**：`tasks`（票切好之後）
+- **上游**：`task-breakdown`（票切好之後）
 - **下游**：`bdd`（第 3、4 步委派）；做完之後是 REVIEW（未實作）
 - **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md` 與 `tasks/index.md`、不做技術節沒做的設計決定
 
@@ -260,7 +260,7 @@ ai-bdd/
 │   ├── formulation/
 │   ├── story-splitting/
 │   ├── plan/
-│   ├── tasks/
+│   ├── task-breakdown/
 │   ├── implement/
 │   ├── bdd/
 │   └── skill-rules/
