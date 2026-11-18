@@ -15,11 +15,11 @@ step definition、不進 `features/`。寫給業務方讀，讓他對著能 demo
 4. **`Background:` 只在多條旅程真的共用 setup 時用。** 只有一條旅程用到的前置寫在
    那條旅程裡
 5. **未定的地方就地標 `# [need clarification] <問題>`**，緊貼引發疑問的那一行。同一個
-   問題同時寫進 `spec.md` 的 `## 回 DISCOVERY 補問`，標明是哪條旅程。不訪談——
+   問題同時寫進 `spec.md` 的 `## Open Questions`，標明是哪條旅程。不訪談——
    標記是交給 `discovery` 問的題，不是你要回答的題
 6. **每個 `Example:` 上方標 `@covers-<n>.<m>`**，一個 tag 一個 AC，列出它走過的 AC。
    旅程裡每一個 `Then` 都要對得到某個被 cover 的 AC；對不到的就是 `spec.md` 沒有的
-   結果——**不寫**，改寫進補問清單
+   結果——**不寫**，改寫進 `spec.md` 的 `## Open Questions`
 
 `check_spec.py` 第 17 項擋兩件事：`@covers-` 指到 `spec.md` 沒有的 AC、`Example:` 上方
 沒有任何 `@covers-`。`Then` 的文字對不對得上 AC，機器判不了——那是第 6 條與就緒問句的事。

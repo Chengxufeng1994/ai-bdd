@@ -3,7 +3,7 @@ name: feature-mapping
 description: >
   把整個 feature 攤成一張流程圖——每條 AC 一列：藍卡規則、綠卡例子、黃卡步驟、紫卡結果——
   逐步問「這一步還可能發生什麼」，抓出缺的替代流程、沒有反例的規則、找不到規則的結果差異，
-  寫進 `spec.md` 的 `## 回 DISCOVERY 補問`。廣度優先，在 `example-mapping` 之前跑。
+  寫進 `spec.md` 的 `## Open Questions`。廣度優先，在 `example-mapping` 之前跑。
   地圖只印在終端；不訪談、不改 FR／AC。可讀 `spec` 剛寫好的 `spec.md`，也可單獨對一段描述跑。
   觸發詞：「feature mapping」「攤成流程圖」「整個 feature 攤開來看」「這個流程還漏了什麼」
   「替代流程有沒有寫到」「有沒有反例」「每一步還可能發生什麼」「feature map」。
@@ -18,7 +18,7 @@ disable-model-invocation: true
 | --- | --- |
 | **職責** | 把整個 feature 攤成「規則 × 例子 × 步驟 × 結果」的列，逐步找出缺的流程與反例，寫成補問 |
 | **讀** | 流程內：`specs/ongoing/<date>-<feature>/spec.md`（`待對焦`）與同目錄 `discovery.md` 的 `## 原文`；單獨：一段 feature 的描述 |
-| **寫** | 流程內：只寫 `spec.md` 的 `## 回 DISCOVERY 補問`；單獨：不寫檔。地圖只印在終端 |
+| **寫** | 流程內：只寫 `spec.md` 的 `## Open Questions`；單獨：不寫檔。地圖只印在終端 |
 | **上游** | `spec`（第 5 步第一個呼叫）；也可單獨使用 |
 | **下游** | `example-mapping`（照樣跑完，兩張圖的洞一次帶回 `discovery`） |
 | **不做** | 不訪談、不改 US／FR／AC、不寫狀態、不判就緒、不寫 Gherkin、不產出 `feature-map.md` |
@@ -50,7 +50,7 @@ disable-model-invocation: true
 ## 參考檔案
 
 - [`docs/feature-mapping.md`](../../docs/feature-mapping.md) — 原文轉述：四色卡、版面、進行方式（只轉述原文，**不講怎麼在這裡做**）
-- `../spec/references/spec-format.md` — `## User Stories` 的排版與 `## 回 DISCOVERY 補問` 的寫法
+- `../spec/references/spec-format.md` — `## User Stories` 的排版與 `## Open Questions` 的寫法
 
 ## 流程
 
@@ -66,7 +66,7 @@ disable-model-invocation: true
 
 | 模式 | 輸入 | 輸出 |
 | --- | --- | --- |
-| 流程內 | `spec.md` 狀態 `待對焦`，由 `spec` 第 5 步呼叫或使用者指定 | 地圖 ＋ 三條診斷；缺口寫進 `spec.md` 的 `## 回 DISCOVERY 補問` |
+| 流程內 | `spec.md` 狀態 `待對焦`，由 `spec` 第 5 步呼叫或使用者指定 | 地圖 ＋ 三條診斷；缺口寫進 `spec.md` 的 `## Open Questions` |
 | 單獨 | 一段 feature 的描述 | 同樣的地圖與診斷，缺口只回報，**不寫任何檔案** |
 
 ### 2. 排主流程 —— 原文就是錨定敘事
@@ -120,15 +120,23 @@ disable-model-invocation: true
 `discovery.md` 的問答或 `spec.md` 其他節**已經提到**、卻沒有任何一列走過的走法。來源完全沒提的
 可能性，寫進判讀當觀察，不開補問——否則每個 feature 都會退回 discovery 十次。
 
-MUST NOT: 自己替缺口補一列 AC，或把 FR 改寫成涵蓋那個分支。那是規則，規則只能來自需求方的答案。
+**缺口分兩種，去處不同：**
+
+| 缺口 | 去處 |
+| --- | --- |
+| 來源**沒有答案**：提到了這個走法，卻沒人說過該怎麼辦 | `## Open Questions` 一列，回 `discovery` 問 |
+| 來源**有答案**，只是 `spec` 沒把它寫成 AC（例：問答裡講過「卡被拒就改付現金」，卻沒有一列走過） | 寫進判讀，指名是哪一題；交回 `spec` 補 AC，**不開** `## Open Questions`——開了會重問一題已經答過的 |
+
+MUST NOT: 自己替缺口補一列 AC，或把 FR 改寫成涵蓋那個分支。那是規則，規則只能來自需求方的答案；
+就算答案在來源裡，寫成 AC 也是 `spec` 的事。
 
 判讀沒有數字門檻，但每一條都要寫出理由：哪一步、哪條 FR、哪兩列。拿不準是不是缺口時判「不是」，
 寫進判讀，讓需求方在就緒問句時決定。
 
 ### 5. 寫補問、交回
 
-流程內：每個缺口寫成 `## 回 DISCOVERY 補問` 一列，照 `spec-format.md` 的寫法說清楚**影響什麼定不
-下來**；原本是「（無）」就換掉。
+流程內：每個「來源沒有答案」的缺口寫成 `## Open Questions` 一列，照 `spec-format.md` 的寫法說清楚
+**影響什麼定不下來**；原本是「（無）」就換掉。「`spec` 漏寫了 AC」的列在判讀裡，交回時一起告訴 `spec`。
 
 ```markdown
 - 繳費機結帳沒有付款失敗的例子：卡被拒、現金不足時柵欄開不開、票還有沒有效 —— 影響 FR-1 的結帳步驟、US-2 的出場
@@ -139,7 +147,7 @@ MUST NOT: 自己替缺口補一列 AC，或把 FR 改寫成涵蓋那個分支。
 
 ## 產物
 
-流程內唯一會動的是 `spec.md` 的 `## 回 DISCOVERY 補問`，只加列、不改既有的列。地圖是終端輸出。
+流程內唯一會動的是 `spec.md` 的 `## Open Questions`，只加列、不改既有的列。地圖是終端輸出。
 
 MUST NOT: 產出一份 `feature-map.md`，或在 `spec.md` 加一節地圖。圖上每張卡都已經住在別處——規則是
 `FR`、例子與步驟與結果是 `AC` 的 Given／When／Then、串起來的流程是 `acceptance/` 的旅程。再寫一份
@@ -152,6 +160,6 @@ MUST NOT: 產出一份 `feature-map.md`，或在 `spec.md` 加一節地圖。圖
 - [ ] 主流程是從 `## 原文`（單獨模式：使用者的描述）抽出來的，跨 story 排成一排
 - [ ] 地圖上每條 AC 都在一列上，掛在它的 FR 底下，對齊到主流程的某一步
 - [ ] 三條診斷都給了結果；每個缺口指名了哪一步、哪條 FR 或哪兩列
-- [ ] 每個寫成補問的缺口，都能指到原文、問答或 `spec.md` 裡提到它的地方
-- [ ] `spec.md` 只動了 `## 回 DISCOVERY 補問`，只加列；US／FR／AC、狀態都沒變
+- [ ] 每個缺口都能指到原文、問答或 `spec.md` 裡提到它的地方；答案已在來源裡的沒有寫進 `## Open Questions`
+- [ ] `spec.md` 只動了 `## Open Questions`，只加列；US／FR／AC、狀態都沒變
 - [ ] 沒有對需求方提任何問題；單獨模式沒有寫任何檔案

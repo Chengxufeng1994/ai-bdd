@@ -21,7 +21,7 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把一段需求（想法或別人寫的 PRD）收成逐字原文與粗切 story，再一輪輪問到前沿空了，每個答案逐題記下 |
-| **讀** | 需求本身（描述、文件內容或路徑），或狀態 `澄清中` 的 `specs/ongoing/<date>-<feature>/discovery.md`；續跑時加同目錄 `spec.md` 的 `## 回 DISCOVERY 補問` |
+| **讀** | 需求本身（描述、文件內容或路徑），或狀態 `澄清中` 的 `specs/ongoing/<date>-<feature>/discovery.md`；續跑時加同目錄 `spec.md` 的 `## Open Questions` |
 | **寫** | `specs/ongoing/<date>-<feature>/discovery.md`（`澄清中` → `已收斂`） |
 | **上游** | 無（可單獨使用）；`spec` 把它退回 `澄清中` 時再跑 |
 | **下游** | `spec`（從這份紀錄寫 `spec.md`） |
@@ -141,7 +141,7 @@ benchmark 實跑或離線試跑、沒有人可以答時，可以**代演**需求
 是待答還是已答，都不再開。這份清單由 `spec` 在再跑時清掉答過的條目；
 清掉之前它還在檔上，沒有這個比對就會一題問兩次。
 這是 `spec` 把 `discovery.md` 改回 `澄清中` 的原因——不讀這份，退回來
-的洞就沒有人問。`plan` 發現的需求洞也走這條路：它交回 `spec`，由 `spec` 寫進補問清單。
+的洞就沒有人問。`plan` 發現的需求洞也走這條路：它交回 `spec`，由 `spec` 寫進 `spec.md` 的 `## Open Questions`。
 
 IMPORTANT: 重問一題已經答過的，比漏問一題更傷信任——它證明你沒有讀既有產物。
 

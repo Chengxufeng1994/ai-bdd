@@ -15,17 +15,18 @@ The plugin's subject is a six-step pipeline:
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
-`plan` (execution plan in `plan.md`: overview, risks, whether to parallelise and the
-join points) and `task-breakdown` (slices the design into one section per ticket in a
+`plan` (`plan.md`: the technical decisions — Tech Stack, Commands, Project Structure, Code
+Style, Boundaries, Implementation and Testing Decisions, with the seam confirmed by the user —
+then the execution plan: overview, risks, whether to parallelise and the join points) and `task-breakdown` (slices the design into one section per ticket in a
 single `tasks.md`, so tickets can run in parallel). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `behavior-driven-development`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
 that delegation or a manual `/behavior-driven-development` runs it). When all of a feature's tickets are merged,
 `archive` writes what it delivered into the project's current truth under `docs/` and moves
 its directory from `specs/ongoing/` to `specs/sleeping/`. SPEC is served by three skills —
-`spec` (writes a self-contained `spec.md` from the recorded answers: a requirements part,
-then, once `已對焦`, a technical part — Tech Stack, Commands, Project Structure, Code
-Style, Boundaries, Implementation and Testing Decisions), `spec-by-example` (writes
+`spec` (writes `spec.md` from the recorded answers — what to build and what not to: context,
+personas, goals and non-goals, prioritised stories with FR → AC, domain concepts, edge cases;
+it stops once `已對焦` and writes no technical decisions), `spec-by-example` (writes
 business-language acceptance journeys under `acceptance/`, not executed) and
 `formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
 explains which steps map onto BDD's practices and which are this project's own additions.
@@ -120,8 +121,8 @@ projects individual skills borrowed from. Add a row there when a new reference i
 
 Each step reads what the previous step actually emitted: DISCOVERY writes
 `discovery.md` (原文, rough stories, questions and answers — no rules), SPEC writes
-`spec.md` from it (requirements, then the technical design once `已對焦`) and the
-`.feature` files, PLAN writes `plan.md` (execution plan) from `spec.md` and the `.feature`
+`spec.md` from it (what to build, up to `已對焦`) and the `.feature` files, PLAN writes
+`plan.md` (technical decisions, then the execution plan) from `spec.md` and the `.feature`
 files, then `tasks.md` (one section per ticket, in dependency order) from both, REVIEW audits the
 whole chain.
 
@@ -143,15 +144,16 @@ Each of the first three steps holds because it runs in one main working mode:
 - **SPEC** is writing mode: `spec` turns an `已收斂` `discovery.md` into `spec.md`,
   `feature-mapping` (whole feature, breadth) and `example-mapping` (one story, depth)
   diagnose it, `spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
-  takes it to `已對焦`, then `formulation` writes `.feature` files —
-  **none of them interviews**; holes go into `spec.md`'s `## 回 DISCOVERY 補問` and send
+  takes it to `已對焦`; the user then runs `formulation`, which writes `.feature` files —
+  **none of them interviews**; holes go into `spec.md`'s `## Open Questions` and send
   `discovery.md` back to `澄清中`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `discovery.md` — `check_spec.py`
-  check 14 rejects both. The technical part (seam, modules, contracts, schema, test
-  levels) is also SPEC's, written after the originator says ready; the seam is the one
-  thing confirmed with the user, and technical lines may be `← 推論` or `← 專案 <path>`.
-- **PLAN** owns the execution plan (risks, parallel work, join points) — `plan` **does
-  not change `spec.md`**; holes go to `## 缺口` and back to `spec`. `task-breakdown` then
+  check 14 rejects both. No skill calls the next one: every step is a user-typed `/<skill>`.
+- **PLAN** owns the technical decisions (seam, modules, contracts, schema, test levels) and
+  the execution plan (risks, parallel work, join points) — `plan` **does not change
+  `spec.md` or the `.feature` files**; the seam is the one thing confirmed with the user,
+  technical lines may be `← 推論` or `← 專案 <path>`, and holes go to `## 缺口` and back to
+  `spec` (or to `formulation` when a scenario cannot be observed at the seam). `task-breakdown` then
   slices tracer bullets and **does not change the design**; its holes go to the same
   `## 缺口`. `implement` writes only its own ticket's section of `tasks.md`, never `plan.md` or
   another ticket's section — that is what lets tickets run in parallel. A ticket done in a worktree
@@ -198,9 +200,9 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   tickets are merged, `archive` `git mv`s that directory to `specs/sleeping/`; `discovery`
   moves it back to `ongoing/` (only when the user says so) to correct it. Exceptions:
   executable `.feature` files stay where the runner expects them (`features/` for
-  Cucumber-family tools); the project's current truth lives in `docs/` — `spec` may create
-  `docs/CONTEXT.md` or append entries but must not rewrite its existing sections; `archive`
-  may create `docs/DOMAIN-MODEL.md`, `docs/DATABASE-SCHEMA.md` and `docs/TECH.md` or change
-  only the `<!-- ai-bdd:begin … -->` blocks inside them. Nothing else under `docs/` is
-  written.
+  Cucumber-family tools); the project's current truth lives in `docs/` and only `archive`
+  writes it, once a feature is done — it may create `docs/CONTEXT.md` or append entries but
+  must not rewrite its existing sections, and may create `docs/DOMAIN-MODEL.md`,
+  `docs/DATABASE-SCHEMA.md` and `docs/TECH.md` or change only the `<!-- ai-bdd:begin … -->`
+  blocks inside them. Nothing else under `docs/` is written.
 - Renames use `git mv` so `git log --follow` keeps working; the testbed's history depends on it.

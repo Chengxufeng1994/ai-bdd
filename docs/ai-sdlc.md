@@ -45,7 +45,7 @@ Automation 重合，因為 Automation 的產物本來就是程式碼而不是膠
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
 | **DISCOVERY** | brainstorming：開場把需求方的話逐字收進 `discovery.md`、粗切 story（不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 問到規則與例子都有人答過（BDD 的 Discovery）。**只記問答，不寫規格**——每個答案記原話與誰答的。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | to spec：把已收斂的問答寫成 `spec.md`（FR／AC 每一條行尾指回 `discovery.md`，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`）＋技術部分（`已對焦` 之後：Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions，`spec`）＋可執行規格（BDD 的 Formulation，`formulation`） | Formulation ＋ 額外 |
+| **SPEC** | to spec：把已收斂的問答寫成 `spec.md`（FR／AC 每一條行尾指回 `discovery.md`，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`）＋可執行規格（BDD 的 Formulation，`formulation`，`已對焦` 之後由使用者叫） | Formulation ＋ 額外 |
 | **PLAN** | to plan：執行計畫（風險、要不要並行、接合點）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`plan` 寫 `plan.md`，`task-breakdown` 拆成 `tasks.md`） | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`implement`） | Automation |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？全新的 reviewer 對照 `spec.md`／`.feature` 審整批 | **無**——治理不在三個實踐裡 |
@@ -67,8 +67,8 @@ PLAN 的技術設計與切票、REVIEW、VERIFY 的交付證據）都不是補�
 | 步驟 | 模式 | 只做 | 不做 |
 | --- | --- | --- | --- |
 | **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、問紅卡、記答案原話與誰答的 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
-| **SPEC**（`spec`／`spec-by-example`／`formulation`） | agent 寫、需求方審需求部分、工程師確認 seam | `已收斂` 的 `discovery.md` → `spec.md` 需求部分 → `acceptance/` 驗收旅程 →（`已對焦`）→ 技術部分 → `.feature` | 不訪談，有洞記進 `## 回 DISCOVERY 補問` 並退回 |
-| **PLAN**（`plan`／`task-breakdown`） | agent 排與切、工程師審 | `spec.md` 技術部分 → 風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec` |
+| **SPEC**（`spec`／`spec-by-example`／`formulation`） | agent 寫、需求方審 | `已收斂` 的 `discovery.md` → `spec.md` → `acceptance/` 驗收旅程 →（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞記進 `## Open Questions` 並退回 |
+| **PLAN**（`plan`／`task-breakdown`） | agent 定與切、工程師確認 seam、審計畫 | `spec.md` ＋ `.feature` → 技術決定 → 風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec`／`formulation`／`plan` |
 
 三條互相支撐：SPEC 能「不訪談」是因為 DISCOVERY 把每個答案連原話記下來了；PLAN 能
 「不改需求」是因為 SPEC 寫下了需求方點過頭的規則；DISCOVERY 能只問不寫，是因為 SPEC
@@ -118,21 +118,26 @@ SPEC 底下還要再拆成兩個 skill，理由又不一樣：`.feature` 是三�
 skill，等於要求同一次判斷既收斂**語意**（這句話夠不夠、對不對）又收斂**語法**
 （這句話能不能跑），兩者混在一起，語法細節會拖著語意判斷跑。
 
-技術設計放在 SPEC（2026-11-15 起）：需求方要「每一個新功能是獨立的一份 `spec.md`」，照
-addyosmani 的 spec-driven-development 與 mattpocock 的 to-spec——一份讀完就能開工的文件，
-寫要做成什麼，也寫用什麼做、怎麼驗。原本把技術設計放在 PLAN，是為了讓 SPEC 只收斂業務語意；
-這條界線現在靠**順序**守住：技術部分在需求方說「就緒」之後才寫，需求方判就緒時看不到它。
-seam、契約、依賴仍然是工程判斷，所以 seam 照舊攤給使用者確認。
+技術決定放在 PLAN（2026-11-18 起）。2026-11-15 曾照 mattpocock 的 to-spec 把技術設計搬進 `spec.md`，
+靠**順序**守界線：技術部分在需求方說「就緒」之後才寫。試跑之後需求方改回：「我這邊也覺得不應該有技術
+部分」。界線改靠**檔案**守：`spec.md` 只寫要做成什麼，需求方判就緒時整份都讀得懂；用什麼做、seam、
+契約、schema 寫在 `plan.md` 的前半。seam 仍是工程判斷，所以由 `plan` 攤給使用者確認。
+
+順帶的好處：`plan` 在 `.feature` 之後跑，定 seam 時看得到每一個場景，能把 seam 上驗不到的 Then
+（設備端的退錢、畫面顯示）攔下來交回 `formulation`——試跑時這類場景是一路寫到 PLAN 都沒人擋。
+
+**沒有任何 skill 呼叫下一個。** 每個 skill 都設了 `disable-model-invocation`，每一步由使用者打
+`/<skill>`；試跑時 `spec` 照它當時的指示自己接著跑了 `formulation`，繞過了這個決定。
 
 SPEC 的診斷有兩張圖，方向相反：`feature-mapping` 看整個 feature 的**寬度**——流程有沒有斷、
 每一步的替代流程與規則的反例寫了沒；`example-mapping` 看一則 story 的**深度**——每條規則有沒有
 例子撐住。先寬後深（2026-11-18 起）：寬度找到的洞會改動 story 與 FR，先找出來，四色卡才不會攤
 一張馬上要重畫的。兩者都只印地圖、不另寫檔案，因為圖上每張卡都已經住在 `## User Stories` 與
-`acceptance/`；它們新增的是找洞的方法，洞寫進 `## 回 DISCOVERY 補問`。Feature Mapping 原本是工作坊
+`acceptance/`；它們新增的是找洞的方法，洞寫進 `spec.md` 的 `## Open Questions`。Feature Mapping 原本是工作坊
 裡當場追問，這裡把問題寫成補問交回 `discovery`——SPEC 不訪談，當場問到的答案寫不進 `discovery.md`。
 
-PLAN 留下來的是**執行**：哪裡危險、能不能並行、合回時哪些檔會相撞，以及把工作切到一個 fresh
-session 做得完。實作者讀 `spec.md` 的技術部分與自己那張票節就夠（票由 `task-breakdown` 拆到
+PLAN 的後半是**執行**：哪裡危險、能不能並行、合回時哪些檔會相撞，以及把工作切到一個 fresh
+session 做得完。實作者讀 `plan.md` 的技術決定與自己那張票節就夠（票由 `task-breakdown` 拆到
 `tasks.md`，一張票一節，做票的 session 只改自己那一節，讓幾張票能同時做而不互相覆寫）。
 
 ---
