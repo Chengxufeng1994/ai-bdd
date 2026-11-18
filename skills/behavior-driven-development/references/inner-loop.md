@@ -18,17 +18,17 @@
    跑錯層
 3. use case 的測試只驗**分類**：domain 回的錯變成哪個 `Kind`、哪個 message key、
    帶哪些 Params；repository 失敗變成什麼。用手刻 stub，一個埠一個 struct。**被驅動的埠回的結果**
-   （「名單裡沒有這張卡」是 repository 查不到，domain 看不到）也在這一層分類、在這一層測
+   （「查無這張讀者證」是 repository 查不到，domain 看不到）也在這一層分類、在這一層測
 
 同一張 table-driven 表裡，有些列是前面的票已經做好的行為組合出來的，起點就綠——那是正常的，
 照 `../rules/red.md` R5 對它做一次突變驗證，不要為了讓它紅而改壞程式。
 
-錯誤回應要帶規則算出來的值時（`UnpaidProblem` 的 `amountDue`），值由 use case 放進錯誤的 `Params`，
+錯誤回應要帶規則算出來的值時（`OverdueProblem` 的 `overdueDays`），值由 use case 放進錯誤的 `Params`，
 presenter 從 `Params` 取出來填 Problem 的擴充欄位——不要在 presenter 或 handler 裡再算一次。
 
 MUST: 測試替身要回**副本**，不回活的指標。repository 的 stub 若把同一個聚合指標交出去，
 use case 在 `Save` 失敗前做的修改會留在「儲存」裡，測不出「失敗時狀態不變」——
-parking 實跑的第一個假紅就是這個。
+實測場第一次實跑的第一個假紅就是這個。
 
 ## 接線：照架構文件的轉換走一遍
 

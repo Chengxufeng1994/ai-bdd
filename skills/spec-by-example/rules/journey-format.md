@@ -11,7 +11,7 @@ step definition、不進 `features/`。寫給業務方讀，讓他對著能 demo
    數量刻意少：主流程一條，再加少數結果明顯不同的變種。一條旅程可以有好幾組
    `When`／`Then`
 3. **`Feature:` 一個驗收主題、`Rule:` 原子、`Example:` 標題描述情境**，不重複規則。
-   「訪客多停了一分鐘」是情境；「超過 30 分鐘要收費」是規則，已經寫在 `Rule:` 上
+   「兩週後剛好碰上連假」是情境；「到期日遇休館日順延」是規則，已經寫在 `Rule:` 上
 4. **`Background:` 只在多條旅程真的共用 setup 時用。** 只有一條旅程用到的前置寫在
    那條旅程裡
 5. **未定的地方就地標 `# [need clarification] <問題>`**，緊貼引發疑問的那一行。同一個
@@ -28,7 +28,7 @@ step definition、不進 `features/`。寫給業務方讀，讓他對著能 demo
 
 ## 檔名與語言
 
-- 檔名用業務旅程命名（`訪客出場結帳.feature`），不按 story slug——一條旅程常跨兩則 story
+- 檔名用業務旅程命名（`借書看到期日.feature`），不按 story slug——一條旅程常跨兩則 story
 - `Feature`／`Rule`／`Example`／`Given`／`When`／`Then` 關鍵字英文、內容中文，跟
   `features/` 的慣例一致
 - **不受封閉步驟文法約束。** 它不執行，句子以業務方讀得順為準
@@ -49,4 +49,4 @@ Feature: <驗收主題>
       # [need clarification] <問題>   ← 只在真的定不下來時
 ```
 
-範例：`../examples/訪客出場結帳.feature`，對得上 `../../spec/examples/minimal-spec.md`。
+範例：`../examples/借書看到期日.feature`，對得上 `../../spec/examples/minimal-spec.md`。

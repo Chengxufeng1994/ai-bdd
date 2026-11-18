@@ -105,7 +105,7 @@ MUST: 開工時工作區是乾淨的；做完這張票一個 commit，只 stage 
 `## Project Structure`、`## Code Style`——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個 AC
 在哪一層測、程式碼放哪、長什麼樣。需求部分只讀對應的 FR 與 AC，看規則的原話。
 
-再讀 `Blocked by` 那幾張票的票節 `#### 缺口`：點名這張票的列（「留給 03」「出場憑證碰巧 300」）是前一個
+再讀 `Blocked by` 那幾張票的票節 `#### 缺口`：點名這張票的列（「留給 03」「到期日碰巧不是休館日」）是前一個
 session 的猜測，當成**待驗證的線索**——用這張票的第一個紅驗證它，不直接信。喚醒之後切出來的票
 （改的是已經做出來的規則），改讀**跟這張票的接合點或模組重疊的所有舊票**的 `#### 缺口`：被推翻的暫定
 行為常記在一張不在 `Blocked by` 裡的票上。
@@ -127,7 +127,7 @@ seam 是 HTTP 時，契約的 operation、重新產碼、**回錯誤**（不是�
 
 ```bash
 go test -count=1 ./test/acceptance/ -v -godog.format=progress -godog.tags=@rule-2   # 一條規則
-go test -test.v ./test/acceptance/ -test.run "^TestFeatures/停留"  # 用名字選
+go test -test.v ./test/acceptance/ -test.run "^TestFeatures/借書"  # 用名字選
 ```
 
 MUST: 沒看到紅就不要寫程式。一個一寫就綠的場景沒有驗到任何東西——通常是 step

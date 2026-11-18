@@ -8,7 +8,7 @@
 | R2 | `MUST` | 先**看到**對應這個 slice 的失敗，才算完成 red。骨架早就存在也要重跑一次確認 | 一寫就綠的場景沒有驗到任何東西——多半是步驟被別的場景定義過，而它的斷言沒抓到這個行為 |
 | R3 | `MUST NOT` | 在 red 裡補產品行為。可以動的只有：step definition 骨架、fixture、斷言、讓測試跑得起來的最小通路 | red 變成事後驗證，不再是驅動入口 |
 | R4 | `SHOULD` | 連續做幾個 slice 時，前一個紅燈穩定、來源清楚，才鋪下一個 | 一次六個 undefined step，每個失敗都失去辨識度 |
-| R5 | `SHOULD` | 在起點就綠、或只紅在共同的接線失敗的 slice（斷言是 0、空、不變的「零值例子」；`Examples:` 表裡一開始就綠的那一列），轉綠後做一次**突變驗證**：暫時改壞它要驗的規則，看它變紅，再改回來。規則是「**不做**某事」（過期也不擋出場）時沒有東西可以改壞，突變方式是暫時**加上**那個被禁止的分支 | 零值例子在空殼下天生就綠，它從來沒有因為自己的行為紅過，刪掉規則它照樣綠 |
+| R5 | `SHOULD` | 在起點就綠、或只紅在共同的接線失敗的 slice（斷言是 0、空、不變的「零值例子」；`Examples:` 表裡一開始就綠的那一列），轉綠後做一次**突變驗證**：暫時改壞它要驗的規則，看它變紅，再改回來。規則是「**不做**某事」（逾期也不擋還書）時沒有東西可以改壞，突變方式是暫時**加上**那個被禁止的分支 | 零值例子在空殼下天生就綠，它從來沒有因為自己的行為紅過，刪掉規則它照樣綠 |
 
 ## 什麼是「對的紅」
 
@@ -27,8 +27,8 @@
 是露出更真實的失敗，還是讓功能差一點就做好？**
 
 ```
-可以：  func FeeFor(stay time.Duration) int { return 0 }     ← 讓斷言跑得到，然後紅在「期望 30，得到 0」
-不可以：func FeeFor(stay time.Duration) int { 分段計費的實作 } ← 這是 green 的工作
+可以：  func OverdueDays(due, returned time.Time) int { return 0 }       ← 讓斷言跑得到，然後紅在「期望 1，得到 0」
+不可以：func OverdueDays(due, returned time.Time) int { 逾期天數的實作 } ← 這是 green 的工作
 ```
 
 red 的完成條件是「失敗訊號清楚」，不是「功能快做好了」。
@@ -36,11 +36,11 @@ red 的完成條件是「失敗訊號清楚」，不是「功能快做好了」�
 ## 回報長什麼樣
 
 ```
-入口：red　範疇：visitor-fee-calculation.feature 的 Rule 2
-slice：@example-2.3（停留 31 分鐘應付 30 元）
+入口：red　範疇：overdue-days.feature 的 Rule 2
+slice：@example-2.3（到期後一天還書應逾期 1 天）
 重跑：go test -count=1 ./test/acceptance/ -godog.tags=@example-2.3
-失敗：應付金額應為 30 —— 期望 30，得到 0
-動了：steps_fee_test.go（新增「應付金額應為」）、domain/parking/fee.go（回傳 0 的空殼）
-沒做：分段計費的實作
+失敗：逾期天數應為 1 —— 期望 1，得到 0
+動了：steps_overdue_test.go（新增「逾期天數應為」）、domain/lending/overdue.go（回傳 0 的空殼）
+沒做：逾期天數的實作
 建議下一步：green，同一個 slice
 ```

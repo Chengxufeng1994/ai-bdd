@@ -56,16 +56,16 @@ skill 管。覆蓋手改過的區塊，就是靜靜地丟掉別人的修改。
 
 這份由 ai-bdd 的 `archive` 維護，區塊外的內容不會被改。
 
-<!-- ai-bdd:begin tickets -->
-## tickets
+<!-- ai-bdd:begin loans -->
+## loans
 
 | 欄位 | 型別 | 約束 | 來源 |
 | --- | --- | --- | --- |
-| id | uuid | PK | 2026-09-14-parking FR-1 |
-| entered_at | timestamptz | NOT NULL | 2026-09-14-parking FR-1 |
+| id | uuid | PK | 2026-09-14-library FR-1 |
+| due_on | date | NOT NULL | 2026-09-14-library FR-1 |
 
-**索引**: `(plate, exited_at)` 唯一——同一台車同時只能有一筆在場 ← 2026-09-14-parking FR-3
-<!-- ai-bdd:end tickets -->
+**索引**: `(book_id, returned_at)` 唯一——同一本書同時只能有一筆借出中 ← 2026-09-14-library FR-1
+<!-- ai-bdd:end loans -->
 
 <!-- ai-bdd:begin 修訂紀錄 -->
 ## 修訂紀錄

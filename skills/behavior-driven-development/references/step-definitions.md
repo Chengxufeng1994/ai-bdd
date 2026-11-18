@@ -7,7 +7,7 @@ MUST: 寫新步驟之前 `grep` 既有的 step definition（實測場 `make step
 這時直接 `grep -rn 'sc\.\(Given\|When\|Then\|Step\)' test/acceptance/`）。同一句話兩種
 寫法就是兩支函式，而它們會分岔。
 
-- 一個樣板一支函式；`操作成功`／`操作失敗`／`應付金額應為` 這類跨 feature 的句子
+- 一個樣板一支函式；`操作成功`／`操作失敗`／`逾期天數應為` 這類跨 feature 的句子
   一定已經有了
 - 每個場景的狀態住 world（`context.Context` 裡），不住 package 變數——並行跑的套件
   一個共用變數就是間歇性紅
@@ -15,5 +15,5 @@ MUST: 寫新步驟之前 `grep` 既有的 step definition（實測場 `make step
   bootstrap，走**跟 binary 同一個組裝函式**；不要為測試另開一條接線
 - 播種步驟直接寫 store，不經 use case——場景要擺出的狀態（付過款、票已過期）
   不一定是 use case 走得到的
-- 斷言**算出來的狀態**（「已付清」）時，讀回應或存下來的欄位（付款紀錄、金額），不要在 `Then` 裡呼叫
+- 斷言**算出來的狀態**（「已歸還」）時，讀回應或存下來的欄位（還書紀錄、日期），不要在 `Then` 裡呼叫
   domain 方法來判斷——那是拿被測的程式斷言它自己

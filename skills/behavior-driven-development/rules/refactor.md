@@ -13,10 +13,10 @@
 
 | 訊號 | 整理成 |
 | --- | --- |
-| 兩支 step 只差一個字（`應付金額為` / `應付金額應為`） | 留一支。照 `../../formulation/references/step-grammar.md` 的句型，另一支的場景**不改文字**——所以只能在兩句本來就該是同一句時合併；不是的話回報 |
-| 好幾支 step 各自把字串轉成金額、時間 | 抽成一個轉換函式，或 runner 的參數型別 |
+| 兩支 step 只差一個字（`逾期天數為` / `逾期天數應為`） | 留一支。照 `../../formulation/references/step-grammar.md` 的句型，另一支的場景**不改文字**——所以只能在兩句本來就該是同一句時合併；不是的話回報 |
+| 好幾支 step 各自把字串轉成日期、天數 | 抽成一個轉換函式，或 runner 的參數型別 |
 | step 裡直接操作 store 擺狀態，到處重複 | 下沉成 fixture／建態 helper |
-| helper 的名字是它怎麼做的（`insertRowAndSetFlag`） | 改成它擺出什麼狀態（`aPaidStay`） |
+| helper 的名字是它怎麼做的（`insertRowAndSetFlag`） | 改成它擺出什麼狀態（`aReturnedLoan`） |
 
 ## F3：行為沒變的判準
 
@@ -24,18 +24,18 @@
 哪個斷言被放寬，都是行為變了。
 
 ```
-可以：  把三支 step 共用的建態抽成 aStayOf(duration)
-不可以：順手把「付清超過 15 分鐘」改成可設定的寬限時間
-        ← 15 分鐘是 spec.md 的一條規則，改它要回 discovery
+可以：  把三支 step 共用的建態抽成 aLoanDueOn(date)
+不可以：順手把「逾期滿 7 天停權」改成可設定的天數
+        ← 7 天是 spec.md 的一條規則，改它要回 discovery
 ```
 
 ## 回報長什麼樣
 
 ```
-入口：refactor　範疇：visitor-exit-payment.feature
-整理前：go test -count=1 ./test/acceptance/ -godog.paths=features/visitor-exit-payment.feature → 6 passed
-整理了：金額解析抽成 parseAmount；三支 step 共用的建態下沉到 aStayOf
+入口：refactor　範疇：book-return.feature
+整理前：go test -count=1 ./test/acceptance/ -godog.paths=features/book-return.feature → 6 passed
+整理了：日期解析抽成 parseDate；三支 step 共用的建態下沉到 aLoanDueOn
 整理後：同一個命令 → 6 passed；go test ./internal/... → ok
-沒動：範疇外的 steps_pass_test.go 也有同樣的重複——超出範疇，回報不處理
+沒動：範疇外的 steps_renewal_test.go 也有同樣的重複——超出範疇，回報不處理
 建議下一步：red，下一個 slice
 ```

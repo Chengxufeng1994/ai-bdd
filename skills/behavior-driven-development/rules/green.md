@@ -9,7 +9,7 @@
 | G3 | `MUST` | step definition 保持薄：匹配步驟、解析參數、呼叫 helper 或斷言。共用的行為下沉到 helper、fixture、domain | step 變成完整劇本，改一個流程要改十支 step |
 | G4 | `MUST` | 有分支的規則住 domain，而且先有一個看過紅的單元測試；step definition、handler、mapper 裡不放規則 | 規則散在接線層，場景綠了卻沒有任何單元測試說得出它為什麼對 |
 | G5 | `SHOULD` | 連續做幾個 slice 時，每個 slice 各有一次獨立的綠燈，才切下一個 | 「幾個相關的測試好像都過了」——哪一個真的綠了說不清 |
-| G6 | `SHOULD` | 場景用 `Given` 播種出某個狀態（「卡在場內」），但沒有任何場景或票會讓系統**自己**產生它時，由單元測試驅動那段產生它的程式，並回報請 `implement` 在票節 `#### 缺口` 記一列「沒有場景驗得到」 | 照 G2 那段程式永遠不會被要求，正式路徑上那個狀態就從來不會出現 |
+| G6 | `SHOULD` | 場景用 `Given` 播種出某個狀態（「讀者證已停權」），但沒有任何場景或票會讓系統**自己**產生它時，由單元測試驅動那段產生它的程式，並回報請 `implement` 在票節 `#### 缺口` 記一列「沒有場景驗得到」 | 照 G2 那段程式永遠不會被要求，正式路徑上那個狀態就從來不會出現 |
 
 G4 的層級照 `plan.md` 的 `## Testing Decisions`（每個 AC 在哪一層測）；規則放哪一層、怎麼
 接到 seam、測試替身怎麼寫 → `../references/inner-loop.md`。
@@ -17,31 +17,31 @@ G4 的層級照 `plan.md` 的 `## Testing Decisions`（每個 AC 在哪一層測
 ## G2 的例子
 
 ```
-slice：@example-8.1 付清後可以出場
-失敗：付款後查詢狀態應為「已付清」，得到「未付款」
+slice：@example-8.1 準時還書不算逾期
+失敗：還書後查詢狀態應為「已歸還」，得到「借出中」
 
-只補：  付款金額等於應付金額時，把停留標成已付清
-不補：  金額不足的拒絕（8.2 的事）、逾時補繳（9.1 的事）、退款、部分付款
+只補：  還書日不晚於到期日時，把借閱標成已歸還
+不補：  書況損壞的拒收（8.2 的事）、逾期停權（9.1 的事）、代還、遺失賠償
 ```
 
 ## G3 的例子
 
 ```go
 // 薄：只匹配、解析、委派
-func (w *world) 訪客付款(amount int) error {
-    return w.pay(w.currentPlate, amount)
+func (w *world) 讀者還書(bookID string) error {
+    return w.returnBook(w.currentCard, bookID)
 }
 
 // 厚：step 自己變成一整段測試劇本
-func (w *world) 訪客付款(amount int) error {
-    w.enter(plate); w.advance(31*time.Minute); fee := w.queryFee(plate)
-    if fee != 30 { return errors.New("...") }
-    if err := w.pay(plate, amount); err != nil { return err }
-    return w.assertPaid(plate)
+func (w *world) 讀者還書(bookID string) error {
+    w.borrow(card, bookID); w.advance(14*24*time.Hour); due := w.queryDue(card, bookID)
+    if !due.Equal(w.today()) { return errors.New("...") }
+    if err := w.returnBook(card, bookID); err != nil { return err }
+    return w.assertReturned(card, bookID)
 }
 ```
 
-步驟按領域名詞分檔（付款、月租卡），不按 `.feature` 的檔名分——同一句話會被好幾個
+步驟按領域名詞分檔（還書、讀者證），不按 `.feature` 的檔名分——同一句話會被好幾個
 feature 用到。
 
 ## 綠了之後
@@ -53,12 +53,12 @@ feature 用到。
 ## 回報長什麼樣
 
 ```
-入口：green　範疇：visitor-exit-payment.feature 的 Rule 8
+入口：green　範疇：book-return.feature 的 Rule 8
 slice：@example-8.1
-起點的失敗：狀態應為「已付清」，得到「未付款」
-單元測試：domain/parking/stay_test.go TestPay（先紅：undefined: Stay.Pay）→ 綠
+起點的失敗：狀態應為「已歸還」，得到「借出中」
+單元測試：domain/lending/loan_test.go TestReturn（先紅：undefined: Loan.Return）→ 綠
 重跑：go test -count=1 ./test/acceptance/ -godog.tags=@example-8.1 → 1 scenario passed
 範疇內其餘：@rule-8 全部重跑，原本綠的仍綠
-動了：domain/parking/stay.go（Pay）、usecase/command/pay.go、steps_payment_test.go
+動了：domain/lending/loan.go（Return）、usecase/command/return_book.go、steps_return_test.go
 建議下一步：red，@example-8.2
 ```

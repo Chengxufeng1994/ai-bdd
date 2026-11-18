@@ -45,7 +45,7 @@ disable-model-invocation: true
 ## 參考檔案
 
 - `rules/journey-format.md` — 六條規則、檔名、骨架。**寫之前先讀**
-- `examples/訪客出場結帳.feature` — 對得上 `../spec/examples/minimal-spec.md` 的範例
+- `examples/借書看到期日.feature` — 對得上 `../spec/examples/minimal-spec.md` 的範例
 - `../formulation/scripts/check_spec.py` — 第 17 項稽核 `@covers-`。在隔壁 skill：只跑，不改
 
 ## 前置確認（Ask user）
@@ -117,7 +117,7 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 
 `specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
 命名。骨架與六條規則見 `rules/journey-format.md`，完整範例見
-`examples/訪客出場結帳.feature`。有標記時另有 `spec.md` `## Open Questions` 的新列。
+`examples/借書看到期日.feature`。有標記時另有 `spec.md` `## Open Questions` 的新列。
 
 ## Verification
 

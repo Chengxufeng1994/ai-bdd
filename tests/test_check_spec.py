@@ -460,11 +460,11 @@ class AcceptanceJourneys(unittest.TestCase):
         skills = ROOT / "skills"
         spec = (skills / "spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
         disc = (skills / "discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
-        journey = (skills / "spec-by-example" / "examples" / "訪客出場結帳.feature").read_text(encoding="utf-8")
+        journey = (skills / "spec-by-example" / "examples" / "借書看到期日.feature").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, spec, disc)
-            write_journey(root, "訪客出場結帳.feature", journey)
+            write_journey(root, "借書看到期日.feature", journey)
 
             code, out = run(root)
 

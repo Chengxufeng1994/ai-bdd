@@ -95,7 +95,7 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 | --- | --- | --- |
 | `api/openapi.yaml` | 追加 | 每個 operation 都加在這份契約 |
 | `internal/interfaces/http/apigen/api.gen.go` | 產生 | 由契約產生，內嵌整份 spec |
-| `internal/application/port/in/parking_service.go` ＋ 實作它的測試 stub | 追加 | 每個 use case 在同一個驅動埠加方法 |
+| `internal/application/port/in/lending_service.go` ＋ 實作它的測試 stub | 追加 | 每個 use case 在同一個驅動埠加方法 |
 | `go.mod`／`go.sum` | 產生 | 第一個 path parameter 會帶進 runtime 套件 |
 | `internal/application/usecase/command/`（新建） | 新建 | 至少兩張票的 use case 住這裡，交給一張前置票建 |
 ```
@@ -129,8 +129,8 @@ schema 一節全退化成「見共用檔」），而且兩種檔案各用一套�
 
 ## Overview
 
-訪客出場時依停留時間算出應付金額、繳費後放行；月租車在有效期內不計費。驗收測試打在
-`application.出場結帳` 這一層，新增計費的 domain 模組與出場結帳 use case，HTTP 只做轉接。
+館員借出一本書時算出到期日，遇休館日順延；讀者可在到期前上網續借一次，名下有逾期的書時拒絕。驗收測試打在
+`application.借閱` 這一層，新增借閱的 domain 模組與借書、續借 use case，HTTP 只做轉接。
 
 （技術決定七節略，寫法見 `tech-format.md`〈範例：技術決定〉）
 
@@ -138,7 +138,7 @@ schema 一節全退化成「見共用檔」），而且兩種檔案各用一套�
 
 | 風險 | 影響程度 | 從哪條規則長出來 | 影響什麼 |
 | --- | --- | --- | --- |
-| 警報期間出場一律不計費，警報頻繁或被誤觸發時收入流失 | 中 | monthly-pass FR-3 | 要不要記錄警報期間的每一次出場，留給 IMPLEMENT |
+| 一本逾期就擋掉全部續借，讀者有正當理由時櫃台沒有例外通道 | 中 | renewal FR-3 | 要不要留館員手動續借的通道，留給 IMPLEMENT |
 
 ## Parallel Work
 
