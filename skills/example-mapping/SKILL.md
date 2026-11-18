@@ -18,7 +18,7 @@ disable-model-invocation: true
 | **職責** | 把一則 story 攤成四色卡地圖、跑四條診斷，把就緒問句交給使用者 |
 | **讀** | 流程內：`specs/ongoing/<date>-<feature>/spec.md`（`待對焦`）與同目錄的 `acceptance/`；單獨：一段 story 的描述 |
 | **寫** | 流程內：`spec.md` 的 `狀態`（使用者答「就緒」才寫 `已對焦`）或 `## 回 DISCOVERY 補問`；單獨：不寫檔。地圖只印在終端 |
-| **上游** | `spec`（`spec.md` 寫完後呼叫）；也可單獨使用 |
+| **上游** | `spec`（`spec.md` 寫完、`feature-mapping` 跑完後呼叫）；也可單獨使用 |
 | **下游** | 就緒 → `spec` 接著呼叫 `formulation`；未就緒 → `spec`〈退回 discovery〉 |
 | **不做** | 不替使用者判就緒、不把紅卡問到收斂、不切 story、不寫 Gherkin、不產出 `example-map.md` |
 
@@ -35,6 +35,7 @@ disable-model-invocation: true
 
 | 情況 | 改用 |
 | --- | --- |
+| 要看整個 feature 的流程、替代流程與反例 | `feature-mapping`，`spec` 在本 skill 之前呼叫它 |
 | 要把紅卡逐一問到收斂 | `clarify`，本 skill 只指出還剩幾張 |
 | 要把 story 切小 | `story-splitting` |
 | 要把例子寫成 Gherkin | `formulation` |

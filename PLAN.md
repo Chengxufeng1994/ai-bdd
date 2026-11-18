@@ -60,7 +60,7 @@ already made, not a place where new ones get made.」
 | 步驟 | 這一步在問什麼 | 作法 | 產物 |
 | --- | --- | --- | --- |
 | **DISCOVERY** | 需求方想要什麼？還有哪些不知道？問到不能再問為止（brainstorming） | 開場當書記：原文逐字、粗切 story；之後設計樹＋前沿，答案逐題記下 | `discovery.md`（澄清中 → 已收斂） |
-| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？用什麼做？（to spec） | `discovery.md` → `spec.md` 需求部分（`spec`）→ 就緒判定（`example-mapping`）→ 技術部分（`spec`，seam 經使用者確認）→ Gherkin（`formulation`） | `spec.md`（待對焦 → 已對焦，含 `## Domain Model` 與技術部分）＋ `.feature`（可執行） |
+| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？用什麼做？（to spec） | `discovery.md` → `spec.md` 需求部分（`spec`）→ 流程與四色卡診斷（`feature-mapping`、`example-mapping`）→ 就緒判定（`example-mapping`）→ 技術部分（`spec`，seam 經使用者確認）→ Gherkin（`formulation`） | `spec.md`（待對焦 → 已對焦，含 `## Domain Model` 與技術部分）＋ `.feature`（可執行） |
 | **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | 風險、接合點（`plan`）＋ tracer bullet 垂直切片 ＋ blocking edges（`task-breakdown`） | `plan.md` ＋ `tasks.md` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | 全新 reviewer 對照情境驗收 ＋ 鏈稽核 | 審查結論 ＋ 稽核報告 |
@@ -228,6 +228,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `clarify` | 一疊紅卡逐題收斂 | **已實作**；原 `clarify-loop`，由 `discovery` 呼叫 |
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**；由 `discovery`（粗切）與 `spec`（`已對焦` 前沿規則重切）呼叫 |
 | SPEC | `spec` | `discovery.md` → `spec.md` 需求部分，判就緒後寫技術部分、呼叫 `formulation` | **已實作**；2026-11-14 從「寫技術設計」改成「從問答寫規格」；2026-11-15 技術設計從 `plan` 搬回來，寫成 `spec.md` 的技術部分 |
+| | `feature-mapping` | 整個 feature 的流程圖、三條診斷（替代流程、反例、結果沒有規則），缺口寫成補問 | **已實作**（2026-11-18，照 John Ferguson Smart 的 Feature Mapping；還沒實跑過）；由 `spec` 在 `example-mapping` 之前呼叫 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定；唯一寫 `已對焦` 的 skill | **已實作**；由 `spec` 呼叫 |
 | | `spec-by-example` | `spec.md` → `acceptance/*.feature` 業務語意驗收旅程，`@covers-` 標 AC | **已實作**；2026-11-14，參考 aixbdd `spec-by-example`；由 `spec` 在診斷與就緒問句之間呼叫 |
 | | `formulation` | `spec.md` → `.feature` | **已實作** |

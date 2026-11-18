@@ -24,7 +24,7 @@ disable-model-invocation: true
 | **讀** | `specs/ongoing/<date>-<feature>/discovery.md`（`已收斂`，或 `澄清中` 且結束方式 `喊停`）；寫技術部分時加專案既有的結構與文件（Makefile、`CLAUDE.md`、架構文件），或上一份 `spec.md` 的技術部分 |
 | **寫** | `specs/ongoing/<date>-<feature>/spec.md`、`docs/CONTEXT.md`（建立或追加）；退回時 `discovery.md` 的狀態與修訂歷史一列 |
 | **上游** | `discovery` |
-| **下游** | `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後寫技術部分 → `formulation` → `plan` |
+| **下游** | `feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後寫技術部分 → `formulation` → `plan` |
 | **不做** | 不訪談、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature`、不排風險與並行（那是 `plan`）、不切票 |
 
 **不訪談。** 這一步只寫已經有答案的東西。問答推不出來的，寫進 `spec.md` 的
@@ -43,7 +43,8 @@ disable-model-invocation: true
 | --- | --- |
 | `discovery.md` 還有待答、或結束方式是 `阻塞`／`零進展` | `discovery` |
 | 要把 FR 與 AC 寫成 `.feature` | `formulation`，本 skill 在 `已對焦` 之後呼叫它 |
-| 要攤四色卡、判就緒 | `example-mapping`，本 skill 寫完 `spec.md` 之後呼叫它 |
+| 要攤整個 feature 的流程、找缺的替代流程與反例 | `feature-mapping`，本 skill 寫完 `spec.md` 之後第一個呼叫它 |
+| 要攤四色卡、判就緒 | `example-mapping`，本 skill 在 `feature-mapping` 之後呼叫它 |
 | 要把規格寫成業務方讀的驗收旅程 | `spec-by-example`，本 skill 在診斷之後、就緒問句之前呼叫它 |
 | 寫規則時 story 切得不對 | `story-splitting`，`已對焦` 之前本 skill 可以呼叫它重切 |
 | 要排風險、決定要不要並行、列接合點 | `plan`（寫在 `plan.md`） |
@@ -86,7 +87,7 @@ NEVER: `discovery.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是�
 | 2 | 收尾檢查，必要時重切 story | — |
 | 3 | 自檢 `check_spec.py` | — |
 | 4 | 詞彙 → `docs/CONTEXT.md`、聚合 → `spec.md` 的 `## Domain Model` | — |
-| 5 | `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句 | 要，由 `example-mapping` 問需求方 |
+| 5 | `feature-mapping` 與 `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句 | 要，由 `example-mapping` 問需求方 |
 | 6 | 需求方答「就緒」→ `已對焦` → 寫技術部分 → `formulation` 產 `.feature` | 要，seam 攤給使用者確認 |
 | 7 | 不就緒、補問清單非空、或旅程有 `# [need clarification]` → 退回 discovery | — |
 
@@ -183,14 +184,17 @@ MUST: 動到現況裡既有的聚合，要在這一節寫「原本是什麼、�
 判準（哪些該進來）：這條規則**跨 feature 仍然成立**嗎？只在這個 feature 的情境下為真的，
 留在 `spec.md` 的 FR。
 
-### 5. 交給 `example-mapping` 與 `spec-by-example`
+### 5. 交給 `feature-mapping`、`example-mapping` 與 `spec-by-example`
 
 補問清單是「（無）」時，依序：
 
-1. `example-mapping` 攤地圖、跑四條診斷
-2. `spec-by-example` 把 `spec.md` 寫成 `acceptance/*.feature` 的驗收旅程、跑
+1. `feature-mapping` 攤整個 feature 的流程、跑三條診斷，缺口寫進補問清單
+2. `example-mapping` 攤四色卡、跑四條診斷——上一步寫了補問也照樣跑，兩張圖的洞一次帶回
+   `discovery`，需求方只要答一輪
+3. 補問清單非空 → 直接走第 7 步，不寫旅程
+4. `spec-by-example` 把 `spec.md` 寫成 `acceptance/*.feature` 的驗收旅程、跑
    `check_spec.py`。它把定不下來的地方標成 `# [need clarification]` 並寫進補問清單
-3. 補問清單仍是「（無）」→ 交回 `example-mapping` 提就緒問句，需求方對著旅程答
+5. 補問清單仍是「（無）」→ 交回 `example-mapping` 提就緒問句，需求方對著旅程答
 
 `example-mapping` 是唯一把狀態寫成 `已對焦` 的 skill，寫的是需求方的決定。補問清單非空時
 不提就緒問句——就緒問句建立在已知有洞的規格上，答「就緒」也沒有意義；直接走第 7 步。

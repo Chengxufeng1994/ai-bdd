@@ -45,7 +45,7 @@ Automation 重合，因為 Automation 的產物本來就是程式碼而不是膠
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
 | **DISCOVERY** | brainstorming：開場把需求方的話逐字收進 `discovery.md`、粗切 story（不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 問到規則與例子都有人答過（BDD 的 Discovery）。**只記問答，不寫規格**——每個答案記原話與誰答的。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | to spec：把已收斂的問答寫成 `spec.md`（FR／AC 每一條行尾指回 `discovery.md`，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋就緒判定（`example-mapping`）＋技術部分（`已對焦` 之後：Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions，`spec`）＋可執行規格（BDD 的 Formulation，`formulation`） | Formulation ＋ 額外 |
+| **SPEC** | to spec：把已收斂的問答寫成 `spec.md`（FR／AC 每一條行尾指回 `discovery.md`，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`）＋技術部分（`已對焦` 之後：Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions，`spec`）＋可執行規格（BDD 的 Formulation，`formulation`） | Formulation ＋ 額外 |
 | **PLAN** | to plan：執行計畫（風險、要不要並行、接合點）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`plan` 寫 `plan.md`，`task-breakdown` 拆成 `tasks.md`） | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`implement`） | Automation |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？全新的 reviewer 對照 `spec.md`／`.feature` 審整批 | **無**——治理不在三個實踐裡 |
@@ -123,6 +123,13 @@ addyosmani 的 spec-driven-development 與 mattpocock 的 to-spec——一份讀
 寫要做成什麼，也寫用什麼做、怎麼驗。原本把技術設計放在 PLAN，是為了讓 SPEC 只收斂業務語意；
 這條界線現在靠**順序**守住：技術部分在需求方說「就緒」之後才寫，需求方判就緒時看不到它。
 seam、契約、依賴仍然是工程判斷，所以 seam 照舊攤給使用者確認。
+
+SPEC 的診斷有兩張圖，方向相反：`feature-mapping` 看整個 feature 的**寬度**——流程有沒有斷、
+每一步的替代流程與規則的反例寫了沒；`example-mapping` 看一則 story 的**深度**——每條規則有沒有
+例子撐住。先寬後深（2026-11-18 起）：寬度找到的洞會改動 story 與 FR，先找出來，四色卡才不會攤
+一張馬上要重畫的。兩者都只印地圖、不另寫檔案，因為圖上每張卡都已經住在 `## User Stories` 與
+`acceptance/`；它們新增的是找洞的方法，洞寫進 `## 回 DISCOVERY 補問`。Feature Mapping 原本是工作坊
+裡當場追問，這裡把問題寫成補問交回 `discovery`——SPEC 不訪談，當場問到的答案寫不進 `discovery.md`。
 
 PLAN 留下來的是**執行**：哪裡危險、能不能並行、合回時哪些檔會相撞，以及把工作切到一個 fresh
 session 做得完。實作者讀 `spec.md` 的技術部分與自己那張票節就夠（票由 `task-breakdown` 拆到

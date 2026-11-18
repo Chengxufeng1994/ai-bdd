@@ -102,11 +102,12 @@ the source.
 | --- | --- | --- |
 | `docs/bdd.md` | Cucumber's own definitions of Discovery / Formulation / Automation | A source changed the definition, or we misread it. **Never** to record a project opinion. |
 | `docs/example-mapping.md` | Matt Wynne's Example Mapping article — four cards, the table as feedback, the 25-minute box, rough examples | ″ |
+| `docs/feature-mapping.md` | John Ferguson Smart's Feature Mapping article — example → steps → consequences rows, grouped by rule, breadth-first | ″ |
 | `docs/tdd.md` | Canon TDD, the three laws, the two schools — BDD's parent, and the inner loop of `bdd.md`'s double-loop figure | ″ |
 | `docs/sdd.md` | Spec-Driven Development per Spec Kit / Kiro / Tessl, and why its "spec" is not BDD's | ″ |
 | `docs/ai-sdlc.md` | This project's position: why six steps, which parts are not BDD, the AI-specific constraints | Evolves with real runs |
 
-The first four transcribe outside sources and say so in their own opening paragraph. Each
+The first five transcribe outside sources and say so in their own opening paragraph. Each
 figure has exactly one owner: `tdd.md` points at `bdd.md` for the double-loop diagram
 rather than redrawing it.
 
@@ -140,7 +141,8 @@ Each of the first three steps holds because it runs in one main working mode:
   and then interrogates. Every answer is recorded on the spot in `discovery.md` with the
   originator's words and who answered. **It writes no FR/AC.**
 - **SPEC** is writing mode: `spec` turns an `已收斂` `discovery.md` into `spec.md`,
-  `spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
+  `feature-mapping` (whole feature, breadth) and `example-mapping` (one story, depth)
+  diagnose it, `spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
   takes it to `已對焦`, then `formulation` writes `.feature` files —
   **none of them interviews**; holes go into `spec.md`'s `## 回 DISCOVERY 補問` and send
   `discovery.md` back to `澄清中`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a

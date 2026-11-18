@@ -13,7 +13,7 @@
 | 步驟 | Skill |
 | --- | --- |
 | DISCOVERY | `discovery`、`clarify` |
-| SPEC | `spec`、`example-mapping`、`spec-by-example`、`formulation`、`story-splitting` |
+| SPEC | `spec`、`feature-mapping`、`example-mapping`、`spec-by-example`、`formulation`、`story-splitting` |
 | PLAN | `plan`、`task-breakdown` |
 | IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`behavior-driven-development`（由 `implement` 委派 green／refactor，模型不自動觸發）、`archive`（票全部合回後：寫回 `docs/` 現況、搬進 `specs/sleeping/`） |
 | REVIEW／VERIFY | 尚未實作 |
@@ -28,8 +28,8 @@
 | 中間產物 | 位置 | 誰產生 | 誰接著用（用來做什麼） |
 | --- | --- | --- | --- |
 | `discovery.md` | `<feature>/` | `discovery`（原文逐字、粗切 story、問答）；`clarify` 補答待答題 | `clarify`：收斂待答題；`spec`：從已收斂的問答寫規格；`plan`：讀技術面向的答案 |
-| `spec.md`（`待對焦`） | `<feature>/` | `spec` | `example-mapping`：攤四色卡、跑診斷、問就緒；`spec-by-example`：寫驗收旅程；`story-splitting`：重切 story |
-| `spec.md` `## 回 DISCOVERY 補問` | `<feature>/spec.md` | `spec`、`spec-by-example`、`example-mapping`（未就緒時） | `spec`：退回 discovery，把 `discovery.md` 改回 `澄清中`；`discovery`：再問 |
+| `spec.md`（`待對焦`） | `<feature>/` | `spec` | `feature-mapping`：攤整個 feature 的流程、找缺的替代流程與反例；`example-mapping`：攤四色卡、跑診斷、問就緒；`spec-by-example`：寫驗收旅程；`story-splitting`：重切 story |
+| `spec.md` `## 回 DISCOVERY 補問` | `<feature>/spec.md` | `spec`、`feature-mapping`、`spec-by-example`、`example-mapping`（未就緒時） | `spec`：退回 discovery，把 `discovery.md` 改回 `澄清中`；`discovery`：再問 |
 | `splitting.md`（切分紀錄） | `<feature>/` | `story-splitting` | `spec`：照切法寫 story，FR 編號不重編 |
 | 驗收旅程 `*.feature`（不執行） | `<feature>/acceptance/` | `spec-by-example` | 需求方：對著旅程判就緒；`example-mapping`：提就緒問句；`formulation`：只借用語 |
 | `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `spec` 第 6 步：寫技術部分；`formulation`：寫可執行 `.feature` |
@@ -84,22 +84,36 @@
 **職責**：把已收斂的問答寫成一份讀完就能開工的規格：需求部分帶到需求方說「就緒」，再寫技術部分（用什麼做、seam、模組、契約、每個 AC 在哪一層測），交出去產 `.feature`
 
 - **上游**：`discovery`
-- **下游**：`example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後寫技術部分 → `formulation` → `plan`
+- **下游**：`feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` 後寫技術部分 → `formulation` → `plan`
 - **不做**：不訪談、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature`、不排風險與並行（那是 `plan`）、不切票
 
 1. 寫 `spec.md`（`待對焦`）
 2. 收尾檢查，必要時重切 story
 3. 自檢 `check_spec.py`
 4. 詞彙 → `docs/CONTEXT.md`、聚合 → `spec.md` 的 `## Domain Model`
-5. `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句
+5. `feature-mapping` 與 `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句
 6. 需求方答「就緒」→ `已對焦` → 寫技術部分 → `formulation` 產 `.feature`
 7. 不就緒、補問清單非空、或旅程有 `# [need clarification]` → 退回 discovery
+
+#### `feature-mapping`
+
+**職責**：把整個 feature 攤成「規則 × 例子 × 步驟 × 結果」的列，逐步找出缺的流程與反例，寫成補問
+
+- **上游**：`spec`（第 5 步第一個呼叫）；也可單獨使用
+- **下游**：`example-mapping`（照樣跑完，兩張圖的洞一次帶回 `discovery`）
+- **不做**：不訪談、不改 US／FR／AC、不寫狀態、不判就緒、不寫 Gherkin、不產出 `feature-map.md`
+
+1. 認模式：流程內或單獨
+2. 排主流程：從 `## 原文` 抽出整個 feature 的步驟順序
+3. 攤列：每條 AC 一列，依 FR 分組，對齊到主流程
+4. 跑三條診斷
+5. 流程內：缺口寫進補問；印地圖與結果，交回 `spec`
 
 #### `example-mapping`
 
 **職責**：把一則 story 攤成四色卡地圖、跑四條診斷，把就緒問句交給使用者
 
-- **上游**：`spec`（`spec.md` 寫完後呼叫）；也可單獨使用
+- **上游**：`spec`（`spec.md` 寫完、`feature-mapping` 跑完後呼叫）；也可單獨使用
 - **下游**：就緒 → `spec` 接著呼叫 `formulation`；未就緒 → `spec`〈退回 discovery〉
 - **不做**：不替使用者判就緒、不把紅卡問到收斂、不切 story、不寫 Gherkin、不產出 `example-map.md`
 
@@ -259,6 +273,7 @@ ai-bdd/
 ├── docs/
 │   ├── bdd.md            BDD 本身是什麼——外部來源轉述
 │   ├── example-mapping.md  Example Mapping 原文轉述
+│   ├── feature-mapping.md  Feature Mapping 原文轉述
 │   ├── tdd.md            TDD 本身是什麼——外部來源轉述
 │   ├── sdd.md            Spec-Driven Development 是什麼——外部來源轉述
 │   ├── ai-sdlc.md        本專案的立場：為什麼是這六步
@@ -267,6 +282,7 @@ ai-bdd/
 │   ├── discovery/
 │   ├── clarify/
 │   ├── spec/
+│   ├── feature-mapping/
 │   ├── example-mapping/
 │   ├── spec-by-example/
 │   ├── formulation/

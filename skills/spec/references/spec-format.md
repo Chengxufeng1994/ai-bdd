@@ -32,7 +32,7 @@ feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`s
 | `## Domain Model` | 這個 feature 新增或改動的聚合與不變條件；骨架見 `../../archive/references/domain-model-format.md` | `spec`（第 4 步）；做完時 `archive` 併進 `docs/DOMAIN-MODEL.md` |
 | `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | `spec` |
 | 技術部分七節：`## Tech Stack` 到 `## Testing Decisions` | 用什麼做、seam、模組、契約、每個 AC 在哪一層測 | `spec`，`已對焦` 之後（第 6 步） |
-| `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `spec`；`example-mapping` 與 `spec-by-example` 也會加列 |
+| `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `spec`；`feature-mapping`、`example-mapping` 與 `spec-by-example` 也會加列 |
 | `## Further Notes` | 放不進其他節、但下一個接手的人會想知道的 | 任何一步 |
 
 順序固定，不因為某節內容少而調換或省略標題。`## Background` 到 `## Success Metrics` 是**需求部分**，
