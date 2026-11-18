@@ -4,14 +4,15 @@
 
 `docs/` 是專案的真實來源：系統**現在**長怎樣。只放做出來了的東西——還沒合回的 feature 不進來。
 
-| 檔 | 裝什麼 | 從 `spec.md` 的哪裡來 |
+| 檔 | 裝什麼 | 從哪裡來 |
 | --- | --- | --- |
-| `docs/DOMAIN-MODEL.md` | 聚合、不變條件、跨聚合的規則 | `## Domain Model`；骨架見 `domain-model-format.md` |
-| `docs/DATABASE-SCHEMA.md` | 資料表與欄位、索引與約束 | `## Implementation Decisions` 的 **Schema** |
-| `docs/TECH.md` | Tech Stack、Commands、Project Structure、Code Style、Boundaries | 技術部分的同名五節 |
+| `docs/CONTEXT.md` | 詞彙 | `spec.md` `## Domain Concepts` 的 `### 詞彙`；只追加，不用區塊標記 |
+| `docs/DOMAIN-MODEL.md` | 聚合、不變條件、跨聚合的規則 | `spec.md` `## Domain Concepts` 的 `### 聚合與不變條件`；骨架見 `domain-model-format.md` |
+| `docs/DATABASE-SCHEMA.md` | 資料表與欄位、索引與約束 | `plan.md` `## Implementation Decisions` 的 **Schema** |
+| `docs/TECH.md` | Tech Stack、Commands、Project Structure、Code Style、Boundaries | `plan.md` 技術決定的同名五節 |
 
-`docs/CONTEXT.md`（詞彙）不歸本 skill：`spec` 寫規格時就新建或追加它，因為 `formulation` 寫 `.feature`
-時就要用到那些詞。
+`docs/CONTEXT.md` 不包區塊：它的規則從來就是「只建立或追加，不改寫既有段落」，專案自己也會加詞，
+不必分 ai-bdd 寫的與人寫的。檔不存在就新建，第一行是表頭（欄位同 `### 詞彙`）。
 
 ---
 
@@ -86,7 +87,7 @@ skill 管。覆蓋手改過的區塊，就是靜靜地丟掉別人的修改。
 
 <!-- ai-bdd:begin Tech Stack -->
 ## Tech Stack
-<照 spec.md 技術部分的 ## Tech Stack，每條保留來源標記>
+<照 plan.md 的 ## Tech Stack，每條保留來源標記>
 <!-- ai-bdd:end Tech Stack -->
 
 <!-- ai-bdd:begin Commands -->
@@ -104,7 +105,7 @@ skill 管。覆蓋手改過的區塊，就是靜靜地丟掉別人的修改。
 <!-- ai-bdd:end 修訂紀錄 -->
 ```
 
-一節一個區塊，區塊名就是節名。每條的格式照 `../../spec/references/tech-format.md`。
+一節一個區塊，區塊名就是節名。每條的格式照 `../../plan/references/tech-format.md`。
 
 ## 修訂紀錄
 

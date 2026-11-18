@@ -133,7 +133,7 @@ def legacy_hint(specs_dir: Path) -> str | None:
         text = spec.read_text(encoding="utf-8")
         if re.search(r"^## (Open Questions|原文)\s*$", text, re.M):
             return (f"{spec.parent} 是 11-13 佈局：把 `spec.md` 的 `## Open Questions` 與 "
-                    f"`## 原文` 搬到 `discovery.md`，`design.md` 的技術節併進 `spec.md` 的技術部分")
+                    f"`## 原文` 搬到 `discovery.md`，`design.md` 的技術節併進 `plan.md`")
     return None
 
 

@@ -4,8 +4,8 @@
 
 ## 規則
 
-BDD 流程的**文件型產物住在 `specs/`**，有兩個例外：`.feature` 與
-`docs/CONTEXT.md`。
+BDD 流程的**文件型產物住在 `specs/`**，有兩個例外：`.feature`，以及 `docs/` 底下的現況檔
+（`CONTEXT.md` 等，feature 做完時由 `archive` 寫）。
 
 ### `.feature`
 
@@ -21,13 +21,8 @@ BDD 流程的**文件型產物住在 `specs/`**，有兩個例外：`.feature` �
 技術上可以用 godog 的 `Paths` 把 `.feature` 也塞進 `specs/`，但那會讓
 Go 開發者在預期的地方找不到它。**鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。**
 
-### `docs/CONTEXT.md`
+### `docs/` 的現況檔
 
-理由是壽命：刪掉某個 feature 的 spec 目錄之後，詞彙定義應該還在。
-
-| 規則 | 強度 |
-| --- | --- |
-| 只得建立這個檔案，或在其中追加條目 | `MUST` |
-| 不改寫該檔既有的任何段落 | `MUST NOT` |
-| 不寫入 `docs/` 底下其他任何檔案 | `MUST NOT` |
+系統現在長怎樣，只放做出來了的東西。本 skill **只讀** `docs/CONTEXT.md` 取措辭，不寫 `docs/` 底下任何檔案；
+寫入者是 `archive`，規則見 `../../archive/references/docs-format.md`。
 

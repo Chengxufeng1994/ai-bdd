@@ -18,15 +18,15 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把一張票做到綠：測試層先紅、委派 `behavior-driven-development` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
-| **讀** | `tasks.md`（開頭三行與這張票的 `### <票號>` 票節）、`spec.md`（技術部分與這張票的 FR／AC）、`plan.md`、這張票涵蓋的 `.feature`、專案的架構文件 |
+| **讀** | `tasks.md`（開頭三行與這張票的 `### <票號>` 票節）、`spec.md`（這張票的 FR／AC）、`plan.md`（技術決定與執行計畫）、這張票涵蓋的 `.feature`、專案的架構文件 |
 | **寫** | 產品程式碼與 step definition、`tasks.md` 裡這張票的票節（勾選、`**檢查點**:`、`#### 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
 | **上游** | `task-breakdown`（票切好之後） |
 | **下游** | `behavior-driven-development`（第 3、4 步委派）；全部票做完之後是 `archive` |
-| **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `spec.md` 技術部分沒做的設計決定 |
+| **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `plan.md` 的技術決定沒做的設計決定 |
 
 **外迴圈先紅，內迴圈先紅，然後才寫程式。** 外迴圈是 `.feature` 的場景（godog／
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
-才有理由。票裡的轉綠與整理委派給 `behavior-driven-development`——它一次一個場景、一次一個入口。發現技術部分的洞
+才有理由。票裡的轉綠與整理委派給 `behavior-driven-development`——它一次一個場景、一次一個入口。發現技術決定的洞
 就記下來，不順手補。
 
 ## 使用時機
@@ -40,7 +40,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 | 情況 | 改用 |
 | --- | --- |
 | 還沒有 `.feature` | `formulation` |
-| `spec.md` 沒有技術部分（seam、埠、契約） | `spec` 第 6 步 |
+| `plan.md` 沒有技術決定（seam、埠、契約） | `plan` |
 | 還沒有 `tasks.md`（包括票還寫在 `plan.md` `## 票` 裡、或還是 `tasks/` 目錄的舊格式） | `task-breakdown` |
 | 票之間的順序、要不要再切、哪幾張能同時做 | `task-breakdown` |
 | 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/behavior-driven-development`；本 skill 做票時第 3、4 步本來就委派它 |
@@ -54,7 +54,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 - `../behavior-driven-development/SKILL.md` — 第 3、4 步委派的 green／refactor 入口；`../behavior-driven-development/rules/red.md` 與
   `../behavior-driven-development/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
 - `../task-breakdown/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
-- `../spec/references/tech-format.md` — `spec.md` 技術部分各節裝什麼
+- `../plan/references/tech-format.md` — `plan.md` 的技術決定各節裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
   ——分層、轉換、錯誤分類都照它，本 skill 不另訂
 
@@ -64,7 +64,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 
 1. **哪一張票**：`implement <票號>`。沒帶票號就取 `tasks.md` 裡第一張
    Blocked by 全部完成（那些票節的驗收條件全勾）、自己還沒全勾的票，講出來讓對方改
-2. **驗證閘門是什麼命令**：票節 `**驗證**` 寫了就用它；寫「（問使用者）」或沒寫，讀 `spec.md`
+2. **驗證閘門是什麼命令**：票節 `**驗證**` 寫了就用它；寫「（問使用者）」或沒寫，讀 `plan.md`
    `## Commands` 的閘門，再讀專案的 README／Makefile（實測場是 `make verify`），再沒有就問——一張票「做完」的定義就是這個命令綠，不能猜
 3. **前面有沒有檢查點**：`tasks.md` 裡這張票的上方有 `**檢查點**` 時，看票節有沒有記 `**檢查點**:`
    那一行。沒有、也沒有人在開工說明裡帶來，就在主線上照檢查點跑一次（已勾完的票的場景、閘門），
@@ -72,10 +72,10 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
    （`../task-breakdown/references/tasks-format.md`〈檢查點〉）
 4. 讀得到 `specs/ongoing/<date>-<feature>/tasks.md` 的這張票節、`plan.md`、`spec.md` 與這張票涵蓋的 `.feature`
 
-NEVER: `spec.md` 沒有技術部分時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
+NEVER: `plan.md` 沒有技術決定時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
 
-MUST: 一個 session 一張票。撿起票的人只看過票節與 `spec.md` 的技術部分——這是 `task-breakdown`
+MUST: 一個 session 一張票。撿起票的人只看過票節與 `plan.md` 的技術決定——這是 `task-breakdown`
 切票的上界，也是這一步不要一次做三張的理由：做到第二張時第一張的脈絡已經在擠。
 
 SHOULD: 跟別張票同時做時，一張票一個 worktree。開工前看 `tasks.md`：這張票跟正在做
@@ -101,7 +101,7 @@ MUST: 開工時工作區是乾淨的；做完這張票一個 commit，只 stage 
 ### 1. 讀票，標 `@wip`
 
 讀 `tasks.md` 的 `### <票號>` 票節：交付什麼行為、涵蓋哪些 `@example-N.M`、內迴圈要寫哪些單元測試、
-驗收條件。再讀 `spec.md` 技術部分的 `## Implementation Decisions`、`## Testing Decisions`、
+驗收條件。再讀 `plan.md` 的 `## Implementation Decisions`、`## Testing Decisions`、
 `## Project Structure`、`## Code Style`——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個 AC
 在哪一層測、程式碼放哪、長什麼樣。需求部分只讀對應的 FR 與 AC，看規則的原話。
 
@@ -146,7 +146,7 @@ definition 已經被別的場景定義過，而它的斷言沒抓到這張票要
 | 入口 | `green` |
 | 範疇（Test Scope） | 這張票節的 `涵蓋場景`，組成一個 tag 運算式（實測場 godog 寫成 `@example-8.1,@example-8.2`） |
 | 票 | `tasks.md` 的路徑與票號（`### <票號>`） |
-| 設計 | `spec.md` 的 `## Implementation Decisions` 與 `## Testing Decisions` |
+| 設計 | `plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions` |
 
 `behavior-driven-development` 一個場景一個場景轉綠：規則先進 domain、先看到單元測試紅（`../behavior-driven-development/references/inner-loop.md`）。
 它停下來回報規格的洞或範疇外的耦合時，本 skill 把那一條記進票節的 `#### 缺口`，照
@@ -183,7 +183,7 @@ is stale」。
 
 ### 6. 收尾
 
-- `.feature`：在主線上做時，這張票做完後**整個檔的場景都綠了**（`spec.md` `## Commands` 的
+- `.feature`：在主線上做時，這張票做完後**整個檔的場景都綠了**（`plan.md` `## Commands` 的
   `跑單一 .feature`，看場景數）才從 `@wip` 改 `@review`；
   還有別張票涵蓋同一檔的場景就留 `@wip`。在 worktree 裡做時一律留 `@wip`，到〈合回主線〉
   第 4 步再判
@@ -194,9 +194,9 @@ is stale」。
   「沒問過」的註解，以及實作時才發現、規格沒說的邊界——實作時不得不選一個）：先記進票節的
   `#### 缺口`，選一個，**用一個測試釘住**，測試的註解寫明它是暫定、等哪一題的答案；沒有 Q 號時引
   `.feature` 的「沒問過」註解或票節 `#### 缺口` 的那一列。沒釘住的暫定行為會在答案出來之後被當成規格
-- 技術細節：`spec.md` 技術部分沒寫的（時鐘放哪個 package、時區住哪一層、到期日怎麼表示）——照專案的
+- 技術細節：`plan.md` 的技術決定沒寫的（時鐘放哪個 package、時區住哪一層、到期日怎麼表示）——照專案的
   架構文件推得出來的，照推出來的做，不算設計決定；推不出來的，照暫定行為處理（記缺口、選一個，
-  有行為的用測試釘住），`task-breakdown` 再跑時把它搬進 `plan.md` 的 `## 缺口`、交回 `spec` 補技術部分
+  有行為的用測試釘住），`task-breakdown` 再跑時把它搬進 `plan.md` 的 `## 缺口`、交回 `plan` 補技術決定
 - 爭用接合點：這張票的票節列了 `爭用` 的檔時，核對那段邏輯實際落在哪個檔。落在別的檔，
   在票節 `#### 缺口` 記一列（列的是哪個檔、實際在哪個檔）——`task-breakdown` 再跑時據此改正接合點
 - 漏列與多列的接合點：這張票動到、別張票也會動、但票節與 `tasks.md` 都沒列的檔，記一列「沒列到的
@@ -212,7 +212,7 @@ is stale」。
 2. **照接合點的種類解**（`../task-breakdown/references/tasks-format.md`〈接合點與同時跑〉）：
    - `tasks.md` → 兩邊改的一定是不同的票節（各自只改自己那一節）：取聯集——這張票的票節用 worktree 這邊的，
      其餘用主線的。衝突落在同一個票節裡，代表有人改了不歸他的行，停下回報
-   - `產生` → 不手動合：先解完原始檔，再照 `spec.md` `## Commands` 的產碼命令重新產生；`go.sum`
+   - `產生` → 不手動合：先解完原始檔，再照 `plan.md` `## Commands` 的產碼命令重新產生；`go.sum`
      用 `go mod tidy`
    - `追加` → 取聯集，**以宣告為單位**：衝突的切點常落在函式中間，兩邊共用的 `return`、`}`、契約裡的
      `"500"` 只接一次會漏、接兩次會重複。接完先編譯（實測場 `go vet ./...`），再跟主線 `git diff main`

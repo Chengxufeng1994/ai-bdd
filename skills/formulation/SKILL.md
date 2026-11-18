@@ -19,11 +19,11 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把已對焦的 `spec.md` 翻成 Gherkin `.feature`：FR 變 `Rule:`、AC 變 `Example:`、編號變 tag，步驟套一組封閉文法 |
-| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`已對焦`）、`docs/CONTEXT.md`、既有的 `.feature`、`specs/ongoing/<date>-<feature>/acceptance/*.feature`（只取用語） |
+| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`已對焦`）、`docs/CONTEXT.md`（有的話）、既有的 `.feature`、`specs/ongoing/<date>-<feature>/acceptance/*.feature`（只取用語） |
 | **寫** | `features/<story-slug>.feature`（測試框架已有位置就跟隨）；覆蓋表只回報、不落地 |
-| **上游** | `spec`（`已對焦` 之後呼叫本 skill） |
+| **上游** | `spec`（`已對焦` 之後，使用者叫 `/formulation`） |
 | **下游** | `plan`（覆蓋表沒有大洞時）；洞多回 `spec` |
-| **不做** | 不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不讀 `spec.md` 的技術部分、不讀 `plan.md` |
+| **不做** | 不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不讀 `plan.md` |
 
 **不發明例子。** `Rule:`、`Example:` 與 `@rule-`／`@example-` tag 只從 `spec.md` 來；覺得少了
 一個邊界，那是 DISCOVERY 的發現，回 `spec`，不在這裡順手補。覆蓋表要產，但它是回報給人的，
@@ -43,7 +43,7 @@ disable-model-invocation: true
 | `spec.md` 不存在 | `spec`（`discovery.md` 也沒有就先 `discovery`） |
 | `spec.md` 狀態不是 `已對焦` | `spec`——它會先交 `example-mapping` 判就緒 |
 | 要決定 seam（情境跑在哪一層測試） | `plan` |
-| 要寫 `docs/CONTEXT.md` 或切 story | `spec`（它用 `story-splitting`） |
+| 要定詞彙或切 story | `spec`（詞彙寫在 `spec.md` 的 `## Domain Concepts`；切 story 用 `story-splitting`） |
 | 要決定實作順序、切票 | `task-breakdown` |
 | 要稽核既有 `.feature` 寫得好不好 | 目前沒有 skill 接手（`spec-review` 未實作，見 `PLAN.md`）；在那之前跑本 skill 的 `scripts/check_spec.py`（十八項裡五項稽核 `.feature`），對照 `examples/anti-patterns.md` |
 
@@ -107,15 +107,15 @@ NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述�
 
 | 讀什麼 | 為了什麼 |
 | --- | --- |
-| `specs/ongoing/<date>-<feature>/spec.md` | **唯一的規範來源**——`## User Stories` 底下的 FR 與 AC 是這一步要翻譯的全部內容，`## Personas` 是 `Feature:` 敘述裡角色的來源，`## Scope — In / Out` 劃出碰不得的界線 |
-| `docs/CONTEXT.md` | **措辭的來源**——同一個概念在不同 `.feature` 裡換一個說法，封閉文法的重用就從第一份開始漂移 |
+| `specs/ongoing/<date>-<feature>/spec.md` | **唯一的規範來源**——`## User Stories` 底下的 FR 與 AC 是這一步要翻譯的全部內容，`## Personas` 是 `Feature:` 敘述裡角色的來源，`## Goals / Non-Goals` 劃出碰不得的界線 |
+| `spec.md` 的 `## Domain Concepts` 與 `docs/CONTEXT.md` | **措辭的來源**——前者是這個 feature 定下的詞，後者是專案既有的詞。同一個概念在不同 `.feature` 裡換一個說法，封閉文法的重用就從第一份開始漂移 |
 | 既有的 `.feature` | 已經定下的步驟樣板，能套就不要另造 |
 | `specs/ongoing/<date>-<feature>/acceptance/*.feature` | **用語的參考**——挑步驟句型、寫 `Feature:` 敘述、取參數名時，優先用業務方在驗收旅程裡讀過的詞，讓兩層講同一套話 |
 
 MUST NOT: 從驗收旅程新增 `spec.md` 沒有的例子、場景或 `Then`。旅程刻意少、句子不受
 封閉文法約束——當成來源的話，漏掉的 AC 與自由發揮的句子會流進可執行的那一層。
 `Rule:`、`Example:` 與 `@rule-`／`@example-` tag 只從 `spec.md` 來。旅程的用語跟
-`spec.md` 或 `docs/CONTEXT.md` 打架（同一件事兩個名字）時以 `docs/CONTEXT.md` 為準，
+`spec.md` 打架（同一件事兩個名字）時以 `spec.md` 的 `## Domain Concepts` 為準、再來是 `docs/CONTEXT.md`，
 回報給使用者，不改旅程。
 
 第三項最容易被跳過，代價最貴，而且**在封閉文法下更貴**：文法的價值全在重用，

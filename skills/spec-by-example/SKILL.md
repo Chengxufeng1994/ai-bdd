@@ -18,7 +18,7 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把 `待對焦` 的規格寫成幾條可 demo、只用業務語言的長流程，讓需求方對著它判就緒 |
-| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`待對焦`、`## 回 DISCOVERY 補問` 是「（無）」）、`docs/CONTEXT.md` |
+| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`待對焦`、`## 回 DISCOVERY 補問` 是「（無）」）、`docs/CONTEXT.md`（有的話） |
 | **寫** | `specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`；有標記時 `spec.md` `## 回 DISCOVERY 補問` 的新列 |
 | **上游** | `spec` 第 5 步（`example-mapping` 跑完診斷之後） |
 | **下游** | `example-mapping` 提就緒問句；有 `# [need clarification]` → `spec`〈退回 discovery〉 |
@@ -65,7 +65,7 @@ Check if: `spec.md` 狀態是 `待對焦`，`## 回 DISCOVERY 補問` 是「（�
 
 ### 1. 讀 `spec.md`，挑旅程
 
-讀 `## User Stories` 的 FR／AC、`## Personas`、`## Scope — In / Out`，以及 `docs/CONTEXT.md`
+讀 `## User Stories` 的 FR／AC、`## Personas`、`## Goals / Non-Goals`、`## Domain Concepts`，以及 `docs/CONTEXT.md`
 的詞彙。挑的是**業務方會想看人走一遍的流程**：主流程一條，加少數結果明顯不同的變種。
 一條旅程可以跨好幾則 story、好幾條 AC。
 
