@@ -76,7 +76,7 @@ than inferring anything from zero input.
 `status.py` belongs to `discovery`:
 
 ```bash
-python3 skills/discovery/scripts/status.py [root]   # red cards and probe coverage per feature, read from spec.md's ## Open Questions
+python3 skills/discovery/scripts/status.py [root]   # red cards and probe coverage per feature, read from interview-log.md's ## 問答
 ```
 
 `check_spec.py` belongs to `formulation`:
@@ -119,15 +119,17 @@ projects individual skills borrowed from. Add a row there when a new reference i
 
 ### Artifact format is the interface
 
-Each step reads what the previous step actually emitted: DISCOVERY creates
-`spec.md` with only its question-and-answer parts (原文, rough stories, `## Open Questions` —
-no rules), SPEC writes the rules into the same `spec.md` (what to build, up to `已對焦`) and the `.feature` files, PLAN writes
+Each step reads what the previous step actually emitted: DISCOVERY writes only an
+append-only interview log `interview-log.md` (原文, sessions with stakeholders and rough stories,
+one `### Q-<n>` per question, confirmed decisions, open items — no rules, no `spec.md`), SPEC is the
+only writer of `spec.md` (copies 原文 verbatim, curates the log's questions into `## Open Questions`
+under the same numbers, writes what to build up to `已對焦`) and the `.feature` files, PLAN writes
 `plan.md` (technical decisions, then the execution plan) from `spec.md` and the `.feature`
 files, then `tasks.md` (one section per ticket, in dependency order) from both, REVIEW audits the
 whole chain.
 
 ```
-需求方的話（spec.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
+需求方的話（interview-log.md → spec.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
 ```
 
 Every arrow is a place intent can be lost. Changing an artifact's format breaks the chain,
@@ -142,14 +144,16 @@ Each of the first three steps holds because it runs in one main working mode:
   and then interrogates one question at a time, each with context and a guessed answer,
   until it can predict the originator's reaction and the coverage check passes; it ends
   with an intent restatement the originator must answer yes to. Every answer is recorded on
-  the spot in `spec.md`'s `## Open Questions` with the originator's words and who answered.
-  **It writes no FR/AC.** It is the only skill that asks the originator questions.
-- **SPEC** is writing mode: `spec` turns the answered questions in `spec.md` into FR/AC,
+  the spot in `interview-log.md` with the originator's words and who answered.
+  **It writes no `spec.md` and no FR/AC.** It is the only skill that asks the originator questions.
+- **SPEC** is writing mode: `spec` reads the log, copies its 原文 and questions into `spec.md`
+  (the log is evidence and never edited; on a mismatch its wording wins) and turns the answered ones into FR/AC,
   `feature-mapping` (whole feature, breadth) and `example-mapping` (one story, depth)
   diagnose it, `spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
   takes it to `已對焦`; the user then runs `formulation`, which writes `.feature` files —
   **none of them interviews**; a hole is opened as a new `待答` `Q-<n>` in `## Open Questions`,
-  the status goes back to `澄清中`, and the user runs `/discovery`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
+  the status goes back to `澄清中`, and the user runs `/discovery`, which reads those questions, appends them to
+  the log under the same number and asks them. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `## Open Questions` — `check_spec.py`
   check 14 rejects both. No skill calls the next one: every step is a user-typed `/<skill>`.
 - **PLAN** owns the technical decisions (seam, modules, contracts, schema, test levels) and

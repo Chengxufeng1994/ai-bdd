@@ -41,7 +41,7 @@ cp -r benchmark/skeleton/go runs/go-personal-memo
 
 `runs/` 是 gitignored，所以新 clone 上不存在——`mkdir -p` 不能省。
 
-然後把該 case 的輸入檔**整份**交給 `discovery`（開場會逐字收進 `spec.md` 的 `## 原文`），
+然後把該 case 的輸入檔**整份**交給 `discovery`（開場會逐字收進 `interview-log.md` 的 `## 原文`），
 再跑 `discovery`：
 
 ```bash

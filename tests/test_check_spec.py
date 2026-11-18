@@ -335,8 +335,8 @@ class CheckReadsSpec(unittest.TestCase):
 
             self.assertEqual(code, 0, out)
 
-    def test_spec_written_by_discovery_without_rules_points_at_spec(self):
-        # discovery 建的 spec.md 只有粗切 story、問答與原文：下一步是 spec 寫規則
+    def test_spec_without_rules_points_at_spec(self):
+        # 只有粗切 story、問答與原文、還沒有 FR 的 spec.md：spec 寫到一半，下一步是 spec 寫規則
         fresh = GOOD.replace(
             "**FR-1**  When 訪客車出場, the system shall 依停留時長計費。 ← PRD §3\n"
             "- **AC-1.1**  停 29 分 → 收 0 元 ← Q-1\n", "")
@@ -363,7 +363,7 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertIn("discovery.md", out)
             self.assertIn("spec.md", out)
-            self.assertIn("git rm", out)
+            self.assertIn("git mv discovery.md interview-log.md", out)
 
     def test_discovery_only_dir_is_legacy(self):
         with tempfile.TemporaryDirectory() as d:
@@ -375,7 +375,20 @@ class CheckReadsSpec(unittest.TestCase):
 
             self.assertEqual(code, 1, out)
             self.assertIn("discovery.md", out)
-            self.assertIn("git rm", out)
+            self.assertIn("git mv discovery.md interview-log.md", out)
+
+    def test_interview_log_beside_spec_is_not_legacy(self):
+        # discovery 寫 interview-log.md、spec 從它寫 spec.md：兩份並存是常態
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "interview-log.md").write_text(
+                "# interview-log：parking\n\n## 問答\n", encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertNotIn("佈局", out)
 
     def test_single_file_spec_with_open_questions_is_not_legacy(self):
         # 11-13 的退件訊息把這個形狀當成舊佈局；11-18 起它就是新佈局

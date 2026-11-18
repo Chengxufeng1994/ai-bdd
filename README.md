@@ -27,9 +27,9 @@
 
 | 中間產物 | 位置 | 誰產生 | 誰接著用（用來做什麼） |
 | --- | --- | --- | --- |
-| `spec.md`（`澄清中`：`## 原文`、粗切 story、`## Open Questions`） | `<feature>/` | `discovery`（原文逐字、粗切 story、逐題的問答、結束方式） | `spec`：從已答的題寫規則；`plan`：讀技術面向的答案 |
-| `spec.md`（`待對焦`） | `<feature>/` | `spec` | `feature-mapping`：攤整個 feature 的流程、找缺的替代流程與反例；`example-mapping`：攤四色卡、跑診斷、問就緒；`spec-by-example`：寫驗收旅程；`story-splitting`：重切 story |
-| `spec.md` `## Open Questions` 的補問題（寫規格時發現的洞，`Q-<n>` 待答） | `<feature>/spec.md` | `spec`、`feature-mapping`、`spec-by-example`、`example-mapping`（未就緒時） | `spec`：狀態改回 `澄清中`、停；`discovery`：先問這些題 |
+| `interview-log.md`（訪談紀錄，只追加：`## 原文`、`## Session`、`## 問答`、`## Confirmed Decisions`、`## Remaining Open Items`） | `<feature>/` | `discovery`（原文逐字、關係人、粗切 story、逐題的問答原話、結束方式） | `spec`：照抄原文與問答、從已答的題寫規則；`status.py`：算進度 |
+| `spec.md`（`待對焦`） | `<feature>/` | `spec`（唯一的寫入者） | `feature-mapping`：攤整個 feature 的流程、找缺的替代流程與反例；`example-mapping`：攤四色卡、跑診斷、問就緒；`spec-by-example`：寫驗收旅程；`story-splitting`：重切 story |
+| `spec.md` `## Open Questions` 的補問題（寫規格時發現的洞，`Q-<n>` 待答） | `<feature>/spec.md` | `spec`、`feature-mapping`、`spec-by-example`、`example-mapping`（未就緒時） | `spec`：狀態改回 `澄清中`、停；`discovery`：只讀，在紀錄追加同號的題先問 |
 | `splitting.md`（切分紀錄） | `<feature>/` | `story-splitting` | `spec`：照切法寫 story，FR 編號不重編 |
 | 驗收旅程 `*.feature`（不執行） | `<feature>/acceptance/` | `spec-by-example` | 需求方：對著旅程判就緒；`example-mapping`：提就緒問句；`formulation`：只借用語 |
 | `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `formulation`：寫可執行 `.feature`；`plan`：寫技術決定 |

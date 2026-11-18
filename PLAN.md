@@ -36,7 +36,7 @@
 ## 三種模式，三條紀律
 
 這是 2026-10-02 重排的核心（2026-11-13 把 CAPTURE 併回 DISCOVERY 開場；2026-11-14 DISCOVERY
-改成只記問答、技術設計移到 PLAN；2026-11-18 問答紀錄併進 `spec.md`、`clarify` 併進 `discovery`）。六步之所以站得住，是因為前三步各自只有一種主要的工作模式：
+改成只記問答、技術設計移到 PLAN；2026-11-18 問答紀錄併進 `spec.md`、`clarify` 併進 `discovery`，同一天改成 `discovery` 只寫 `interview-log.md`、`spec` 是 `spec.md` 唯一的寫入者）。六步之所以站得住，是因為前三步各自只有一種主要的工作模式：
 
 | 步驟 | 模式 | 只做 | 不做 |
 | --- | --- | --- | --- |
@@ -98,8 +98,8 @@ docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 需求方在試跑後改回：「我這邊也覺得不應該有技術部分」——`spec.md` 只寫要做成什麼，需求方判就緒時整份
 都讀得懂。`plan.md` 前半是技術決定、後半是執行計畫。`spec.md` 的骨架照 aixbdd 的 `specify` 排序，原有的
 規則（來源標記、FR 底下掛 AC、EARS、Personas 五欄）全部保留。
-問答與規則同一份檔（2026-11-18 起，之前分成 `discovery.md`）：分開的是**誰問**（`discovery`）與**誰寫規則**（`spec`），
-不是檔案——**只有一處寫規則**由 `check_spec.py` 第 14 項守，不靠檔案邊界。
+問答住在 `discovery` 只追加的 `interview-log.md`，`spec` 照抄進 `spec.md` 再寫規則（2026-11-18 起）：每份檔只有一個寫入者，
+**只有一處寫規則**由 `check_spec.py` 第 14 項守；紀錄與 `spec.md` 的問答表對不上時以紀錄的原話為準。
 
 可執行的 `.feature` 是唯一不進 `specs/` 的產物（`acceptance/` 的旅程不執行，所以留在 `specs/`）——它同時是規格與可執行測試，
 **位置由測試框架決定**。鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。
@@ -221,7 +221,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 
 | 步驟 | skill | 職責 | 狀態 |
 | --- | --- | --- | --- |
-| DISCOVERY | `discovery` | 開場建檔，再設計樹＋前沿一次一題問到完整，只寫 `spec.md` 的問答那幾節 | **已實作**；2026-11-13 併入原 `bdd-capture` 的建檔；2026-11-14 改成只記問答；2026-11-18 問答併進 `spec.md`、併入 `clarify`、改成 interview-me 的一次一題 |
+| DISCOVERY | `discovery` | 開場建檔，再設計樹＋前沿一次一題問到完整，只寫 `interview-log.md` | **已實作**；2026-11-13 併入原 `bdd-capture` 的建檔；2026-11-14 改成只記問答；2026-11-18 問答併進 `spec.md`、併入 `clarify`、改成 interview-me 的一次一題；同日改成只寫 `interview-log.md` |
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**；由 `discovery`（粗切）與 `spec`（`已對焦` 前沿規則重切）呼叫 |
 | SPEC | `spec` | 已答題 → FR／AC，判就緒後停；不寫技術決定、不呼叫 `formulation` | **已實作**；2026-11-14 從「寫技術設計」改成「從問答寫規格」；2026-11-15 技術設計從 `plan` 搬回來；2026-11-18 又搬回 `plan`，骨架照 aixbdd `specify` 重排 |
 | | `feature-mapping` | 整個 feature 的流程圖、三條診斷（替代流程、反例、結果沒有規則），缺口寫成補問 | **已實作**（2026-11-18，照 John Ferguson Smart 的 Feature Mapping；還沒實跑過）；由 `spec` 在 `example-mapping` 之前呼叫 |
@@ -377,6 +377,7 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] 2026-11-14 `spec-by-example`：就緒判定前先寫 `acceptance/` 驗收旅程，`check_spec.py` 第 17 項稽核 `@covers-`
 - [x] 2026-11-16 `task-breakdown` 改寫單一 `tasks.md`（一張票一個票節），取代 `tasks/` 目錄與 `index.md`
 - [x] 2026-11-18 `discovery.md` 併進 `spec.md`（`## Open Questions`、`## 原文`），`clarify` 併進 `discovery`
+- [x] 2026-11-18 `discovery` 不寫 `spec.md`，只寫訪談紀錄 `interview-log.md`；`spec` 是 `spec.md` 唯一的寫入者
 - [ ] 重跑 `parking-billing`：`discovery` → `spec` → `formulation` → `plan`，驗證單檔與一次一題
 - [ ] `verify`、`review`
 - [ ] 用 `implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣

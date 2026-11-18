@@ -38,7 +38,7 @@ disable-model-invocation: true
 
 | 情況 | 改用 |
 | --- | --- |
-| 還沒有 `spec.md`，或狀態不是 `已對焦` | `spec`（連 `spec.md` 都沒有就先 `discovery`） |
+| 還沒有 `spec.md`，或狀態不是 `已對焦` | `spec`（連訪談紀錄 `interview-log.md` 都沒有就先 `discovery`） |
 | 還沒有 `.feature` | `formulation` |
 | **要改 FR、AC、story、範圍** | `spec`——不是這裡 |
 | `.feature` 寫了 seam 驗不到的行為 | `formulation`，本 skill 只指出來 |

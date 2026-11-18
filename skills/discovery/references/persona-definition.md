@@ -2,7 +2,7 @@
 
 角色怎麼問、`spec.md` 的 `## Personas` 節怎麼寫。兩個讀者：`discovery` 在開場的
 「識別角色」那一步、或後面某一題冒出沒見過的角色時讀它——答案原話記在
-`## Open Questions` 那題的小節；`spec` 從那些小節寫 `spec.md` 的 `## Personas` 時讀它。
+`interview-log.md` 的 `## 問答` 那一題；`spec` 從那些題寫 `spec.md` 的 `## Personas` 時讀它。
 
 Persona 是**角色**，不是帳號。「Alice」是實例，「已購買旅程的學員」才是角色，
 而同一個人可以同時是好幾個角色。
@@ -113,7 +113,7 @@ MUST: `P-<n>` 的編號全域唯一，而且**不重排**——`## User Stories`
 
 ## 角色與詞義的界線
 
-角色留在這裡，不進 `docs/CONTEXT.md`；詞義的決策住 `## Open Questions`，
+角色留在這裡，不進 `docs/CONTEXT.md`；詞義的決策是一題（紀錄的 `## 問答`，`spec` 整理進 `spec.md` 的 `## Open Questions`），
 不另設一節——兩條界線的理由見 `../../spec/references/spec-format.md` 的「角色與詞義：
 兩條界線」一節，本文不重複。
 

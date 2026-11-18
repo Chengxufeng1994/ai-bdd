@@ -311,7 +311,7 @@ def missing_cited_paragraphs(text: str) -> list[str]:
     `## 原文` 存在只證明有一段原文，不證明每個標記指得到東西。一個指向
     不存在段落的 `§n` 跟指對的在檔案上長得一模一樣——這正是 D4 要擋的
     「悄悄指錯」。只認 `§<數字>` 開頭的段落；原文沿用自己的章節編號時，
-    DISCOVERY 開場要把那個編號寫成 `§n` 形式。
+    DISCOVERY 記進 interview-log.md 時要把那個編號寫成 `§n` 形式，spec 照抄。
     """
     section = re.search(r"^## 原文\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     present = set(re.findall(r"^§(\d+)", section.group(1), re.M)) if section else set()
@@ -323,7 +323,7 @@ def has_verbatim_section(text: str) -> bool:
     """`## 原文` 一節在不在。
 
     它是 `PRD §x` 標記唯一的依據。沒有這一節，每個 `← PRD §x` 都指向一段從未
-    寫下的話，而且不會報錯——只會悄悄指錯。DISCOVERY 開場建檔時寫，之後不得改寫。
+    寫下的話，而且不會報錯——只會悄悄指錯。spec 從 interview-log.md 逐字照抄，之後不得改寫。
     """
     return re.search(r"^## 原文\s*$", text, re.M) is not None
 
@@ -393,9 +393,9 @@ def legacy_hint(specs_dir: Path) -> str | None:
                 if (prd.parent / "spec.md").exists() else "`git mv prd.md spec.md`")
         return f"{prd.parent} 是舊版佈局（prd.md）：{hint}"
     for disc in sorted(specs_dir.glob("*/discovery.md")):
-        return (f"{disc.parent} 是 11-18 以前的兩檔佈局：把 `discovery.md` 的 `## Open Questions`"
-                f"（表與小節）與 `## 原文` 搬進 `spec.md`、`## 粗切 story` 併進 `## User Stories`，"
-                f"`spec.md` 舊的 `## Open Questions` 清單每條開成一題 `Q-<n>` 待答，再 `git rm discovery.md`")
+        return (f"{disc.parent} 是 11-18 以前的兩檔佈局：`git mv discovery.md interview-log.md`，"
+                f"照 `skills/discovery/references/interview-log-format.md` 改成五節（問答表的每一列開成一題 "
+                f"`### Q-<n> · …`），再跑 spec 從它重寫 `spec.md` 的 `## 原文` 與 `## Open Questions`")
     return None
 
 
@@ -473,7 +473,7 @@ def check(root: Path) -> int:
         if archived:
             print(f"沒有進行中的 feature（specs/sleeping/ 有 {len(archived)} 個已歸檔）")
             return 0
-        print(f"{specs_dir} 底下沒有 spec.md —— 先跑 discovery")
+        print(f"{specs_dir} 底下沒有 spec.md —— 先跑 discovery（寫 interview-log.md），再跑 spec（寫 spec.md）")
         return 1
 
     covered: set[str] = set()      # 有出現在某份 spec.md 裡的 story slug
@@ -482,7 +482,7 @@ def check(root: Path) -> int:
 
         if not has_verbatim_section(stext):
             print(f"✗ {spec_path.parent.name} 的 spec.md 沒有 `## 原文` 一節，"
-                  f"每個 `← PRD §x` 都指向不存在的話 —— 先跑 discovery")
+                  f"每個 `← PRD §x` 都指向不存在的話 —— spec 要把 interview-log.md 的 `## 原文` 逐字抄進來")
             problems += 1
         else:
             absent = missing_cited_paragraphs(stext)
@@ -539,8 +539,8 @@ def check(root: Path) -> int:
             problems += 1
 
         if not frs:
-            # 兩種空法，下一步不同：沒有 story 是 DISCOVERY 開場沒跑；有 story 但
-            # 一條 FR 都沒有，正是 discovery 交出來的形狀——該跑的是 spec。
+            # 兩種空法，下一步都是 spec：沒有 story 是它還沒從 interview-log.md 抄粗切；
+            # 有 story 但一條 FR 都沒有，是它寫到一半。
             if stories_in_spec(stext):
                 print(f"✗ {spec_path.parent.name} 的 spec.md 有 story 但底下沒有任何 FR "
                       f"—— 規則還沒寫，先跑 spec")

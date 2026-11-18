@@ -40,7 +40,7 @@ disable-model-invocation: true
 
 | 情況 | 改用 |
 | --- | --- |
-| `spec.md` 不存在 | `discovery`（它建 `spec.md`），再 `spec` |
+| `spec.md` 不存在 | `discovery`（它寫 `interview-log.md`），再 `spec`（它從紀錄寫 `spec.md`） |
 | `spec.md` 狀態不是 `已對焦` | `spec`——它會先交 `example-mapping` 判就緒 |
 | 要決定 seam（情境跑在哪一層測試） | `plan` |
 | 要定詞彙或切 story | `spec`（詞彙寫在 `spec.md` 的 `## Domain Concepts`；切 story 用 `story-splitting`） |

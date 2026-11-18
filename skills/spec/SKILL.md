@@ -1,8 +1,8 @@
 ---
 name: spec
 description: >
-  讀 `discovery` 問完的 `spec.md`（`## Open Questions` 的已答題與 `## 原文`），在同一份檔寫規則——
-  story、FR／AC 行尾 `← Q-<n>`／`← PRD §n`、角色、範圍與不做的事、假設與限制，交 `example-mapping`
+  讀 `discovery` 的訪談紀錄 `interview-log.md`（已答的題與原文），寫 `spec.md`——原文逐字照抄、問答整理成
+  `## Open Questions`（題號不變），再寫 story、FR／AC 行尾 `← Q-<n>`／`← PRD §n`、角色、範圍與不做的事、假設與限制，交 `example-mapping`
   判就緒，需求方點頭就停，下一步由使用者叫 `formulation`。只寫要做成什麼，不寫技術決定（那是 `plan`）；
   詞彙與聚合寫進 `## Domain Concepts`，等 `archive` 才進 `docs/`。
   不訪談：有洞就在 `## Open Questions` 開一題待答、狀態改回澄清中、停下。BDD 六步流程的 to spec 步驟。
@@ -18,11 +18,11 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把已答的問答寫成規格：要做成什麼、不做什麼，帶到需求方說「就緒」 |
-| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`澄清中`，結束方式 `收斂` 或 `喊停`）；`docs/CONTEXT.md`、`docs/DOMAIN-MODEL.md`（有的話） |
-| **寫** | 同一份 `spec.md`：問答那幾節以外的各節、FR／AC、狀態 `待對焦`；有洞時 `## Open Questions` 的補問題與狀態 `澄清中` |
+| **讀** | `specs/ongoing/<date>-<feature>/interview-log.md`（結束方式 `收斂` 或 `喊停`）；再跑時既有的 `spec.md`；`docs/CONTEXT.md`、`docs/DOMAIN-MODEL.md`（有的話） |
+| **寫** | 同一個目錄的 `spec.md`，唯一的寫入者：照抄的 `## 原文`、整理的 `## Open Questions`、其餘各節、FR／AC、狀態 `待對焦`；有洞時補問題與狀態 `澄清中` |
 | **上游** | `discovery` |
 | **下游** | `feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` → 交回，使用者接著叫 `formulation` |
-| **不做** | 不訪談、不填答案、不改 `## 原文`、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature` 也不呼叫 `formulation` 或 `discovery`、不寫 `docs/`、不寫技術決定與 seam、不排風險與並行（都是 `plan`）、不切票 |
+| **不做** | 不訪談、不寫 `interview-log.md`、不填紀錄裡沒有的答案、不改寫 `## 原文`、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature` 也不呼叫 `formulation` 或 `discovery`、不寫 `docs/`、不寫技術決定與 seam、不排風險與並行（都是 `plan`）、不切票 |
 
 **不訪談。** 這一步只寫已經有答案的東西。問答推不出來的，在 `## Open Questions` 開一題 `待答`、
 把狀態改回 `澄清中`、停下來請使用者跑 `/discovery`——不要順手問掉：答案要有 `**誰答的**` 與原話才能被
@@ -48,21 +48,23 @@ disable-model-invocation: true
 | 要排風險、決定要不要並行、列接合點 | `plan`（寫在 `plan.md`） |
 | 要切票、排實作順序 | `task-breakdown` |
 
-產出是 `spec.md` 的規則各節，**不是**它的問答（`## 原文`、已答題的答案與小節）、`plan.md`、`docs/` 底下任何檔案、程式碼；
+產出是 `spec.md`，**不是** `interview-log.md`（那是 `discovery` 的證據，只讀）、`plan.md`、`docs/` 底下任何檔案、程式碼；
 `.feature` 由 `formulation` 寫。
 
 ## 參考檔案
 
 - `references/spec-format.md` — `spec.md` 的骨架（含 `## Open Questions` 與 `## 原文`）、來源標記、編號規則
 - `../archive/references/domain-model-format.md` — `## Domain Concepts` 裡 `### 聚合與不變條件` 的骨架（與 `docs/DOMAIN-MODEL.md` 共用）
-- `examples/minimal-spec.md` — 一份 `已對焦` 的 `spec.md`，問答與原文在同一份檔
+- `examples/minimal-spec.md` — 一份 `已對焦` 的 `spec.md`，照 `../discovery/examples/interview-log.md` 寫成（題號、原話、原文對得上）
+- `../discovery/references/interview-log-format.md` — 訪談紀錄的五節與一題的欄位。**第 1 步讀紀錄時讀**
 - `../formulation/scripts/check_spec.py` — 交件前自檢（第 3 步）。**在隔壁 skill**：本 skill 只跑它，不改它
 
 ---
 
 ## 前置確認（Ask user）
 
-不必問輸入的位置。`spec.md` 在 `specs/ongoing/<date>-<feature>/`，由 `discovery` 建。收兩種：
+不必問輸入的位置。紀錄在 `specs/ongoing/<date>-<feature>/interview-log.md`，由 `discovery` 寫；看它
+`## Remaining Open Items` 的 `**結束方式**`，收兩種：
 
 | 結束方式 | 怎麼做 |
 | --- | --- |
@@ -72,10 +74,10 @@ disable-model-invocation: true
 NEVER: 結束方式 `阻塞`、`零進展`、`—` 時開始。那代表還有人該答的題沒答，
 寫出來的規格會建立在猜測上。告訴使用者跑 `/discovery`。
 
-NEVER: `spec.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是它。
+NEVER: 紀錄沒有 `## 原文` 時開始。`← PRD §x` 指的就是它照抄過來的那一節。
 
-旁邊還有一份 `discovery.md`（2026-11-18 以前的兩檔佈局）時，先照 `check_spec.py` 印的退件訊息把它併進
-`spec.md`、`git rm`，再開始。
+只有 `discovery.md`（2026-11-18 以前）、或只有 `spec.md` 沒有紀錄（11-18 當天 `discovery` 寫進 `spec.md` 的單檔佈局）時，
+先照 `../discovery/scripts/status.py` 印的退件訊息把紀錄補出來，再開始。
 
 ## 流程
 
@@ -84,7 +86,7 @@ NEVER: `spec.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是它。
 | 詞 | 意思 |
 | --- | --- |
 | `READ` | 讀檔，不寫 |
-| `WRITE` | 寫進 `spec.md` |
+| `WRITE` | 寫進 `spec.md`（本 skill 不寫別的檔） |
 | `CHECK` | 對照一條規則判是或否；不成立就照那一行寫的去處 |
 | `RUN` | 跑腳本，輸出留到回報 |
 | `DELEGATE` | 讀另一個 skill 的 `SKILL.md`，照它做完再回來；只用在第 5 步 |
@@ -95,7 +97,7 @@ NEVER: `spec.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是它。
 
 | 步驟 | 做什麼 | 要問使用者嗎 |
 | --- | --- | --- |
-| 1 | 寫需求部分（`待對焦`） | — |
+| 1 | 從紀錄抄原文與問答，寫需求部分（`待對焦`） | — |
 | 2 | 收尾檢查，必要時重切 story | — |
 | 3 | 自檢 `check_spec.py` | — |
 | 4 | 詞彙與聚合 → `## Domain Concepts` | — |
@@ -106,9 +108,22 @@ NEVER: `spec.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是它。
 ### 1. 寫需求部分
 
 1. READ `references/spec-format.md`，骨架照抄；`examples/minimal-spec.md` 是寫好的樣子。
-2. READ `spec.md` 的 `## 原文`、`## Open Questions`（`已答` 的題與它們的小節）、`## User Stories` 的粗切、
-   `### 核心關係人`。
-3. WRITE 照下表把每一樣寫到它的位置；沒有的節照骨架的順序插進去。來源只有這份檔的 `## 原文` 與 `## Open Questions`：
+2. READ `interview-log.md` 的五節（格式 `../discovery/references/interview-log-format.md`）。
+3. WRITE 先把紀錄抄進 `spec.md`——這幾樣是**照抄**，不是改寫：
+
+   | 紀錄 | `spec.md` |
+   | --- | --- |
+   | `## 原文` | `## 原文`，逐字，`§` 編號不變 |
+   | `## 問答` 的每一題 | `## Open Questions` 一列＋一個小節，**題號不變**：狀態照抄（`失效` 寫 `n/a`），答案欄寫它的 `**收斂結果**`；小節放 `**誰答的**`／`**該問誰**`、`**來自**` 與答案原話、例子、被推翻的猜測 |
+   | 各場 Session 的核心關係人表 | `### 核心關係人`，合成一張，不增列也不改寫 `決策權` |
+   | 建檔那場的 `**需求方確認建檔**` | `### 版本修訂歷史` 的 0.1 那一列 |
+   | 粗切 story | `## User Stories` 的 `### US-<n> · <slug>` 與「身為…」一句 |
+   | `## Remaining Open Items` 的 `**結束方式**` | `## Document Overview` 的 `結束方式` |
+
+   **同一個答案在兩處，是刻意的。** 紀錄是逐字的原始證據，跟 `## 原文` 一樣沒有人改；`spec.md` 的表是整理過、
+   給規則引用的版本——`← Q-<n>` 指它，`check_spec.py` 只讀它，`spec.md` 因此自成一體。兩處對不上時**以紀錄的原話為準**，
+   照紀錄改 `spec.md`；不是反過來。
+4. WRITE 照下表把每一樣寫到它的位置；沒有的節照骨架的順序插進去。來源只有剛抄進來的 `## 原文` 與 `## Open Questions`：
 
    | 讀什麼 | 寫成什麼 |
    | --- | --- |
@@ -118,15 +133,14 @@ NEVER: `spec.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是它。
    | 角色那幾題的小節 | `## Personas` 的五欄 |
    | `## User Stories` 的粗切 | 標題不動（slug 是 `.feature` 檔名）；`身為` 那一句的角色換成 `P-<n>`，底下加 FR／AC |
    | 問優先級的那一題 | 每則 story 標題下一行的 `**優先級**：P1／P2／P3 —— <為什麼>`；沒問過寫「（沒問過）」並開補問題 |
-   | 意圖陳述那一題 | `## Goals / Non-Goals`、`## Success Metrics` 可以引它 |
-   | `### 核心關係人` | **不動**，不增列也不改寫 `決策權` |
+   | 意圖陳述那一題（六行在紀錄的 `## Confirmed Decisions`，抄進它的小節） | `## Goals / Non-Goals`、`## Success Metrics` 可以引它 |
    | 技術面向的題（`面向` 是 seam、模組邊界、契約、既有資產、測試慣例） | 不寫，`plan` 寫技術決定時讀 |
 
-4. CHECK 每條 FR 與 AC 的行尾**只准** `← Q-<n>`（那一題是 `已答`）或 `← PRD §n`。找不到來源 → WRITE
+5. CHECK 每條 FR 與 AC 的行尾**只准** `← Q-<n>`（那一題是 `已答`）或 `← PRD §n`。找不到來源 → WRITE
    補問題（下面〈補問題〉），不寫那條規則。
-5. CHECK 每條 AC 的值都照小節裡記下的例子。一條 AC 用到兩題的例子（例如一題給規則、另一題給
+6. CHECK 每條 AC 的值都照小節裡記下的例子。一條 AC 用到兩題的例子（例如一題給規則、另一題給
    「第 14 天休館 → 順延一天」）可以組合，兩個來源都標；要**新算一個數字**才寫得出來的 → 補問題。
-6. WRITE `## Edge Cases`：照下表一類一類找，每一條指向涵蓋它的 AC；找不到 AC 的寫「（沒有 AC）」並開補問題：
+7. WRITE `## Edge Cases`：照下表一類一類找，每一條指向涵蓋它的 AC；找不到 AC 的寫「（沒有 AC）」並開補問題：
 
    | 類別 | 例子 |
    | --- | --- |
@@ -136,7 +150,7 @@ NEVER: `spec.md` 沒有 `## 原文` 時開始。`← PRD §x` 指的就是它。
    | 重複 | 同一個動作做兩次 |
    | 權限邊界 | 沒權限的人、資格剛過期的人 |
 
-7. WRITE `## Document Overview` 的 `狀態` 寫 `待對焦`。
+8. WRITE `## Document Overview` 的 `狀態` 寫 `待對焦`。
 
 MUST: FR 與 AC 不准標 `推論`。一條規則找不到來源，就是問答裡沒有它。
 
@@ -148,7 +162,8 @@ MUST NOT: 小節只有結論、沒有例子時，從結論編一個例子。那�
 狀態 `待答`、`面向` `—`、小節寫 `**該問誰**`、`**來自**：補問 —「<發現它的那句話，逐字>」` 與 `**影響**`；影響到的
 story 句子下面就地標 `[NEEDS CLARIFICATION: … —— 見 Q-<n>]`、`#### Q` 放它的指標。本文說「開補問題」都是這個動作。
 
-MUST NOT: 填補問題的答案欄，或改動任何一題既有的答案、小節。
+MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案——答案只從紀錄抄。也不寫 `interview-log.md`：補問題只開在 `spec.md`，
+`discovery` 續跑時讀它、在紀錄追加同號的題。
 
 **做完的樣子**：每條 FR／AC 都有來源、每個 AC 的值都對得到例子、每則 story 有優先級、五類邊界都找過；寫不出來的都開成了補問題。→ 第 2 步
 
@@ -252,7 +267,7 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 
 1. CHECK 每一題待答的補問題都有 `**影響**`（什麼定不下來）與 `**該問誰**`（格式見 `references/spec-format.md`）。
 2. WRITE `## Document Overview` 的狀態改回 `澄清中`；文件到過 `已對焦` 的，照修訂歷史的觸發條件記一列。
-3. STOP 告訴使用者跑 `/discovery`——它續跑時先問補問題。本 skill 不叫它。
+3. STOP 告訴使用者跑 `/discovery`——它續跑時讀 `spec.md` 的待答題、問完記進紀錄。本 skill 不叫它。
 
 **做完的樣子**：每題補問題都寫了影響與該問誰、狀態已改回 `澄清中`；回報後停下。
 
@@ -260,6 +275,7 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 
 `discovery` 問完補問題、又以 `收斂` 結束之後再跑本 skill，**修補**既有的 `spec.md`，從第 2 步重跑：
 
+0. READ 紀錄的 `## 問答`；WRITE 照第 1 步的抄法更新 `## Open Questions`——紀錄有、表上沒有的題補上，狀態或答案不同的照紀錄改。
 1. WRITE 新的 FR／AC 接著編號，**不重排**——`.feature` 的 `@example-n.m` 掛在上面，重排會讓 tag 安靜地
    指到另一條規則。
 2. WRITE 文件到過 `已對焦` 的，改動的每一條在 `### 版本修訂歷史` 記一列（改了什麼、為什麼、`← Q-<n>`）；
@@ -279,11 +295,11 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 | --- | --- |
 | `specs/ongoing/<date>-<feature>/spec.md` | `references/spec-format.md` |
 | `spec.md` 的 `## Domain Concepts` | `references/spec-format.md`；聚合那一小段另見 `../archive/references/domain-model-format.md` |
-| `spec.md` 的 `## 原文`、已答題的答案與小節 | DISCOVERY 寫的；本 skill 只讀 |
+| `interview-log.md` | DISCOVERY 寫的；本 skill 只讀，`spec.md` 的 `## 原文` 與 `## Open Questions` 照它抄 |
 | `features/<story-slug>.feature` | 由 `formulation` 寫 |
 
 MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何其他檔案**（含
-`docs/` 底下的每一個檔案）。`spec.md` 裡 DISCOVERY 寫的東西不動，只多開補問題。
+`docs/` 底下的每一個檔案）。`interview-log.md` 一個字都不動。
 
 ## Verification
 
@@ -291,7 +307,8 @@ MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何
 
 - [ ] 每條 FR／AC 行尾都是 `← Q-<n>`（該題 `已答`）或 `← PRD §n`，沒有 `推論`
 - [ ] 每條 AC 的值都來自問答裡記下的例子；只有結論沒有例子的 FR 開成了補問題，沒有編一個
-- [ ] `## 原文` 與既有題的答案、小節沒有被改；新開的題都是 `待答`，答案欄 `—`
+- [ ] `## 原文` 與紀錄的逐字相同；`## Open Questions` 每一題的題號、狀態、答案原話對得上紀錄；新開的補問題都是 `待答`，答案欄 `—`
+- [ ] `interview-log.md` 沒有被本 skill 改過
 - [ ] 跑了 `check_spec.py`，輸出貼在回報裡；沒過的只有覆蓋比對裡這一輪新改、`.feature` 還沒跟上的 AC
 - [ ] 有待答的補問題、或旅程有 `# [need clarification]` → 狀態改回 `澄清中`、停下，沒有提就緒問句
 - [ ] `已對焦` 是 `example-mapping` 照需求方的回答寫的——本 skill 沒有自己寫
