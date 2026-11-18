@@ -4,7 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-A Claude Code **plugin** (`ai-bdd`) whose product is the `skills/` directory. Everything
+A Claude Code **plugin** (`benny-skills`) whose product is the `skills/` directory; its skills
+currently form one set, `ai-bdd`. Everything
 else either explains why those skills look the way they do (`docs/`, `PLAN.md`) or exists
 to make them fail visibly when they are weak (`benchmark/`).
 

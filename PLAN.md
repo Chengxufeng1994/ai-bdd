@@ -276,7 +276,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 
 1. skill 名稱在執行時是**全域扁平**的——`claude plugin details` 列出的是名字，
    目錄層級不存在。分組因此只寫在上面的表與 README，不寫進名字。安裝後的 plugin skill
-   會帶 plugin 名（`ai-bdd:plan`），跟別的 plugin 撞名時用它區分。
+   會帶 plugin 名（`benny-skills:plan`），跟別的 plugin 撞名時用它區分。
 2. **`claude plugin validate` 不遞迴。** 巢狀目錄（`skills/<分類>/<名稱>/SKILL.md`）
    在 runtime 有效，但 validate 掃不到，等於那些 skill 永遠不會被檢查。
    扁平換來的是每個 skill 都在 CI 的守備範圍內。
