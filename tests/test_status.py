@@ -98,10 +98,32 @@ class StatusReadsInterviewLog(unittest.TestCase):
             self.assertIn("2026-10-02-parking/Q-2", out)
 
     def test_coverage_comes_from_dimension_field(self):
-        # 邊界、重複、時間各有一題；— 不算任何面向
+        # 邊界（已答）、重複（失效）各有一題；— 不算任何面向
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write(root, "interview-log.md", LOG)
+
+            code, out = run(root)
+
+            self.assertIn("—✓✓———?—————————", out)
+
+    def test_facet_with_only_pending_rows_is_not_covered(self):
+        # 試跑時一題阻塞的待答讓「降級」顯示 ✓，於是沒人再問——開了題不等於問過
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write(root, "interview-log.md", LOG)
+
+            code, out = run(root)
+
+            self.assertNotIn("—✓✓———✓—————————", out)
+            self.assertIn("? 只有待答", out)
+
+    def test_facet_with_a_settled_row_is_covered_despite_pending_ones(self):
+        # 同一面向另有一題待答，不把已經問過的那一題蓋掉
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            extra = "### Q-5 · 跨兩天怎麼算\n\n**面向**：時間　**狀態**：已答\n**誰答的**：場長\n\n"
+            write(root, "interview-log.md", LOG.replace("## Confirmed Decisions", extra + "## Confirmed Decisions"))
 
             code, out = run(root)
 

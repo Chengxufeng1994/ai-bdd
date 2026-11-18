@@ -48,11 +48,11 @@ disable-model-invocation: true
 ## 參考檔案
 
 - `references/plan-format.md` — `plan.md` 的骨架、執行計畫各節怎麼寫、範例
-- `references/tech-format.md` — 技術決定七節的骨架、四選一的來源標記、範例。**第 3 步寫之前先讀**
+- `references/tech-format.md` — 技術決定七節的骨架、五選一的來源標記、範例。**第 3 步寫之前先讀**
 
 ## 前置確認（Ask user）
 
-Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒有待答的補問題，而且它涵蓋的 `.feature` 已經
+Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒有待答的補問題（定義見 `../spec/references/spec-format.md`〈寫規格時發現的洞〉），而且它涵蓋的 `.feature` 已經
 寫好。任何一項不成立就停下，說該回上表的哪個 skill——規格還有洞時定的技術決定，定的是一份還不存在的需求。
 
 ---
@@ -99,7 +99,7 @@ step definition 的形狀。
 | --- | --- |
 | `已答` | 只是確認，行尾標 `← Q-<n>` |
 | `n/a`（答案欄寫了為什麼不適用） | 照那個理由選最外層能驗到行為的一層，行尾標 `← Q-<n>` |
-| 沒有這題，或還 `待答` | 提出你的判斷、標 `← 推論`，`## Further Notes` 的「推論的技術決定」記一條「seam 沒問過」 |
+| 沒有這題，或還 `待答` | 提出你的判斷給使用者確認：他確認或改了，標 `← 使用者 <日期>`；沒得到回答才標 `← 推論`，`## Further Notes` 的「推論的技術決定」記一條「seam 沒問過」 |
 
 MUST NOT: 把 seam 的討論變成需求訪談。談的時候發現需求有洞，寫進 `## 缺口` 交回 `spec`，**不要順手問掉**——
 這一步沒有把答案寫進 `## Open Questions` 的權限，順口問到的答案只活在這一次對話裡。
@@ -109,7 +109,7 @@ IMPORTANT: seam 一旦寫進 `plan.md` 就往下傳——IMPLEMENT 照著打，R
 ### 3. 寫技術決定
 
 照 `references/tech-format.md` 填七節：`## Tech Stack`、`## Commands`、`## Project Structure`、`## Code Style`、
-`## Boundaries`、`## Implementation Decisions`、`## Testing Decisions`。每條行尾標來源（四選一）；可以用
+`## Boundaries`、`## Implementation Decisions`、`## Testing Decisions`。每條行尾標來源（五選一）；可以用
 `推論`，但每一條同時列進 `## Further Notes` 的「推論的技術決定」。
 
 ### 4. 對照 `.feature`：seam 驗得到嗎
@@ -134,7 +134,7 @@ MUST NOT: 自己改 `.feature` 的場景，或把驗不到的場景默默標成�
 
 ### 6. 要不要並行（Ask user）
 
-問一句：這批票要不要同時做。答案記進 `## Parallel Work`，行尾 `← 使用者 <日期>`。
+問一句：這批票要不要同時做。答案記進 `## Parallel Work`，行尾 `← 使用者 <日期>`（`tech-format.md` 的第五種來源標記）。
 
 | 回答 | 寫什麼 |
 | --- | --- |

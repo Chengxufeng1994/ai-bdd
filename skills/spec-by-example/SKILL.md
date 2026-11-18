@@ -50,7 +50,7 @@ disable-model-invocation: true
 
 ## 前置確認（Ask user）
 
-Check if: `spec.md` 狀態是 `待對焦`，`## Open Questions` 沒有待答的補問題。不是的話停下來，
+Check if: `spec.md` 狀態是 `待對焦`，`## Open Questions` 沒有待答的補問題（定義見 `../spec/references/spec-format.md`〈寫規格時發現的洞〉）。不是的話停下來，
 說該回哪個 skill——有洞的規格寫成旅程，洞會被流暢的句子蓋住。
 
 ## 流程

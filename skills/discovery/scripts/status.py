@@ -6,7 +6,7 @@
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
 `specs/ongoing/<date>-<feature>/interview-log.md` 的 `## 問答`：一題一節 `### Q-<n> · …`，
-已答／n/a（含失效）／待答數自 `**狀態**`，追問覆蓋（業務面向＋技術面向）數自 `**面向**`。
+已答／n/a（含失效）／待答數自 `**狀態**`，追問覆蓋（業務面向＋技術面向）數自 `**面向**` 與 `**狀態**`。
 旁邊 `spec.md` 的 `## Open Questions` 是 `spec` 從 log 整理出來的副本，不數。存一份儀表板的話，
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
@@ -81,15 +81,17 @@ def parse_interview_log(
     return True, rows, unparseable
 
 
-def coverage(dims: set[str]) -> str:
+def coverage(settled: set[str], opened: set[str]) -> str:
     """把「有沒有人問過這個面向」壓成一行符號。
 
-    ✓ 這個面向至少有一個問題檔 · — 一題都沒有
+    ✓ 至少一題已答、n/a 或失效 · ? 有題但全部待答 · — 一題都沒有
+
+    待答不算問過：試跑時一題阻塞的待答讓「降級」顯示 ✓，之後就沒人再問。
 
     原本讀的是 map 裡手寫的一段覆蓋表。改成算的之後，「寫了覆蓋表但沒真的問」
     這種狀態不再可能存在——那正是手寫彙總遲早會跟來源不一致的地方。
     """
-    return "".join("✓" if d in dims else "—" for d in DIMS)
+    return "".join("✓" if d in settled else "?" if d in opened else "—" for d in DIMS)
 
 
 def flat_layout_hint(specs: Path) -> str | None:
@@ -187,15 +189,18 @@ def main(root: Path) -> int:
         slug = log_path.parent.name
         rows = parsed[log_path]
         answered = na = pending = 0
-        dims: set[str] = set()
+        settled: set[str] = set()
+        opened: set[str] = set()
         pending_qs = []
         for row in rows:
             # `—` 是開場的範圍題，不屬於任何探針面向，不計入追問覆蓋
             # ——跟 n/a 不同，n/a 代表「問過某個面向、判定不適用」。
             dim = row.get("面向", "")
-            if dim and dim != "—":
-                dims.add(dim)
             status = row.get("狀態", "")
+            if dim and dim != "—":
+                opened.add(dim)
+                if status.startswith(("已答", "n/a", "失效")):
+                    settled.add(dim)
             if status.startswith("已答"):
                 answered += 1
             elif status.startswith(("n/a", "失效")):
@@ -213,7 +218,7 @@ def main(root: Path) -> int:
         tot[2] += pending
         blocked += [f"{slug}/{q}" for q in pending_qs]
         print(f"{_field(slug, 42)}{answered:>6}{na:>6}{pending:>6}  "
-              f"{coverage(dims)}")
+              f"{coverage(settled, opened)}")
 
     print(f"{_field('合計', 42)}{tot[0]:>6}{tot[1]:>6}{tot[2]:>6}")
 
@@ -227,10 +232,10 @@ def main(root: Path) -> int:
 
     print("\n追問覆蓋 · 業務面向（前沿檢查表）"
           "空與零/邊界/重複/時序/權限/失敗/時間/規模/降級/時限/可觀測："
-          "✓ 問過（含 n/a）· — 還沒問")
+          "✓ 問過（已答、n/a 或失效）· ? 只有待答 · — 還沒問")
     print("追問覆蓋 · 技術面向（前沿檢查表）"
           "seam/模組邊界/介面與型別契約/排序契約／決定性/既有資產／測試慣例："
-          "✓ 問過（含 n/a）· — 還沒問")
+          "✓ 問過（已答、n/a 或失效）· ? 只有待答 · — 還沒問")
     return 1 if broken else 0
 
 
