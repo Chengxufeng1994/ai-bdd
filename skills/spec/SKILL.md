@@ -13,6 +13,7 @@ description: >
   English: write the spec, turn the discovery into a spec, to spec, write FRs and
   acceptance criteria from the answers, write the glossary, decide the acceptance test seam,
   technical design, define the API contract.
+disable-model-invocation: true
 ---
 
 # SPEC — 把問答寫成規格

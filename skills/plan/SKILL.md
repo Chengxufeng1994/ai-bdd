@@ -8,6 +8,7 @@ description: >
   「這批能不能同時做」「接合點有哪些」「formulation 寫完了下一步」。
   English: write the plan, execution plan, what are the risks, can this run in parallel,
   list the join points.
+disable-model-invocation: true
 ---
 
 # PLAN — 怎麼排

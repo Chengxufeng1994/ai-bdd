@@ -11,6 +11,7 @@ description: >
   English: turn spec.md into Gherkin, write the feature file, generate
   acceptance scenarios, convert rules and examples into scenarios,
   formulation step of BDD.
+disable-model-invocation: true
 ---
 
 # FORMULATION — 把 `spec.md` 翻成可執行的規格

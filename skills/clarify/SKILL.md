@@ -8,6 +8,7 @@ description: >
   「繼續澄清」「還有幾張紅卡」「這些問題怎麼收斂」「問到不能再問為止」「clarify」。
   English: clarify the remaining questions, run another clarification round,
   close the open questions, work through the red cards, clarify.
+disable-model-invocation: true
 ---
 
 # CLARIFY — 把紅卡問到收斂

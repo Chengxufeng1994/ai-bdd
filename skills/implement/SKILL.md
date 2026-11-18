@@ -10,6 +10,7 @@ description: >
   「寫 step definition」「讓場景變綠」「照 plan 做」「下一張票」。
   English: implement ticket N, make the scenarios green, write the step
   definitions, outside-in from the feature file, work the plan.
+disable-model-invocation: true
 ---
 
 # IMPLEMENT — 一張票，從紅到綠

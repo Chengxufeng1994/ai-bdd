@@ -8,6 +8,7 @@ description: >
   「規則跟例子攤開來看」「地圖長什麼樣」「紅卡還剩幾張」「這則可以開工了嗎」。
   English: run example mapping, map this story, lay out the rules and examples,
   is this story ready, four-colour cards, thumb vote.
+disable-model-invocation: true
 ---
 
 # EXAMPLE MAPPING — 把一則 story 攤成四色卡

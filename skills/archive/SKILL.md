@@ -10,6 +10,7 @@ description: >
   「把現況寫回文件」「收尾」「搬到 sleeping」「更新 DOMAIN-MODEL」「更新 TECH.md」。
   English: archive this feature, the feature is done, update the docs, write back the current
   state, move it to sleeping.
+disable-model-invocation: true
 ---
 
 # ARCHIVE — 做完了，寫回現況

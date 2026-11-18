@@ -10,6 +10,7 @@ description: >
   「業務語意的 feature」「產生驗收流程」「業務方看得懂的驗收情境」。
   English: write acceptance journeys, specification by example, business-readable
   feature file, demo-able journeys from the spec.
+disable-model-invocation: true
 ---
 
 # 驗收旅程 — 把 `spec.md` 寫成業務方讀得懂的流程

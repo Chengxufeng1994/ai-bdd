@@ -77,8 +77,14 @@ description: >
 
 | 欄位 | 效果 | 何時用 |
 | --- | --- | --- |
-| `disable-model-invocation: true` | 模型不會自動觸發，只能由使用者明確叫用 | 有副作用的操作（部署、送出、刪除） |
+| `disable-model-invocation: true` | 模型不會自動觸發，只能由使用者明確叫用 | **本 plugin 每個 skill 都設**（見下） |
 | `tools` | 限制該 skill 可用的工具 | 需要收斂權限時，罕用 |
+
+**本 plugin 的 skill 一律設 `disable-model-invocation: true`，包括 `skill-rules`。**
+一般的建議是只在有副作用的操作（部署、送出、刪除）才設；這裡全設，是因為 `plan`、`spec`
+這類名字很通用，會跟其他 plugin 的 skill 搶觸發權，而模型挑了哪個你不會知道。
+代價：每一步都要使用者手打 `/<skill>`，description 的觸發詞只剩 `/` 選單裡的說明作用；
+skill 之間的委派照樣可用，因為它是直接讀對方的 `SKILL.md`，不經觸發。新增 skill 時照設。
 
 IMPORTANT: `disable-model-invocation: true` 的 skill 不會出現在模型的可用清單裡。
 若你的 skill「明明存在卻從來不觸發」，先檢查這個欄位。

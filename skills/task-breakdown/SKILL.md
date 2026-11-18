@@ -9,6 +9,7 @@ description: >
   「這些票誰卡誰」「開工順序」「哪幾張可以同時做」「並行跑票」「plan 寫完了下一步」。
   English: break the plan into tasks, slice the work into tickets, what order should
   I build these, vertical slices, which tickets can run in parallel, what can I start first.
+disable-model-invocation: true
 ---
 
 # TASK BREAKDOWN — 把怎麼做拆成票

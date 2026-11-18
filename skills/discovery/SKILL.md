@@ -13,6 +13,7 @@ description: >
   English: capture this idea, intake this requirement document, clarify this
   requirement, break down a PRD, find the unstated assumptions, grill me about
   this idea, brainstorm this requirement.
+disable-model-invocation: true
 ---
 
 # DISCOVERY — 把需求問到完整，只記問答

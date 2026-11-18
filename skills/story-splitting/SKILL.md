@@ -7,6 +7,7 @@ description: >
   「這則做不完」「切成幾則比較好」「這樣切對嗎」。
   English: split this story, this story is too big, how do I slice this,
   break this into smaller stories, is this a good split.
+disable-model-invocation: true
 ---
 
 # 切分 Story

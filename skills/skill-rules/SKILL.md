@@ -8,6 +8,7 @@ description: >
   「稽核 skill」「這個 skill 有問題嗎」「skill 的資料夾結構」。
   English: write a skill, create a new skill, author a SKILL.md,
   skill conventions, review this skill, audit a skill, skill folder structure.
+disable-model-invocation: true
 ---
 
 # SKILL 撰寫與稽核規範
