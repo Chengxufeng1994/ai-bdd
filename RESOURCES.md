@@ -13,6 +13,7 @@
 | [Behaviour-Driven Development](https://cucumber.io/docs/bdd/) | Cucumber | `docs/bdd.md` | Discovery／Formulation／Automation 三個實踐的定義 |
 | [Introducing BDD](https://dannorth.net/introducing-bdd/) | Dan North | `docs/tdd.md` | BDD 怎麼從 TDD 長出來 |
 | [Introducing Example Mapping](https://cucumber.io/blog/bdd/example-mapping-introduction/) | Matt Wynne | `docs/example-mapping.md`、`skills/example-mapping` | 四色卡、桌面即回饋、25 分鐘的框、例子要粗 |
+| [Feature Mapping – a lightweight requirements discovery practice for agile teams](https://johnfergusonsmart.com/feature-mapping-a-lightweight-requirements-discovery-practice-for-agile-teams/) | John Ferguson Smart | `docs/feature-mapping.md` | 例子 → 步驟 → 結果的列、依規則分組、廣度優先、結果卡擋住提早設計畫面 |
 | [Acceptance Criteria vs Scenarios](http://lizkeogh.com/2011/06/20/acceptance-criteria-vs-scenarios/) | Liz Keogh | `docs/example-mapping.md` | 規則與例子的差別 |
 | [Canon TDD](https://newsletter.kentbeck.com/p/canon-tdd) | Kent Beck | `docs/tdd.md` | TDD 的標準流程 |
 | [The Cycles of TDD](https://blog.cleancoder.com/uncle-bob/2014/12/17/TheCyclesOfTDD.html) | Robert C. Martin | `docs/tdd.md` | 三條定律與各層循環 |
