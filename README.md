@@ -15,7 +15,7 @@
 | DISCOVERY | `discovery`、`clarify` |
 | SPEC | `spec`、`example-mapping`、`spec-by-example`、`formulation`、`story-splitting` |
 | PLAN | `plan`、`task-breakdown` |
-| IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`bdd`（由 `implement` 委派 green／refactor，模型不自動觸發）、`archive`（票全部合回後：寫回 `docs/` 現況、搬進 `specs/sleeping/`） |
+| IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`behavior-driven-development`（由 `implement` 委派 green／refactor，模型不自動觸發）、`archive`（票全部合回後：寫回 `docs/` 現況、搬進 `specs/sleeping/`） |
 | REVIEW／VERIFY | 尚未實作 |
 
 `skill-rules` 不在流程裡：它是本專案撰寫與稽核 skill 的房規。哪幾步對應 BDD 的哪個實踐、
@@ -36,7 +36,7 @@
 | `docs/CONTEXT.md` | 專案 `docs/` | `spec`（建立或追加） | `spec-by-example`、`formulation`：用詞對齊 |
 | `spec.md` `## Domain Model` | `<feature>/spec.md` | `spec`（第 4 步，先讀 `docs/DOMAIN-MODEL.md`） | `archive`：併進 `docs/DOMAIN-MODEL.md` |
 | 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`task-breakdown`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
-| `spec.md` 技術部分（Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions） | `<feature>/spec.md` | `spec`（`已對焦` 之後，seam 經使用者確認） | `plan`：推接合點；`task-breakdown`：抄模組、內迴圈、驗證命令；`implement`、`bdd`：照著寫程式 |
+| `spec.md` 技術部分（Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions） | `<feature>/spec.md` | `spec`（`已對焦` 之後，seam 經使用者確認） | `plan`：推接合點；`task-breakdown`：抄模組、內迴圈、驗證命令；`implement`、`behavior-driven-development`：照著寫程式 |
 | `plan.md`（執行計畫） | `<feature>/` | `plan`（概述、風險與影響程度、要不要並行與接合點）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：拆成票、高風險排前面；`## 缺口` 裡技術部分的洞交回 `spec` |
 | `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `task-breakdown` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
 | 產品程式碼、step definition、`@review` tag、票節勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
@@ -184,10 +184,10 @@
 
 #### `implement`
 
-**職責**：把一張票做到綠：測試層先紅、委派 `bdd` 轉綠與整理、閘門綠、勾驗收條件、合回主線
+**職責**：把一張票做到綠：測試層先紅、委派 `behavior-driven-development` 轉綠與整理、閘門綠、勾驗收條件、合回主線
 
 - **上游**：`task-breakdown`（票切好之後）
-- **下游**：`bdd`（第 3、4 步委派）；全部票做完之後是 `archive`
+- **下游**：`behavior-driven-development`（第 3、4 步委派）；全部票做完之後是 `archive`
 - **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `spec.md` 技術部分沒做的設計決定
 
 1. 讀票，標 `@wip`
@@ -198,11 +198,11 @@
 6. 收尾：勾驗收條件、寫缺口、判斷 `@review`
 7. 合回主線（只在 worktree 裡做時）
 
-#### `bdd`
+#### `behavior-driven-development`
 
 **職責**：在指定的 `.feature` 範疇裡，用 red／green／refactor 其中一個入口，一次一個 slice 把場景推進到那個入口的完成條件
 
-- **上游**：`implement`（第 3 步委派 green、第 4 步委派 refactor，範疇是票的涵蓋場景），或使用者手動叫 `/bdd`
+- **上游**：`implement`（第 3 步委派 green、第 4 步委派 refactor，範疇是票的涵蓋場景），或使用者手動叫 `/behavior-driven-development`
 - **下游**：回報給呼叫它的人，並建議下一次從哪個入口繼續
 - **不做**：不產或改 `.feature`、不改 `spec.md`／`plan.md`、不翻狀態 tag、不勾票、不跨出指定範疇、一次不進兩個入口
 
@@ -274,7 +274,7 @@ ai-bdd/
 │   ├── plan/
 │   ├── task-breakdown/
 │   ├── implement/
-│   ├── bdd/
+│   ├── behavior-driven-development/
 │   ├── archive/
 │   └── skill-rules/
 ├── tests/                skill 腳本的 stdlib unittest

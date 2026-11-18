@@ -2,7 +2,7 @@
 name: implement
 description: >
   照 `tasks.md` 的票一張一個 session，outside-in 把票做到綠：先把這張票的場景接上 step
-  definition、看到對的紅，再把 green 與 refactor 委派給 `bdd`（規則先進 domain、table-driven
+  definition、看到對的紅，再把 green 與 refactor 委派給 `behavior-driven-development`（規則先進 domain、table-driven
   單元測試先紅），場景全綠後把 `.feature` 從 `@ready` 翻到 `@review`、勾掉票節的驗收條件、
   跑專案的驗證閘門。不改 `spec.md`、不改 `.feature` 的例子、不在 handler 放規則。
   BDD 六步流程的 IMPLEMENT 步驟。
@@ -16,16 +16,16 @@ description: >
 
 | | |
 | --- | --- |
-| **職責** | 把一張票做到綠：測試層先紅、委派 `bdd` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
+| **職責** | 把一張票做到綠：測試層先紅、委派 `behavior-driven-development` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
 | **讀** | `tasks.md`（開頭三行與這張票的 `### <票號>` 票節）、`spec.md`（技術部分與這張票的 FR／AC）、`plan.md`、這張票涵蓋的 `.feature`、專案的架構文件 |
 | **寫** | 產品程式碼與 step definition、`tasks.md` 裡這張票的票節（勾選、`**檢查點**:`、`#### 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
 | **上游** | `task-breakdown`（票切好之後） |
-| **下游** | `bdd`（第 3、4 步委派）；全部票做完之後是 `archive` |
+| **下游** | `behavior-driven-development`（第 3、4 步委派）；全部票做完之後是 `archive` |
 | **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `spec.md` 技術部分沒做的設計決定 |
 
 **外迴圈先紅，內迴圈先紅，然後才寫程式。** 外迴圈是 `.feature` 的場景（godog／
 Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看到紅，寫的每一行
-才有理由。票裡的轉綠與整理委派給 `bdd`——它一次一個場景、一次一個入口。發現技術部分的洞
+才有理由。票裡的轉綠與整理委派給 `behavior-driven-development`——它一次一個場景、一次一個入口。發現技術部分的洞
 就記下來，不順手補。
 
 ## 使用時機
@@ -42,7 +42,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 | `spec.md` 沒有技術部分（seam、埠、契約） | `spec` 第 6 步 |
 | 還沒有 `tasks.md`（包括票還寫在 `plan.md` `## 票` 裡、或還是 `tasks/` 目錄的舊格式） | `task-breakdown` |
 | 票之間的順序、要不要再切、哪幾張能同時做 | `task-breakdown` |
-| 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/bdd`；本 skill 做票時第 3、4 步本來就委派它 |
+| 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/behavior-driven-development`；本 skill 做票時第 3、4 步本來就委派它 |
 | 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」 | REVIEW（`review`，未實作） |
 | 紅的是 bug 還是規格過期 | VERIFY（`verify`，未實作）；本 skill 只處理自己這張票讓紅變綠，不判讀別人的紅 |
 | 要改規則或例子 | 回 `discovery` 開一題；本 skill 不碰 `spec.md`、不碰 `.feature` 的例子 |
@@ -50,8 +50,8 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 ## 參考檔案
 
 - `../formulation/references/state-tags.md` — `@wip`／`@review` 什麼時候寫
-- `../bdd/SKILL.md` — 第 3、4 步委派的 green／refactor 入口；`../bdd/rules/red.md` 與
-  `../bdd/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
+- `../behavior-driven-development/SKILL.md` — 第 3、4 步委派的 green／refactor 入口；`../behavior-driven-development/rules/red.md` 與
+  `../behavior-driven-development/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
 - `../task-breakdown/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
 - `../spec/references/tech-format.md` — `spec.md` 技術部分各節裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
@@ -91,8 +91,8 @@ MUST: 開工時工作區是乾淨的；做完這張票一個 commit，只 stage 
 | --- | --- | --- | --- |
 | 1 | 讀票，標 `@wip` | 本 skill | — |
 | 2 | 測試層先紅：場景都接上 step definition，沒有 undefined step | 本 skill | — |
-| 3 | green：一個場景一個場景轉綠 | 委派 `bdd` | — |
-| 4 | refactor：在綠燈下整理 | 委派 `bdd` | — |
+| 3 | green：一個場景一個場景轉綠 | 委派 `behavior-driven-development` | — |
+| 4 | refactor：在綠燈下整理 | 委派 `behavior-driven-development` | — |
 | 5 | 外迴圈綠，閘門綠 | 本 skill | — |
 | 6 | 收尾：勾驗收條件、寫缺口、判斷 `@review` | 本 skill | — |
 | 7 | 合回主線（只在 worktree 裡做時） | 本 skill | 碰到 `爭用` 或沒列到的衝突時停下回報 |
@@ -110,7 +110,7 @@ session 的猜測，當成**待驗證的線索**——用這張票的第一個�
 行為常記在一張不在 `Blocked by` 裡的票上。
 
 **沒有 `涵蓋場景` 的票**（前置整理）：沒有 `.feature` 要標 `@wip`，第 2 步沒有場景可紅。紅用驗收條件
-寫的單元測試；第 3、4 步不委派 `bdd`，由本 skill 照同樣的紅→綠→整理自己做；第 5 步只跑閘門。
+寫的單元測試；第 3、4 步不委派 `behavior-driven-development`，由本 skill 照同樣的紅→綠→整理自己做；第 5 步只跑閘門。
 
 把這張票涵蓋的 `.feature` 檔從 `@ready` 改成 `@wip`（`state-tags.md`）；已經是 `@wip`（別張涵蓋
 同一檔的票先開工了）就不動。下一個 session 看到 `@wip` 就知道有人做到一半。
@@ -118,8 +118,8 @@ session 的猜測，當成**待驗證的線索**——用這張票的第一個�
 ### 2. 測試層先紅（本 skill 自己做，不委派）
 
 把這張票涵蓋的每個場景都接上 step definition，直到**沒有任何 undefined step**、失敗只能是
-斷言或產品行為。寫步驟照 `../bdd/references/step-definitions.md`；判斷紅得對不對照
-`../bdd/rules/red.md`〈什麼是「對的紅」〉。只寫測試層，不寫產品程式碼——播種步驟需要的空型別、
+斷言或產品行為。寫步驟照 `../behavior-driven-development/references/step-definitions.md`；判斷紅得對不對照
+`../behavior-driven-development/rules/red.md`〈什麼是「對的紅」〉。只寫測試層，不寫產品程式碼——播種步驟需要的空型別、
 回傳零值的空殼、以及讓請求打得到 seam 的接線，照 `red.md`〈R3：最小通路的界線〉寫，不算產品程式碼。
 seam 是 HTTP 時，契約的 operation、重新產碼、**回錯誤**（不是回成功）的 handler 空殼都算最小通路——
 停在 404 只證明路由不存在，不是這張票的紅。
@@ -136,24 +136,24 @@ definition 已經被別的場景定義過，而它的斷言沒抓到這張票要
 斷言在保護它。唯一的例外是**零值例子**（定義見 `red.md` R5：在起點就綠、或只紅在共同的接線失敗）：
 它可以帶著綠進第 3 步，但轉綠之後要照 R5 做突變驗證，回報裡寫出改壞了什麼、它怎麼變紅。
 
-### 3. 委派 `bdd` 的 green
+### 3. 委派 `behavior-driven-development` 的 green
 
-讀 `../bdd/SKILL.md`，照它的 `green` 入口做，範疇與輸入由本 skill 給：
+讀 `../behavior-driven-development/SKILL.md`，照它的 `green` 入口做，範疇與輸入由本 skill 給：
 
-| 交給 `bdd` 的 | 內容 |
+| 交給 `behavior-driven-development` 的 | 內容 |
 | --- | --- |
 | 入口 | `green` |
 | 範疇（Test Scope） | 這張票節的 `涵蓋場景`，組成一個 tag 運算式（實測場 godog 寫成 `@example-8.1,@example-8.2`） |
 | 票 | `tasks.md` 的路徑與票號（`### <票號>`） |
 | 設計 | `spec.md` 的 `## Implementation Decisions` 與 `## Testing Decisions` |
 
-`bdd` 一個場景一個場景轉綠：規則先進 domain、先看到單元測試紅（`../bdd/references/inner-loop.md`）。
+`behavior-driven-development` 一個場景一個場景轉綠：規則先進 domain、先看到單元測試紅（`../behavior-driven-development/references/inner-loop.md`）。
 它停下來回報規格的洞或範疇外的耦合時，本 skill 把那一條記進票節的 `#### 缺口`，照
-〈不越界〉處理——`bdd` 自己不寫 `specs/` 底下任何檔案。
+〈不越界〉處理——`behavior-driven-development` 自己不寫 `specs/` 底下任何檔案。
 
-### 4. 委派 `bdd` 的 refactor
+### 4. 委派 `behavior-driven-development` 的 refactor
 
-範疇全綠之後，同樣的範疇交給 `bdd` 的 `refactor` 入口：在綠燈保護下整理這張票留下的重複
+範疇全綠之後，同樣的範疇交給 `behavior-driven-development` 的 `refactor` 入口：在綠燈保護下整理這張票留下的重複
 步驟、轉換與支撐層。沒有要整理的就跳過，在回報裡寫「無」。
 
 ### 5. 外迴圈綠，閘門綠

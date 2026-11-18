@@ -1,10 +1,10 @@
 ---
-name: bdd
+name: behavior-driven-development
 description: >
   在一個已經寫好的 `.feature`（或它的一段）裡，用 red／green／refactor 三個入口之一，一次
   一個 slice 推進實作：red 只建立對應這個 slice 的失敗訊號、green 只補目前 failure 需要的
   最小程式、refactor 只在綠燈保護下整理。不產 `.feature`、不改場景文字、不翻狀態 tag、
-  不跨出指定範疇；規格有洞就停下回交。由 `implement` 委派 green／refactor，或使用者手動叫 `/bdd`。
+  不跨出指定範疇；規格有洞就停下回交。由 `implement` 委派 green／refactor，或使用者手動叫 `/behavior-driven-development`。
   觸發詞：「先讓它紅」「讓這個場景紅」「讓這個場景變綠」「紅綠重構」「bdd red」「bdd green」
   「bdd refactor」「這個 scenario 做到綠」「在綠燈下整理 step definition」「一個 slice 一個 slice 做」。
   English: red green refactor, make this scenario fail first, make this scenario pass,
@@ -19,7 +19,7 @@ disable-model-invocation: true
 | **職責** | 在指定的 `.feature` 範疇裡，用 red／green／refactor 其中一個入口，一次一個 slice 把場景推進到那個入口的完成條件 |
 | **讀** | 指定的 `.feature`（`@ready` 或 `@wip`）、`spec.md` 的技術部分、既有的 step definition／測試／產品程式碼；由票委派時加上那張票節 |
 | **寫** | step definition、測試、產品程式碼。**不寫 `specs/` 底下任何檔案** |
-| **上游** | `implement`（第 3 步委派 green、第 4 步委派 refactor，範疇是票的涵蓋場景），或使用者手動叫 `/bdd` |
+| **上游** | `implement`（第 3 步委派 green、第 4 步委派 refactor，範疇是票的涵蓋場景），或使用者手動叫 `/behavior-driven-development` |
 | **下游** | 回報給呼叫它的人，並建議下一次從哪個入口繼續 |
 | **不做** | 不產或改 `.feature`、不改 `spec.md`／`plan.md`、不翻狀態 tag、不勾票、不跨出指定範疇、一次不進兩個入口 |
 
@@ -30,7 +30,7 @@ disable-model-invocation: true
 
 - `implement` 做一張票時委派：第 3 步 `green`、第 4 步 `refactor`。`red` 不委派——票的測試層
   由 `implement` 自己先紅
-- 使用者手動叫 `/bdd`：只推進一個場景的某一步，不做整張票。三個入口都可以用
+- 使用者手動叫 `/behavior-driven-development`：只推進一個場景的某一步，不做整張票。三個入口都可以用
 
 本 skill 設了 `disable-model-invocation: true`，模型不會自己觸發它：它的觸發詞跟
 `implement` 重疊，兩個都能被觸發時，使用者看不出模型挑了哪一個。
@@ -60,7 +60,7 @@ disable-model-invocation: true
 
 ## 前置確認（Ask user）
 
-由 `implement` 委派時，範疇與入口由它給，不必問。使用者手動叫 `/bdd` 時：
+由 `implement` 委派時，範疇與入口由它給，不必問。使用者手動叫 `/behavior-driven-development` 時：
 
 Ask user: 以下兩項不明確就先問，不要自己挑。
 

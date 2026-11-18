@@ -18,9 +18,9 @@ steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skil
 `plan` (execution plan in `plan.md`: overview, risks, whether to parallelise and the
 join points) and `task-breakdown` (slices the design into one section per ticket in a
 single `tasks.md`, so tickets can run in parallel). IMPLEMENT is served by
-`implement` (one ticket end to end: test layer red first, gate, merge-back) and `bdd`
+`implement` (one ticket end to end: test layer red first, gate, merge-back) and `behavior-driven-development`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
-that delegation or a manual `/bdd` runs it). When all of a feature's tickets are merged,
+that delegation or a manual `/behavior-driven-development` runs it). When all of a feature's tickets are merged,
 `archive` writes what it delivered into the project's current truth under `docs/` and moves
 its directory from `specs/ongoing/` to `specs/sleeping/`. SPEC is served by three skills —
 `spec` (writes a self-contained `spec.md` from the recorded answers: a requirements part,

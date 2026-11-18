@@ -235,7 +235,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | PLAN | `plan` | `spec.md`（含技術部分）＋ `.feature` → 執行計畫：風險、要不要並行、接合點 | **已實作**；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `task-breakdown`，技術設計搬到 `spec.md` |
 | | `task-breakdown` | `spec.md` 技術部分 ＋ `plan.md` ＋ `.feature` → `tasks.md`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
 | IMPLEMENT | `implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
-| | `bdd` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`implement` 委派 green 與 refactor，red 由 `implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `bdd` 與 `implement` 的委派方式；還沒實跑過） |
+| | `behavior-driven-development` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`implement` 委派 green 與 refactor，red 由 `implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `behavior-driven-development` 與 `implement` 的委派方式；還沒實跑過） |
 | | `archive` | 票全部合回後：`spec.md` 的 `## Domain Model` 與技術部分併進 `docs/DOMAIN-MODEL.md`／`DATABASE-SCHEMA.md`／`TECH.md` 的 ai-bdd 區塊，整個目錄 `git mv` 到 `specs/sleeping/` | **已實作**（2026-11-15，照 OpenSpec 的 changes／archive；還沒實跑過） |
 | REVIEW | `review`、`review-acceptance`、`review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 | VERIFY | `verify`、`verify-failure-triage` | 跑閘門與情境並回報、真 bug vs 規格過期 | 未實作 |
