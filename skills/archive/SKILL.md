@@ -110,7 +110,7 @@ git mv specs/ongoing/<date>-<feature> specs/sleeping/<date>-<feature>
 
 MUST: 用 `git mv`，不用複製再刪——`git log --follow` 靠它追到搬家前的歷史；喚醒時搬回來也一樣。
 
-目錄裡的東西一個字都不改：`discovery.md`、`spec.md`、`plan.md`、`tasks.md` 就是這個 feature 交付了什麼、
+目錄裡的東西一個字都不改：`spec.md`、`plan.md`、`tasks.md` 就是這個 feature 交付了什麼、
 為什麼這樣決定的紀錄，不另寫一份交付紀錄。
 
 第 2 步與第 3 步放在同一個 commit：`docs/` 的現況與 feature 搬進 `sleeping/` 是同一件事，分開提交

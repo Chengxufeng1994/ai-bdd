@@ -1,8 +1,8 @@
 # 怎麼定義 Persona
 
 角色怎麼問、`spec.md` 的 `## Personas` 節怎麼寫。兩個讀者：`discovery` 在開場的
-「識別角色」那一步、或後面某一輪冒出沒見過的角色時讀它——答案原話記在
-`discovery.md` 那題的小節；`spec` 從那些小節寫 `spec.md` 的 `## Personas` 時讀它。
+「識別角色」那一步、或後面某一題冒出沒見過的角色時讀它——答案原話記在
+`## Open Questions` 那題的小節；`spec` 從那些小節寫 `spec.md` 的 `## Personas` 時讀它。
 
 Persona 是**角色**，不是帳號。「Alice」是實例，「已購買旅程的學員」才是角色，
 而同一個人可以同時是好幾個角色。

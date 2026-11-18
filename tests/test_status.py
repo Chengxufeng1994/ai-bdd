@@ -8,11 +8,18 @@ from _load import load
 
 status = load("skills/discovery/scripts/status.py")
 
-DISCOVERY = """# discovery: parking
+# 2026-11-18 起問答表住 spec.md；discovery 建檔時它還只有粗切 story
+SPEC = """# spec: parking
 
 ## Document Overview
 
-**狀態**：澄清中　**最後更新**：2026-10-02
+**狀態**：澄清中　**最後更新**：2026-10-02　**結束方式**：—
+
+## User Stories
+
+### US-1 · visitor-billing
+
+身為 P-1（訪客），我想在出場前知道要付多少 ← PRD §1
 
 ## Open Questions
 
@@ -27,7 +34,7 @@ DISCOVERY = """# discovery: parking
 §1 停車場要收費。
 """
 
-PRD = DISCOVERY  # old-layout fixtures only need a file to exist
+PRD = SPEC  # old-layout fixtures only need a file to exist
 
 
 
@@ -38,12 +45,12 @@ def run(root: Path) -> tuple[int, str]:
     return code, buf.getvalue()
 
 
-class StatusReadsDiscovery(unittest.TestCase):
-    def test_counts_rows_from_discovery(self):
+class StatusReadsSpec(unittest.TestCase):
+    def test_counts_rows_from_spec(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "ongoing" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "spec.md").write_text(SPEC, encoding="utf-8")
 
             code, out = run(root)
 
@@ -57,7 +64,7 @@ class StatusReadsDiscovery(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "ongoing" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "spec.md").write_text(SPEC, encoding="utf-8")
             (root / "specs" / "domain-model.md").write_text("# Domain Model", encoding="utf-8")
 
             code, out = run(root)
@@ -70,7 +77,7 @@ class StatusReadsDiscovery(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "2026-10-02-parking" / "spec.md").write_text(SPEC, encoding="utf-8")
 
             code, out = run(root)
 
@@ -83,14 +90,14 @@ class StatusReadsDiscovery(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "sleeping" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "sleeping" / "2026-10-02-parking" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            (root / "specs" / "sleeping" / "2026-10-02-parking" / "spec.md").write_text(SPEC, encoding="utf-8")
 
             code, out = run(root)
 
             self.assertEqual(code, 0, out)
             self.assertIn("沒有進行中的 feature", out)
 
-    def test_missing_discovery_exits_1_and_names_discovery(self):
+    def test_missing_spec_exits_1_and_names_discovery(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
@@ -99,7 +106,7 @@ class StatusReadsDiscovery(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("沒有任何 discovery.md", out)
+            self.assertIn("沒有任何 spec.md", out)
             self.assertIn("discovery", out)
             self.assertNotIn("bdd-capture", out)
 
@@ -129,17 +136,33 @@ class StatusReadsDiscovery(unittest.TestCase):
             self.assertIn("`git mv prd.md spec.md`", out)
             self.assertNotIn("design.md", out)
 
-    def test_1113_layout_exits_1_with_split_hint(self):
+    def test_legacy_two_file_layout_exits_1_with_merge_hint(self):
+        # 11-18 以前問答住 discovery.md；不擋下來，spec.md 會被報成「找不到 `## Open Questions`」
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
-            (root / "specs" / "ongoing" / "2026-10-02-parking" / "spec.md").write_text(DISCOVERY, encoding="utf-8")
+            feature = root / "specs" / "ongoing" / "2026-10-02-parking"
+            feature.mkdir(parents=True)
+            (feature / "discovery.md").write_text(SPEC, encoding="utf-8")
+            (feature / "spec.md").write_text("# spec: parking\n", encoding="utf-8")
 
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("11-13 佈局", out)
             self.assertIn("discovery.md", out)
+            self.assertIn("spec.md", out)
+            self.assertIn("git rm", out)
+
+    def test_single_file_spec_is_not_legacy(self):
+        # 11-13 的退件訊息把「spec.md 有 `## Open Questions`、旁邊沒有 discovery.md」當舊佈局；11-18 起它就是新佈局
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "ongoing" / "2026-10-02-parking").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "spec.md").write_text(SPEC, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertNotIn("佈局", out)
 
 
 if __name__ == "__main__":

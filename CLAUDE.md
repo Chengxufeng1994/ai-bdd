@@ -76,13 +76,13 @@ than inferring anything from zero input.
 `status.py` belongs to `discovery`:
 
 ```bash
-python3 skills/discovery/scripts/status.py [root]   # red cards and probe coverage per feature, read from discovery.md
+python3 skills/discovery/scripts/status.py [root]   # red cards and probe coverage per feature, read from spec.md's ## Open Questions
 ```
 
 `check_spec.py` belongs to `formulation`:
 
 ```bash
-python3 skills/formulation/scripts/check_spec.py [root]   # spec.md shape + source markers resolved against discovery.md; checks acceptance journeys' @covers- tags; adds .feature ↔ spec.md coverage once features exist
+python3 skills/formulation/scripts/check_spec.py [root]   # spec.md shape + source markers resolved against its own ## Open Questions and ## 原文; checks acceptance journeys' @covers- tags; adds .feature ↔ spec.md coverage once features exist
 ```
 
 Both have stdlib unit tests:
@@ -119,15 +119,15 @@ projects individual skills borrowed from. Add a row there when a new reference i
 
 ### Artifact format is the interface
 
-Each step reads what the previous step actually emitted: DISCOVERY writes
-`discovery.md` (原文, rough stories, questions and answers — no rules), SPEC writes
-`spec.md` from it (what to build, up to `已對焦`) and the `.feature` files, PLAN writes
+Each step reads what the previous step actually emitted: DISCOVERY creates
+`spec.md` with only its question-and-answer parts (原文, rough stories, `## Open Questions` —
+no rules), SPEC writes the rules into the same `spec.md` (what to build, up to `已對焦`) and the `.feature` files, PLAN writes
 `plan.md` (technical decisions, then the execution plan) from `spec.md` and the `.feature`
 files, then `tasks.md` (one section per ticket, in dependency order) from both, REVIEW audits the
 whole chain.
 
 ```
-需求方的話（discovery.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
+需求方的話（spec.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
 ```
 
 Every arrow is a place intent can be lost. Changing an artifact's format breaks the chain,
@@ -139,15 +139,18 @@ Each of the first three steps holds because it runs in one main working mode:
 
 - **DISCOVERY** is brainstorming: it opens in scribe mode (the originator speaks, the
   agent records `## 原文` verbatim and rough stories, asks at most four analyst questions)
-  and then interrogates. Every answer is recorded on the spot in `discovery.md` with the
-  originator's words and who answered. **It writes no FR/AC.**
-- **SPEC** is writing mode: `spec` turns an `已收斂` `discovery.md` into `spec.md`,
+  and then interrogates one question at a time, each with context and a guessed answer,
+  until it can predict the originator's reaction and the coverage check passes; it ends
+  with an intent restatement the originator must answer yes to. Every answer is recorded on
+  the spot in `spec.md`'s `## Open Questions` with the originator's words and who answered.
+  **It writes no FR/AC.** It is the only skill that asks the originator questions.
+- **SPEC** is writing mode: `spec` turns the answered questions in `spec.md` into FR/AC,
   `feature-mapping` (whole feature, breadth) and `example-mapping` (one story, depth)
   diagnose it, `spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
   takes it to `已對焦`; the user then runs `formulation`, which writes `.feature` files —
-  **none of them interviews**; holes go into `spec.md`'s `## Open Questions` and send
-  `discovery.md` back to `澄清中`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
-  defect**, and a `← Q-<n>` must name an answered row in `discovery.md` — `check_spec.py`
+  **none of them interviews**; a hole is opened as a new `待答` `Q-<n>` in `## Open Questions`,
+  the status goes back to `澄清中`, and the user runs `/discovery`. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
+  defect**, and a `← Q-<n>` must name an answered row in `## Open Questions` — `check_spec.py`
   check 14 rejects both. No skill calls the next one: every step is a user-typed `/<skill>`.
 - **PLAN** owns the technical decisions (seam, modules, contracts, schema, test levels) and
   the execution plan (risks, parallel work, join points) — `plan` **does not change
@@ -196,7 +199,7 @@ the `/version` walking skeleton is the sole implemented slice and carries no dom
   English.** Commits follow conventional-commit titles with a `WHAT:` / `WHY:` / `HOW:` body.
   Scopes seen in history: `lab`, `bdd-spec`, `bdd-clarify`.
 - Documentation artifacts the skills produce go to the consuming repo's
-  `specs/ongoing/<date>-<feature>/` (`discovery.md`, `spec.md`, `splitting.md`, `acceptance/*.feature`, `plan.md`, `tasks.md`), one directory that can be deleted whole. When all its
+  `specs/ongoing/<date>-<feature>/` (`spec.md`, `splitting.md`, `acceptance/*.feature`, `plan.md`, `tasks.md`), one directory that can be deleted whole. When all its
   tickets are merged, `archive` `git mv`s that directory to `specs/sleeping/`; `discovery`
   moves it back to `ongoing/` (only when the user says so) to correct it. Exceptions:
   executable `.feature` files stay where the runner expects them (`features/` for

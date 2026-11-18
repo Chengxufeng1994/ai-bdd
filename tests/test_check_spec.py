@@ -8,7 +8,7 @@ from _load import ROOT, load
 
 check_spec = load("skills/formulation/scripts/check_spec.py")
 
-GOOD = """# spec: parking
+STORIES = """# spec: parking
 
 ## Document Overview
 
@@ -30,12 +30,8 @@ GOOD = """# spec: parking
 **Q-2**  跨午夜怎麼算 ← 擋住 FR-1
 """
 
-DISCOVERY = """# discovery: parking
-
-## Document Overview
-
-**狀態**：已收斂
-
+# 問答表與原文跟規則住同一份 spec.md（2026-11-18 起不再有 discovery.md）
+TAIL = """
 ## Open Questions
 
 | Q | 問題 | 面向 | 狀態 | 答案 |
@@ -43,13 +39,24 @@ DISCOVERY = """# discovery: parking
 | Q-1 | 免費額度多長 | 邊界 | 已答 | 30 分 |
 | Q-2 | 跨午夜怎麼算 | 時間 | 待答 | — |
 
+### Q-2 跨午夜怎麼算
+
+**狀態**：待答　**該問誰**：場長
+
 ## 原文
 
 §3 前 30 分鐘免費。
 """
 
-COMBINED_1113 = GOOD + "\n## Open Questions" + DISCOVERY.split("## Open Questions", 1)[1]
+GOOD = STORIES + TAIL
 
+# 11-18 以前的兩檔佈局：問答與原文在旁邊的 discovery.md
+LEGACY_DISCOVERY = """# discovery: parking
+
+## Document Overview
+
+**狀態**：已收斂
+""" + TAIL
 
 
 def run(root: Path) -> tuple[int, str]:
@@ -59,12 +66,10 @@ def run(root: Path) -> tuple[int, str]:
     return code, buf.getvalue()
 
 
-def write_spec(root: Path, text: str, discovery: str | None = DISCOVERY) -> None:
+def write_spec(root: Path, text: str) -> None:
     d = root / "specs" / "ongoing" / "2026-10-02-parking"
     d.mkdir(parents=True)
     (d / "spec.md").write_text(text, encoding="utf-8")
-    if discovery is not None:
-        (d / "discovery.md").write_text(discovery, encoding="utf-8")
 
 
 class UnsourcedRules(unittest.TestCase):
@@ -93,7 +98,7 @@ class UnsourcedRules(unittest.TestCase):
         self.assertEqual(check_spec.unsourced_rules(text), [])
 
     def test_every_q_in_a_joined_marker_is_cited(self):
-        # 並列的每一題都要拿去對 discovery.md，不能只查第一題
+        # 並列的每一題都要拿去對 `## Open Questions`，不能只查第一題
         text = GOOD.replace("← Q-1", "← Q-1、Q-2")
         self.assertIn("2", check_spec.cited_qs(text))
 
@@ -104,10 +109,10 @@ class UnsourcedRules(unittest.TestCase):
 
 class CitedParagraphs(unittest.TestCase):
     def test_all_cited_paragraphs_exist(self):
-        self.assertEqual(check_spec.missing_cited_paragraphs(GOOD + DISCOVERY), [])
+        self.assertEqual(check_spec.missing_cited_paragraphs(GOOD), [])
 
     def test_paragraph_after_a_joined_marker_is_checked(self):
-        text = GOOD.replace("← Q-1", "← Q-1、PRD §9") + DISCOVERY
+        text = GOOD.replace("← Q-1", "← Q-1、PRD §9")
         self.assertEqual(check_spec.missing_cited_paragraphs(text), ["9"])
 
     def test_citation_to_absent_paragraph_is_reported(self):
@@ -158,7 +163,7 @@ class CheckReadsSpec(unittest.TestCase):
     def test_missing_verbatim_section_reported(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_spec(root, GOOD, DISCOVERY.split("## 原文")[0])
+            write_spec(root, GOOD.split("## 原文")[0])
 
             code, out = run(root)
 
@@ -191,10 +196,9 @@ class CheckReadsSpec(unittest.TestCase):
 
     def test_shipped_example_spec_passes_spec_only_checks(self):
         example = (ROOT / "skills" / "spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
-        disc = (ROOT / "skills" / "discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_spec(root, example, disc)
+            write_spec(root, example)
 
             code, out = run(root)
 
@@ -238,7 +242,7 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertIn("`git mv prd.md spec.md`", out)
             self.assertNotIn("design.md", out)
 
-    def test_q_marker_missing_from_discovery_fails(self):
+    def test_q_marker_missing_from_open_questions_fails(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, GOOD.replace("收 0 元 ← Q-1", "收 0 元 ← Q-9"))
@@ -247,7 +251,7 @@ class CheckReadsSpec(unittest.TestCase):
 
             self.assertEqual(code, 1)
             self.assertIn("Q-9", out)
-            self.assertIn("discovery.md", out)
+            self.assertIn("## Open Questions", out)
 
     def test_q_marker_pointing_at_unanswered_fails(self):
         with tempfile.TemporaryDirectory() as d:
@@ -331,27 +335,58 @@ class CheckReadsSpec(unittest.TestCase):
 
             self.assertEqual(code, 0, out)
 
-    def test_discovery_only_dir_is_a_notice(self):
+    def test_spec_written_by_discovery_without_rules_points_at_spec(self):
+        # discovery 建的 spec.md 只有粗切 story、問答與原文：下一步是 spec 寫規則
+        fresh = GOOD.replace(
+            "**FR-1**  When 訪客車出場, the system shall 依停留時長計費。 ← PRD §3\n"
+            "- **AC-1.1**  停 29 分 → 收 0 元 ← Q-1\n", "")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            (root / "specs" / "ongoing" / "x").mkdir(parents=True)
-            (root / "specs" / "ongoing" / "x" / "discovery.md").write_text(DISCOVERY, encoding="utf-8")
+            write_spec(root, fresh)
 
             code, out = run(root)
 
-            self.assertEqual(code, 0, out)
+            self.assertEqual(code, 1, out)
             self.assertIn("先跑 spec", out)
+            self.assertNotIn("佈局", out)
 
-    def test_1113_layout_exits_1_with_split_hint(self):
+    def test_legacy_two_file_layout_exits_1_with_merge_hint(self):
+        # 11-18 以前問答住 discovery.md；不擋下來，spec.md 會因為沒有問答表而報一串假的懸空引用
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_spec(root, COMBINED_1113, discovery=None)
+            write_spec(root, STORIES)
+            (root / "specs" / "ongoing" / "2026-10-02-parking" / "discovery.md").write_text(
+                LEGACY_DISCOVERY, encoding="utf-8")
 
             code, out = run(root)
 
             self.assertEqual(code, 1)
-            self.assertIn("11-13 佈局", out)
             self.assertIn("discovery.md", out)
+            self.assertIn("spec.md", out)
+            self.assertIn("git rm", out)
+
+    def test_discovery_only_dir_is_legacy(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "specs" / "ongoing" / "x").mkdir(parents=True)
+            (root / "specs" / "ongoing" / "x" / "discovery.md").write_text(LEGACY_DISCOVERY, encoding="utf-8")
+
+            code, out = run(root)
+
+            self.assertEqual(code, 1, out)
+            self.assertIn("discovery.md", out)
+            self.assertIn("git rm", out)
+
+    def test_single_file_spec_with_open_questions_is_not_legacy(self):
+        # 11-13 的退件訊息把這個形狀當成舊佈局；11-18 起它就是新佈局
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            write_spec(root, GOOD)
+
+            code, out = run(root)
+
+            self.assertEqual(code, 0, out)
+            self.assertNotIn("佈局", out)
 
 
 JOURNEY = """Feature: 訪客出場
@@ -459,11 +494,10 @@ class AcceptanceJourneys(unittest.TestCase):
     def test_shipped_journey_example_passes(self):
         skills = ROOT / "skills"
         spec = (skills / "spec" / "examples" / "minimal-spec.md").read_text(encoding="utf-8")
-        disc = (skills / "discovery" / "examples" / "minimal-discovery.md").read_text(encoding="utf-8")
         journey = (skills / "spec-by-example" / "examples" / "借書看到期日.feature").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            write_spec(root, spec, disc)
+            write_spec(root, spec)
             write_journey(root, "借書看到期日.feature", journey)
 
             code, out = run(root)

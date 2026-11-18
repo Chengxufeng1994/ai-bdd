@@ -132,7 +132,7 @@ skill 寫給 Figma 用，於是每個例子都是 Figma。
 
 ```
 skills/
-└── clarify/
+└── discovery/
     └── example-mapping/
         └── SKILL.md      ← 能跑，但 claude plugin validate 掃不到
 ```

@@ -36,18 +36,18 @@
 ## 三種模式，三條紀律
 
 這是 2026-10-02 重排的核心（2026-11-13 把 CAPTURE 併回 DISCOVERY 開場；2026-11-14 DISCOVERY
-改成只記問答、技術設計移到 PLAN）。六步之所以站得住，是因為前三步各自只有一種主要的工作模式：
+改成只記問答、技術設計移到 PLAN；2026-11-18 問答紀錄併進 `spec.md`、`clarify` 併進 `discovery`）。六步之所以站得住，是因為前三步各自只有一種主要的工作模式：
 
 | 步驟 | 模式 | 只做 | 不做 |
 | --- | --- | --- | --- |
-| **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、問紅卡、記答案原話與誰答的 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
-| **SPEC**（`spec`／`formulation`） | agent 寫、需求方審 | `已收斂` 的 `discovery.md` → `spec.md`（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞記進 `## Open Questions` 並退回 |
+| **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、一次問一題、記答案原話與誰答的、意圖陳述 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
+| **SPEC**（`spec`／`formulation`） | agent 寫、需求方審 | `spec.md` 的已答題 → FR／AC（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、改回 `澄清中`、停 |
 | **PLAN**（`plan`／`task-breakdown`） | agent 定與排、工程師審（seam 經使用者確認） | `spec.md` ＋ `.feature` → 技術決定 → 風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec`／`plan` |
 
 「agent 補一個合理的答案然後繼續」這個風險，舊版靠「DISCOVERY 不寫檔」擋，
 而 2026-09-14 的設計承認那條從來沒真的成立過。現在改靠「每條 FR／AC 必須指得出
-來源」擋：`← PRD §n` 或 `← Q-<n>`，`check_spec.py` 第 14 項機械地抓，並跨檔確認
-`← Q-<n>` 在 `discovery.md` 找得到、而且是已答。擋的是同一件事，
+來源」擋：`← PRD §n` 或 `← Q-<n>`，`check_spec.py` 第 14 項機械地抓，並確認
+`← Q-<n>` 在同一份檔的 `## Open Questions` 找得到、而且是已答。擋的是同一件事，
 但從「不准做」改成「做了要留證據」。
 
 紀律的出處：Matt Pocock 的 `to-spec`——「The spec is a record of decisions
@@ -59,8 +59,8 @@ already made, not a place where new ones get made.」
 
 | 步驟 | 這一步在問什麼 | 作法 | 產物 |
 | --- | --- | --- | --- |
-| **DISCOVERY** | 需求方想要什麼？還有哪些不知道？問到不能再問為止（brainstorming） | 開場當書記：原文逐字、粗切 story；之後設計樹＋前沿，答案逐題記下 | `discovery.md`（澄清中 → 已收斂） |
-| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？（to spec） | `discovery.md` → `spec.md`（`spec`）→ 流程與四色卡診斷（`feature-mapping`、`example-mapping`）→ 驗收旅程（`spec-by-example`）→ 就緒判定（`example-mapping`）→ 使用者叫 Gherkin（`formulation`） | `spec.md`（待對焦 → 已對焦，含 `## Domain Concepts`）＋ `.feature`（可執行） |
+| **DISCOVERY** | 需求方想要什麼？還有哪些不知道？問到不能再問為止（brainstorming） | 開場當書記：原文逐字、粗切 story；之後設計樹＋前沿，一次一題，答案逐題記下，意圖陳述要 yes | `spec.md` 的問答那幾節（澄清中，結束方式 收斂） |
+| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？（to spec） | 已答題 → FR／AC（`spec`）→ 流程與四色卡診斷（`feature-mapping`、`example-mapping`）→ 驗收旅程（`spec-by-example`）→ 就緒判定（`example-mapping`）→ 使用者叫 Gherkin（`formulation`） | `spec.md`（澄清中 → 待對焦 → 已對焦，含 `## Domain Concepts`）＋ `.feature`（可執行） |
 | **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | 風險、接合點（`plan`）＋ tracer bullet 垂直切片 ＋ blocking edges（`task-breakdown`） | `plan.md` ＋ `tasks.md` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | 全新 reviewer 對照情境驗收 ＋ 鏈稽核 | 審查結論 ＋ 稽核報告 |
@@ -81,8 +81,8 @@ IMPLEMENT／VERIFY 需要綁定技術棧；REVIEW 部分需要。
 specs/
 ├── sleeping/<date>-<feature>/  做完的 feature：`archive` 整個目錄 git mv 過來；要修正時 `discovery` 喚醒、搬回 ongoing/
 └── ongoing/<date>-<feature>/   還在做的 feature
-    ├── discovery.md    DISCOVERY 原文、粗切 story、問答。決策史，活得比實作久
-    ├── spec.md         SPEC      要做成什麼：story 與優先級、FR、AC、角色、目標與不做的事、詞彙與聚合、邊界情況。活得比實作久
+    ├── spec.md         DISCOVERY 原文、粗切 story、問答（決策史）
+                        SPEC      要做成什麼：story 與優先級、FR、AC、角色、目標與不做的事、詞彙與聚合、邊界情況。活得比實作久
     ├── acceptance/     SPEC      <旅程>.feature：業務語意的驗收旅程，不執行；就緒判定對著它答
     ├── plan.md         PLAN      技術決定（Tech Stack 到 Testing Decisions）＋ 概述、風險、要不要並行與接合點
     └── tasks.md        PLAN      一波一節、一張票一個票節（順序由上而下、Blocked by、接合點、檢查點）
@@ -98,36 +98,28 @@ docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 需求方在試跑後改回：「我這邊也覺得不應該有技術部分」——`spec.md` 只寫要做成什麼，需求方判就緒時整份
 都讀得懂。`plan.md` 前半是技術決定、後半是執行計畫。`spec.md` 的骨架照 aixbdd 的 `specify` 排序，原有的
 規則（來源標記、FR 底下掛 AC、EARS、Personas 五欄）全部保留。
-`discovery.md` 與 `spec.md` 分檔的理由是**只有一處寫規則**：問答是來源，規格是定案。
+問答與規則同一份檔（2026-11-18 起，之前分成 `discovery.md`）：分開的是**誰問**（`discovery`）與**誰寫規則**（`spec`），
+不是檔案——**只有一處寫規則**由 `check_spec.py` 第 14 項守，不靠檔案邊界。
 
 可執行的 `.feature` 是唯一不進 `specs/` 的產物（`acceptance/` 的旅程不執行，所以留在 `specs/`）——它同時是規格與可執行測試，
 **位置由測試框架決定**。鏈的完整性靠 tag 與 slug 維繫，不是靠同目錄。
 
-### 三份檔的節
-
-`discovery.md`（格式契約在 `skills/discovery/references/discovery-format.md`）：
-
-| 節 | 內容 | 誰寫 |
-| --- | --- | --- |
-| Document Overview | 狀態（澄清中／已收斂）、結束方式、修訂歷史、核心關係人 | DISCOVERY |
-| 粗切 story | 每則一行，`US-<n> · <slug>` ＋ `身為…`，沒有規則 | DISCOVERY 開場 |
-| Open Questions | 五欄表 ＋ 每題小節（答案原話、誰答的、歸屬） | DISCOVERY |
-| 原文 | 需求方的話，逐字 | DISCOVERY 開場，之後不得改寫 |
+### 兩份檔的節
 
 `spec.md`（格式契約在 `skills/spec/references/spec-format.md`）：
 
 | 節 | 內容 | 誰寫 |
 | --- | --- | --- |
-| Document Overview | 狀態（待對焦／已對焦）、修訂歷史、核心關係人（照抄） | SPEC |
+| Document Overview | 狀態（澄清中／待對焦／已對焦）、結束方式、修訂歷史、核心關係人 | DISCOVERY 建；SPEC 寫待對焦；`example-mapping` 寫已對焦 |
 | Context / Problem | 要解決的問題、現況的痛點 | SPEC，行尾 `← PRD §n`／`← Q-<n>` |
 | Personas | `### P-<n>` 五欄（受影響的人） | SPEC，從角色那幾題 |
 | Goals / Non-Goals | 做成之後的樣子；這次不做的（延後或不做、為什麼） | SPEC |
-| User Stories | `### US-<n> · <slug>` ＋ 優先級 ＋ `#### FR`（AC 巢狀）／`#### NFR`／`#### Q` | SPEC |
+| User Stories | `### US-<n> · <slug>` ＋ 優先級 ＋ `#### FR`（AC 巢狀）／`#### NFR`／`#### Q` | DISCOVERY 粗切（標題＋「身為…」）；SPEC 寫其餘 |
 | Non-Functional Requirements | 跨 story、量化的品質屬性 | SPEC |
 | Domain Concepts | 詞彙、聚合與不變條件 | SPEC；做完時 ARCHIVE 併進 `docs/` |
 | Edge Cases | 失敗、併發、空值、重複、權限邊界——指向 AC 的索引 | SPEC |
 | Assumptions / Constraints | 未驗證的假設、外部限制 | SPEC |
-| Open Questions | 寫規格時發現、問答推不出來的洞 | SPEC |
+| Open Questions | 五欄表 ＋ 每題小節（答案原話、誰答的、決策史）；寫規格時發現的洞也開成一題 | DISCOVERY；SPEC 與診斷 skill 只開待答題 |
 | Success Metrics | 上線後怎麼判斷成功 | SPEC |
 
 `plan.md` 的技術決定（格式契約在 `skills/plan/references/tech-format.md`）：
@@ -229,10 +221,9 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 
 | 步驟 | skill | 職責 | 狀態 |
 | --- | --- | --- | --- |
-| DISCOVERY | `discovery` | 開場建檔，再設計樹＋前沿問到完整，只寫 `discovery.md` | **已實作**；2026-11-13 併入原 `bdd-capture` 的建檔；2026-11-14 改成只記問答 |
-| | `clarify` | 一疊紅卡逐題收斂 | **已實作**；原 `clarify-loop`，由 `discovery` 呼叫 |
+| DISCOVERY | `discovery` | 開場建檔，再設計樹＋前沿一次一題問到完整，只寫 `spec.md` 的問答那幾節 | **已實作**；2026-11-13 併入原 `bdd-capture` 的建檔；2026-11-14 改成只記問答；2026-11-18 問答併進 `spec.md`、併入 `clarify`、改成 interview-me 的一次一題 |
 | | `story-splitting` | 沿規則切；九種模式 | **已實作**；由 `discovery`（粗切）與 `spec`（`已對焦` 前沿規則重切）呼叫 |
-| SPEC | `spec` | `discovery.md` → `spec.md`，判就緒後停；不寫技術決定、不呼叫 `formulation` | **已實作**；2026-11-14 從「寫技術設計」改成「從問答寫規格」；2026-11-15 技術設計從 `plan` 搬回來；2026-11-18 又搬回 `plan`，骨架照 aixbdd `specify` 重排 |
+| SPEC | `spec` | 已答題 → FR／AC，判就緒後停；不寫技術決定、不呼叫 `formulation` | **已實作**；2026-11-14 從「寫技術設計」改成「從問答寫規格」；2026-11-15 技術設計從 `plan` 搬回來；2026-11-18 又搬回 `plan`，骨架照 aixbdd `specify` 重排 |
 | | `feature-mapping` | 整個 feature 的流程圖、三條診斷（替代流程、反例、結果沒有規則），缺口寫成補問 | **已實作**（2026-11-18，照 John Ferguson Smart 的 Feature Mapping；還沒實跑過）；由 `spec` 在 `example-mapping` 之前呼叫 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定；唯一寫 `已對焦` 的 skill | **已實作**；由 `spec` 呼叫 |
 | | `spec-by-example` | `spec.md` → `acceptance/*.feature` 業務語意驗收旅程，`@covers-` 標 AC | **已實作**；2026-11-14，參考 aixbdd `spec-by-example`；由 `spec` 在診斷與就緒問句之間呼叫 |
@@ -259,7 +250,7 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | 訊號 | 卡片 | 現在看哪裡 |
 | --- | --- | --- |
 | story 太大 → 該切 | 藍卡（規則）太多 | `spec.md` 該 story 底下 `#### FR` 的條數 |
-| 不確定性高 → 未就緒 | 紅卡（問題）太多 | `## Open Questions` 的列數，等於 `status.py` 的未答數 |
+| 不確定性高 → 未就緒 | 紅卡（問題）太多 | `## Open Questions` 的待答列數，等於 `status.py` 的待答數 |
 
 兩個訊號都不是硬門檻——實測中 `visitor-fee-and-exit` 觸發了「story 太大」
 （10 條規則、三則裡最高）而**被有理由地否決**：那些規則是同一個行為的不同分支，
@@ -322,7 +313,7 @@ Always-on: ~1,620 tok  每個 session 都付
 ## 可追溯鏈
 
 ```
-需求方的話（discovery.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
+需求方的話（spec.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
                                       ↑        ↑                   ↑       ↑
                                開場粗切      SPEC 定版            一票一   seam 決定
                                              行尾 ← Q-n / PRD §n  session  在 PLAN
@@ -385,6 +376,8 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] 2026-11-13 砍掉 CAPTURE 與 `prd.md`；2026-11-14 六步流程：DISCOVERY 只寫 `discovery.md`、SPEC 從問答寫 `spec.md`、`design.md` 併進 `plan.md`、REVIEW 排到 VERIFY 前
 - [x] 2026-11-14 `spec-by-example`：就緒判定前先寫 `acceptance/` 驗收旅程，`check_spec.py` 第 17 項稽核 `@covers-`
 - [x] 2026-11-16 `task-breakdown` 改寫單一 `tasks.md`（一張票一個票節），取代 `tasks/` 目錄與 `index.md`
+- [x] 2026-11-18 `discovery.md` 併進 `spec.md`（`## Open Questions`、`## 原文`），`clarify` 併進 `discovery`
+- [ ] 重跑 `parking-billing`：`discovery` → `spec` → `formulation` → `plan`，驗證單檔與一次一題
 - [ ] `verify`、`review`
 - [ ] 用 `implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣
 

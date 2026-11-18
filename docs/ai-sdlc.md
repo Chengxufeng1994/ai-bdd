@@ -44,8 +44,8 @@ Automation 重合，因為 Automation 的產物本來就是程式碼而不是膠
 
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
-| **DISCOVERY** | brainstorming：開場把需求方的話逐字收進 `discovery.md`、粗切 story（不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 問到規則與例子都有人答過（BDD 的 Discovery）。**只記問答，不寫規格**——每個答案記原話與誰答的。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | to spec：把已收斂的問答寫成 `spec.md`（FR／AC 每一條行尾指回 `discovery.md`，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`）＋可執行規格（BDD 的 Formulation，`formulation`，`已對焦` 之後由使用者叫） | Formulation ＋ 額外 |
+| **DISCOVERY** | brainstorming：開場把需求方的話逐字收進 `spec.md` 的 `## 原文`、粗切 story（不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 一題一題問到規則與例子都有人答過（BDD 的 Discovery）。**只記問答，不寫規則**——每個答案記原話與誰答的，最後要需求方對意圖陳述說 yes。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
+| **SPEC** | to spec：把已答的問答在同一份 `spec.md` 寫成規則（FR／AC 每一條行尾指回 `## 原文` 或 `## Open Questions` 的已答題，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`）＋可執行規格（BDD 的 Formulation，`formulation`，`已對焦` 之後由使用者叫） | Formulation ＋ 額外 |
 | **PLAN** | to plan：執行計畫（風險、要不要並行、接合點）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`plan` 寫 `plan.md`，`task-breakdown` 拆成 `tasks.md`） | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`implement`） | Automation |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？全新的 reviewer 對照 `spec.md`／`.feature` 審整批 | **無**——治理不在三個實踐裡 |
@@ -66,8 +66,8 @@ PLAN 的技術設計與切票、REVIEW、VERIFY 的交付證據）都不是補�
 
 | 步驟 | 模式 | 只做 | 不做 |
 | --- | --- | --- | --- |
-| **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、問紅卡、記答案原話與誰答的 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
-| **SPEC**（`spec`／`spec-by-example`／`formulation`） | agent 寫、需求方審 | `已收斂` 的 `discovery.md` → `spec.md` → `acceptance/` 驗收旅程 →（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞記進 `## Open Questions` 並退回 |
+| **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、一次問一題、記答案原話與誰答的、意圖陳述 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
+| **SPEC**（`spec`／`spec-by-example`／`formulation`） | agent 寫、需求方審 | `spec.md` 的已答題 → FR／AC（`待對焦`）→ `acceptance/` 驗收旅程 →（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、狀態改回 `澄清中`、停 |
 | **PLAN**（`plan`／`task-breakdown`） | agent 定與切、工程師確認 seam、審計畫 | `spec.md` ＋ `.feature` → 技術決定 → 風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec`／`formulation`／`plan` |
 
 三條互相支撐：SPEC 能「不訪談」是因為 DISCOVERY 把每個答案連原話記下來了；PLAN 能
@@ -80,7 +80,7 @@ made, not a place where new ones get made.」
 **這條紀律對人是選配，對 agent 是必需。** 人在寫規格時發現有洞，會停下來去問；
 agent 會補一個合理的答案然後繼續，而那個答案看起來跟真的一樣。擋這件事的是「每條
 FR／AC 必須指得出來源」——`check_spec.py` 第 14 項機械地抓沒有 `← Q-<n>` 或 `← PRD §n`
-的規則，並跨檔確認 `← Q-<n>` 在 `discovery.md` 找得到、而且是已答。
+的規則，並確認 `← Q-<n>` 在同一份檔的 `## Open Questions` 找得到、而且是已答。
 
 ### 為什麼 discovery 只記問答
 
@@ -89,11 +89,21 @@ FR／AC 必須指得出來源」——`check_spec.py` 第 14 項機械地抓沒�
 - **完全不寫檔，問完一次交給 SPEC**：對話最乾淨，但 session 中途斷掉或被壓縮，前面的答案就
   沒了——「脈絡活不過一個 session」是這份文件開頭的第一條；`← Q-<n>` 也沒有東西可以指，
   第 14 項得拿掉
-- **只寫問答紀錄 `discovery.md`**（採用）：規則只在 SPEC 寫一次，問答落檔所以 session 斷了
+- **只寫問答紀錄**（採用）：規則只在 SPEC 寫一次，問答落檔所以 session 斷了
   接得上，`← Q-<n>` 有地方指
 
 代價是 SPEC 要從紀錄重建規則，紀錄裡沒寫下的例子它寫不出 AC。所以 DISCOVERY 的記錄紀律
 從「當場寫成規則」換成「當場記下答案原話與例子」。
+
+問答紀錄起初是另一份 `discovery.md`。2026-11-18 併進 `spec.md`：`## Open Questions`（問答表與每題小節）
+與 `## 原文`（附錄）。分開的是**誰問**（`discovery`）與**誰寫規則**（`spec`），不必分開的是**檔案**——
+試跑時退回 discovery 三次，每次都在兩份檔之間改狀態；而擋「寫規格時順手補答案」的防線早已是第 14 項，
+不是檔案邊界。兩個參考也都沒有獨立的問答檔：aixbdd 的 `specify` 寫 `spec.md`、遇到高影響缺口委派 `clarify`
+去問；addyosmani 的 `interview-me` 的產物是一段需求方明說 yes 的意圖陳述。
+
+同一天 `clarify`（逐題收斂紅卡）併進 `discovery`：兩個 skill 都在問需求方，分成兩個只多一次交接。
+`discovery` 改成 interview-me 的問法——一次一題、每題附上下文與猜測的答案、問到猜得中需求方的反應為止——
+`clarify` 留下來的是答不出來時的三堆（可解／阻塞／失效）。現在它是唯一會問需求方的 skill。
 
 ### 為什麼是這幾個 skill，不是一個
 
@@ -133,8 +143,8 @@ SPEC 的診斷有兩張圖，方向相反：`feature-mapping` 看整個 feature 
 每一步的替代流程與規則的反例寫了沒；`example-mapping` 看一則 story 的**深度**——每條規則有沒有
 例子撐住。先寬後深（2026-11-18 起）：寬度找到的洞會改動 story 與 FR，先找出來，四色卡才不會攤
 一張馬上要重畫的。兩者都只印地圖、不另寫檔案，因為圖上每張卡都已經住在 `## User Stories` 與
-`acceptance/`；它們新增的是找洞的方法，洞寫進 `spec.md` 的 `## Open Questions`。Feature Mapping 原本是工作坊
-裡當場追問，這裡把問題寫成補問交回 `discovery`——SPEC 不訪談，當場問到的答案寫不進 `discovery.md`。
+`acceptance/`；它們新增的是找洞的方法，洞在 `spec.md` 的 `## Open Questions` 開成待答題。Feature Mapping 原本是工作坊
+裡當場追問，這裡把問題開成補問題交給 `discovery`——SPEC 不訪談，當場問到的答案沒有原話與誰答的，`← Q-<n>` 指不了。
 
 PLAN 的後半是**執行**：哪裡危險、能不能並行、合回時哪些檔會相撞，以及把工作切到一個 fresh
 session 做得完。實作者讀 `plan.md` 的技術決定與自己那張票節就夠（票由 `task-breakdown` 拆到
@@ -158,7 +168,7 @@ session 做得完。實作者讀 `plan.md` 的技術決定與自己那張票節�
 ## 可追溯鏈
 
 ```
-需求方的話（discovery.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
+需求方的話（spec.md ## 原文）→ Story → FR → AC → Scenario → Ticket → Step → 程式碼
 ```
 
 每個箭頭都是一個意圖遺失點。保住這條鏈是這套流程存在的理由——因為鏈的完整性

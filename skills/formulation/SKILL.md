@@ -23,7 +23,7 @@ disable-model-invocation: true
 | **寫** | `features/<story-slug>.feature`（測試框架已有位置就跟隨）；覆蓋表只回報、不落地 |
 | **上游** | `spec`（`已對焦` 之後，使用者叫 `/formulation`） |
 | **下游** | `plan`（覆蓋表沒有大洞時）；洞多回 `spec` |
-| **不做** | 不訪談、不發明例子、不寫 `spec.md`／`discovery.md`、不寫 step definition、不讀 `plan.md` |
+| **不做** | 不訪談、不發明例子、不寫 `spec.md`、不寫 step definition、不讀 `plan.md` |
 
 **不發明例子。** `Rule:`、`Example:` 與 `@rule-`／`@example-` tag 只從 `spec.md` 來；覺得少了
 一個邊界，那是 DISCOVERY 的發現，回 `spec`，不在這裡順手補。覆蓋表要產，但它是回報給人的，
@@ -40,7 +40,7 @@ disable-model-invocation: true
 
 | 情況 | 改用 |
 | --- | --- |
-| `spec.md` 不存在 | `spec`（`discovery.md` 也沒有就先 `discovery`） |
+| `spec.md` 不存在 | `discovery`（它建 `spec.md`），再 `spec` |
 | `spec.md` 狀態不是 `已對焦` | `spec`——它會先交 `example-mapping` 判就緒 |
 | 要決定 seam（情境跑在哪一層測試） | `plan` |
 | 要定詞彙或切 story | `spec`（詞彙寫在 `spec.md` 的 `## Domain Concepts`；切 story 用 `story-splitting`） |
@@ -82,13 +82,13 @@ disable-model-invocation: true
 
 不必問。`.feature` 的位置偵測得到（見「產物隔離」），要跑哪些 story 有預設值。
 
-MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺陷。`discovery.md` 的
+MUST NOT: 在這裡問問題。**不訪談**——憑空長出來的內容是缺陷。`spec.md` 的
 `## Open Questions` 還有待答時，那些對應的規則就寫不出來，不要順手決定掉。
 
 NEVER: `spec.md` 不存在、或狀態不是 `已對焦` 時，憑需求描述直接寫 `.feature`。那會
 產出一份沒有人同意過的規格，而它看起來跟真的一模一樣。唯一的例外是下面的 `@draft`：
 `spec.md` 存在、狀態 `待對焦`，而且使用者明說要先寫。沒有 `spec.md` 就先跑
-`spec`（還沒有 `discovery.md` 就先 `discovery`）。
+`discovery`、再 `spec`。
 
 ---
 
@@ -122,7 +122,7 @@ MUST NOT: 從驗收旅程新增 `spec.md` 沒有的例子、場景或 `Then`。�
 另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
 
 IMPORTANT: `spec.md` 由 `spec` 維護，本 skill **不得寫入**。要補一條
-規則、改一個例子，都回 `spec`；問答裡沒有的，它會退回 `discovery`。本 skill 通常就是
+規則、改一個例子，都回 `spec`；問答裡沒有的，它會開一題補問題、請使用者跑 `discovery`。本 skill 通常就是
 `spec` 在 `已對焦` 之後呼叫的。
 
 MUST: 只做 `spec.md` 的 `## Document Overview` 裡 `狀態` 已經是 `已對焦` 的 feature。
@@ -164,7 +164,7 @@ MUST: 每個 Example 至少對應一個場景，且**不新增 `spec.md` 裡沒�
 一個 ID 才能穩定指涉。編一個不算發明驗收條件——**ID 是定址，不是行為**。同一類還有：可執行場景
 需要、但 AC 沒寫的值（借出那一刻的時分、「R-001 有效」的讀者證期限、刷書的時刻），只要它不影響斷言。
 判準只有一條：把這個值換成別的，有沒有任何一條斷言的真假會變？會變就不是填充值，是行為——
-那個例子跳過、就地註解、回報要回 `spec` 寫進 `spec.md` 的 `## Open Questions`。補了填充值的場景，在 `.feature` 就地留一行
+那個例子跳過、就地註解、回報要回 `spec` 在 `spec.md` 的 `## Open Questions` 開一題補問題。補了填充值的場景，在 `.feature` 就地留一行
 註解說哪個值是補的。
 
 SHOULD: 用 UUID，不用 1、2、3。序號**可以猜**——「查別人的訂單回權限不足、
@@ -249,7 +249,7 @@ MUST: 每條規則的三種結果，在覆蓋表裡各標**有／無／不適用
 | 情況 | 怎麼做 |
 | --- | --- |
 | 例子的錯**可以從規則推導出來**（算術錯誤） | 規則為準，照規則算出來的數字寫場景；就地註解算式與差異，回報建議回 `spec` |
-| 規則本身含糊，兩種讀法都說得通（規格衝突） | 不要挑：跳過那個例子、就地註解、回報要回 `spec` 寫進 `spec.md` 的 `## Open Questions` |
+| 規則本身含糊，兩種讀法都說得通（規格衝突） | 不要挑：跳過那個例子、就地註解、回報要回 `spec` 在 `spec.md` 的 `## Open Questions` 開一題補問題 |
 
 撞到時先讀 `references/rule-example-conflict.md`——規則、理由與判準的界線都在那裡。
 
@@ -380,7 +380,7 @@ python3 <skill>/scripts/check_spec.py <專案根>
 因為「上游已經跑過了」而省略。
 
 十八項的完整清單與各自的理由在 `scripts/check_spec.py` 開頭的說明：前五項需要 `.feature`
-（上面那五項），其餘十三項只讀 `spec.md`、`discovery.md` 與 `acceptance/`——FR 有沒有掛 AC、
+（上面那五項），其餘十三項只讀 `spec.md` 與 `acceptance/`——FR 有沒有掛 AC、
 標題形式、`#### Q` 紅卡、AC 編號對帳、無主的 FR、`← PRD §x`／`← Q-<n>` 來源（`推論` 不算）、
 `## 原文` 與它的段落、驗收旅程的 `@covers-`。只讀不寫，退出碼可直接進 CI。
 
@@ -496,7 +496,7 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 - [ ] 沒有 `spec.md` 以外的例子、場景或 `Then`——包括從 `acceptance/` 旅程抄來的
 - [ ] 每個 `.feature` 恰好一個狀態 tag、一個型別 tag；沒有 `規則:`
 - [ ] 跑了 `check_spec.py`，沒有任何一項失敗，輸出貼在回報裡（只報數字的項目與跳過的項目照實列出）
-- [ ] 沒有寫入 `spec.md`、`discovery.md`、`plan.md`、`docs/CONTEXT.md`；既有的 `.feature` 只在再跑時、只改對到修訂歷史的場景
+- [ ] 沒有寫入 `spec.md`、`plan.md`、`docs/CONTEXT.md`；既有的 `.feature` 只在再跑時、只改對到修訂歷史的場景
 
 ## 完成後
 

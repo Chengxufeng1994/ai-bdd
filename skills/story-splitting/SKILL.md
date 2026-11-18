@@ -16,7 +16,7 @@ disable-model-invocation: true
 | --- | --- |
 | **職責** | 把一則太大的 story 切成數則**各自都還能交付價值**的小 story，並寫下切分依據 |
 | **讀** | 要切的 story（一句話，或 `spec.md` 的某幾條 `FR-<n>`）與已知的規則 |
-| **寫** | 看誰呼叫：`discovery.md` 的 `## 粗切 story` 或 `spec.md` 的 `## User Stories`；切分紀錄追加進同目錄的 `splitting.md` |
+| **寫** | `spec.md` 的 `## User Stories`（`discovery` 呼叫時是粗切，`spec` 呼叫時連 FR 一起搬）；切分紀錄追加進同目錄的 `splitting.md` |
 | **上游** | `discovery`（粗切）、`spec`（`已對焦` 前重切）；也可單獨使用 |
 | **下游** | 回到呼叫它的 skill；`spec.md` 改完由 `formulation` 寫成 `.feature` |
 | **不做** | 不排順序、不估點數、不寫規格、`spec.md` 已經 `已對焦` 時不切 |
@@ -35,7 +35,7 @@ disable-model-invocation: true
 | 情況 | 改用 |
 | --- | --- |
 | 要從需求問出規則與例子，或要寫成 FR／AC | 前者 `discovery`，後者 `spec`。本 skill 只管切分 |
-| 要把紅卡問到收斂 | `clarify` |
+| 要把紅卡問到收斂 | `discovery` |
 | 要決定切完之後**先做哪一則** | 那是排序，屬於 `task-breakdown`。本 skill 只切，不排 |
 | 要跑四色卡診斷、或判定這則 story 就不就緒 | `example-mapping` |
 
@@ -180,7 +180,7 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 
 切分紀錄追加進呼叫它的那個 feature 目錄的 `splitting.md`（`specs/ongoing/<date>-<feature>/splitting.md`；
 單獨使用時 `specs/ongoing/<date>-<topic-slug>/splitting.md`），一次切分一個 `## 切分：` 區塊，舊的不刪。
-不放進 `discovery.md` 或 `spec.md`——那兩份的格式由各自的 skill 與腳本定義。不修改專案其他既有檔案：
+不放進 `spec.md`——它的格式由 `spec` 與 `check_spec.py` 定義。不修改專案其他既有檔案：
 
 ```markdown
 ## 切分：<原始 story>
@@ -224,6 +224,6 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 
 | 誰呼叫 | 改哪一份 |
 | --- | --- |
-| `discovery`（還沒有規則） | `discovery.md` 的 `## 粗切 story`，一則一行 |
+| `discovery`（還沒有規則） | `spec.md` 的 `## User Stories`，一則一個 `### US-<n> · <slug>` 加「身為…」一句 |
 | `spec`（規則已寫、`spec.md` 還沒 `已對焦`） | `spec.md` 的 `## User Stories`：搬 FR 到它的新 story 底下，編號不變；之後由 `formulation` 寫成 `.feature` |
-| `spec.md` 已經 `已對焦` | 不切。`.feature` 的檔名與 tag 已經掛在舊的切法上；回 `discovery` 開一題，走一輪再改 |
+| `spec.md` 已經 `已對焦` | 不切。`.feature` 的檔名與 tag 已經掛在舊的切法上；開一題補問題、`discovery` 問過再改 |

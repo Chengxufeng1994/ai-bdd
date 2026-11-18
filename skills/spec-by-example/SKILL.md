@@ -18,11 +18,11 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把 `待對焦` 的規格寫成幾條可 demo、只用業務語言的長流程，讓需求方對著它判就緒 |
-| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`待對焦`、`## Open Questions` 是「（無）」）、`docs/CONTEXT.md`（有的話） |
-| **寫** | `specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`；有標記時 `spec.md` `## Open Questions` 的新列 |
+| **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`待對焦`、沒有待答的補問題）、`docs/CONTEXT.md`（有的話） |
+| **寫** | `specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`；有標記時 `spec.md` `## Open Questions` 的新題 |
 | **上游** | `spec` 第 5 步（`example-mapping` 跑完診斷之後） |
-| **下游** | `example-mapping` 提就緒問句；有 `# [need clarification]` → `spec`〈退回 discovery〉 |
-| **不做** | 不執行、不訪談、不改 FR／AC／狀態、不寫 `discovery.md`、不寫 `spec.md` 沒有的結果 |
+| **下游** | `example-mapping` 提就緒問句；有 `# [need clarification]` → `spec`〈有洞〉 |
+| **不做** | 不執行、不訪談、不改 FR／AC／狀態、不填答案、不寫 `spec.md` 沒有的結果 |
 
 **它是規格，不是測試。** 不執行、沒有 step definition、不進 `features/`。程式版本的
 `features/*.feature` 照舊由 `formulation` 在 `已對焦` 之後寫，來源照舊只有 `spec.md`。
@@ -38,7 +38,7 @@ disable-model-invocation: true
 
 | 情況 | 改用 |
 | --- | --- |
-| `spec.md` 不存在或還有洞 | `spec`；`discovery.md` 沒收斂 → `discovery` |
+| `spec.md` 不存在或還有洞 | `spec`；還沒問完（結束方式不是 `收斂`／`喊停`）→ `discovery` |
 | 判就緒、寫 `已對焦` | `example-mapping`，本 skill 寫完旅程交回給它 |
 | 寫可執行的 `features/*.feature` | `formulation` |
 
@@ -50,7 +50,7 @@ disable-model-invocation: true
 
 ## 前置確認（Ask user）
 
-Check if: `spec.md` 狀態是 `待對焦`，`## Open Questions` 是「（無）」。不是的話停下來，
+Check if: `spec.md` 狀態是 `待對焦`，`## Open Questions` 沒有待答的補問題。不是的話停下來，
 說該回哪個 skill——有洞的規格寫成旅程，洞會被流暢的句子蓋住。
 
 ## 流程
@@ -59,7 +59,7 @@ Check if: `spec.md` 狀態是 `待對焦`，`## Open Questions` 是「（無）�
 | --- | --- | --- |
 | 1 | 讀 `spec.md`，挑旅程 | — |
 | 2 | 照 `rules/journey-format.md` 寫旅程 | — |
-| 3 | 定不下來的，就地標記並同時寫進 `spec.md` 的 `## Open Questions` | 不問——不訪談 |
+| 3 | 定不下來的，就地標記並同時在 `spec.md` 的 `## Open Questions` 開一題 | 不問——不訪談 |
 | 4 | 跑 `check_spec.py`，第 17 項要過 | — |
 | 5 | 交回 `spec` 或 `example-mapping` | — |
 
@@ -79,16 +79,16 @@ MUST NOT: 寫出 `spec.md` 沒有的結果、規則或例子。旅程不執行�
 
 ### 3. 定不下來的，就地標記並寫進補問
 
-IMPORTANT: 標記與 `spec.md` 的 `## Open Questions` 的那一列要**同時**寫。只標在旅程裡，`spec` 與
-`example-mapping` 看的 `spec.md` 的 `## Open Questions` 仍是「（無）」，就緒問句照樣會提出來——洞安靜地留在
+IMPORTANT: 標記與 `spec.md` `## Open Questions` 的那一題要**同時**寫。只標在旅程裡，`spec` 與
+`example-mapping` 看的 `spec.md` 仍然沒有待答的補問題，就緒問句照樣會提出來——洞安靜地留在
 一份沒有人會再讀的檔案裡。
 
 寫到一半發現 `spec.md` 推不出來的東西（某個結果沒有 AC、兩條 AC 在同一條流程裡打架、
 流程缺一個前置狀態）：
 
 - 旅程裡緊貼那一行標 `# [need clarification] <問題>`
-- `spec.md` 的 `## Open Questions` 加一列，照 `../spec/references/spec-format.md`
-  的寫法，句尾標明哪條旅程（`—— 見 acceptance/<檔名>`）
+- `spec.md` 的 `## Open Questions` 開一題補問題（`Q-<n>` 待答），照 `../spec/references/spec-format.md`
+  〈寫規格時發現的洞〉的寫法，`**影響**` 那一行標明哪條旅程（`—— 見 acceptance/<檔名>`）
 
 不要自己答、不要問需求方——本 skill 跟 SPEC 一樣不訪談。
 
@@ -104,7 +104,7 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 
 | 旅程裡 | 交給 |
 | --- | --- |
-| 有任何 `# [need clarification]` | `spec` 的〈退回 discovery〉，由它把 `discovery.md` 改回 `澄清中` |
+| 有任何 `# [need clarification]` | 每一處都已開成補問題；交回 `spec` 的〈有洞〉，由它把狀態改回 `澄清中` |
 | 沒有 | `example-mapping` 提就緒問句，告訴需求方旅程在 `acceptance/` |
 
 ### 再跑：修補，不重寫
@@ -117,7 +117,7 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 
 `specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
 命名。骨架與六條規則見 `rules/journey-format.md`，完整範例見
-`examples/借書看到期日.feature`。有標記時另有 `spec.md` `## Open Questions` 的新列。
+`examples/借書看到期日.feature`。有標記時另有 `spec.md` `## Open Questions` 的新題。
 
 ## Verification
 
@@ -126,7 +126,7 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 - [ ] 每個 `Example:` 上方都有 `@covers-`，且每一個都指得到 `spec.md` 的 AC
 - [ ] 每個 `Then` 都指得出它是哪一條被 cover 的 AC；指不出來的沒有寫
 - [ ] 旅程裡沒有 API、HTTP、欄位名、selector、資料表（`rules/journey-format.md` 第 1 條）
-- [ ] 每個 `# [need clarification]` 在 `spec.md` 的 `## Open Questions` 都有對應的一列，標明哪條旅程
+- [ ] 每個 `# [need clarification]` 在 `spec.md` 的 `## Open Questions` 都有對應的一題 `待答`，標明哪條旅程
 - [ ] 跑了 `check_spec.py`，第 17 項過，輸出貼在回報裡
 - [ ] 沒有改 `spec.md` 的 FR／AC，也沒有自己答或去問需求方
 - [ ] 再跑時沒動到的旅程沒有被重寫

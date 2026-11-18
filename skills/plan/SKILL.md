@@ -19,7 +19,7 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把一份已對焦的規格變成計畫：先定用什麼做、seam、模組、契約、每個 AC 在哪一層測，再排哪裡危險、能不能並行、合回時哪些檔會相撞 |
-| **讀** | `spec.md`（`已對焦`）、涵蓋的 `.feature`、`discovery.md` 技術面向的已答題、專案既有的結構與文件、`docs/TECH.md`（有的話） |
+| **讀** | `spec.md`（`已對焦`）、涵蓋的 `.feature`、`spec.md` `## Open Questions` 技術面向的已答題、專案既有的結構與文件、`docs/TECH.md`（有的話） |
 | **寫** | `specs/ongoing/<date>-<feature>/plan.md` |
 | **上游** | `formulation`（`.feature` 寫好之後，使用者叫 `/plan`） |
 | **下游** | `task-breakdown`（照這份計畫拆成票） |
@@ -38,7 +38,7 @@ disable-model-invocation: true
 
 | 情況 | 改用 |
 | --- | --- |
-| 還沒有 `spec.md`，或狀態不是 `已對焦` | `spec`（連 `discovery.md` 都沒有就先 `discovery`） |
+| 還沒有 `spec.md`，或狀態不是 `已對焦` | `spec`（連 `spec.md` 都沒有就先 `discovery`） |
 | 還沒有 `.feature` | `formulation` |
 | **要改 FR、AC、story、範圍** | `spec`——不是這裡 |
 | `.feature` 寫了 seam 驗不到的行為 | `formulation`，本 skill 只指出來 |
@@ -52,7 +52,7 @@ disable-model-invocation: true
 
 ## 前置確認（Ask user）
 
-Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 是「（無）」，而且它涵蓋的 `.feature` 已經
+Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒有待答的補問題，而且它涵蓋的 `.feature` 已經
 寫好。任何一項不成立就停下，說該回上表的哪個 skill——規格還有洞時定的技術決定，定的是一份還不存在的需求。
 
 ---
@@ -74,7 +74,7 @@ Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 是
 | --- | --- |
 | `spec.md` 的 `## User Stories` | 每條 FR 與 AC——seam 要看過具體的 AC 才推得出來，測試層級要逐個 AC 標；風險要指得出從哪條規則長出來 |
 | `spec.md` 的 `## Assumptions / Constraints`、`## Non-Functional Requirements` | 外部限制與品質屬性，`## Tech Stack`、`## Boundaries`、`## Risks` 的來源 |
-| `discovery.md` `## Open Questions` 裡技術面向、狀態 `已答` 的題 | **技術決定的原始素材**（seam、模組邊界、契約、既有資產、測試慣例），行尾標 `← Q-<n>` |
+| `spec.md` `## Open Questions` 裡技術面向、狀態 `已答` 的題 | **技術決定的原始素材**（seam、模組邊界、契約、既有資產、測試慣例），行尾標 `← Q-<n>` |
 | 涵蓋的每個 `.feature` | 場景與 tag——第 4 步對照 seam；哪些場景會一起被一個風險影響 |
 | 專案的 Makefile、README、`CLAUDE.md`、架構文件、既有程式碼 | `## Commands`、`## Project Structure`、`## Code Style` 的來源，標 `← 專案 <路徑>`；找既有的 seam；哪些檔是產生的、哪些介面會長大 |
 | `docs/TECH.md`（有的話） | 技術現況：Tech Stack 到 Boundaries 從這裡抄，逐條確認現在還成立，標 `← 專案 docs/TECH.md` |
@@ -95,14 +95,14 @@ step definition 的形狀。
 
 **Ask user: 把 seam 攤出來確認再寫。** 三種情況：
 
-| `discovery.md` 裡 `面向` 為 `seam` 的題 | 怎麼做 |
+| `## Open Questions` 裡 `面向` 為 `seam` 的題 | 怎麼做 |
 | --- | --- |
 | `已答` | 只是確認，行尾標 `← Q-<n>` |
 | `n/a`（答案欄寫了為什麼不適用） | 照那個理由選最外層能驗到行為的一層，行尾標 `← Q-<n>` |
 | 沒有這題，或還 `待答` | 提出你的判斷、標 `← 推論`，`## Further Notes` 的「推論的技術決定」記一條「seam 沒問過」 |
 
 MUST NOT: 把 seam 的討論變成需求訪談。談的時候發現需求有洞，寫進 `## 缺口` 交回 `spec`，**不要順手問掉**——
-這一步沒有把答案寫進 `discovery.md` 的權限，順口問到的答案只活在這一次對話裡。
+這一步沒有把答案寫進 `## Open Questions` 的權限，順口問到的答案只活在這一次對話裡。
 
 IMPORTANT: seam 一旦寫進 `plan.md` 就往下傳——IMPLEMENT 照著打，REVIEW 把「沒人同意過的 seam」當成 finding。
 
@@ -161,7 +161,7 @@ MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story、範圍，
 | **技術選擇** | 哪個 library、欄位叫什麼 | `## Further Notes` 的「留給 IMPLEMENT 的技術選擇」 |
 | **執行上的選擇** | 哪張票先做、某個檢查要不要加 | 留給 `task-breakdown` 或 IMPLEMENT 決定 |
 | **場景驗不到** | 第 4 步找到的 | 交回 `formulation`（換說法）或 `spec`（換驗法） |
-| **需求的洞** | 某條規則在某個情況下該怎麼做，沒人說過；兩條 FR 對同一個介面假設不一樣 | 告訴使用者跑 `spec`；它會再退回 `discovery` |
+| **需求的洞** | 某條規則在某個情況下該怎麼做，沒人說過；兩條 FR 對同一個介面假設不一樣 | 告訴使用者跑 `spec`；它開成補問題、交給 `discovery` 問 |
 
 ---
 
@@ -170,8 +170,7 @@ MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story、範圍，
 一個 feature 一份 `specs/ongoing/<date>-<feature>/plan.md`。骨架照抄 `references/plan-format.md`，技術決定
 七節照 `references/tech-format.md`。
 
-MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md`，**不修改專案既有的任何檔案**，包括 `spec.md`、
-`discovery.md` 與 `.feature`。
+MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md`，**不修改專案既有的任何檔案**，包括 `spec.md` 與 `.feature`。
 
 ## Verification
 
@@ -191,7 +190,7 @@ MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md`，**不修改專案既�
 
 告訴對方：
 
-1. **seam 是哪一層**、是確認 `discovery.md` 裡問過的還是推的、使用者確認了沒；動哪些模組、新的契約有哪些、
+1. **seam 是哪一層**、是確認 `## Open Questions` 裡問過的還是推的、使用者確認了沒；動哪些模組、新的契約有哪些、
    幾個決定標了 `推論`
 2. 幾個場景 seam 驗不到、交回給誰
 3. 幾條風險、幾條影響程度「高」

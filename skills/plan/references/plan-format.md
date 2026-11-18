@@ -2,8 +2,7 @@
 
 照抄即可。讀這份的時機：第 2 步寫技術決定之前，以及第 4 步寫執行計畫之前。
 
-一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/plan.md`，跟同目錄的 `spec.md`、
-`discovery.md` 配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
+一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/plan.md`，跟同目錄的 `spec.md` 配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
 
 它裝兩件事：前半是**技術決定**——用什麼做、seam、模組、契約、schema、測試層級，七節的寫法見
 `tech-format.md`；後半是**執行計畫**——這批怎麼排、哪裡危險、能不能並行，以及 `## 缺口`。要做成什麼
@@ -37,7 +36,7 @@
 這份計畫自己的洞，以及 `task-breakdown` 拆票時發現技術決定沒定案的。
 沒有就寫「沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切」。
 
-- <缺口>：<需求的洞（回 `spec`，它再退回 `discovery`）、技術決定的洞（回 `plan` 補）、`.feature` 寫了 seam
+- <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、技術決定的洞（回 `plan` 補）、`.feature` 寫了 seam
   驗不到的行為（回 `formulation`），或執行上的選擇（留給 IMPLEMENT 決定）>
 
 ## Further Notes

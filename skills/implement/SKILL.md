@@ -282,7 +282,7 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 └── specs/ongoing/<date>-<feature>/tasks.md   只改這張票的票節：勾驗收條件、寫缺口
 ```
 
-MUST: 不修改 `spec.md`、`discovery.md`、`plan.md`、`.feature` 的任何場景文字；`tasks.md` 只改這張票的票節裡歸 `implement` 的行（勾、`**檢查點**:`、`#### 缺口`）。
+MUST: 不修改 `spec.md`、`plan.md`、`.feature` 的任何場景文字；`tasks.md` 只改這張票的票節裡歸 `implement` 的行（勾、`**檢查點**:`、`#### 缺口`）。
 同時做的幾個 session 各寫各的票節才不會互相覆寫；設計的洞由 `task-breakdown` 再跑時從票節搬進
 `plan.md` 的 `## 缺口`，再交回 `spec`。
 
@@ -295,7 +295,7 @@ MUST: 不修改 `spec.md`、`discovery.md`、`plan.md`、`.feature` 的任何場
 - [ ] 寫新步驟前 grep 過既有的 step definition（實測場 `make steps`），沒有同一句話兩種寫法
 - [ ] 測試替身回的是副本，不是活的指標
 - [ ] handler、mapper、presenter 裡沒有規則
-- [ ] `spec.md`、`discovery.md`、`plan.md`、`.feature` 的場景文字都沒有被改；`tasks.md` 的 diff 只落在這張票的票節
+- [ ] `spec.md`、`plan.md`、`.feature` 的場景文字都沒有被改；`tasks.md` 的 diff 只落在這張票的票節
 - [ ] `.feature` 只有涵蓋它的票全勾完、整個檔的場景都綠了才改 `@review`，否則留 `@wip`
 - [ ] 這張票是一個 commit，只含這張票動到的檔
 - [ ] 在 worktree 裡做的：衝突照種類解（`產生` 重新產生、`追加` 取聯集），碰到 `爭用` 或沒列到的衝突停下來回報；閘門在合併後的程式碼上重跑過、綠了才合回

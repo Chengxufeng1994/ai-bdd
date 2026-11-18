@@ -22,7 +22,7 @@ MUST: 同時回報給使用者，建議回 `spec` 寫進 `spec.md` 的 `## Open 
 MUST NOT: 照抄壞掉的數字。那會產出一個**任何正確實作都永遠過不了**的場景，
 而它看起來跟其他場景一模一樣。
 
-MUST NOT: 寫入 `spec.md` 或 `discovery.md`——前者是 `spec` 的產物，後者是 DISCOVERY 的。
+MUST NOT: 寫入 `spec.md`——規則是 `spec` 的產物，問答與原文是 DISCOVERY 的。
 
 ## 判準的界線
 

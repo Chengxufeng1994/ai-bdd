@@ -41,7 +41,7 @@ cp -r benchmark/skeleton/go runs/go-personal-memo
 
 `runs/` 是 gitignored，所以新 clone 上不存在——`mkdir -p` 不能省。
 
-然後把該 case 的輸入檔**整份**交給 `discovery`（開場會逐字收進 `discovery.md` 的 `## 原文`），
+然後把該 case 的輸入檔**整份**交給 `discovery`（開場會逐字收進 `spec.md` 的 `## 原文`），
 再跑 `discovery`：
 
 ```bash
@@ -58,10 +58,11 @@ cat benchmark/cases/personal-memo/input-brief.md
 
 ```
 runs/<lang>-<case>/
-├── specs/ongoing/<date>-<feature>/discovery.md     DISCOVERY 的問答紀錄，問到 已收斂
-├── specs/ongoing/<date>-<feature>/spec.md          SPEC（spec）寫、判到 已對焦
-├── specs/ongoing/<date>-<feature>/plan.md          PLAN（plan）的技術設計與票
-└── features/                               SPEC（formulation）產出的 .feature
+├── specs/ongoing/<date>-<feature>/spec.md          DISCOVERY 建檔與問答（## 原文、## Open Questions）、SPEC 寫規則、判到 已對焦
+├── specs/ongoing/<date>-<feature>/acceptance/      SPEC（spec-by-example）的驗收旅程
+├── features/                                       SPEC（formulation）產出的 .feature
+├── specs/ongoing/<date>-<feature>/plan.md          PLAN（plan）的技術決定與執行計畫
+└── specs/ongoing/<date>-<feature>/tasks.md         PLAN（task-breakdown）的票
 ```
 
 ## 兩條規則

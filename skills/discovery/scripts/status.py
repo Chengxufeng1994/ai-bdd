@@ -5,13 +5,13 @@
     python3 status.py [專案根目錄]        # 預設當前目錄
 
 這是一個**算出來的視圖，不是存起來的檔案**。每個數字都直接數自
-`specs/ongoing/<date>-<feature>/discovery.md` 的 `## Open Questions` 表：已答／n/a／待答數自
+`specs/ongoing/<date>-<feature>/spec.md` 的 `## Open Questions` 表：已答／n/a／待答數自
 狀態欄，追問覆蓋（業務面向＋技術面向）數自面向欄。存一份儀表板的話，
 同一個數字會有兩份，而它們遲早不一樣——這個 repo 已經發生過（map 檔頭寫 21
 個例子，實際 23）；追問覆蓋改成從表格算，就是為了不讓它也走上同一條路。
 
 找不到資料時不猜、不印出「已就緒」。`specs/` 不存在、或底下沒有任何
-`discovery.md`，兩種都算「找不到」。單一 `discovery.md` 也有三種算「壞」的情況，訊息
+`spec.md`，兩種都算「找不到」。單一 `spec.md` 也有三種算「壞」的情況，訊息
 分開講因為修法不同：`## Open Questions` 一節整個缺席（標題缺漏或打錯）是
 檔案格式損壞；一節存在但零列，代表 DISCOVERY 沒問過任何問題，不是需求沒有
 疑點；表格裡有列的欄數不是 5，是那一列本身壞了。三種都指名是哪個檔案、
@@ -52,7 +52,7 @@ def _field(label: str, width: int) -> str:
 def parse_open_questions(
     text: str,
 ) -> tuple[bool, list[dict[str, str]], list[str]]:
-    """discovery.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
+    """spec.md 的 `## Open Questions` 表 -> (找到一節沒、題目列表、解析不出的列)。
 
     只讀那一節的表格列，不掃整份檔案：`## Document Overview` 底下也有表格，
     而**版本修訂歷史正好也是五欄**，跟下面用來擋壞列的欄數判斷相同——對整份
@@ -120,20 +120,17 @@ def legacy_hint(specs_dir: Path) -> str | None:
     """舊佈局的退件訊息；沒有舊佈局回 None。
 
     兩種舊佈局都會被新邏輯讀錯而不報錯，所以要在讀之前擋下：10-02 的
-    prd.md，與 11-13 把問答和原文放在 spec.md 裡、旁邊沒有 discovery.md 的。
+    prd.md，與 11-18 以前把問答和原文放在旁邊 discovery.md 的兩檔佈局。
     """
     for prd in sorted(specs_dir.glob("*/prd.md")):
         # 技術 spec.md 還在旁邊時要先讓位，否則第一個 mv 就撞檔。
         hint = ("先 `git mv spec.md design.md`，再 `git mv prd.md spec.md`"
                 if (prd.parent / "spec.md").exists() else "`git mv prd.md spec.md`")
         return f"{prd.parent} 是舊版佈局（prd.md）：{hint}"
-    for spec in sorted(specs_dir.glob("*/spec.md")):
-        if (spec.parent / "discovery.md").exists():
-            continue
-        text = spec.read_text(encoding="utf-8")
-        if re.search(r"^## (Open Questions|原文)\s*$", text, re.M):
-            return (f"{spec.parent} 是 11-13 佈局：把 `spec.md` 的 `## Open Questions` 與 "
-                    f"`## 原文` 搬到 `discovery.md`，`design.md` 的技術節併進 `plan.md`")
+    for disc in sorted(specs_dir.glob("*/discovery.md")):
+        return (f"{disc.parent} 是 11-18 以前的兩檔佈局：把 `discovery.md` 的 `## Open Questions`"
+                f"（表與小節）與 `## 原文` 搬進 `spec.md`、`## 粗切 story` 併進 `## User Stories`，"
+                f"`spec.md` 舊的 `## Open Questions` 清單每條開成一題 `Q-<n>` 待答，再 `git rm discovery.md`")
     return None
 
 
@@ -149,14 +146,14 @@ def main(root: Path) -> int:
         print(hint)
         return 1
 
-    specs_files = sorted(ongoing.glob("*/discovery.md"))
+    specs_files = sorted(ongoing.glob("*/spec.md"))
     if not specs_files:
         # 全部歸檔後 git 不留空的 ongoing/：那是做完了，不是還沒開始
         archived = [p for p in (specs / "sleeping").glob("*") if p.is_dir()]
         if archived:
             print(f"沒有進行中的 feature（specs/sleeping/ 有 {len(archived)} 個已歸檔）")
             return 0
-        print(f"{ongoing} 底下沒有任何 discovery.md —— 先跑 discovery")
+        print(f"{ongoing} 底下沒有任何 spec.md —— 先跑 discovery")
         return 1
 
     # 逐份先解析、逐份先報壞——三種壞法訊息分開講，因為修法不同：
