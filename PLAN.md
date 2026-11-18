@@ -79,7 +79,7 @@ IMPLEMENT／VERIFY 需要綁定技術棧；REVIEW 部分需要。
 
 ```
 specs/
-├── sleeping/<date>-<feature>/  做完的 feature：`archive` 整個目錄 git mv 過來；要修正時 `discovery` 喚醒、搬回 ongoing/
+├── sleeping/<date>-<feature>/  做完的 feature：`archive` 整個目錄 git mv 過來；要修正時 `spec` 喚醒、搬回 ongoing/
 └── ongoing/<date>-<feature>/   還在做的 feature
     ├── spec.md         DISCOVERY 原文、粗切 story、問答（決策史）
                         SPEC      要做成什麼：story 與優先級、FR、AC、角色、目標與不做的事、詞彙與聚合、邊界情況。活得比實作久

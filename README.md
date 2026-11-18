@@ -39,7 +39,7 @@
 | `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `task-breakdown` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
 | 產品程式碼、step definition、`@review` tag、票節勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
 | `docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md`（專案現況，只動 ai-bdd 區塊） | 專案 `docs/` | `archive` | 下一個 feature 的 `spec`：聚合與技術現況從這裡讀 |
-| `specs/sleeping/<date>-<feature>/`（做完的 feature 整個目錄） | `specs/sleeping/` | `archive`（`git mv`） | 要修正時，`discovery` 喚醒、搬回 `specs/ongoing/` |
+| `specs/sleeping/<date>-<feature>/`（做完的 feature 整個目錄） | `specs/sleeping/` | `archive`（`git mv`） | 要修正時，`spec` 喚醒、搬回 `specs/ongoing/`、狀態改回 `澄清中` |
 
 ## 每個 skill：職責與流程
 
@@ -220,7 +220,7 @@
 **職責**：把一個做完的 feature 併進專案的真實來源：`docs/` 四份現況檔照它增修，再把它的目錄搬進 `specs/sleeping/`
 
 - **上游**：`implement`（讓最後一張票完成的那次合回之後）
-- **下游**：無；要修正時由 `discovery` 喚醒，搬回 `specs/ongoing/`
+- **下游**：無；要修正時由 `spec` 喚醒，搬回 `specs/ongoing/`
 - **不做**：不訪談、不改 `spec.md`／票節／`.feature`、不改程式碼、不改寫 `docs/CONTEXT.md` 既有的段落、不動區塊外的內容、不判斷實作對不對
 
 1. 讀這個 feature 的 `spec.md`、`plan.md` 與 `docs/` 現況，列出要改的條目

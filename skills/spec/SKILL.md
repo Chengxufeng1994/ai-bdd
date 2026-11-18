@@ -33,6 +33,7 @@ disable-model-invocation: true
 - `discovery` 以 `收斂`（或 `喊停`）結束了，要把問答寫成規格
 - 開過補問題、`discovery` 問完又收斂了，要修補 `spec.md`
 - 要定這個 feature 的詞彙與聚合（寫在 `spec.md`，做完時由 `archive` 併進 `docs/`）
+- 要改一個已經在 `specs/sleeping/` 的 feature：先喚醒它，見 `references/wake-up.md`
 
 ## Skill Boundaries
 
@@ -57,6 +58,7 @@ disable-model-invocation: true
 - `../archive/references/domain-model-format.md` — `## Domain Concepts` 裡 `### 聚合與不變條件` 的骨架（與 `docs/DOMAIN-MODEL.md` 共用）
 - `examples/minimal-spec.md` — 一份 `已對焦` 的 `spec.md`，照 `../discovery/examples/interview-log.md` 寫成（題號、原話、原文對得上）
 - `../discovery/references/interview-log-format.md` — 訪談紀錄的五節與一題的欄位。**第 1 步讀紀錄時讀**
+- `references/wake-up.md` — 把 `specs/sleeping/` 的 feature 搬回來、狀態改回 `澄清中`。只在喚醒時讀
 - `../formulation/scripts/check_spec.py` — 交件前自檢（第 3 步）。**在隔壁 skill**：本 skill 只跑它，不改它
 
 ---

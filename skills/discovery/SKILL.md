@@ -64,7 +64,6 @@ disable-model-invocation: true
 - `references/persona-definition.md` — 角色五欄的判準、寫法與範例。識別角色、或冒出新角色時讀
 - `references/technical-probes.md` — 五個技術面向各問什麼、自己查還是問人。前沿碰到技術面向時讀
 - `references/stand-in-mode.md` — 需求方不在場時怎麼代演。只在代演時讀
-- `references/wake-up.md` — 把 `specs/sleeping/` 的 feature 搬回來改。只在喚醒時讀
 - `scripts/status.py` — 從紀錄的 `## 問答` 算紅卡與面向覆蓋。收尾核對時跑
 
 ## 前置確認（Ask user）
@@ -82,9 +81,10 @@ NEVER: 還沒把原文逐字寫進 `## 原文` 就開始問。問出來的答案
 
 ### 喚醒——要改的 feature 已經在 `specs/sleeping/`
 
-這次的需求是要**改一個做完的 feature 的 FR／AC** 時，不開新目錄，把它從 `specs/sleeping/` 搬回來；是**新的 story**、
-只是碰到同一批程式碼時，照常建檔。Ask user: 要不要喚醒——搬回來是使用者的決定。搬法、狀態與修訂歷史怎麼記、
-之後走哪些再跑規則 → `references/wake-up.md`。只在喚醒時讀。
+這次的需求是要**改一個做完的 feature 的 FR／AC** 時，不開新目錄——停下來，告訴使用者先跑 `/spec` 喚醒它：
+搬回 `specs/ongoing/`、把 `spec.md` 改回 `澄清中` 是 `spec` 的事（`../spec/references/wake-up.md`）。喚醒之後
+目錄回到 `specs/ongoing/`、`interview-log.md` 還在，照〈續跑〉追加一場 `### <日期> · 喚醒` Session 再問。是**新的
+story**、只是碰到同一批程式碼時，照常建檔。
 
 ### 代演模式——需求方不在場時
 

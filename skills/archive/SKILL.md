@@ -21,7 +21,7 @@ disable-model-invocation: true
 | **讀** | `specs/ongoing/<date>-<feature>/` 的 `spec.md`（`## Domain Concepts`）、`plan.md`（技術決定）、`tasks.md`（全部勾完）、涵蓋的 `.feature`（`@review`）、`docs/` 既有的四份檔 |
 | **寫** | `docs/CONTEXT.md`（只追加）；`docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md` 裡 ai-bdd 維護的區塊；`git mv` 這個 feature 的目錄到 `specs/sleeping/` |
 | **上游** | `implement`（讓最後一張票完成的那次合回之後） |
-| **下游** | 無；要修正時由 `discovery` 喚醒，搬回 `specs/ongoing/` |
+| **下游** | 無；要修正時由 `spec` 喚醒，搬回 `specs/ongoing/` |
 | **不做** | 不訪談、不改 `spec.md`／票節／`.feature`、不改程式碼、不改寫 `docs/CONTEXT.md` 既有的段落、不動區塊外的內容、不判斷實作對不對 |
 
 **只搬已經講定、已經做出來的東西。** `docs/` 是系統現在長怎樣；這一步不做任何新決定。
@@ -38,7 +38,7 @@ disable-model-invocation: true
 | --- | --- |
 | 還有票沒勾完、或某個 `.feature` 還是 `@wip`／`@ready` | `implement` 把票做完 |
 | 要改詞彙 | `spec`（寫在 `spec.md` 的 `## Domain Concepts`；做完時由本 skill 追加進 `docs/CONTEXT.md`） |
-| 要修正一個已經在 `specs/sleeping/` 的 feature | `discovery`（先問要不要喚醒） |
+| 要修正一個已經在 `specs/sleeping/` 的 feature | `spec`（先問要不要喚醒） |
 | 要判斷實作是不是真的滿足規格 | REVIEW／VERIFY（未實作） |
 
 ## 參考檔案
@@ -152,6 +152,6 @@ MUST NOT: 寫 `docs/` 底下這四份以外的任何檔，或改 `specs/` 底下
 
 1. `docs/` 改了哪幾份、哪些區塊；哪幾份沒動、為什麼
 2. 有沒有停下來問的衝突或手改過的區塊
-3. 這個 feature 已搬到 `specs/sleeping/<date>-<feature>/`；之後要修正它，跑 `discovery` 喚醒
+3. 這個 feature 已搬到 `specs/sleeping/<date>-<feature>/`；之後要修正它，跑 `spec` 喚醒
 4. `docs/` 只放結構（詞彙、聚合、資料表、技術現況）；行為的現況——規則怎麼算——住在 `features/*.feature`
    與 `specs/sleeping/` 裡那份 `spec.md`
