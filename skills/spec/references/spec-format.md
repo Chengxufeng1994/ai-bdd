@@ -3,6 +3,8 @@
 照抄即可。`spec` 寫它時讀這份；`example-mapping` 讀它攤地圖、`formulation` 翻
 `.feature`、`plan` 做技術設計、`task-breakdown` 切票時讀它寫出來的東西。
 
+它只寫**要做成什麼**，不寫用什麼做：Tech Stack、seam、模組、契約、測試層級由 `plan` 寫在 `plan.md`。
+
 一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/spec.md`。一份 `spec.md` 裝這個
 feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`spec` 寫規則時
 可以用 `story-splitting` 沿規則重切（`已對焦` 之前）。
@@ -24,20 +26,20 @@ feature 的全部 story——起點是 `discovery.md` 的 `## 粗切 story`，`s
 | `## Document Overview` | 狀態、最後更新、版本修訂歷史、核心關係人（照抄 `discovery.md`） | `spec` |
 | `## Background` | 業務問題與現在什麼在痛 | `spec` |
 | `## Goal` | 做成之後的樣子 | `spec` |
-| `## Scope — In / Out` | In 是這次要交付的能力；Out 分兩類，見下 | `spec` |
+| `## Scope` | 這次要交付的能力 | `spec` |
+| `## Out of Scope` | 這次不做的：延後或不做、為什麼；以及因此接受的風險 | `spec` |
 | `## Personas` | `### P-<n>` | `spec`（五欄可留「（無資料）」） |
+| `## Glossary` | 這個 feature 定下來的詞；做完時 `archive` 追加進 `docs/CONTEXT.md` | `spec`（第 4 步） |
 | `## User Stories` | `### US-<n> · <slug>`，底下三個分組 `#### FR`／`#### NFR`／`#### Q` | `spec` |
 | `## Non-Functional Requirements` | 跨 story 的品質屬性 | `spec` |
 | `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | `spec`（問過的引 `Q-<n>`，沒問過的引 `PRD §n`） |
 | `## Domain Model` | 這個 feature 新增或改動的聚合與不變條件；骨架見 `../../archive/references/domain-model-format.md` | `spec`（第 4 步）；做完時 `archive` 併進 `docs/DOMAIN-MODEL.md` |
 | `## Success Metrics` | 能量化就寫數字；量不出來就寫「怎麼知道做成了」 | `spec` |
-| 技術部分七節：`## Tech Stack` 到 `## Testing Decisions` | 用什麼做、seam、模組、契約、每個 AC 在哪一層測 | `spec`，`已對焦` 之後（第 6 步） |
-| `## 回 DISCOVERY 補問` | 寫規格時發現、問答裡推不出來的洞 | `spec`；`feature-mapping`、`example-mapping` 與 `spec-by-example` 也會加列 |
+| `## Open Questions` | 寫規格時發現、問答裡推不出來的洞，要送回 `discovery` | `spec`；`feature-mapping`、`example-mapping` 與 `spec-by-example` 也會加列 |
 | `## Further Notes` | 放不進其他節、但下一個接手的人會想知道的 | 任何一步 |
 
-順序固定，不因為某節內容少而調換或省略標題。`## Background` 到 `## Success Metrics` 是**需求部分**，
-需求方判就緒只看它；技術部分在 `已對焦` 之後才寫，七節的寫法見 `tech-format.md`。風險、要不要並行、
-接合點不在這份文件裡，在 `plan.md`，格式見 `../../plan/references/plan-format.md`。
+順序固定，不因為某節內容少而調換或省略標題。需求方判就緒讀的就是整份。技術決定、風險、要不要並行、
+接合點都不在這份文件裡，在 `plan.md`，格式見 `../../plan/references/plan-format.md`。
 
 ---
 
@@ -106,19 +108,28 @@ MUST NOT: 在這一節列「誰卡著哪幾題」。理由不是「那是算出�
 在算它；理由是**每一題自己在它的小節裡宣告掛在誰身上**，在這裡再列一份就是同一
 個事實兩份，而它們遲早不一樣。
 
-## Scope — In / Out
+## Scope
 
-**In** 是這次要交付的能力。
+這次要交付的能力，一行一項，行尾標來源。
 
-**Out** 分兩類，因為**誰能回答**不同：
+## Out of Scope
 
-明確排除的能力：
-- <這次不做什麼>
+這次不做的，一行一項，寫明是**延後**還是**不做**、為什麼：
+
+```markdown
+## Out of Scope
+
+- 電子書借閱 —— 不做：館方沒有授權 ← Q-4
+- 預約排隊 —— 延後：要先有通知管道，下一版再做 ← Q-9
 
 接受的風險：
-- <因此接受了什麼後果>
+- 熱門的書被同一人一借再借，其他讀者排不到 ← Q-9
+```
 
-推不出來、需要回頭問的缺口不在這裡列——寫進 `## 回 DISCOVERY 補問`，由 `discovery` 開成一題。
+**延後與不做分開寫**：延後的是下一版要撿回來的，不做的是這個系統永遠不會有的。混在一起，下一版就找不到
+該撿回來的那幾項。
+
+推不出來、需要回頭問的缺口不在這裡列——寫進 `## Open Questions`，由 `discovery` 開成一題。
 
 ## Personas：在三欄上加兩欄
 
@@ -235,11 +246,11 @@ MUST: `#### Q` 只列**狀態為「待答」**的問題。已答的不是紅卡�
 某條 FR 或 AC，留在這裡會讓地圖上的紅卡數量永遠不歸零。**這一條 `check_spec.py`
 會檢查**——它拿 `#### Q` 的題號去對 `## Open Questions` 表的「狀態」欄。
 
-MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**這一條
+MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `discovery.md` 的 `## Open Questions` 表。**這一條
 `check_spec.py` 會檢查。**
 
 **不是每張紅卡都屬於某則 story。** 範圍題在開場產生、技術面向的題目在前沿逐輪
-產生，那時候還沒有任何 story——它們只住在 `## Open Questions`，不進任何 `#### Q`。
+產生，那時候還沒有任何 story——它們只住在 `discovery.md` 的問答表，不進任何 `#### Q`。
 
 ### 一條 FR 服務多則 story
 
@@ -262,7 +273,7 @@ MUST: 這裡引用的每個 `Q-<n>` 都要存在於 `## Open Questions` 表。**
 
 `## Background`、`## Goal`、`## Success Metrics` 的每一句、
 `## User Stories` 底下的每條 FR／AC 與 story 專屬的 NFR、
-`## Non-Functional Requirements` 的每條 NFR、`## Scope — In / Out` 的每條邊界、
+`## Non-Functional Requirements` 的每條 NFR、`## Scope` 與 `## Out of Scope` 的每一條、
 `## Assumptions / Constraints` 的每條，
 行尾都要標來源，三選一：
 
@@ -443,25 +454,28 @@ Constraints`，跟未驗證的假設放同一節，但意思不同：**假設是
 的」，限制是「問過、答案是做不到或不准」。**
 
 `spec` 寫這兩節時：`discovery.md` 裡答得出來的量化屬性進 NFR、答得出來的不可協商
-限制進 Constraints；問答裡沒有答案的進 `## 回 DISCOVERY 補問`，不勉強塞進 NFR 或
+限制進 Constraints；問答裡沒有答案的進 `## Open Questions`，不勉強塞進 NFR 或
 Constraints 湊數。
 
 ---
 
-## Open Questions 與 原文：住在 `discovery.md`
+## 原文與問答表：住在 `discovery.md`
 
-問答表、小節與 `## 原文` 由 `discovery` 維護，格式見
+`## 原文`、問答表與小節由 `discovery` 維護，格式見
 `../../discovery/references/discovery-format.md`。本文件的來源標記指向它們。
 
-## 回 DISCOVERY 補問
+## Open Questions
 
 寫規格時發現的洞：問答推不出某條規則、兩條 FR 打架、例子缺前置狀態。
-一條一列，寫清楚**影響什麼定不下來**：
+一條一列，寫清楚**影響什麼定不下來**。
+
+**跟 `discovery.md` 的 `## Open Questions` 不是同一張表。** 那張是問答表，每一題有編號與狀態；這一節是
+**要送回去問的洞**，還沒有編號——`discovery` 續跑時才把每一列開成 `Q-<n>`。
 
 ```markdown
-## 回 DISCOVERY 補問
+## Open Questions
 
-- FR-2 沒說月租到期當天算不算有效，seam 的 Given 寫不出來 —— 影響 AC-2.1 的前置狀態
+- FR-2 沒說月租到期當天算不算有效，AC 的 Given 寫不出來 —— 影響 AC-2.1 的前置狀態
 ```
 
 MUST NOT: 在這裡順手決定掉。`spec` 不訪談，洞只能記在這裡，並把 `discovery.md`
@@ -484,12 +498,6 @@ FR／AC 之後，這一節對應的列才刪。非空時 `example-mapping` 不�
 典型內容：試過但放棄的做法與放棄的理由、這個 feature 跟另一個進行中的工作
 會撞在哪、某個決定當時的氣氛（誰有疑慮、後來為什麼還是這樣定）。
 
-技術部分寫完之後再多兩小段，因為沒有別的節裝它們：
-
-- **推論的技術決定**：技術部分每條標 `← 推論` 的決定再列一次，一行一條指回它在哪一節——讀的人
-  一眼看出哪些技術決定沒人確認過
-- **留給 IMPLEMENT 的技術選擇**：寫技術部分時發現、但不影響任何 AC 的選擇（哪個 library、欄位叫什麼）
-
 MUST NOT: 把應該進其他節的東西丟進來。這一節是**最後手段**，不是收納箱——
 一條規則進了這裡，下游沒有任何東西會去讀它。判準：說得出它該進哪一節嗎？
 說得出就進那一節。
@@ -502,10 +510,24 @@ MUST NOT: 把應該進其他節的東西丟進來。這一節是**最後手段**
 feature 流程裡誰在做事，換一個 feature 就換一批；詞彙不是。角色若日後真的
 需要跨 feature 累積，套 rule of three 再建，不預先做。
 
-**詞義的決策住 `discovery.md` 的 `## Open Questions`，不另設 glossary 一節。** DISCOVERY 發現
-「訪客」有歧義時，那就是一題——答案進問答表與小節，跟其他問題一視同仁。
-`spec` 之後從已答的問題把定義抬進
-`docs/CONTEXT.md`；`spec.md` 沒有詞彙表，但詞義的來源與拍板的時間點都查得到。
+**詞義的決策住 `discovery.md` 的問答表，定下來的詞住 `spec.md` 的 `## Glossary`。** DISCOVERY 發現
+「訪客」有歧義時，那就是一題——答案進問答表與小節，跟其他問題一視同仁。`spec` 從已答的題把定義抄進
+`## Glossary`，每一列的來源指回那一題；這個 feature 做完時，`archive` 把它追加進 `docs/CONTEXT.md`。
+
+## Glossary
+
+欄位固定，`archive` 才能原樣追加進 `docs/CONTEXT.md`：
+
+```markdown
+## Glossary
+
+| 詞 | 定義 | 來源 | 為什麼要定義 |
+| --- | --- | --- | --- |
+| 到期日 | 借出當天加 14 天，遇休館日順延到下一個開館日 | Q-6 | 「兩週內還」的兩週不是 14 個開館日 |
+```
+
+第四欄不是裝飾——一個不需要解釋為什麼要定義的詞，通常本來就沒有歧義，列進來只是雜訊。
+沒有要定義的詞就寫「（無）」，並接一句為什麼空。
 
 ## 為什麼問答與規則分兩份檔
 
