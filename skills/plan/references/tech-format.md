@@ -1,10 +1,10 @@
-# `spec.md` 技術部分的骨架
+# `plan.md` 技術決定的骨架
 
-照抄即可。讀這份的時機：第 6 步，需求部分已經 `已對焦`、準備寫技術部分的時候。
+照抄即可。讀這份的時機：`plan` 第 2 步，`spec.md` 已經 `已對焦`、`.feature` 寫好、準備寫技術決定的時候。
 
-技術部分接在需求部分的 `## Success Metrics` 之後、`## 回 DISCOVERY 補問` 之前，七節，順序固定。
-它回答「用什麼做、怎麼驗」；要做成什麼在需求部分，怎麼排、哪裡危險、能不能並行在 `plan.md`
-（`../../plan/references/plan-format.md`）。
+技術決定是 `plan.md` 的前半，接在 `## Overview` 之後、`## Risks` 之前，七節，順序固定（整份的順序見
+`plan-format.md`）。它回答「用什麼做、怎麼驗」；要做成什麼在 `spec.md`，怎麼排、哪裡危險、能不能並行在
+`plan.md` 的後半。
 
 ```markdown
 ## Tech Stack
@@ -20,18 +20,18 @@
 
 ---
 
-## 技術部分怎麼寫
+## 技術決定怎麼寫
 
 上面骨架七節的寫法。
 
-**每份 spec 自成一體。** `## Tech Stack`、`## Commands`、`## Project Structure`、`## Code Style`
+**每份 `plan.md` 自成一體。** `## Tech Stack`、`## Commands`、`## Project Structure`、`## Code Style`
 跟這個 feature 無關，每份照樣寫——讀者不必去翻別的檔。專案自己有這些文件（`CLAUDE.md`、
 `docs/ARCHITECTURE.md`、Makefile）時照它們寫，標 `← 專案 <路徑>`；有 `docs/TECH.md`（前面的 feature
 做完時 `archive` 寫的現況）就從它抄過來，逐條確認現在還成立再寫，標 `← 專案 docs/TECH.md`。這次
-要改的條目照常標它自己的來源——`archive` 做完時照它更新 `docs/TECH.md`。它們是寫的當下的快照：專案之後改了，舊 spec 不會跟著改。
+要改的條目照常標它自己的來源——`archive` 做完時照它更新 `docs/TECH.md`。它們是寫的當下的快照：專案之後改了，舊的 `plan.md` 不會跟著改。
 
-**技術部分改了要留紀錄**：票已經切出去之後，任何動到 seam、介面、schema 的改動都在
-`### 版本修訂歷史` 記一列——實作者可能已經照舊的做了一半。
+**技術決定改了要留紀錄**：票已經切出去之後，任何動到 seam、介面、schema 的改動都在 `plan.md` 的
+`## Further Notes` 記一列（日期、改了什麼、為什麼）——實作者可能已經照舊的做了一半。
 
 ## 來源標記：四選一
 
@@ -43,7 +43,7 @@
 | 標記 | 意思 |
 | --- | --- |
 | `PRD §x` | 同目錄 `discovery.md` 的 `## 原文` 這樣寫（引用它的章節或段落）——需求方帶來的原始輸入的逐字副本 |
-| `Q-<n>` | 來自 `discovery.md` `## Open Questions` 某一題的答案（通常是技術面向、`歸屬` 指向這一節的題），`<n>` 對應那一列的 `Q` 欄 |
+| `Q-<n>` | 來自 `discovery.md` `## Open Questions` 某一題的答案（通常是技術面向的題：seam、模組邊界、契約、既有資產、測試慣例），`<n>` 對應那一列的 `Q` 欄 |
 | `專案 <路徑>` | 從專案既有的檔讀來的事實（`← 專案 Makefile`、`← 專案 docs/ARCHITECTURE.md`）——Commands、Project Structure、Code Style 多半是這種 |
 | `推論` | 以上都不是，是從別的地方推導出來的 |
 
@@ -54,14 +54,14 @@
 ```
 
 MUST: 這個標記不是裝飾。少了它，「這個決定是從某條 FR 或某題答案推出來的」跟
-「這個決定是寫的人順手定的」在 `spec.md` 上長得一模一樣——完整範例見本文最後的
-〈範例：技術部分〉。整份文件的來源欄全是 `推論` 時，代表 DISCOVERY 的技術那一輪沒有真的
-發生。`推論` 可以用，但每一條同時列進 `## Further Notes` 的「推論的技術決定」。
+「這個決定是寫的人順手定的」在 `plan.md` 上長得一模一樣——完整範例見本文最後的
+〈範例：技術決定〉。整份文件的來源欄全是 `推論` 時，代表 DISCOVERY 的技術那一輪沒有真的
+發生。`推論` 可以用，但每一條同時列進 `plan.md` `## Further Notes` 的「推論的技術決定」。
 
-**已知缺口**：技術部分的 `← Q-<n>` 目前沒有 script 檢查——`check_spec.py` 只查 `## User Stories`
+**已知缺口**：技術決定的 `← Q-<n>` 目前沒有 script 檢查——`check_spec.py` 只查 `## User Stories`
 底下的 FR／AC。等 `review` 做鏈稽核時接手。
 
-`## 回 DISCOVERY 補問` 與 `## Further Notes` 不在這條規則的範圍內——它們記的正是還沒有來源的東西。
+`## 缺口` 與 `## Further Notes` 不在這條規則的範圍內——它們記的正是還沒有來源的東西。
 
 `## Testing Decisions` 只有 **Seam** 的決定在範圍內，**「每個 Example 的
 測試層級」那張表不在**——它的單位是場景，不是決定，而且它的標記永遠只可能是
@@ -135,7 +135,7 @@ MUST NOT: 在這一節寫「已經決定好的技術事項」——那是 `## Im
 找得到、但在這個環境跑不起來時，照寫它（標來源），另寫一行 `替代閘門（本環境）` 標 `← 推論`，並在
 `## Further Notes` 記為什麼——這行只為這次的環境寫，`archive` 不把它寫進 `docs/TECH.md`。
 `跑單一 .feature` 給 `implement` 判 `@review` 用（「整個檔的場景都綠了」）。`跑場景` 與 `閘門` 兩行一定要有——`task-breakdown` 把它們抄進每張票的 `**驗證**`，`implement`
-照著跑。專案裡找不到閘門命令就寫「（沒有——要問使用者）」，並在 `## 回 DISCOVERY 補問` 記一條；
+照著跑。專案裡找不到閘門命令就寫「（沒有——要問使用者）」，並在 `## 缺口` 記一條；
 不要猜一個看起來合理的命令。
 
 ## Project Structure
@@ -208,7 +208,7 @@ MUST NOT: 在這一節寫「已經決定好的技術事項」——那是 `## Im
 | `絕對不做` | 不論理由 | 已經有人否決過，或後果不可逆 |
 
 MUST: 每一條照樣標來源。`要先問` 的條目要寫**該問誰**——寫「要先問」而不寫問誰，
-等於把一件事掛起來而沒有人接。該問誰要指向誰才算數，判準見 `spec-format.md`
+等於把一件事掛起來而沒有人接。該問誰要指向誰才算數，判準見 `../../spec/references/spec-format.md`
 〈Document Overview 的三個部分〉那條 MUST，**不要在這裡抄一份**。
 
 MUST NOT: 把 `## Scope — In / Out` 的「明確排除的能力」搬進 `絕對不做`。
@@ -240,7 +240,7 @@ MUST NOT: 在這一節寫具體檔案路徑與程式碼片段——它們過期�
 例外：prototype 產出的、比散文更精確地編碼了某個決定的片段（狀態機、schema、
 型別形狀），可以內嵌並註明來自 prototype，只留決定的部分。
 
-MUST NOT: 在這裡做新決定。推不出來的寫進 `## 回 DISCOVERY 補問`（需求的洞）或
+MUST NOT: 在這裡做新決定。推不出來的寫進 `## 缺口`（需求的洞，交回 `spec`）或
 `## Further Notes`（留給 IMPLEMENT 的技術選擇），不要順手決定掉——那正是規格失效的方式。
 
 ## Testing Decisions
@@ -257,7 +257,7 @@ MUST NOT: 在這裡做新決定。推不出來的寫進 `## 回 DISCOVERY 補問
 | --- | --- | --- | --- |
 | `application.WorkoutService` | 既有 | 規則全在 domain 與 application，HTTP 只是轉發 | 推論 |
 
-判準見 `SKILL.md` 第 6 步〈決定 seam〉的那張表，**不要在這裡抄一份**。
+判準見 `../SKILL.md`〈決定 seam〉的那張表，**不要在這裡抄一份**。
 seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人同意過的 seam
 當成 finding。
 
@@ -280,7 +280,7 @@ seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人�
 
 專案裡已經有的同類測試，寫路徑與一句話。新測試跟著它們的形狀寫，不另創。
 
-## 範例：技術部分
+## 範例：技術決定
 
 ````markdown
 ## Tech Stack
@@ -345,5 +345,5 @@ seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人�
 
 （無）——虛構教學專案，沒有既有同類驗收測試可比照，新測試不套用任何既有形狀。
 
-（`## 回 DISCOVERY 補問`、`## Further Notes` 略）
+（`## Risks` 之後各節略）
 ````
