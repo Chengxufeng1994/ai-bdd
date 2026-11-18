@@ -41,7 +41,7 @@
  17. 驗收旅程的引用——同目錄 `acceptance/*.feature` 每個 `@covers-<n>.<m>` 都要是
      spec.md 裡的 AC，每個 `Example:` 上方至少一個。沒有 `acceptance/` 就跳過。
      旅程不執行，不算 .feature：找 .feature 時排除 `specs/` 底下。
- 18. `## Domain Model` 在不在——狀態是「已對焦」時要有這一節，沒改聚合寫「（無）」。
+ 18. `## Domain Concepts` 在不在——狀態是「已對焦」時要有這一節，沒有新詞、沒改聚合寫「（無）」。
 
 退出碼 0 = 全過，1 = 有問題。適合放進 CI。找不到 specs/、沒有 spec.md、
 `## User Stories` 底下沒有任何 story 也各自退出 1——那些是「先跑上一步」，
@@ -547,12 +547,12 @@ def check(root: Path) -> int:
                   f"story 標題，形式要是 `### US-<n> · <slug>`：{', '.join(malformed)}")
             problems += 1
 
-        # 第 18 項：已對焦之後 archive 靠這一節判斷要不要動 docs/DOMAIN-MODEL.md。
+        # 第 18 項：已對焦之後 archive 靠這一節判斷要不要動 docs/DOMAIN-MODEL.md 與 docs/CONTEXT.md。
         # 缺這一節跟寫「（無）」對它是同一個結果，但前者可能是漏寫——所以要寫出來。
         if (re.search(r"^\*\*狀態\*\*：已對焦", stext, re.M)
-                and not re.search(r"^## Domain Model\s*$", stext, re.M)):
-            print(f"✗ {spec_path.parent.name} 已對焦卻沒有 `## Domain Model` 一節——"
-                  f"沒改聚合也要寫「（無）」")
+                and not re.search(r"^## Domain Concepts\s*$", stext, re.M)):
+            print(f"✗ {spec_path.parent.name} 已對焦卻沒有 `## Domain Concepts` 一節——"
+                  f"沒有新詞、沒改聚合也要寫「（無）」")
             problems += 1
 
         if not frs:

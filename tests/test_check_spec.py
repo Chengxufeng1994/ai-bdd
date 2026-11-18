@@ -310,8 +310,8 @@ class CheckReadsSpec(unittest.TestCase):
             self.assertIn("沒有進行中的 feature", out)
             self.assertNotIn("先跑 discovery", out)
 
-    def test_focused_spec_without_domain_model_fails(self):
-        # 已對焦之後 archive 靠這一節判斷要不要動 docs/DOMAIN-MODEL.md；缺了就分不出「沒改聚合」與「漏寫」
+    def test_focused_spec_without_domain_concepts_fails(self):
+        # 已對焦之後 archive 靠這一節判斷要不要動 docs/DOMAIN-MODEL.md 與 docs/CONTEXT.md；缺了就分不出「沒改」與「漏寫」
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, GOOD.replace("**狀態**：待對焦", "**狀態**：已對焦"))
@@ -319,13 +319,13 @@ class CheckReadsSpec(unittest.TestCase):
             code, out = run(root)
 
             self.assertEqual(code, 1, out)
-            self.assertIn("## Domain Model", out)
+            self.assertIn("## Domain Concepts", out)
 
-    def test_focused_spec_with_empty_domain_model_passes(self):
+    def test_focused_spec_with_empty_domain_concepts_passes(self):
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             write_spec(root, GOOD.replace("**狀態**：待對焦", "**狀態**：已對焦")
-                       + "\n## Domain Model\n\n（無）——沒改聚合\n")
+                       + "\n## Domain Concepts\n\n（無）——沒有新詞、沒改聚合\n")
 
             code, out = run(root)
 
