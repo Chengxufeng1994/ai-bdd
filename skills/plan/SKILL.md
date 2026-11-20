@@ -133,7 +133,8 @@ Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒
 #### 決定 seam —— 驗收測試打在哪一層
 
 `.feature` 決定驗什麼，seam 決定**打進系統的哪一層**：HTTP handler？application service？domain？這個決定會長成
-step definition 的形狀，也決定 `## API 契約` 寫 OpenAPI 片段還是程式碼層介面契約。
+step definition 的形狀。先問它，是因為 `## Testing Decisions` 照它寫、第 4 步對照 `.feature` 也是對著它驗；
+`## API 契約` 寫 OpenAPI 片段還是程式碼層介面契約，看的是有沒有 HTTP 對外介面，不是 seam。
 
 | 規則 | 為什麼 |
 | --- | --- |
@@ -157,7 +158,8 @@ IMPORTANT: seam 一旦寫進 `plan.md` 就往下傳——IMPLEMENT 照著打，R
 
 #### 三份設計
 
-照第 2 步的 Wave 順序做；格式與範例都在 `references/design-format.md`。
+三份的順序固定：Domain Model → Database Schema → API 契約。Wave 排的是**介面的分析**順序：寫每一份時，照第 2 步的
+Wave 順序逐個介面處理。格式與範例都在 `references/design-format.md`。
 
 2. WRITE `## Domain Model`：這次新增或改動的聚合、不變條件、跨聚合的規則。`被誰保證` 只寫聚合；動到
    `docs/DOMAIN-MODEL.md` 既有的聚合，寫「原本是什麼、為什麼改」。
