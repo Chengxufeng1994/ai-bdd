@@ -1,10 +1,10 @@
 # `plan.md` 技術決定的骨架
 
-照抄即可。讀這份的時機：`plan` 第 2 步，`spec.md` 已經 `已對焦`、`.feature` 寫好、準備寫技術決定的時候。
+照抄即可。讀這份的時機：`plan` 第 3 步，seam 確認過、準備寫技術決定的時候。
 
-技術決定是 `plan.md` 的前半，接在 `## Overview` 之後、`## Risks` 之前，七節，順序固定（整份的順序見
-`plan-format.md`）。它回答「用什麼做、怎麼驗」；要做成什麼在 `spec.md`，怎麼排、哪裡危險、能不能並行在
-`plan.md` 的後半。
+技術決定接在 `## 系統介面` 之後、`## Domain Model` 之前，七節，順序固定（整份的順序見
+`plan-format.md`）。它回答「用什麼做、怎麼驗」；要做成什麼在 `spec.md`，聚合、表、API 契約在三份設計
+（`design-format.md`），怎麼排、哪裡危險、能不能並行在 `plan.md` 的執行計畫。
 
 ```markdown
 ## Tech Stack
@@ -230,11 +230,11 @@ MUST NOT: 把 `spec.md` `### Non-Goals` 裡「不做」的能力搬進 `絕對�
 本身要指得出是從什麼推來的。標記寫法見 `## 來源標記：五選一`。
 
 - **動哪些模組**：新增什麼、改什麼 ← <標記>
-- **介面**：那些模組對外的形狀（函式名、參數、回傳型別） ← <標記>
-- **API 契約**：方法、路徑、request、response、錯誤碼 ← <標記>
-- **Schema**：資料表與欄位 ← <標記>
+- **介面**：那些模組對外的形狀（函式名、參數、回傳型別）、程式碼層的埠 ← <標記>
 - **架構決定**：分層、交易邊界、同步或事件驅動 ← <標記>
 - **互動**：跨模組的呼叫順序 ← <標記>
+
+API 契約、schema、聚合不寫在這裡——它們各自是一節，`## API 契約`、`## Database Schema`、`## Domain Model`，見 `design-format.md`。
 
 MUST NOT: 在這一節寫具體檔案路徑與程式碼片段——它們過期得比什麼都快。`plan.md` 的
 `## Parallel Work` 接合點是例外：合回時要對著檔案解衝突，那裡必須寫路徑。
@@ -258,7 +258,7 @@ MUST NOT: 在這裡做新決定。推不出來的寫進 `## 缺口`（需求的�
 | --- | --- | --- | --- |
 | `application.WorkoutService` | 既有 | 規則全在 domain 與 application，HTTP 只是轉發 | 推論 |
 
-判準見 `../SKILL.md`〈決定 seam〉的那張表，**不要在這裡抄一份**。
+判準見 `../SKILL.md` 第 3 步〈決定 seam〉的那張表，**不要在這裡抄一份**。
 seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人同意過的 seam
 當成 finding。
 
@@ -346,5 +346,5 @@ seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人�
 
 （無）——虛構教學專案，沒有既有同類驗收測試可比照，新測試不套用任何既有形狀。
 
-（`## Risks` 之後各節略）
+（`## Domain Model` 之後各節略，見 `design-format.md` 與 `plan-format.md`）
 ````

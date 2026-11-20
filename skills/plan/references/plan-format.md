@@ -1,16 +1,17 @@
 # `plan.md` 的骨架
 
-照抄即可。讀這份的時機：第 2 步寫技術決定之前，以及第 4 步寫執行計畫之前。
+照抄即可。讀這份的時機：`plan` 第 2 步開始寫 `plan.md` 之前，以及第 4 步寫執行計畫之前。
 
 一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/plan.md`，跟同目錄的 `spec.md` 配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
 
-它裝兩件事：前半是**技術決定**——用什麼做、seam、模組、契約、schema、測試層級，七節的寫法見
-`tech-format.md`；後半是**執行計畫**——這批怎麼排、哪裡危險、能不能並行，以及 `## 缺口`。要做成什麼
-在 `spec.md`，這裡不重寫。票不在這裡——`task-breakdown` 從這份計畫拆到同目錄的 `tasks.md`，格式見
-`../../task-breakdown/references/tasks-format.md`。
+它裝四件事：`## 系統介面`——這次碰到哪些介面、照什麼順序分析；**技術決定**——用什麼做、seam、模組、
+測試層級，七節的寫法見 `tech-format.md`；**三份設計**——`## Domain Model`、`## Database Schema`、
+`## API 契約`，寫法見 `design-format.md`；**執行計畫**——依賴、哪裡危險、順序與 checkpoint、能不能並行，
+以及 `## 缺口`。要做成什麼在 `spec.md`，這裡不重寫。票不在這裡——`task-breakdown` 從這份計畫拆到同目錄的
+`tasks.md`，格式見 `../../task-breakdown/references/tasks-format.md`。
 
-執行計畫是拋棄式快照，實作一開始就會過期；技術決定不是——它改了要在 `## Further Notes` 留紀錄，
-做完時 `archive` 從它更新 `docs/TECH.md`。
+執行計畫是拋棄式快照，實作一開始就會過期；技術決定與三份設計不是——它們改了要在 `## Further Notes` 留紀錄，
+做完時 `archive` 從它們更新 `docs/TECH.md`、`docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`。
 
 ```markdown
 # 執行計畫
@@ -20,7 +21,9 @@
 
 ## Overview
 
-## Tech Stack
+## 系統介面          → design-format.md
+
+## Tech Stack        → tech-format.md（這七節）
 ## Commands
 ## Project Structure
 ## Code Style
@@ -28,30 +31,38 @@
 ## Implementation Decisions
 ## Testing Decisions
 
+## Domain Model      → design-format.md（這三節）
+## Database Schema
+## API 契約
+
+## 依賴圖            → design-format.md
 ## Risks
+## 順序與 Checkpoint
 ## Parallel Work
 
 ## 缺口
 
-這份計畫自己的洞，以及 `task-breakdown` 拆票時發現技術決定沒定案的。
+這份計畫自己的洞、三份設計並排時對不上的，以及 `task-breakdown` 拆票時發現技術決定沒定案的。
 沒有就寫「沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切」。
 
-- <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、技術決定的洞（回 `plan` 補）、`.feature` 寫了 seam
+- <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、技術決定或設計的洞（回 `plan` 補）、`.feature` 寫了 seam
   驗不到的行為（回 `formulation`），或執行上的選擇（留給 IMPLEMENT 決定）>
 
 ## Further Notes
 
 - **推論的技術決定**：技術決定每條標 `← 推論` 的再列一次，一行一條指回它在哪一節
 - **留給 IMPLEMENT 的技術選擇**：不影響任何 AC 的選擇（哪個 library、欄位叫什麼）
-- **技術決定的修訂**：票切出去之後改了 seam、介面、schema 的，一行一條：日期、改了什麼、為什麼
+- **技術決定的修訂**：票切出去之後改了 seam、介面、schema、聚合、API 契約的，一行一條：日期、改了什麼、為什麼
 ```
+
+骨架裡的 `→` 只是告訴你去哪讀寫法，不要抄進 `plan.md`。
 
 ---
 
 ## Overview
 
 一段話，三到五句：這批 story 做完之後使用者能做什麼，加上技術上大致怎麼做（seam 在哪一層、
-新增或改動的主要模組，照下面的技術決定）。給 `task-breakdown` 與人第一眼看懂這份計畫在做什麼。
+新增或改動的主要模組、三份設計各新增了什麼——聚合、表、operation，照下面各節）。給 `task-breakdown` 與人第一眼看懂這份計畫在做什麼。
 
 只摘要 `spec.md` 與下面各節已經寫的東西，**不在這裡做新決定**，所以不標來源。寫著寫著發現要
 講一件下面各節沒有的事，那件事屬於某一節技術決定——寫進那一節，不是這一段。
@@ -80,10 +91,38 @@ SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際
 設施，而那些不在規格裡。寫「兩種都可以，看部署形態」比寫「用 Redis」有用——
 後者看起來是決定，實際上是猜的。
 
+## 順序與 Checkpoint
+
+照 `## 依賴圖` 排：被依賴的節點先做，碰到「高」風險的節點盡量往前。每兩三個節點之後放一個
+checkpoint——停下來驗系統還是好的，再往下。
+
+```markdown
+## 順序與 Checkpoint
+
+1. 借閱聚合（到期日、續借一次）與讀者證系統的查詢埠——兩者都沒有依賴；兩則 story 都用到到期日的算法，最先做
+2. `loans` 表與 repository
+3. `## API 契約` 的 `lendBook`、`renewLoan` 與 HTTP handler
+
+**Checkpoint：1–2 之後**
+- [ ] `## Commands` 的閘門綠
+- [ ] AC-1.1–1.3 的內迴圈測試綠
+
+**Checkpoint：3 之後**
+- [ ] `## Commands` 的閘門綠
+- [ ] 涵蓋的 `.feature` 全部場景綠
+- [ ] 給使用者看過再往下
+```
+
+這裡排的是**節點**，不是票：`task-breakdown` 切票時照這個先後與 checkpoint 排波次，一張票不得排在它依賴的節點
+之前。checkpoint 的命令照 `## Commands` 的 `閘門` 與 `跑場景` 寫，不另編。
+
 ## Parallel Work
 
 這批票要不要同時做，以及同時做時哪些檔會在合回時相撞。`task-breakdown` 照這一節標每張票的
 `接合點`，不自己編路徑。
+
+**先定契約，再並行**：共用同一份 API 契約的票，要等 `## API 契約` 定好才能同時做——契約還在動時並行，每張票
+都照自己猜的形狀寫。
 
 ```markdown
 ## Parallel Work
@@ -129,9 +168,10 @@ schema 一節全退化成「見共用檔」），而且兩種檔案各用一套�
 ## Overview
 
 館員借出一本書時算出到期日，遇休館日順延；讀者可在到期前上網續借一次，名下有逾期的書時拒絕。驗收測試打在
-`application.借閱` 這一層，新增借閱的 domain 模組與借書、續借 use case，HTTP 只做轉接。
+`application.借閱` 這一層，新增借閱的 domain 模組與借書、續借 use case，HTTP 只做轉接。三份設計：一個新聚合
+「借閱」加一條跨聚合規則（逾期擋續借）、一張 `loans` 表、`lendBook` 與 `renewLoan` 兩個 operation。
 
-（技術決定七節略，寫法見 `tech-format.md`〈範例：技術決定〉）
+（`## 系統介面` 與三份設計略，寫法與範例見 `design-format.md`；技術決定七節略，見 `tech-format.md`〈範例：技術決定〉）
 
 ## Risks
 
@@ -139,11 +179,16 @@ schema 一節全退化成「見共用檔」），而且兩種檔案各用一套�
 | --- | --- | --- | --- |
 | 一本逾期就擋掉全部續借，讀者有正當理由時櫃台沒有例外通道 | 中 | renewal FR-3 | 要不要留館員手動續借的通道，留給 IMPLEMENT |
 
+## 順序與 Checkpoint
+
+（略，見上面〈順序與 Checkpoint〉的範例）
+
 ## Parallel Work
 
 **要不要並行**: 不要 ← 使用者 2026-09-14
 
 ## 缺口
 
-沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切
+- FR-2 說每本書限續借一次，但沒有一條 AC 寫第二次續借會怎樣——`## API 契約` 定不出那個錯誤回應（三份並排時找到）：
+  需求的洞，回 `spec`
 ````
