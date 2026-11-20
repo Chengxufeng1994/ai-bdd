@@ -281,7 +281,10 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
    `## Context / Problem`、`## Goal`／`## Scope`／Out → `## Goals / Non-Goals`、`## 回 DISCOVERY 補問` → `## Open Questions`），不改內容；
    缺的節補上。舊的 `## Open Questions` 若是一串沒有編號的洞，每一條開成一題補問題。
    `check_spec.py` 第 18 項在已對焦時擋缺 `## Domain Concepts`。
-5. WRITE 狀態回 `待對焦`，從第 2 步重跑。
+5. CHECK 舊版 `spec.md` 還有 `## Domain Model` 或 `### 聚合與不變條件` → 同目錄 `plan.md` 已有 `## Domain Model`
+   就從 `spec.md` 刪掉這一節；沒有就留著並**停下**，請使用者先重跑 `/plan`（`plan` 讀這一節當輸入），再重跑 `/spec`。
+   `spec` 自己不搬。
+6. WRITE 狀態回 `待對焦`，從第 2 步重跑。
 
 ## 產物
 
@@ -308,6 +311,7 @@ MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何
 - [ ] `已對焦` 是 `example-mapping` 照需求方的回答寫的——本 skill 沒有自己寫
 - [ ] `spec.md` 裡沒有任何技術決定（Tech Stack、seam、模組、契約、測試層級）
 - [ ] 再跑時 FR／AC 編號沒有重排，改動的每一條都記了修訂
+- [ ] 再跑時舊版的 `## Domain Model`／`### 聚合與不變條件`：`plan.md` 已有 `## Domain Model` 才刪，否則留著並停下請使用者先重跑 `/plan`
 - [ ] 詞彙寫在 `## Domain Concepts`，跟 `docs/CONTEXT.md` 定義不同的詞開成了補問題；`docs/` 底下沒有任何檔案被碰
 - [ ] 每則 story 有優先級（或「（沒問過）」並開了補問題）；`## Edge Cases` 每一條指向 AC 或一題補問題
 - [ ] 沒有呼叫 `formulation` 或 `discovery`，也沒有寫任何 `.feature`
