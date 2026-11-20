@@ -20,7 +20,7 @@ disable-model-invocation: true
 | **職責** | 把一張票做到綠：測試層先紅、委派 `behavior-driven-development` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
 | **讀** | `tasks.md`（開頭三行與這張票的 `### <票號>` 票節）、`spec.md`（這張票的 FR／AC）、`plan.md`（技術決定、三份設計與執行計畫）、這張票涵蓋的 `.feature`、專案的架構文件 |
 | **寫** | 產品程式碼與 step definition、`api/openapi.yaml`（照抄 `plan.md` 的片段）與 migration、`tasks.md` 裡這張票的票節（勾選、`**檢查點**:`、`#### 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
-| **上游** | `task-breakdown`（票切好之後） |
+| **上游** | `plan`（票切好之後） |
 | **下游** | `behavior-driven-development`（第 3、4 步委派）；全部票做完之後是 `archive` |
 | **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `plan.md` 的技術決定沒做的設計決定 |
 
@@ -42,8 +42,8 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 | 還沒有 `.feature` | `formulation` |
 | `plan.md` 沒有技術決定（seam、埠、契約） | `plan` |
 | 要改 operation、`components` 或表的形狀 | `plan`（改 `## API 契約`／`## Database Schema`）——本 skill 只照抄 |
-| 還沒有 `tasks.md`（包括票還寫在 `plan.md` `## 票` 裡、或還是 `tasks/` 目錄的舊格式） | `task-breakdown` |
-| 票之間的順序、要不要再切、哪幾張能同時做 | `task-breakdown` |
+| 還沒有 `tasks.md`（包括票還寫在 `plan.md` `## 票` 裡、或還是 `tasks/` 目錄的舊格式） | `plan` |
+| 票之間的順序、要不要再切、哪幾張能同時做 | `plan` |
 | 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/behavior-driven-development`；本 skill 做票時第 3、4 步本來就委派它 |
 | 場景綠了之後「真的滿足它宣稱的情境嗎、鏈斷了嗎」 | REVIEW（`review`，未實作） |
 | 紅的是 bug 還是規格過期 | VERIFY（`verify`，未實作）；本 skill 只處理自己這張票讓紅變綠，不判讀別人的紅 |
@@ -54,7 +54,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 - `../formulation/references/state-tags.md` — `@wip`／`@review` 什麼時候寫
 - `../behavior-driven-development/SKILL.md` — 第 3、4 步委派的 green／refactor 入口；`../behavior-driven-development/rules/red.md` 與
   `../behavior-driven-development/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
-- `../task-breakdown/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
+- `../plan/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
 - `../plan/references/tech-format.md` — `plan.md` 的技術決定各節裝什麼
 - `../plan/references/design-format.md` — `## Domain Model`、`## Database Schema`、`## API 契約` 裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
@@ -71,16 +71,16 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 3. **前面有沒有檢查點**：`tasks.md` 裡這張票的上方有 `**檢查點**` 時，看票節有沒有記 `**檢查點**:`
    那一行。沒有、也沒有人在開工說明裡帶來，就在主線上照檢查點跑一次（已勾完的票的場景、閘門），
    結果給使用者看，使用者點頭才開工，並把那一行寫進這張票節。一波只跑一次
-   （`../task-breakdown/references/tasks-format.md`〈檢查點〉）
+   （`../plan/references/tasks-format.md`〈檢查點〉）
 4. 讀得到 `specs/ongoing/<date>-<feature>/tasks.md` 的這張票節、`plan.md`、`spec.md` 與這張票涵蓋的 `.feature`
 
 NEVER: `plan.md` 沒有技術決定時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
 
 Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `## Domain Model` 或 `### 聚合與不變條件`。是就停下，請使用者
-重跑 `/plan`（`spec.md` 的舊節由再跑 `/spec` 刪掉），再跑 `/task-breakdown`——舊格式沒有可以照抄的契約與資料表。
+重跑 `/plan`（`spec.md` 的舊節由再跑 `/spec` 刪掉；`plan` 也會重寫 `tasks.md`）——舊格式沒有可以照抄的契約與資料表。
 
-MUST: 一個 session 一張票。撿起票的人只看過票節與 `plan.md` 的技術決定——這是 `task-breakdown`
+MUST: 一個 session 一張票。撿起票的人只看過票節與 `plan.md` 的技術決定——這是 `plan` 的 Step 3
 切票的上界，也是這一步不要一次做三張的理由：做到第二張時第一張的脈絡已經在擠。
 
 SHOULD: 跟別張票同時做時，一張票一個 worktree。開工前看 `tasks.md`：這張票跟正在做
@@ -137,7 +137,7 @@ seam 是 HTTP 時，契約的 operation、重新產碼、**回錯誤**（不是�
 合回照〈合回主線〉。`## API 契約` 是程式碼層契約（沒有 OpenAPI 片段）時沒有要搬的，跳過這段，埠照它的方法寫。
 
 MUST NOT: 搬的時候改形狀——欄位、型別、必填、狀態碼、錯誤碼都跟片段一樣。要改，記進票節 `#### 缺口`、停下回報：
-`task-breakdown` 把它搬進 `plan.md` 的 `## 缺口`，`plan` 改好片段再搬。在 `api/openapi.yaml` 改了，`plan.md` 與
+`plan` 再跑時把它搬進 `plan.md` 的 `## 缺口`、改好片段再搬。在 `api/openapi.yaml` 改了，`plan.md` 與
 專案的契約從此分家，而沒有人發現。
 
 票節有 `**資料表**` 時，migration 照 `plan.md` `## Database Schema` 寫：欄位、型別、約束、索引都一樣，
@@ -214,11 +214,11 @@ is stale」。
   `.feature` 的「沒問過」註解或票節 `#### 缺口` 的那一列。沒釘住的暫定行為會在答案出來之後被當成規格
 - 技術細節：`plan.md` 的技術決定沒寫的（時鐘放哪個 package、時區住哪一層、到期日怎麼表示）——照專案的
   架構文件推得出來的，照推出來的做，不算設計決定；推不出來的，照暫定行為處理（記缺口、選一個，
-  有行為的用測試釘住），`task-breakdown` 再跑時把它搬進 `plan.md` 的 `## 缺口`、交回 `plan` 補技術決定
+  有行為的用測試釘住），`plan` 再跑時把它搬進 `plan.md` 的 `## 缺口`、補技術決定
 - 爭用接合點：這張票的票節列了 `爭用` 的檔時，核對那段邏輯實際落在哪個檔。落在別的檔，
-  在票節 `#### 缺口` 記一列（列的是哪個檔、實際在哪個檔）——`task-breakdown` 再跑時據此改正接合點
+  在票節 `#### 缺口` 記一列（列的是哪個檔、實際在哪個檔）——`plan` 再跑時據此改正接合點
 - 漏列與多列的接合點：這張票動到、別張票也會動、但票節與 `tasks.md` 都沒列的檔，記一列「沒列到的
-  接合點：<檔>（<種類>）」；列了卻根本沒動的，記一列「列了沒動：<檔>」——讓 `task-breakdown` 補上或收回，
+  接合點：<檔>（<種類>）」；列了卻根本沒動的，記一列「列了沒動：<檔>」——讓 `plan` 補上或收回，
   不必等合回撞到
 
 ### 7. 合回主線（只在 worktree 裡做時）
@@ -227,7 +227,7 @@ is stale」。
 
 1. **先把主線拉進 worktree**：在 worktree 裡 `git rebase main`，衝突在這裡解，不在主線上解。
    用 rebase 不用 merge——merge 會多一個反方向的 merge commit，打破「一張票一個 commit」
-2. **照接合點的種類解**（`../task-breakdown/references/tasks-format.md`〈接合點與同時跑〉）：
+2. **照接合點的種類解**（`../plan/references/tasks-format.md`〈接合點與同時跑〉）：
    - `tasks.md` → 兩邊改的一定是不同的票節（各自只改自己那一節）：取聯集——這張票的票節用 worktree 這邊的，
      其餘用主線的。衝突落在同一個票節裡，代表有人改了不歸他的行，停下回報
    - `產生` → 不手動合：先解完原始檔，再照 `plan.md` `## Commands` 的產碼命令重新產生；`go.sum`
@@ -236,24 +236,24 @@ is stale」。
      `"500"` 只接一次會漏、接兩次會重複；兩張票都從 `plan.md` 照抄的同一個 `components`，一模一樣，留一份。接完先編譯（實測場 `go vet ./...`），再跟主線 `git diff main`
      確認沒有刪掉主線任何一行，最後檢查有沒有重複宣告
    - 沒列到、但這張票對那個檔的**整份改動**都只是新增頂層宣告（新函式、新型別，沒有改到任何既有的行）
-     → 當成 `追加` 解，並在票節 `#### 缺口` 記一列「沒列到的接合點：<檔>」，讓 `task-breakdown` 補上
+     → 當成 `追加` 解，並在票節 `#### 缺口` 記一列「沒列到的接合點：<檔>」，讓 `plan` 補上
    - `爭用`、或票節與 `tasks.md` 都沒列到的其他衝突 → **停下來回報**，不自己判——那是切票時
-     沒預料到的耦合，要回 `task-breakdown` 重排。停下來時：
+     沒預料到的耦合，要回 `plan` 重排。停下來時：
      - 撤掉這次合併（`git rebase --abort`），worktree 回到這張票自己的 commit，不留半解的衝突
      - 在票節 `#### 缺口` 記一列：衝突的檔、跟哪張票撞、為什麼不是 `產生`／`追加`；`amend` 進這張票的
        commit，保持一張票一個 commit
      - 「列到」看 `tasks.md` 任何一張票的 `接合點` 欄或 `plan.md` 的 `## Parallel Work`——那個檔的種類
        有人定過；只記在 `#### 缺口` 的預感不算列到
-     - 告訴使用者跑 `task-breakdown`：它把這一列搬進 `plan.md` 的 `## 缺口`，`plan` 補上
+     - 告訴使用者跑 `/plan`：它把這一列搬進 `plan.md` 的 `## 缺口`，補上
        接合點的種類後再重排；重排完，這張票從本步驟（第 7 步）的第 1 點重來，不必重做第 1–6 步
-     - SHOULD: 這一列點名的檔，同一波還有別張票會動時，在那張票合回之前先跑 `task-breakdown`——
+     - SHOULD: 這一列點名的檔，同一波還有別張票會動時，在那張票合回之前先跑 `/plan`——
        不然它會為同一個原因再停一次
 3. **在合併後的程式碼上重跑閘門**，場景範圍是主線上所有驗收條件已勾完的票加上這張票
    （跟第 5 步第二行同一種組法：各票節 `**驗證**` 的場景運算式接成一個「或」，前置整理的票跳過）。
    重跑要繞過測試快取（實測場 `-count=1`）——rebase 沒改到的套件會拿到上一次的快取結果。
    綠了才合回主線：到**主線的工作目錄**（`main` 往往 checkout 在另一個目錄，worktree 裡切不過去），
    確認工作區乾淨、在 `main` 上，再 `git merge --ff-only <票的 branch>`
-   - 合完 git 沒報衝突、閘門卻紅，常見三種，都在票節 `#### 缺口` 記一列，`task-breakdown` 補成接合點：
+   - 合完 git 沒報衝突、閘門卻紅，常見三種，都在票節 `#### 缺口` 記一列，`plan` 補成接合點：
      | 情況 | 怎麼辦 |
      | --- | --- |
      | 兩張票各自新建了同名的輔助函式、替身或變數 | 兩份**一模一樣**就刪掉這張票的、用另一張的；不一樣才改這張票自己那份的名字 |
@@ -302,7 +302,7 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 ```
 
 MUST: 不修改 `spec.md`、`plan.md`、`.feature` 的任何場景文字；`tasks.md` 只改這張票的票節裡歸 `implement` 的行（勾、`**檢查點**:`、`#### 缺口`）。
-同時做的幾個 session 各寫各的票節才不會互相覆寫；設計的洞由 `task-breakdown` 再跑時從票節搬進
+同時做的幾個 session 各寫各的票節才不會互相覆寫；設計的洞由 `plan` 再跑時從票節搬進
 `plan.md` 的 `## 缺口`，再交回 `spec`。
 
 ## Verification

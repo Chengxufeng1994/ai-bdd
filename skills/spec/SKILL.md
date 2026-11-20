@@ -50,7 +50,7 @@ disable-model-invocation: true
 | 要把規格寫成業務方讀的驗收旅程 | `spec-by-example`，本 skill 在診斷之後、就緒問句之前呼叫它 |
 | 寫規則時 story 切得不對 | `story-splitting`，`已對焦` 之前本 skill 可以呼叫它重切 |
 | 要排風險、決定要不要並行、列接合點 | `plan`（寫在 `plan.md`） |
-| 要切票、排實作順序 | `task-breakdown` |
+| 要切票、排實作順序 | `plan` |
 
 產出是 `spec.md`，**不是** `interview-log.md`（那是 `discovery` 的證據，只讀）、`plan.md`、`docs/` 底下任何檔案、程式碼；
 `.feature` 由 `formulation` 寫。

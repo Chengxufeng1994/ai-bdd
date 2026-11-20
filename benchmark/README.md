@@ -62,7 +62,7 @@ runs/<lang>-<case>/
 ├── specs/ongoing/<date>-<feature>/acceptance/      SPEC（spec-by-example）的驗收旅程
 ├── features/                                       SPEC（formulation）產出的 .feature
 ├── specs/ongoing/<date>-<feature>/plan.md          PLAN（plan）的技術決定與執行計畫
-└── specs/ongoing/<date>-<feature>/tasks.md         PLAN（task-breakdown）的票
+└── specs/ongoing/<date>-<feature>/tasks.md         PLAN（plan）的票
 ```
 
 ## 兩條規則

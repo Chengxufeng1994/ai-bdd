@@ -1,7 +1,7 @@
 # `spec.md` 的骨架
 
 照抄即可。`spec` 寫它時讀它；`discovery` 續跑時只讀它 `## Open Questions` 的待答題；`example-mapping` 讀它攤地圖、
-`formulation` 翻 `.feature`、`plan` 做技術設計、`task-breakdown` 切票時讀它寫出來的東西。`check_spec.py` 從它查
+`formulation` 翻 `.feature`、`plan` 做技術設計與切票時讀它寫出來的東西。`check_spec.py` 從它查
 `← Q-<n>` 與 `← PRD §n`；`status.py` 的進度數自旁邊的 `interview-log.md`，不讀這裡。
 
 它只寫**要做成什麼**，不寫用什麼做：Tech Stack、seam、模組、契約、測試層級由 `plan` 寫在 `plan.md`。
@@ -223,7 +223,7 @@ MUST: slug 在一份 `spec.md` 裡唯一。`check_spec.py` 用它對應 `.featur
 ```
 
 優先級不寫進標題：`check_spec.py` 照 `### US-<n> · <slug>` 精確比對標題，多一個字就認不出這則 story。
-它決定 `plan` 與 `task-breakdown` 的切片順序，所以是需求方的決定：來源跟 FR 一樣只准 `← Q-<n>` 或 `← PRD §n`，問答裡沒有就寫
+它決定 `plan` 的切片順序，所以是需求方的決定：來源跟 FR 一樣只准 `← Q-<n>` 或 `← PRD §n`，問答裡沒有就寫
 「（沒問過）」並在 `## Open Questions` 開一題 `待答`，不要自己排。P1 是只做這一則也能交付價值的那幾則。
 
 ````markdown

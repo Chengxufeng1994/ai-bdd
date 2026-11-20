@@ -14,13 +14,13 @@ The plugin's subject is a six-step pipeline:
 **DISCOVERY → SPEC → PLAN → IMPLEMENT → REVIEW → VERIFY**
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
-steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
-`plan` (the system-analysis step, four steps: collect; inventory the system interfaces and
-their Wave order; design — Domain Model, Database Schema and the API contract side by side, the
-contract delegated to `api-and-interface-design`, plus the technical decisions with the seam
-confirmed by the user; then dependency graph, risks, order and checkpoints, parallel work, and
-STOP for `task-breakdown`; all of it lands in `plan.md`) and `task-breakdown` (slices the design into one section per ticket in a
-single `tasks.md`, so tickets can run in parallel). IMPLEMENT is served by
+steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by one skill, `plan`
+(following addyosmani's planning flow: collect; design — Domain Model, Database Schema and the API
+contract side by side, the contract delegated to `api-and-interface-design`, plus the technical
+decisions with the seam confirmed by the user; dependency graph; vertical slices; write the tasks;
+order and checkpoints; the slicing is shown to the user before anything is written, then it writes
+`plan.md` and `tasks.md` — one section per ticket, so tickets can run in parallel — and STOPs for
+`/implement <ticket>`). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `behavior-driven-development`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
 that delegation or a manual `/behavior-driven-development` runs it). When all of a feature's tickets are merged,
@@ -164,9 +164,8 @@ Each of the first three steps holds because it runs in one main working mode:
   the glossary) and the execution plan (risks, parallel work, join points) — `plan` **does not change
   `spec.md` or the `.feature` files**; the seam is the one thing confirmed with the user,
   technical lines may be `← 推論` or `← 專案 <path>`, and holes go to `## 缺口` and back to
-  `spec` (or to `formulation` when a scenario cannot be observed at the seam). `task-breakdown` then
-  slices tracer bullets and **does not change the design**; its holes go to the same
-  `## 缺口`. `implement` writes only its own ticket's section of `tasks.md`, never `plan.md` or
+  `spec` (or to `formulation` when a scenario cannot be observed at the seam). `plan` also
+  slices tracer bullets into `tasks.md`; a rerun redoes only tickets not yet started. `implement` writes only its own ticket's section of `tasks.md`, never `plan.md` or
   another ticket's section (it copies its operations from `plan.md`'s API contract into `api/openapi.yaml` unchanged) — that is what lets tickets run in parallel. A ticket done in a worktree
   is merged back by the session that did it: generated files are regenerated, append-only
   conflicts are unioned, and the gate re-runs on the merged code.

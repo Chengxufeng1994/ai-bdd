@@ -13,7 +13,7 @@ disable-model-invocation: true
 | **職責** | 設計穩定、難被誤用的 API 與介面契約（REST、GraphQL、程式碼層介面） |
 | **讀** | `spec.md` 的 FR／AC、涵蓋的 `.feature`、專案既有的 `api/openapi.yaml`、`plan.md` 的 `## Domain Model` |
 | **寫** | 不寫檔——把 OpenAPI 片段（或沒有 HTTP 時的程式碼層介面契約）交回 `plan` |
-| **上游** | `plan` 第 3 步 |
+| **上游** | `plan` 〈設計〉 |
 | **下游** | `plan` |
 | **不做** | 不改 `spec.md`、不寫 `plan.md`、不動 `api/openapi.yaml`、不定 seam／schema／聚合 |
 
@@ -31,7 +31,7 @@ Design stable, well-documented interfaces that are hard to misuse. Good interfac
 
 ## 使用時機
 
-`plan` 第 3 步設計 API 契約時。單獨叫用時只給設計建議，不寫檔。原文的 When to Use 見上。
+`plan` 〈設計〉設計 API 契約時。單獨叫用時只給設計建議，不寫檔。原文的 When to Use 見上。
 
 ## Skill Boundaries
 

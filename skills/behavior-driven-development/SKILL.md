@@ -43,7 +43,7 @@ disable-model-invocation: true
 | 要做完**一整張票**：標 `@wip`、跑專案閘門、勾驗收條件、翻 `@review`、合回主線 | `implement`——它管票，本 skill 管票裡的一個 slice |
 | 要改場景的文字、例子或規則 | 回 `discovery` 開一題；本 skill 不碰 `.feature` |
 | 要決定 seam、模組、契約 | `plan` |
-| 要決定先做哪張票 | `task-breakdown` |
+| 要決定先做哪張票 | `plan` |
 
 跟 `implement` 的分界：**它回答「這張票做完了沒」，本 skill 回答「這個 slice 在這個入口
 做到位了沒」。** 由票委派時，只做那張票授權的範疇與入口，不順手做下一個。

@@ -14,7 +14,7 @@
 | --- | --- |
 | DISCOVERY | `discovery` |
 | SPEC | `spec`、`feature-mapping`、`example-mapping`、`spec-by-example`、`formulation`、`story-splitting` |
-| PLAN | `plan`（system-analysis：盤點介面、設計 Domain Model／Database Schema／API 契約、排依賴與風險）、`api-and-interface-design`（由 `plan` 委派寫 API 契約）、`task-breakdown` |
+| PLAN | `plan`（設計 Domain Model／Database Schema／API 契約、依賴圖、垂直切片成票、排序與 Checkpoint；寫 `plan.md` 與 `tasks.md`）、`api-and-interface-design`（由 `plan` 委派寫 API 契約） |
 | IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`behavior-driven-development`（由 `implement` 委派 green／refactor，模型不自動觸發）、`archive`（票全部合回後：寫回 `docs/` 現況、搬進 `specs/sleeping/`） |
 | REVIEW／VERIFY | 尚未實作 |
 
@@ -34,9 +34,9 @@
 | 驗收旅程 `*.feature`（不執行） | `<feature>/acceptance/` | `spec-by-example` | 需求方：對著旅程判就緒；`example-mapping`：提就緒問句；`formulation`：只借用語 |
 | `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `formulation`：寫可執行 `.feature`；`plan`：寫系統分析與技術決定 |
 | `spec.md` `## Domain Concepts`（只有 `### 詞彙`；聚合與不變條件在 `plan.md`） | `<feature>/spec.md` | `spec`（第 4 步，先讀 `docs/CONTEXT.md`） | `spec-by-example`、`formulation`：用詞對齊；`plan`：設計 Domain Model 的起點；`archive`：併進 `docs/CONTEXT.md` |
-| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級；`task-breakdown`：每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
-| `plan.md`（系統介面與 Wave；技術決定：Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions；三份設計：Domain Model、Database Schema、API 契約（OpenAPI 片段）；依賴圖、風險、順序與 Checkpoint、要不要並行與接合點） | `<feature>/` | `plan`（seam 經使用者確認）；`task-breakdown` 只在 `## 缺口` 加列 | `task-breakdown`：讀三份設計切票、每張票列碰到的 operation 與表、抄模組、內迴圈、驗證命令，高風險排前面；`implement`：把票涵蓋的 OpenAPI operation 照抄進 `api/openapi.yaml`、照 Database Schema 寫 migration，其餘照著寫程式；`archive`：聚合併進 `docs/DOMAIN-MODEL.md`、表併進 `docs/DATABASE-SCHEMA.md`、技術現況併進 `docs/TECH.md` |
-| `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `task-breakdown` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`task-breakdown` 再跑時把設計的洞搬進 `plan.md` |
+| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級、每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
+| `plan.md`（技術決定：Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions；三份設計：Domain Model、Database Schema、API 契約（OpenAPI 片段）；依賴圖、風險、要不要並行與接合點） | `<feature>/` | `plan`（seam 經使用者確認；有洞加進 `## 缺口`） | `plan`：讀三份設計切票、每張票列碰到的 operation 與表、抄模組、內迴圈、驗證命令，高風險排前面；`implement`：把票涵蓋的 OpenAPI operation 照抄進 `api/openapi.yaml`、照 Database Schema 寫 migration，其餘照著寫程式；`archive`：聚合併進 `docs/DOMAIN-MODEL.md`、表併進 `docs/DATABASE-SCHEMA.md`、技術現況併進 `docs/TECH.md` |
+| `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `plan` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`plan` 再跑時把設計的洞搬進 `plan.md` |
 | 產品程式碼、step definition、`@review` tag、票節勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
 | `docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md`（專案現況，只動 ai-bdd 區塊） | 專案 `docs/` | `archive` | 下一個 feature 的 `plan`：聚合、表與技術現況從這裡讀 |
 | `specs/sleeping/<date>-<feature>/`（做完的 feature 整個目錄） | `specs/sleeping/` | `archive`（`git mv`） | 要修正時，`spec` 喚醒、搬回 `specs/ongoing/`、狀態改回 `澄清中` |
@@ -155,38 +155,25 @@
 
 #### `plan`
 
-**職責**：system-analysis——把一份已對焦的規格變成計畫：盤點這次碰到的系統介面與分析順序（Wave），設計 Domain Model、Database Schema、API 契約三份並排對過，定技術決定與 seam，再排依賴圖、風險、順序與 Checkpoint、能不能並行
+**職責**：把一份已對焦的規格變成計畫與票：設計 Domain Model、Database Schema、API 契約三份並排對過，定技術決定與 seam，排依賴圖，垂直切片成一疊 tracer bullet，排好順序與 Checkpoint、能不能並行
 
 - **上游**：`formulation`（`.feature` 寫好之後）
-- **下游**：`task-breakdown`（照這份計畫拆成票）；第 3 步把 API 契約委派給 `api-and-interface-design`
-- **不做**：不改 `spec.md`、不改 `.feature`、不動 `api/openapi.yaml`、不寫 migration、不切票、不訪談需求、不寫程式
+- **下游**：`implement <票號>`（一張票一個全新 session）；〈設計〉把 API 契約委派給 `api-and-interface-design`
+- **不做**：不改 `spec.md`、不改 `.feature`、不動 `api/openapi.yaml`、不寫 migration、不訪談需求、不寫程式
 
-1. 收集：讀 `spec.md`、`.feature` 與專案現況
-2. 盤點系統介面與 Wave
-3. 設計：seam 攤給使用者確認，再依 Wave 寫 Domain Model → Database Schema → API 契約，三份並排對一次
-4. 排：依賴圖、`## Risks`、順序與 Checkpoint、`## Parallel Work`，停，交 `/task-breakdown`
+1. Step 1 收集：讀 `spec.md`、`.feature` 與專案現況
+2. 設計：seam 攤給使用者確認，再寫 Domain Model → Database Schema → API 契約，三份並排對一次
+3. Step 2 依賴圖
+4. Step 3 垂直切片、Step 4 寫任務、Step 5 排序與 Checkpoint
+5. ASK 切法：攤給使用者，點頭才 WRITE `plan.md` 與 `tasks.md`，停，交 `/implement <票號>`
 
 #### `api-and-interface-design`
 
 **職責**：設計不容易被誤用的 API 與介面（REST、GraphQL、OpenAPI、程式碼層契約）。內容照 addyosmani/agent-skills 原樣保留，本專案只補職責卡、使用時機與 Skill Boundaries
 
-- **上游**：`plan`（第 3 步委派，輸入是 FR／AC、涵蓋的 `.feature`、既有 `api/openapi.yaml`）
+- **上游**：`plan`（〈設計〉委派，輸入是 FR／AC、涵蓋的 `.feature`、既有 `api/openapi.yaml`）
 - **下游**：交回 `plan`，由 `plan` 把 OpenAPI 片段寫進 `plan.md` 的 `## API 契約`
 - **不做**：不寫檔、不動 `api/openapi.yaml`（單獨叫用時只給設計建議）；`disable-model-invocation`，只由 `plan` 委派或手動 `/api-and-interface-design`
-
-#### `task-breakdown`
-
-**職責**：把技術設計拆成一疊 tracer bullet：一張票一節，每張穿過所有層、自己可 demo，標明誰卡誰、會碰哪些接合點
-
-- **上游**：`plan`（依賴圖、風險與「要不要並行」寫好之後）
-- **下游**：`implement <票號>`（一張票一個全新 session）
-- **不做**：不改 `spec.md`、不改 `plan.md` 的既有內容、不派工、不寫程式
-
-1. 一次讀完整批
-2. 切票：最薄的完整路徑先，其餘依 FR
-3. 標 Blocked by 與接合點
-4. 攤出來確認
-5. 寫 `tasks.md`：票節帶驗證命令，波與波之間放檢查點
 
 ### IMPLEMENT
 
@@ -194,7 +181,7 @@
 
 **職責**：把一張票做到綠：測試層先紅、委派 `behavior-driven-development` 轉綠與整理、閘門綠、勾驗收條件、合回主線
 
-- **上游**：`task-breakdown`（票切好之後）
+- **上游**：`plan`（票切好之後）
 - **下游**：`behavior-driven-development`（第 3、4 步委派）；全部票做完之後是 `archive`
 - **不做**：不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `plan.md` 的設計沒做的設計決定
 
@@ -282,7 +269,6 @@ ai-bdd/
 │   ├── story-splitting/
 │   ├── plan/
 │   ├── api-and-interface-design/
-│   ├── task-breakdown/
 │   ├── implement/
 │   ├── behavior-driven-development/
 │   ├── archive/
