@@ -38,7 +38,7 @@ feature 的全部 story、全部問答與需求方的原話——起點是 `disc
 | `## Goals / Non-Goals` | `### Goals` 做成之後的樣子與要交付的能力；`### Non-Goals` 這次不做的（延後或不做、為什麼）與接受的風險 | 擋住範圍蔓延——agent 最容易在這裡自己發揮 |
 | `## User Stories` | `### US-<n> · <slug>`，下一行優先級；底下 `#### FR`（AC 巢狀在它的 FR 底下）／`#### NFR`／`#### Q` | 優先級決定 plan 的切片順序；編號讓 plan、tasks 與 `.feature` 回頭引用 |
 | `## Non-Functional Requirements` | 跨 story 的品質屬性，要量化 | 「要很快」不可驗證 |
-| `## Domain Concepts` | `### 詞彙`（名詞與定義）、`### 聚合與不變條件`；不含欄位型別 | 先對齊語言再建模；做完時 `archive` 分別併進 `docs/CONTEXT.md` 與 `docs/DOMAIN-MODEL.md` |
+| `## Domain Concepts` | `### 詞彙`（名詞與定義）；不含欄位型別 | 先對齊語言再建模；做完時 `archive` 併進 `docs/CONTEXT.md` |
 | `## Edge Cases` | 失敗、併發、空值、重複、權限邊界——每一條指向涵蓋它的 AC | 規格最常漏的就是這塊 |
 | `## Assumptions / Constraints` | 沒驗證過的假設，以及做不到／不准這樣做的外部限制 | 假設與限制長得像，意思相反 |
 | `## Open Questions` | 問答表 ＋ 每題的小節：從紀錄整理的、寫規格時發現的洞，全部是 `Q-<n>`，題號跟紀錄同一個序列 | 每條 `← Q-<n>` 指的就是這裡；不確定的地方明確掛著，不被默默猜掉 |
@@ -680,12 +680,7 @@ feature 流程裡誰在做事，換一個 feature 就換一批；詞彙不是。
 
 ## Domain Concepts
 
-名詞、它們的定義與關係——先把語言對齊，再談模型。兩小段，`archive` 做完時各自併進不同的檔，所以分開寫：
-
-| 小段 | 裝什麼 | 做完時併進 |
-| --- | --- | --- |
-| `### 詞彙` | 這個 feature 定下來的詞 | `docs/CONTEXT.md`（追加） |
-| `### 聚合與不變條件` | 新增或改動的聚合、任何時刻都必須為真的條件；骨架見 `../../archive/references/domain-model-format.md` | `docs/DOMAIN-MODEL.md` 的區塊 |
+名詞與它們的定義——先把語言對齊，再談模型。只有 `### 詞彙` 一小段，這個 feature 定下來的詞，做完時 `archive` 追加進 `docs/CONTEXT.md`。聚合與不變條件在 `plan.md` 的 `## Domain Model` 設計（`../../plan/references/design-format.md`）。
 
 **不含欄位型別。** 「書有借出日」是領域知識；「`borrowed_on DATE`」是技術決定，屬於 `plan.md`。
 
@@ -701,9 +696,6 @@ feature 流程裡誰在做事，換一個 feature 就換一批；詞彙不是。
 
 第四欄不是裝飾——一個不需要解釋為什麼要定義的詞，通常本來就沒有歧義，列進來只是雜訊。
 沒有要定義的詞就寫「（無）」，並接一句為什麼空。
-
-`### 聚合與不變條件` 的判準：這條規則**跨 feature 仍然成立**嗎？只在這個 feature 的情境下為真的，留在
-FR。沒有新增或改動的聚合，寫「（無）」並接一句為什麼。
 
 ## Edge Cases
 

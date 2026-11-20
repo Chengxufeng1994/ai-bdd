@@ -4,7 +4,7 @@ description: >
   讀 `discovery` 的訪談紀錄 `interview-log.md`（已答的題與原文），寫 `spec.md`——原文逐字照抄、問答整理成
   `## Open Questions`（題號不變），再寫 story、FR／AC 行尾 `← Q-<n>`／`← PRD §n`、角色、範圍與不做的事、假設與限制，交 `example-mapping`
   判就緒，需求方點頭就停，下一步由使用者叫 `formulation`。只寫要做成什麼，不寫技術決定（那是 `plan`）；
-  詞彙與聚合寫進 `## Domain Concepts`，等 `archive` 才進 `docs/`。
+  詞彙寫進 `## Domain Concepts`，等 `archive` 才進 `docs/`。
   不訪談：有洞就在 `## Open Questions` 開一題待答、狀態改回澄清中、停下。BDD 六步流程的 to spec 步驟。
   觸發詞：「寫 spec」「to spec」「把問答寫成規格」「discovery 問完了，接下來」
   「寫成 FR 跟 AC」「這個 feature 的規格」「spec.md」「寫詞彙表」。
@@ -18,7 +18,7 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把已答的問答寫成規格：要做成什麼、不做什麼，帶到需求方說「就緒」 |
-| **讀** | `specs/ongoing/<date>-<feature>/interview-log.md`（結束方式 `收斂` 或 `喊停`）；再跑時既有的 `spec.md`；`docs/CONTEXT.md`、`docs/DOMAIN-MODEL.md`（有的話） |
+| **讀** | `specs/ongoing/<date>-<feature>/interview-log.md`（結束方式 `收斂` 或 `喊停`）；再跑時既有的 `spec.md`；`docs/CONTEXT.md`（有的話） |
 | **寫** | 同一個目錄的 `spec.md`，唯一的寫入者：照抄的 `## 原文`、整理的 `## Open Questions`、其餘各節、FR／AC、狀態 `待對焦`；有洞時補問題與狀態 `澄清中` |
 | **上游** | `discovery` |
 | **下游** | `feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` → 交回，使用者接著叫 `formulation` |
@@ -32,7 +32,7 @@ disable-model-invocation: true
 
 - `discovery` 以 `收斂`（或 `喊停`）結束了，要把問答寫成規格
 - 開過補問題、`discovery` 問完又收斂了，要修補 `spec.md`
-- 要定這個 feature 的詞彙與聚合（寫在 `spec.md`，做完時由 `archive` 併進 `docs/`）
+- 要定這個 feature 的詞彙（寫在 `spec.md`，做完時由 `archive` 併進 `docs/`）
 - 要改一個已經在 `specs/sleeping/` 的 feature：先喚醒它，見 `references/wake-up.md`
 
 ## Skill Boundaries
@@ -55,7 +55,6 @@ disable-model-invocation: true
 ## 參考檔案
 
 - `references/spec-format.md` — `spec.md` 的骨架（含 `## Open Questions` 與 `## 原文`）、來源標記、編號規則
-- `../archive/references/domain-model-format.md` — `## Domain Concepts` 裡 `### 聚合與不變條件` 的骨架（與 `docs/DOMAIN-MODEL.md` 共用）
 - `examples/minimal-spec.md` — 一份 `已對焦` 的 `spec.md`，照 `../discovery/examples/interview-log.md` 寫成（題號、原話、原文對得上）
 - `../discovery/references/interview-log-format.md` — 訪談紀錄的五節與一題的欄位。**第 1 步讀紀錄時讀**
 - `references/wake-up.md` — 把 `specs/sleeping/` 的 feature 搬回來、狀態改回 `澄清中`。只在喚醒時讀
@@ -102,7 +101,7 @@ NEVER: 紀錄沒有 `## 原文` 時開始。`← PRD §x` 指的就是它照抄�
 | 1 | 從紀錄抄原文與問答，寫需求部分（`待對焦`） | — |
 | 2 | 收尾檢查，必要時重切 story | — |
 | 3 | 自檢 `check_spec.py` | — |
-| 4 | 詞彙與聚合 → `## Domain Concepts` | — |
+| 4 | 詞彙 → `## Domain Concepts` | — |
 | 5 | `feature-mapping` 與 `example-mapping` 診斷 → `spec-by-example` 寫旅程 → 就緒問句 | 要，由 `example-mapping` 問需求方 |
 | 6 | `已對焦` → 交回，停 | — |
 | 7 | 有洞 → 開補問題、改回 `澄清中`，停 | — |
@@ -197,9 +196,9 @@ MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案�
 
 **做完的樣子**：除了上面預期的「漏了」，全過；輸出留著貼進回報。→ 有待答的補問題：第 7 步；否則第 4 步
 
-### 4. 詞彙與聚合
+### 4. 詞彙
 
-有待答的補問題時**不做這一步**，直接第 7 步：詞彙與聚合要建立在收斂的規則上，補問的答案可能改掉它們。
+有待答的補問題時**不做這一步**，直接第 7 步：詞彙要建立在收斂的規則上，補問的答案可能改掉它們。
 
 1. READ `docs/CONTEXT.md`（專案的現況詞彙；沒有就是第一個 feature）。
 2. WRITE `## Domain Concepts` 的 `### 詞彙`：`## Open Questions` 裡狀態 `已答`、答案是一個定義的詞，一詞一列。欄位固定，
@@ -212,17 +211,11 @@ MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案�
    第四欄不是裝飾——一個不需要解釋為什麼要定義的詞，通常本來就沒有歧義，列進來只是雜訊。
 3. CHECK 詞義有爭議、或跟 `docs/CONTEXT.md` 裡同一個詞的定義不同 → 補問題，問清楚是改定義還是
    換一個詞。**只轉錄，不裁決**：自己挑一個定義就是訪談，SPEC 不訪談。
-4. READ `docs/DOMAIN-MODEL.md`（專案的現況；沒有就是第一個 feature）與
-   `../archive/references/domain-model-format.md`。
-5. WRITE `spec.md` `## Domain Concepts` 的 `### 聚合與不變條件`：這個 feature 新增或改動的聚合與不變條件，不含欄位型別。判準是這條規則**跨
-   feature 仍然成立**；只在這個 feature 的情境下為真的，留在 FR。
-6. CHECK 動到現況裡既有的聚合 → 這一節寫「原本是什麼、為什麼改」。`archive` 照它記修訂紀錄，下一個
-   feature 的人靠那張表判斷某個決定還算不算數。
 
-MUST NOT: 寫 `docs/CONTEXT.md`、`docs/DOMAIN-MODEL.md` 或 `docs/` 底下任何檔案。`docs/` 只放做出來了的
-東西：詞彙與聚合都等這個 feature 做完，由 `archive` 併進去。
+MUST NOT: 寫 `docs/CONTEXT.md` 或 `docs/` 底下任何檔案。`docs/` 只放做出來了的
+東西：詞彙等這個 feature 做完，由 `archive` 併進去。
 
-**做完的樣子**：兩小段都寫了（沒有內容的寫為什麼空）；有爭議的詞開成了補問題。→ 有待答的補問題：第 7 步；
+**做完的樣子**：`### 詞彙` 寫了（沒有內容的寫為什麼空）；有爭議的詞開成了補問題。→ 有待答的補問題：第 7 步；
 否則第 5 步
 
 ### 5. 診斷、寫旅程、問就緒
@@ -285,9 +278,8 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 3. WRITE 補問題答掉的，把答案寫成 FR／AC，刪掉它在 story 底下的 `[NEEDS CLARIFICATION]` 與 `#### Q` 指標——題目本身
    留在表裡；引用了被「取代」的舊題的規則，改引新題。
 4. CHECK 舊版 `spec.md` 的章節照 `references/spec-format.md` 的順序改名併節（`## Background` →
-   `## Context / Problem`、`## Goal`／`## Scope`／Out → `## Goals / Non-Goals`、`## Domain Model` →
-   `## Domain Concepts` 的 `### 聚合與不變條件`、`## 回 DISCOVERY 補問` → `## Open Questions`），不改內容；
-   缺的節補上。舊的 `## Open Questions` 若是一串沒有編號的洞，每一條開成一題補問題。聚合已經在 `docs/DOMAIN-MODEL.md` 而這次沒改的，寫「（無）——沿用 `docs/DOMAIN-MODEL.md`」。
+   `## Context / Problem`、`## Goal`／`## Scope`／Out → `## Goals / Non-Goals`、`## 回 DISCOVERY 補問` → `## Open Questions`），不改內容；
+   缺的節補上。舊的 `## Open Questions` 若是一串沒有編號的洞，每一條開成一題補問題。
    `check_spec.py` 第 18 項在已對焦時擋缺 `## Domain Concepts`。
 5. WRITE 狀態回 `待對焦`，從第 2 步重跑。
 
@@ -296,7 +288,7 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 | 產物 | 格式 |
 | --- | --- |
 | `specs/ongoing/<date>-<feature>/spec.md` | `references/spec-format.md` |
-| `spec.md` 的 `## Domain Concepts` | `references/spec-format.md`；聚合那一小段另見 `../archive/references/domain-model-format.md` |
+| `spec.md` 的 `## Domain Concepts` | `references/spec-format.md` |
 | `interview-log.md` | DISCOVERY 寫的；本 skill 只讀，`spec.md` 的 `## 原文` 與 `## Open Questions` 照它抄 |
 | `features/<story-slug>.feature` | 由 `formulation` 寫 |
 
@@ -316,7 +308,7 @@ MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何
 - [ ] `已對焦` 是 `example-mapping` 照需求方的回答寫的——本 skill 沒有自己寫
 - [ ] `spec.md` 裡沒有任何技術決定（Tech Stack、seam、模組、契約、測試層級）
 - [ ] 再跑時 FR／AC 編號沒有重排，改動的每一條都記了修訂
-- [ ] 詞彙與聚合寫在 `## Domain Concepts`，跟 `docs/CONTEXT.md` 定義不同的詞開成了補問題；`docs/` 底下沒有任何檔案被碰
+- [ ] 詞彙寫在 `## Domain Concepts`，跟 `docs/CONTEXT.md` 定義不同的詞開成了補問題；`docs/` 底下沒有任何檔案被碰
 - [ ] 每則 story 有優先級（或「（沒問過）」並開了補問題）；`## Edge Cases` 每一條指向 AC 或一題補問題
 - [ ] 沒有呼叫 `formulation` 或 `discovery`，也沒有寫任何 `.feature`
 
@@ -326,7 +318,7 @@ MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何
 
 1. `spec.md` 寫了幾則 story、幾條 FR、幾條 AC；收尾檢查重切了哪幾則、為什麼
 2. `check_spec.py` 跑出什麼——過了就說「全過」，抓到就說抓到哪幾條、怎麼處理
-3. `## Domain Concepts` 新增或改了哪些詞彙、聚合與不變條件
+3. `## Domain Concepts` 新增或改了哪些詞彙
 4. 就緒問句的結果：`已對焦`，或開了哪幾題補問題（`Q-<n>`）、為什麼
 5. `### Non-Goals` 列了幾項延後、幾項不做；`## Edge Cases` 有幾條找不到 AC
 
