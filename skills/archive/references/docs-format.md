@@ -7,8 +7,8 @@
 | 檔 | 裝什麼 | 從哪裡來 |
 | --- | --- | --- |
 | `docs/CONTEXT.md` | 詞彙 | `spec.md` `## Domain Concepts` 的 `### 詞彙`；只追加，不用區塊標記 |
-| `docs/DOMAIN-MODEL.md` | 聚合、不變條件、跨聚合的規則 | `spec.md` `## Domain Concepts` 的 `### 聚合與不變條件`；骨架見 `domain-model-format.md` |
-| `docs/DATABASE-SCHEMA.md` | 資料表與欄位、索引與約束 | `plan.md` `## Implementation Decisions` 的 **Schema** |
+| `docs/DOMAIN-MODEL.md` | 聚合、不變條件、跨聚合的規則 | `plan.md` `## Domain Model`；骨架見 `domain-model-format.md` |
+| `docs/DATABASE-SCHEMA.md` | 資料表與欄位、索引與約束 | `plan.md` `## Database Schema`，拿掉 `守住哪條不變條件` 那一欄 |
 | `docs/TECH.md` | Tech Stack、Commands、Project Structure、Code Style、Boundaries | `plan.md` 技術決定的同名五節 |
 
 `docs/CONTEXT.md` 不包區塊：它的規則從來就是「只建立或追加，不改寫既有段落」，專案自己也會加詞，
@@ -62,9 +62,9 @@ skill 管。覆蓋手改過的區塊，就是靜靜地丟掉別人的修改。
 | 欄位 | 型別 | 約束 | 來源 |
 | --- | --- | --- | --- |
 | id | uuid | PK | 2026-09-14-library FR-1 |
-| due_on | date | NOT NULL | 2026-09-14-library FR-1 |
+| due_on | date | NOT NULL | 2026-09-14-library FR-1、FR-2 |
 
-**索引**: `(book_id, returned_at)` 唯一——同一本書同時只能有一筆借出中 ← 2026-09-14-library FR-1
+**索引**: `(reader_card_no, returned_at)`——續借時查這位讀者名下還沒還的借閱 ← 2026-09-14-library FR-3
 <!-- ai-bdd:end loans -->
 
 <!-- ai-bdd:begin 修訂紀錄 -->

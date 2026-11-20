@@ -2,7 +2,7 @@
 name: archive
 description: >
   一個 feature 的票全部合回之後收尾：把 `spec.md` 與 `plan.md` 講定、已經做出來的東西併進專案的真實來源——
-  `docs/CONTEXT.md`（詞彙）、`docs/DOMAIN-MODEL.md`（聚合與不變條件）、`docs/DATABASE-SCHEMA.md`（資料表）、
+  `docs/CONTEXT.md`（詞彙）、`docs/DOMAIN-MODEL.md`（聚合、不變條件）、`docs/DATABASE-SCHEMA.md`（資料表）、
   `docs/TECH.md`（Tech Stack、Commands、Project Structure、Code Style、Boundaries）——再把整個
   `specs/ongoing/<date>-<feature>/` 用 `git mv` 搬進 `specs/sleeping/`。只動 ai-bdd 維護的區塊，
   不訪談、不改需求、不改程式碼。BDD 六步流程 IMPLEMENT 之後的收尾。
@@ -18,7 +18,7 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把一個做完的 feature 併進專案的真實來源：`docs/` 四份現況檔照它增修，再把它的目錄搬進 `specs/sleeping/` |
-| **讀** | `specs/ongoing/<date>-<feature>/` 的 `spec.md`（`## Domain Concepts`）、`plan.md`（技術決定）、`tasks.md`（全部勾完）、涵蓋的 `.feature`（`@review`）、`docs/` 既有的四份檔 |
+| **讀** | `specs/ongoing/<date>-<feature>/` 的 `spec.md`（`## Domain Concepts` 的 `### 詞彙`）、`plan.md`（技術決定、`## Domain Model`、`## Database Schema`）、`tasks.md`（全部勾完）、涵蓋的 `.feature`（`@review`）、`docs/` 既有的四份檔 |
 | **寫** | `docs/CONTEXT.md`（只追加）；`docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md` 裡 ai-bdd 維護的區塊；`git mv` 這個 feature 的目錄到 `specs/sleeping/` |
 | **上游** | `implement`（讓最後一張票完成的那次合回之後） |
 | **下游** | 無；要修正時由 `spec` 喚醒，搬回 `specs/ongoing/` |
@@ -38,13 +38,15 @@ disable-model-invocation: true
 | --- | --- |
 | 還有票沒勾完、或某個 `.feature` 還是 `@wip`／`@ready` | `implement` 把票做完 |
 | 要改詞彙 | `spec`（寫在 `spec.md` 的 `## Domain Concepts`；做完時由本 skill 追加進 `docs/CONTEXT.md`） |
+| 要改聚合或資料表 | `plan`（寫在 `plan.md` 的 `## Domain Model`／`## Database Schema`） |
 | 要修正一個已經在 `specs/sleeping/` 的 feature | `spec`（先問要不要喚醒） |
 | 要判斷實作是不是真的滿足規格 | REVIEW／VERIFY（未實作） |
 
 ## 參考檔案
 
 - `references/docs-format.md` — `docs/` 四份檔的骨架、區塊標記、修訂紀錄。**改 `docs/` 之前先讀**
-- `references/domain-model-format.md` — `docs/DOMAIN-MODEL.md` 與 `spec.md` `### 聚合與不變條件` 共用的骨架
+- `references/domain-model-format.md` — `docs/DOMAIN-MODEL.md` 與 `plan.md` `## Domain Model` 共用的骨架
+- `../plan/references/design-format.md` — `plan.md` 的 `## Domain Model`、`## Database Schema` 長什麼樣
 - `../plan/references/tech-format.md` — `plan.md` 技術決定各節的格式，`docs/TECH.md` 照它
 
 ## 前置確認（Ask user）
@@ -53,6 +55,9 @@ Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks.md` 列的每張�
 每個 `.feature` 都是 `@review`——涵蓋哪些檔，看各票 `涵蓋場景` 寫的 `.feature` 路徑的聯集（不屬於任何票的，
 例如 walking skeleton 的 `version.feature`，不算）。任何一項不成立就停下，說還差哪張票——還沒做完的東西寫進現況，
 `docs/` 就不再是系統真正的樣子。
+
+Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `### 聚合與不變條件`。是就停下，請使用者
+重跑 `/plan`（`spec.md` 的舊節由再跑 `/spec` 刪掉）。舊格式不吃：聚合不在 `plan.md`，`DOMAIN-MODEL.md` 沒有來源可抄。
 
 ---
 
@@ -79,8 +84,8 @@ Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks.md` 列的每張�
 | `docs/` 的檔 | 從哪裡來 | 怎麼比 |
 | --- | --- | --- |
 | `CONTEXT.md` | `spec.md` `## Domain Concepts` 的 `### 詞彙` | 新的詞追加在表尾；已經有、定義一樣的不動；已經有、定義不同的**停**——`spec` 第 4 步該擋下它，到這裡代表漏了 |
-| `DOMAIN-MODEL.md` | `spec.md` `## Domain Concepts` 的 `### 聚合與不變條件` | 新的聚合加進去；改了既有聚合的，`spec.md` 那一小段寫了「原本是什麼、為什麼改」 |
-| `DATABASE-SCHEMA.md` | `plan.md` `## Implementation Decisions` 的 Schema | 新表加區塊；改了既有表的，照新的寫 |
+| `DOMAIN-MODEL.md` | `plan.md` `## Domain Model` | 新的聚合加進去；改了既有聚合的，照那個聚合的「原本是什麼、為什麼改」記修訂紀錄 |
+| `DATABASE-SCHEMA.md` | `plan.md` `## Database Schema` | 新表加區塊；改了既有表的，照新的寫。拿掉 `守住哪條不變條件` 那一欄，`來源` 前面加 `<date>-<feature>` |
 | `TECH.md` | `plan.md` `## Tech Stack` 到 `## Boundaries` | 只改跟現況不一樣的條目——多數 feature 這五節跟 `TECH.md` 一字不差，那就不動。`## Commands` 的 `替代閘門（本環境）` 不寫進去：它是那次環境的變通，不是專案的現況 |
 
 把要改的條目先攤成一張表（檔、區塊、原本、改成、來源），再動手。
@@ -100,7 +105,7 @@ MUST: 區塊的內容跟上一次 `archive` 寫的不一樣（有人手改過）
 | 碰到 | 怎麼辦 |
 | --- | --- |
 | `spec.md`／`plan.md` 跟 `docs/` 現況衝突（同一條，兩邊說法不同，而它們沒有記這是一次改動） | **停**，列出兩邊原文問使用者——可能是 spec 抄錯，也可能是現況過期 |
-| `spec.md` 的 `## Domain Concepts` 某一小段、或 `plan.md` 某節寫「（無）」 | 對應的那份檔不動，回報裡說明 |
+| `spec.md` 的 `### 詞彙`、或 `plan.md` 某節寫「（無）」 | 對應的那份檔不動，回報裡說明 |
 
 ### 3. 搬進 `specs/sleeping/`
 
@@ -145,6 +150,8 @@ MUST NOT: 寫 `docs/` 底下這四份以外的任何檔，或改 `specs/` 底下
 - [ ] commit 標題是 `docs: archive <date>-<feature>`
 - [ ] feature 目錄是 `git mv` 搬的，目錄裡的檔一個字都沒改；`docs/` 的改動與搬家在同一個 commit
 - [ ] 沒有改程式碼、`spec.md`、`plan.md`、票節或 `.feature`
+- [ ] `DOMAIN-MODEL.md` 照 `plan.md` `## Domain Model`、`DATABASE-SCHEMA.md` 照 `## Database Schema`（拿掉了 `守住哪條不變條件` 欄）；
+  遇到舊格式（`plan.md` 沒有 `## Domain Model`、`spec.md` 有 `### 聚合與不變條件`）停下請使用者重跑 `/plan`
 
 ## 完成後
 

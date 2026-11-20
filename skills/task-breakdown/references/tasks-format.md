@@ -28,6 +28,8 @@
 **Blocked by**: 00
 **接合點**: `api/openapi.yaml`（追加）、`api.gen.go`（產生）
 **模組**: <照抄 plan.md Implementation Decisions「動哪些模組」裡這張票碰的那幾個>
+**契約**: `lendBook`（`plan.md` `## API 契約`）
+**資料表**: `loans`（`plan.md` `## Database Schema`）
 **大小**: M（一條功能切片）
 **內迴圈**: <這張票底下要寫哪些 unit test，來自 plan.md Testing Decisions 的測試分層>
 
@@ -35,6 +37,7 @@
 
 - [ ] <驗收條件 1>
 - [ ] <驗收條件 2>
+- [ ] 搬進 api/openapi.yaml 的 operation 與 plan.md 的片段一致
 
 **驗證**
 
@@ -56,7 +59,7 @@
 
 一波一節：同一波裡的票 `Blocked by` 只指向前面幾波。波與波之間是檢查點，見〈檢查點〉。
 
-依賴序排列，blockers 在前。編號一旦寫出去就不重排——`implement 03` 靠它定位。票做到哪了看票節裡的勾，
+依賴序排列，blockers 在前。順序也要守 `plan.md` 的 `## 依賴圖`：一張票不得排在它依賴的節點之前（〈契約與資料表〉）。編號一旦寫出去就不重排——`implement 03` 靠它定位。票做到哪了看票節裡的勾，
 不另外記。
 
 **前置整理（prefactoring）也是票**，編號 `00` 起、排在所有功能票前面：「make the change
@@ -74,6 +77,28 @@ easy, then make the easy change.」它沒有 `涵蓋場景`，`交付什麼行�
 `#### 缺口` 是實作時發現的洞，`task-breakdown` 寫票時一律寫「（無）」。做票的 session **只改自己的
 票節**，幾張票同時做時，合回 `tasks.md` 的衝突就只會是兩邊各改了自己的票節——取聯集即可
 （`implement`〈合回主線〉）。
+
+## 契約與資料表
+
+兩行都從 `plan.md` 照抄，不自己編：
+
+- `**契約**`：這張票涵蓋的 operation——OpenAPI 片段寫 `operationId`，程式碼層契約寫埠的方法（`借出`）。
+  它用到的 `components` 不列，`implement` 跟著 operation 一起搬
+- `**資料表**`：這張票要建或改的表，名字照 `## Database Schema`；`implement` 照那一節寫 migration
+
+沒有就寫「無」（前置整理、只改 domain 規則的票）。一張票碰的 operation 或表，在 `## 依賴圖` 上的父節點（聚合、
+表、查詢埠）要由這張或它 `Blocked by` 的票做出來；排不出這種順序，是圖或切法有一邊錯了，進 `plan.md` 的 `## 缺口`。
+
+`## API 契約` 是 OpenAPI 片段時，有 `**契約**` 的票驗收條件**照抄**這一條：
+
+```markdown
+- [ ] 搬進 api/openapi.yaml 的 operation 與 plan.md 的片段一致
+```
+
+它在起點是紅的（operation 還不在 `api/openapi.yaml`），擋的是實作時順手改形狀、`plan.md` 與專案的契約從此分家。
+程式碼層契約沒有要搬的檔，不加這一條。
+
+兩張票都要建同一張還不存在的表，跟〈接合點與同時跑〉的新建的東西一樣：指定一張票擁有它，另一張 `Blocked by` 它。
 
 ## 接合點與同時跑
 

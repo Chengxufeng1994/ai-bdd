@@ -18,8 +18,8 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 把一張票做到綠：測試層先紅、委派 `behavior-driven-development` 轉綠與整理、閘門綠、勾驗收條件、合回主線 |
-| **讀** | `tasks.md`（開頭三行與這張票的 `### <票號>` 票節）、`spec.md`（這張票的 FR／AC）、`plan.md`（技術決定與執行計畫）、這張票涵蓋的 `.feature`、專案的架構文件 |
-| **寫** | 產品程式碼與 step definition、`tasks.md` 裡這張票的票節（勾選、`**檢查點**:`、`#### 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
+| **讀** | `tasks.md`（開頭三行與這張票的 `### <票號>` 票節）、`spec.md`（這張票的 FR／AC）、`plan.md`（技術決定、三份設計與執行計畫）、這張票涵蓋的 `.feature`、專案的架構文件 |
+| **寫** | 產品程式碼與 step definition、`api/openapi.yaml`（照抄 `plan.md` 的片段）與 migration、`tasks.md` 裡這張票的票節（勾選、`**檢查點**:`、`#### 缺口`）、`.feature` 的狀態 tag（`@wip`／`@review`） |
 | **上游** | `task-breakdown`（票切好之後） |
 | **下游** | `behavior-driven-development`（第 3、4 步委派）；全部票做完之後是 `archive` |
 | **不做** | 不改 `spec.md`、不改 `.feature` 的例子、不寫 `plan.md`、不改 `tasks.md` 裡這張票的票節以外的任何一行、不做 `plan.md` 的技術決定沒做的設計決定 |
@@ -41,6 +41,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 | --- | --- |
 | 還沒有 `.feature` | `formulation` |
 | `plan.md` 沒有技術決定（seam、埠、契約） | `plan` |
+| 要改 operation、`components` 或表的形狀 | `plan`（改 `## API 契約`／`## Database Schema`）——本 skill 只照抄 |
 | 還沒有 `tasks.md`（包括票還寫在 `plan.md` `## 票` 裡、或還是 `tasks/` 目錄的舊格式） | `task-breakdown` |
 | 票之間的順序、要不要再切、哪幾張能同時做 | `task-breakdown` |
 | 只推進**一個場景**的 red／green／refactor 其中一步，而不是做一張票 | 使用者手動叫 `/behavior-driven-development`；本 skill 做票時第 3、4 步本來就委派它 |
@@ -55,6 +56,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
   `../behavior-driven-development/references/step-definitions.md` — 第 2 步測試層先紅時照它寫
 - `../task-breakdown/references/tasks-format.md` — 票的欄位，驗收條件為什麼要能失敗，接合點與同時跑
 - `../plan/references/tech-format.md` — `plan.md` 的技術決定各節裝什麼
+- `../plan/references/design-format.md` — `## Domain Model`、`## Database Schema`、`## API 契約` 裝什麼
 - 專案自己的架構文件（實測場是 `docs/ARCHITECTURE.md`、`docs/DATAFLOW.md`、各層 `doc.go`）
   ——分層、轉換、錯誤分類都照它，本 skill 不另訂
 
@@ -74,6 +76,9 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 
 NEVER: `plan.md` 沒有技術決定時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
+
+Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `### 聚合與不變條件`。是就停下，請使用者
+重跑 `/plan`（`spec.md` 的舊節由再跑 `/spec` 刪掉），再跑 `/task-breakdown`——舊格式沒有可以照抄的契約與資料表。
 
 MUST: 一個 session 一張票。撿起票的人只看過票節與 `plan.md` 的技術決定——這是 `task-breakdown`
 切票的上界，也是這一步不要一次做三張的理由：做到第二張時第一張的脈絡已經在擠。
@@ -103,7 +108,8 @@ MUST: 開工時工作區是乾淨的；做完這張票一個 commit，只 stage 
 讀 `tasks.md` 的 `### <票號>` 票節：交付什麼行為、涵蓋哪些 `@example-N.M`、內迴圈要寫哪些單元測試、
 驗收條件。再讀 `plan.md` 的 `## Implementation Decisions`、`## Testing Decisions`、
 `## Project Structure`、`## Code Style`——這張票動哪些模組、埠長什麼形狀、seam 在哪一層、每個 AC
-在哪一層測、程式碼放哪、長什麼樣。需求部分只讀對應的 FR 與 AC，看規則的原話。
+在哪一層測、程式碼放哪、長什麼樣——以及三份設計裡這張票碰的部分：`## Domain Model` 的聚合、不變條件、
+票節 `**資料表**` 在 `## Database Schema` 的那幾張表、`**契約**` 在 `## API 契約` 的那幾個 operation。需求部分只讀對應的 FR 與 AC，看規則的原話。
 
 再讀 `Blocked by` 那幾張票的票節 `#### 缺口`：點名這張票的列（「留給 03」「到期日碰巧不是休館日」）是前一個
 session 的猜測，當成**待驗證的線索**——用這張票的第一個紅驗證它，不直接信。喚醒之後切出來的票
@@ -124,6 +130,17 @@ session 的猜測，當成**待驗證的線索**——用這張票的第一個�
 回傳零值的空殼、以及讓請求打得到 seam 的接線，照 `red.md`〈R3：最小通路的界線〉寫，不算產品程式碼。
 seam 是 HTTP 時，契約的 operation、重新產碼、**回錯誤**（不是回成功）的 handler 空殼都算最小通路——
 停在 404 只證明路由不存在，不是這張票的紅。
+
+**契約從 `plan.md` 搬進來。** 票節有 `**契約**`、`plan.md` 的 `## API 契約` 是 OpenAPI 片段時：把那幾個 operation
+與它們用到的 `components`，從片段照抄進 `api/openapi.yaml`，再重新產碼。`api/openapi.yaml` 是 `追加` 接合點，
+合回照〈合回主線〉。`## API 契約` 是程式碼層契約（沒有 OpenAPI 片段）時沒有要搬的，跳過這段，埠照它的方法寫。
+
+MUST NOT: 搬的時候改形狀——欄位、型別、必填、狀態碼、錯誤碼都跟片段一樣。要改，記進票節 `#### 缺口`、停下回報：
+`task-breakdown` 把它搬進 `plan.md` 的 `## 缺口`，`plan` 改好片段再搬。在 `api/openapi.yaml` 改了，`plan.md` 與
+專案的契約從此分家，而沒有人發現。
+
+票節有 `**資料表**` 時，migration 照 `plan.md` `## Database Schema` 寫：欄位、型別、約束、索引都一樣，
+`守住哪條不變條件` 那一欄不進 migration。它是產品程式碼，在第 3 步 repository 需要它時寫；要改表的形狀同上，回 `plan`。
 
 ```bash
 go test -count=1 ./test/acceptance/ -v -godog.format=progress -godog.tags=@rule-2   # 一條規則
@@ -146,7 +163,7 @@ definition 已經被別的場景定義過，而它的斷言沒抓到這張票要
 | 入口 | `green` |
 | 範疇（Test Scope） | 這張票節的 `涵蓋場景`，組成一個 tag 運算式（實測場 godog 寫成 `@example-8.1,@example-8.2`） |
 | 票 | `tasks.md` 的路徑與票號（`### <票號>`） |
-| 設計 | `plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions` |
+| 設計 | `plan.md` 的 `## Implementation Decisions`、`## Testing Decisions`、`## Domain Model`，與票節 `**資料表**` 在 `## Database Schema` 的表 |
 
 `behavior-driven-development` 一個場景一個場景轉綠：規則先進 domain、先看到單元測試紅（`../behavior-driven-development/references/inner-loop.md`）。
 它停下來回報規格的洞或範疇外的耦合時，本 skill 把那一條記進票節的 `#### 缺口`，照
@@ -215,7 +232,7 @@ is stale」。
    - `產生` → 不手動合：先解完原始檔，再照 `plan.md` `## Commands` 的產碼命令重新產生；`go.sum`
      用 `go mod tidy`
    - `追加` → 取聯集，**以宣告為單位**：衝突的切點常落在函式中間，兩邊共用的 `return`、`}`、契約裡的
-     `"500"` 只接一次會漏、接兩次會重複。接完先編譯（實測場 `go vet ./...`），再跟主線 `git diff main`
+     `"500"` 只接一次會漏、接兩次會重複；兩張票都從 `plan.md` 照抄的同一個 `components`，一模一樣，留一份。接完先編譯（實測場 `go vet ./...`），再跟主線 `git diff main`
      確認沒有刪掉主線任何一行，最後檢查有沒有重複宣告
    - 沒列到、但這張票對那個檔的**整份改動**都只是新增頂層宣告（新函式、新型別，沒有改到任何既有的行）
      → 當成 `追加` 解，並在票節 `#### 缺口` 記一列「沒列到的接合點：<檔>」，讓 `task-breakdown` 補上
@@ -276,7 +293,8 @@ MUST NOT: 在 handler、mapper、presenter 裡放規則。判準：把這段刪�
 ```
 <專案>/
 ├── internal/…                 這張票穿過的每一層
-├── api/openapi.yaml           新的 operation（若 seam 是 HTTP）
+├── api/openapi.yaml           這張票的 operation 與 components，從 plan.md 的 OpenAPI 片段照抄（有片段時）
+├── <migration>                這張票的表，照 plan.md 的 ## Database Schema（票節有 **資料表** 時）
 ├── test/acceptance/steps_*.go 新的 step definition，按領域名詞分檔
 ├── features/<story>.feature   只改第一行的狀態 tag
 └── specs/ongoing/<date>-<feature>/tasks.md   只改這張票的票節：勾驗收條件、寫缺口
@@ -303,6 +321,9 @@ MUST: 不修改 `spec.md`、`plan.md`、`.feature` 的任何場景文字；`task
 - [ ] 票節只勾了有測試驗過的驗收條件
 - [ ] 每個暫定行為都有一個測試釘住，註解寫明等哪一題的答案
 - [ ] 這個 session 只做了一張票
+- [ ] 有 OpenAPI 片段時，`api/openapi.yaml` 裡這張票的 operation 與 `components` 跟 `plan.md` 的片段一致；migration 跟
+  `## Database Schema` 一致；要改形狀的記進了 `#### 缺口`，沒有在專案裡改
+- [ ] `plan.md` 有 `## Domain Model`、`spec.md` 沒有 `### 聚合與不變條件`；不是就停下請使用者重跑 `/plan`
 
 ## 完成後
 
