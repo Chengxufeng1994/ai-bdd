@@ -245,6 +245,11 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `archive` | 票全部合回後：`spec.md` 的詞彙與 `plan.md` 的 Domain Model、Database Schema、技術決定併進 `docs/CONTEXT.md`（追加）與 `DOMAIN-MODEL.md`／`DATABASE-SCHEMA.md`／`TECH.md` 的 ai-bdd 區塊，整個目錄 `git mv` 到 `specs/sleeping/` | **已實作**（2026-11-15，照 OpenSpec 的 changes／archive；還沒實跑過） |
 | REVIEW | `review`、`review-acceptance`、`review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 | VERIFY | `verify`、`verify-failure-triage` | 跑閘門與情境並回報、真 bug vs 規格過期 | 未實作 |
+| 流程外 | `incremental-implementation` | 把一個改動切成薄片，每片實作、測試、驗證、commit | **已實作**（2026-11-20，addyosmani 原文＋職責卡；只能手動叫用） |
+| | `test-driven-development` | 先寫會失敗的測試再改程式；修 bug 先寫重現測試 | **已實作**（2026-11-20，同上） |
+| | `context-engineering` | 整理 agent 的 context：rules 檔、context 打包、長 session 的管理 | **已實作**（2026-11-20，同上） |
+| | `source-driven-development` | 寫框架、套件相關的程式前先查官方文件，附來源，查不到的明說 | **已實作**（2026-11-20，同上） |
+| | `doubt-driven-development` | 不顯而易見的決定定案前，交給全新 context 的 reviewer 反向檢驗 | **已實作**（2026-11-20，同上） |
 
 `spec` 加了技術設計之後會不會太肥、要不要拆成兩個 skill——**先不拆**（2026-11-14 技術設計移到 `plan`；2026-11-15 照需求方的要求搬回 `spec.md` 的技術部分；2026-11-18 又搬回 `plan`，`tech-format.md` 跟著搬到 `skills/plan/references/`）。
 子 skill 是否真的需要，等步驟 skill 跑過真實案例、發現它太長時再拆。

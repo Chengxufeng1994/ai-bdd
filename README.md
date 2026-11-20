@@ -18,7 +18,9 @@
 | IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`behavior-driven-development`（由 `implement` 委派 green／refactor，模型不自動觸發）、`archive`（票全部合回後：寫回 `docs/` 現況、搬進 `specs/sleeping/`） |
 | REVIEW／VERIFY | 尚未實作 |
 
-`skill-rules` 不在流程裡：它是本專案撰寫與稽核 skill 的房規。哪幾步對應 BDD 的哪個實踐、
+`skill-rules` 不在流程裡：它是本專案撰寫與稽核 skill 的房規。另有五個 addyosmani 原文技能也不在流程裡，
+只能手動叫用：`incremental-implementation`、`test-driven-development`、`context-engineering`、
+`source-driven-development`、`doubt-driven-development`。哪幾步對應 BDD 的哪個實踐、
 哪幾步是本專案自己加的，見 [docs/ai-sdlc.md](docs/ai-sdlc.md)。
 
 ## 中間產物：誰產生、誰接著用
@@ -243,6 +245,41 @@
 5. 需要子目錄才建，並在 SKILL.md 指路
 6. 跑稽核
 
+#### `incremental-implementation`
+
+**職責**：把一個改動切成薄片，每片實作、測試、驗證、commit。內容照 addyosmani/agent-skills 原樣保留，本專案只補職責卡、使用時機與 Skill Boundaries
+
+- **上游／下游**：無（不在流程裡；`disable-model-invocation`，只能手動 `/incremental-implementation`）
+- **不做**：照 `tasks.md` 做票用 `implement`（一票一 commit 已取自本文）
+
+#### `test-driven-development`
+
+**職責**：先寫會失敗的測試再改程式；修 bug 先寫重現測試。內容照 addyosmani/agent-skills 原樣保留，本專案只補職責卡、使用時機與 Skill Boundaries
+
+- **上游／下游**：無（不在流程裡；`disable-model-invocation`，只能手動 `/test-driven-development`）
+- **不做**：流程內用 `implement`／`behavior-driven-development`，測試層以 `plan.md` 的 Testing Decisions 為準
+
+#### `context-engineering`
+
+**職責**：整理 agent 的 context：rules 檔、context 打包、長 session 的管理。內容照 addyosmani/agent-skills 原樣保留，本專案只補職責卡、使用時機與 Skill Boundaries
+
+- **上游／下游**：無（不在流程裡；`disable-model-invocation`，只能手動 `/context-engineering`）
+- **不做**：不改流程靠產物交接 context 的方式、不寫 `docs/` 現況
+
+#### `source-driven-development`
+
+**職責**：寫框架、套件相關的程式前先查官方文件，附來源，查不到的明說。內容照 addyosmani/agent-skills 原樣保留，本專案只補職責卡、使用時機與 Skill Boundaries
+
+- **上游／下游**：無（不在流程裡；`disable-model-invocation`，只能手動 `/source-driven-development`）
+- **不做**：不自己換套件或升版本、不改 `plan.md` 的 Tech Stack
+
+#### `doubt-driven-development`
+
+**職責**：不顯而易見的決定定案前，交給全新 context 的 reviewer 反向檢驗。內容照 addyosmani/agent-skills 原樣保留，本專案只補職責卡、使用時機與 Skill Boundaries
+
+- **上游／下游**：無（不在流程裡；`disable-model-invocation`，只能手動 `/doubt-driven-development`）
+- **不做**：不是 REVIEW 步（尚未實作）；沒有授權不呼叫外部 CLI
+
 ## 目錄
 
 ```
@@ -272,6 +309,11 @@ ai-bdd/
 │   ├── implement/
 │   ├── behavior-driven-development/
 │   ├── archive/
+│   ├── incremental-implementation/
+│   ├── test-driven-development/
+│   ├── context-engineering/
+│   ├── source-driven-development/
+│   ├── doubt-driven-development/
 │   └── skill-rules/
 ├── tests/                skill 腳本的 stdlib unittest
 ├── benchmark/

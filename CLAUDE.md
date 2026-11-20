@@ -5,7 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this repo is
 
 A Claude Code **plugin** (`benny-skills`) whose product is the `skills/` directory; its skills
-currently form one set, `ai-bdd`. Everything
+currently form one set, `ai-bdd`, plus five addyosmani skills kept verbatim outside the pipeline
+(`incremental-implementation`, `test-driven-development`, `context-engineering`,
+`source-driven-development`, `doubt-driven-development`; manual `/<name>` only). Everything
 else either explains why those skills look the way they do (`docs/`, `PLAN.md`) or exists
 to make them fail visibly when they are weak (`benchmark/`).
 
