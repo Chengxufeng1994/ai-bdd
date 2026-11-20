@@ -15,9 +15,11 @@ The plugin's subject is a six-step pipeline:
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by two skills —
-`plan` (`plan.md`: the technical decisions — Tech Stack, Commands, Project Structure, Code
-Style, Boundaries, Implementation and Testing Decisions, with the seam confirmed by the user —
-then the execution plan: overview, risks, whether to parallelise and the join points) and `task-breakdown` (slices the design into one section per ticket in a
+`plan` (the system-analysis step, four steps: collect; inventory the system interfaces and
+their Wave order; design — Domain Model, Database Schema and the API contract side by side, the
+contract delegated to `api-and-interface-design`, plus the technical decisions with the seam
+confirmed by the user; then dependency graph, risks, order and checkpoints, parallel work, and
+STOP for `task-breakdown`; all of it lands in `plan.md`) and `task-breakdown` (slices the design into one section per ticket in a
 single `tasks.md`, so tickets can run in parallel). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `behavior-driven-development`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
@@ -124,7 +126,7 @@ append-only interview log `interview-log.md` (原文, sessions with stakeholders
 one `### Q-<n>` per question, confirmed decisions, open items — no rules, no `spec.md`), SPEC is the
 only writer of `spec.md` (copies 原文 verbatim, curates the log's questions into `## Open Questions`
 under the same numbers, writes what to build up to `已對焦`) and the `.feature` files, PLAN writes
-`plan.md` (technical decisions, then the execution plan) from `spec.md` and the `.feature`
+`plan.md` (system interfaces, technical decisions, the three designs, then the execution plan) from `spec.md` and the `.feature`
 files, then `tasks.md` (one section per ticket, in dependency order) from both, REVIEW audits the
 whole chain.
 
@@ -156,14 +158,16 @@ Each of the first three steps holds because it runs in one main working mode:
   the log under the same number and asks them. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `## Open Questions` — `check_spec.py`
   check 14 rejects both. No skill calls the next one: every step is a user-typed `/<skill>`.
-- **PLAN** owns the technical decisions (seam, modules, contracts, schema, test levels) and
-  the execution plan (risks, parallel work, join points) — `plan` **does not change
+- **PLAN** owns the technical decisions (seam, modules, test levels), the three designs
+  (Domain Model with aggregates and invariants, Database Schema, API contract as an OpenAPI
+  fragment — aggregates live in `plan.md`, not `spec.md`, whose `## Domain Concepts` holds only
+  the glossary) and the execution plan (risks, parallel work, join points) — `plan` **does not change
   `spec.md` or the `.feature` files**; the seam is the one thing confirmed with the user,
   technical lines may be `← 推論` or `← 專案 <path>`, and holes go to `## 缺口` and back to
   `spec` (or to `formulation` when a scenario cannot be observed at the seam). `task-breakdown` then
   slices tracer bullets and **does not change the design**; its holes go to the same
   `## 缺口`. `implement` writes only its own ticket's section of `tasks.md`, never `plan.md` or
-  another ticket's section — that is what lets tickets run in parallel. A ticket done in a worktree
+  another ticket's section (it copies its operations from `plan.md`'s API contract into `api/openapi.yaml` unchanged) — that is what lets tickets run in parallel. A ticket done in a worktree
   is merged back by the session that did it: generated files are regenerated, append-only
   conflicts are unioned, and the gate re-runs on the merged code.
 

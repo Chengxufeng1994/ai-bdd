@@ -46,7 +46,7 @@ Automation 重合，因為 Automation 的產物本來就是程式碼而不是膠
 | --- | --- | --- |
 | **DISCOVERY** | brainstorming：開場把需求方的話逐字收進訪談紀錄 `interview-log.md` 的 `## 原文`、粗切 story（不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 一題一題問到規則與例子都有人答過（BDD 的 Discovery）。**只記問答，不寫規則、不寫 `spec.md`**——每個答案記原話與誰答的，最後要需求方對意圖陳述說 yes。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
 | **SPEC** | to spec：讀訪談紀錄寫 `spec.md`——原文照抄、問答整理成 `## Open Questions`（題號不變），再寫成規則（FR／AC 每一條行尾指回 `## 原文` 或 `## Open Questions` 的已答題，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`）＋可執行規格（BDD 的 Formulation，`formulation`，`已對焦` 之後由使用者叫） | Formulation ＋ 額外 |
-| **PLAN** | to plan：執行計畫（風險、要不要並行、接合點）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`plan` 寫 `plan.md`，`task-breakdown` 拆成 `tasks.md`） | **無**——BDD 明確沒有排序指引 |
+| **PLAN** | to plan：系統分析（盤點系統介面、設計 Domain Model／Database Schema／API 契約）＋執行計畫（依賴、風險、順序、要不要並行、接合點）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`plan` 寫 `plan.md`，`task-breakdown` 拆成 `tasks.md`） | **無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`implement`） | Automation |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？全新的 reviewer 對照 `spec.md`／`.feature` 審整批 | **無**——治理不在三個實踐裡 |
 | **VERIFY** | 最後一次驗證：閘門、全部情境、鏈稽核都有輸出當證據才算交付；紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
@@ -68,7 +68,7 @@ PLAN 的技術設計與切票、REVIEW、VERIFY 的交付證據）都不是補�
 | --- | --- | --- | --- |
 | **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、一次問一題、記答案原話與誰答的、意圖陳述 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
 | **SPEC**（`spec`／`spec-by-example`／`formulation`） | agent 寫、需求方審 | `interview-log.md` 的已答題 → `spec.md` 的 FR／AC（`待對焦`）→ `acceptance/` 驗收旅程 →（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、狀態改回 `澄清中`、停 |
-| **PLAN**（`plan`／`task-breakdown`） | agent 定與切、工程師確認 seam、審計畫 | `spec.md` ＋ `.feature` → 技術決定 → 風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec`／`formulation`／`plan` |
+| **PLAN**（`plan`／`task-breakdown`） | agent 定與切、工程師確認 seam、審計畫 | `spec.md` ＋ `.feature` → 系統介面與三份設計 → 技術決定 → 依賴、風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec`／`formulation`／`plan` |
 
 三條互相支撐：SPEC 能「不訪談」是因為 DISCOVERY 把每個答案連原話記下來了；PLAN 能
 「不改需求」是因為 SPEC 寫下了需求方點過頭的規則；DISCOVERY 能只問不寫，是因為 SPEC
@@ -149,8 +149,19 @@ SPEC 的診斷有兩張圖，方向相反：`feature-mapping` 看整個 feature 
 `acceptance/`；它們新增的是找洞的方法，洞在 `spec.md` 的 `## Open Questions` 開成待答題。Feature Mapping 原本是工作坊
 裡當場追問，這裡把問題開成補問題交給 `discovery`——SPEC 不訪談，當場問到的答案沒有原話與誰答的，`← Q-<n>` 指不了。
 
+**`plan` 就是 system-analysis（2026-11-20 起）。** 需求方：「aixbdd 的 system-analysis 就等於 addyosmani 的 plan」。
+所以 `plan` 照 system-analysis 的角色：不自己做每一種設計，而是盤點這次碰到哪些系統介面、排分析順序
+（Wave），再照 addyosmani 的 planning-and-task-breakdown 排依賴、風險、順序與 checkpoint；API 契約交給
+`api-and-interface-design`（addyosmani 原文）。之前 API 契約與 schema 只是 `plan.md` 裡的散文，domain model
+住在 `spec.md`，第二次試跑的 `plan.md` 寫「HTTP 契約以 `api/openapi.yaml` 為唯一來源」，卻沒有一份能拿來對的契約。
+
+**三份設計留在同一個 skill，不拆成 `api-plan`／`data-plan`／`domain-plan`（aixbdd 的做法）。** 聚合邊界、
+資料表的切法、operation 的形狀三者互相約束，要並排讀才看得見衝突；拆給三個擁有者，衝突只會在實作時才
+浮現。所以聚合與不變條件也從 `spec.md` 移到 `plan.md` 的 `## Domain Model`：聚合邊界是設計判斷，不是需求方的決定。
+`spec.md` 的 `## Domain Concepts` 只留詞彙。
+
 PLAN 的後半是**執行**：哪裡危險、能不能並行、合回時哪些檔會相撞，以及把工作切到一個 fresh
-session 做得完。實作者讀 `plan.md` 的技術決定與自己那張票節就夠（票由 `task-breakdown` 拆到
+session 做得完。實作者讀 `plan.md` 的技術決定、三份設計與自己那張票節就夠（票由 `task-breakdown` 拆到
 `tasks.md`，一張票一節，做票的 session 只改自己那一節，讓幾張票能同時做而不互相覆寫）。
 
 ---

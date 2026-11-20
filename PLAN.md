@@ -42,7 +42,7 @@
 | --- | --- | --- | --- |
 | **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、一次問一題、記答案原話與誰答的、意圖陳述 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
 | **SPEC**（`spec`／`formulation`） | agent 寫、需求方審 | `spec.md` 的已答題 → FR／AC（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、改回 `澄清中`、停 |
-| **PLAN**（`plan`／`task-breakdown`） | agent 定與排、工程師審（seam 經使用者確認） | `spec.md` ＋ `.feature` → 技術決定 → 風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec`／`plan` |
+| **PLAN**（`plan`／`api-and-interface-design`／`task-breakdown`） | agent 定與排、工程師審（seam 經使用者確認） | `spec.md` ＋ `.feature` → 系統介面與三份設計 → 技術決定 → 依賴、風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`、`task-breakdown` 不改設計，有洞記進 `## 缺口` 並交回 `spec`／`plan` |
 
 「agent 補一個合理的答案然後繼續」這個風險，舊版靠「DISCOVERY 不寫檔」擋，
 而 2026-09-14 的設計承認那條從來沒真的成立過。現在改靠「每條 FR／AC 必須指得出
@@ -61,7 +61,7 @@ already made, not a place where new ones get made.」
 | --- | --- | --- | --- |
 | **DISCOVERY** | 需求方想要什麼？還有哪些不知道？問到不能再問為止（brainstorming） | 開場當書記：原文逐字、粗切 story；之後設計樹＋前沿，一次一題，答案逐題記下，意圖陳述要 yes | `spec.md` 的問答那幾節（澄清中，結束方式 收斂） |
 | **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？（to spec） | 已答題 → FR／AC（`spec`）→ 流程與四色卡診斷（`feature-mapping`、`example-mapping`）→ 驗收旅程（`spec-by-example`）→ 就緒判定（`example-mapping`）→ 使用者叫 Gherkin（`formulation`） | `spec.md`（澄清中 → 待對焦 → 已對焦，含 `## Domain Concepts`）＋ `.feature`（可執行） |
-| **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | 風險、接合點（`plan`）＋ tracer bullet 垂直切片 ＋ blocking edges（`task-breakdown`） | `plan.md` ＋ `tasks.md` |
+| **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | 系統介面、Domain Model／Database Schema／API 契約、依賴與風險、接合點（`plan`）＋ tracer bullet 垂直切片 ＋ blocking edges（`task-breakdown`） | `plan.md` ＋ `tasks.md` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | 全新 reviewer 對照情境驗收 ＋ 鏈稽核 | 審查結論 ＋ 稽核報告 |
 | **VERIFY** | 交付前最後一次：綠了嗎？紅的是 bug 還是規格過期？ | 跑閘門與全部情境 ＋ 失敗判讀 | 測試結果 ＋ 判讀結論 |
@@ -82,14 +82,14 @@ specs/
 ├── sleeping/<date>-<feature>/  做完的 feature：`archive` 整個目錄 git mv 過來；要修正時 `spec` 喚醒、搬回 ongoing/
 └── ongoing/<date>-<feature>/   還在做的 feature
     ├── spec.md         DISCOVERY 原文、粗切 story、問答（決策史）
-                        SPEC      要做成什麼：story 與優先級、FR、AC、角色、目標與不做的事、詞彙與聚合、邊界情況。活得比實作久
+                        SPEC      要做成什麼：story 與優先級、FR、AC、角色、目標與不做的事、詞彙、邊界情況。活得比實作久
     ├── acceptance/     SPEC      <旅程>.feature：業務語意的驗收旅程，不執行；就緒判定對著它答
-    ├── plan.md         PLAN      技術決定（Tech Stack 到 Testing Decisions）＋ 概述、風險、要不要並行與接合點
+    ├── plan.md         PLAN      系統介面、技術決定（Tech Stack 到 Testing Decisions）、三份設計（Domain Model、Database Schema、API 契約）＋ 依賴圖、風險、順序與 Checkpoint、要不要並行與接合點
     └── tasks.md        PLAN      一波一節、一張票一個票節（順序由上而下、Blocked by、接合點、檢查點）
 
 features/<story-slug>.feature    SPEC  可執行規格，一則 story 一個檔
 docs/CONTEXT.md                  ARCHIVE  詞彙的現況（只追加）
-docs/DOMAIN-MODEL.md             ARCHIVE  聚合與不變條件的現況（只動 ai-bdd 區塊）
+docs/DOMAIN-MODEL.md             ARCHIVE  聚合與不變條件的現況（從 `plan.md` 的 Domain Model 來）（只動 ai-bdd 區塊）
 docs/DATABASE-SCHEMA.md          ARCHIVE  資料表的現況
 docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 ```
@@ -116,7 +116,7 @@ docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 | Goals / Non-Goals | 做成之後的樣子；這次不做的（延後或不做、為什麼） | SPEC |
 | User Stories | `### US-<n> · <slug>` ＋ 優先級 ＋ `#### FR`（AC 巢狀）／`#### NFR`／`#### Q` | DISCOVERY 粗切（標題＋「身為…」）；SPEC 寫其餘 |
 | Non-Functional Requirements | 跨 story、量化的品質屬性 | SPEC |
-| Domain Concepts | 詞彙、聚合與不變條件 | SPEC；做完時 ARCHIVE 併進 `docs/` |
+| Domain Concepts | 詞彙（聚合與不變條件在 `plan.md` 的 Domain Model，2026-11-20 起） | SPEC；做完時 ARCHIVE 併進 `docs/` |
 | Edge Cases | 失敗、併發、空值、重複、權限邊界——指向 AC 的索引 | SPEC |
 | Assumptions / Constraints | 未驗證的假設、外部限制 | SPEC |
 | Open Questions | 五欄表 ＋ 每題小節（答案原話、誰答的、決策史）；寫規格時發現的洞也開成一題 | DISCOVERY；SPEC 與診斷 skill 只開待答題 |
@@ -129,15 +129,26 @@ docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 | Tech Stack | 語言、框架、主要依賴與版本、不准引入的依賴、沿用的既有資產 | 技術面向的答案、專案檔 |
 | Commands／Project Structure／Code Style | 完整命令（含跑場景與閘門）、目錄各裝什麼、命名格式加一段真實程式碼 | 專案檔（`← 專案 <路徑>`） |
 | Boundaries | 總是要做／要先問／絕對不做 三張清單 | 技術面向的答案 |
-| Implementation Decisions | 動哪些模組、介面長怎樣、API 契約、schema、架構決定 | 技術面向的答案 |
+| Implementation Decisions | 動哪些模組、程式碼層的介面與埠、架構決定（API 契約與 schema 移到下面三份設計） | 技術面向的答案 |
 | Testing Decisions | 框架與位置 ＋ **seam** ＋ 每個 AC 的測試層級 ＋ 既有測試的 prior art | 技術面向的答案、專案檔 |
+
+`plan.md` 的三份設計（格式契約在 `skills/plan/references/design-format.md`；2026-11-20 起，照 aixbdd 的 system-analysis 盤點介面、API 契約交給 `api-and-interface-design`）：
+
+| 節 | 內容 | 來源 |
+| --- | --- | --- |
+| 系統介面 | 這次碰到的介面、端點類型、需求依據、分析順序（Wave） | `spec.md` 的 FR／AC、專案現況 |
+| Domain Model | 聚合、不變條件、跨聚合規則 | `spec.md` 的詞彙與 AC |
+| Database Schema | 表、欄位、索引、約束；每條不變條件指得出被誰守住 | Domain Model |
+| API 契約 | OpenAPI 片段（沒有 HTTP 時寫程式碼層介面契約）；`implement` 照抄進 `api/openapi.yaml` | `api-and-interface-design` |
 
 `plan.md` 的執行計畫（格式契約在 `skills/plan/references/plan-format.md`）：
 
 | 節 | 內容 | 來源 |
 | --- | --- | --- |
 | Overview | 一段摘要，不做新決定 | `spec.md` |
+| 依賴圖 | 以模組與契約為節點，哪個先存在別的才寫得出來（`task-breakdown` 當約束） | 三份設計 |
 | Risks | 規格沒說但實作一定撞到的（併發、冪等、交易邊界），標影響程度 | 從規則推出來 |
+| 順序與 Checkpoint | 建構順序與波與波之間的檢查點 | 依賴圖、Risks |
 | Parallel Work | 要不要並行、接合點的路徑與種類 | 使用者、`plan.md` 的 Implementation Decisions |
 | 缺口 | 推不出來的；需求的洞交回 `spec`、場景驗不到的交回 `formulation`（票與前置整理住 `tasks.md`） | — |
 
@@ -229,11 +240,12 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `spec-by-example` | `spec.md` → `acceptance/*.feature` 業務語意驗收旅程，`@covers-` 標 AC | **已實作**；2026-11-14，參考 aixbdd `spec-by-example`；由 `spec` 在診斷與就緒問句之間呼叫 |
 | | `formulation` | `spec.md` → `.feature` | **已實作** |
 | | `spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
-| PLAN | `plan` | `spec.md` ＋ `.feature` → 技術決定（seam 經使用者確認）＋ 執行計畫：風險、要不要並行、接合點 | **已實作**；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `task-breakdown`、技術設計搬到 `spec.md`；2026-11-18 技術決定搬回來 |
+| PLAN | `plan` | `spec.md` ＋ `.feature` → system-analysis：系統介面與 Wave、三份設計（Domain Model／Database Schema／API 契約）、技術決定（seam 經使用者確認）、依賴圖、風險、順序、要不要並行、接合點 | **已實作**；2026-11-20 改寫成 system-analysis，聚合從 `spec.md` 移進來；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `task-breakdown`、技術設計搬到 `spec.md`；2026-11-18 技術決定搬回來 |
+| | `api-and-interface-design` | `plan` 第 3 步委派：需求與既有 `api/openapi.yaml` → OpenAPI 片段交回 `plan` | **已實作**（2026-11-20，addyosmani 原文＋職責卡） |
 | | `task-breakdown` | `spec.md` ＋ `plan.md` ＋ `.feature` → `tasks.md`：tracer bullet ＋ blocking edges ＋ 接合點 | **已實作**（2026-11-15，從 `plan` 拆出；試跑一次，接合點與合回主線依試跑結果重寫） |
 | IMPLEMENT | `implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | | `behavior-driven-development` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`implement` 委派 green 與 refactor，red 由 `implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `behavior-driven-development` 與 `implement` 的委派方式；還沒實跑過） |
-| | `archive` | 票全部合回後：`spec.md` 的 `## Domain Concepts` 與 `plan.md` 的技術決定併進 `docs/CONTEXT.md`（追加）與 `DOMAIN-MODEL.md`／`DATABASE-SCHEMA.md`／`TECH.md` 的 ai-bdd 區塊，整個目錄 `git mv` 到 `specs/sleeping/` | **已實作**（2026-11-15，照 OpenSpec 的 changes／archive；還沒實跑過） |
+| | `archive` | 票全部合回後：`spec.md` 的詞彙與 `plan.md` 的 Domain Model、Database Schema、技術決定併進 `docs/CONTEXT.md`（追加）與 `DOMAIN-MODEL.md`／`DATABASE-SCHEMA.md`／`TECH.md` 的 ai-bdd 區塊，整個目錄 `git mv` 到 `specs/sleeping/` | **已實作**（2026-11-15，照 OpenSpec 的 changes／archive；還沒實跑過） |
 | REVIEW | `review`、`review-acceptance`、`review-traceability` | 審查總入口、對照情境驗收、鏈稽核 | 未實作 |
 | VERIFY | `verify`、`verify-failure-triage` | 跑閘門與情境並回報、真 bug vs 規格過期 | 未實作 |
 
