@@ -18,8 +18,8 @@ steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by one skil
 (following addyosmani's planning flow: collect; design — Domain Model, Database Schema and the API
 contract side by side, the contract delegated to `api-and-interface-design`, plus the technical
 decisions with the seam confirmed by the user; dependency graph; vertical slices; write the tasks;
-order and checkpoints; the slicing is shown to the user before anything is written, then it writes
-`plan.md` and `tasks.md` — one section per ticket, so tickets can run in parallel — and STOPs for
+order and checkpoints; `plan.md` is written during the steps, and only `tasks.md` waits for the user's nod
+on the slicing — one section per ticket, so tickets can run in parallel — and STOPs for
 `/implement <ticket>`). IMPLEMENT is served by
 `implement` (one ticket end to end: test layer red first, gate, merge-back) and `behavior-driven-development`
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only

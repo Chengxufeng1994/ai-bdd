@@ -5,7 +5,7 @@ description: >
   唯讀收集 `spec.md`（已對焦）、`.feature` 與專案現況；Step 2 之前先設計三份可以直接照著寫程式的東西——Domain Model
   （聚合與不變條件）、Database Schema（表、欄位、約束）、API 契約（DELEGATE `api-and-interface-design` 寫 OpenAPI
   片段，沒有 HTTP 時寫程式碼層介面契約），並排對過，再定技術決定七節（seam 攤給使用者確認）；然後排依賴圖、
-  切成 tracer bullet、寫每張票、排序與 checkpoint、問要不要並行，把切法攤給使用者看、點頭才寫 `plan.md` 與
+  切成 tracer bullet、寫每張票、排序與 checkpoint、問要不要並行，把切法攤給使用者看、點頭才寫
   `tasks.md`。不改 `spec.md`、不改 `.feature`、不動 `api/openapi.yaml`、不寫程式。BDD 六步流程的 PLAN 步驟。
   觸發詞：「寫 plan」「執行計畫」「技術設計」「決定 seam」「驗收測試打在哪一層」「API 契約要怎麼定」
   「這個 feature 動哪些模組」「schema 怎麼定」「domain model 怎麼切」「聚合怎麼定」「依賴圖」
@@ -43,7 +43,7 @@ disable-model-invocation: true
 
 - `spec.md` 已對焦、`.feature` 也寫好了，要設計 API、schema、domain model、排計畫、切成票
 - `spec.md` 修補過、`.feature` 跟著改了，`plan.md` 與 `tasks.md` 要跟上
-- 技術設計沒變，但票切得不對或順序要調，只重切票
+- 技術設計沒變，但票切得不對或順序要調，只重切票（〈再跑〉「只重切」那一條）
 - 一批工作大到一個 session 做不完，要拆給多個 session 接力或同時做
 
 ## Skill Boundaries
@@ -152,7 +152,7 @@ step definition 的形狀。先問它，是因為 `## Testing Decisions` 照它�
 | 整個變更的理想數量是**一個** | 兩個 seam 代表這批行為的入口不只一個，多半是切分沒切乾淨 |
 | 需要新 seam 就在**你能做到的最高點**提出 | 往下挪一層通常是為了好寫，代價是驗到的東西離使用者更遠 |
 
-1. ASK 把 seam 攤出來確認再寫。三種情況：
+1. ASK 把 seam 攤出來確認再寫（只重切時跳過，見〈再跑〉）。三種情況：
 
    | `## Open Questions` 裡 `面向` 為 `seam` 的題 | 怎麼做 |
    | --- | --- |
@@ -172,7 +172,7 @@ IMPORTANT: seam 一旦寫進 `plan.md` 就往下傳——IMPLEMENT 照著打，R
 2. WRITE `## Domain Model`：這次新增或改動的聚合、不變條件、跨聚合的規則。`被誰保證` 只寫聚合；動到
    `docs/DOMAIN-MODEL.md` 既有的聚合，寫「原本是什麼、為什麼改」。
 3. WRITE `## Database Schema`：表、欄位、索引、約束；每張表寫它屬於哪個聚合，每個欄位寫 `守住哪條不變條件`。
-4. DELEGATE `../api-and-interface-design/SKILL.md`：交給它這次的 FR／AC、涵蓋的 `.feature`、`api/openapi.yaml`
+4. DELEGATE `../api-and-interface-design/SKILL.md`（只重切時跳過，見〈再跑〉）：交給它這次的 FR／AC、涵蓋的 `.feature`、`api/openapi.yaml`
    與剛寫的 Domain Model；它交回 OpenAPI 片段（有 HTTP 對外介面時）或程式碼層介面契約（沒有時）。WRITE 進
    `## API 契約`，每個 operation 寫出它服務哪幾條 AC。
 5. CHECK 三份並排對一次（判準表見 `references/design-format.md`〈三份並排對照〉）：每條不變條件有一個聚合、資料庫
@@ -283,7 +283,7 @@ IMPORTANT: 接合點要寫**路徑**，不是模組名。寫「HTTP 層」，合
 1. 排順序：blockers 在前；一張票不得排在它依賴的 `## 依賴圖` 節點之前（票碰的模組、operation 或表，在圖上的父節點
    要由同一張或 `Blocked by` 指得到的票做出來）。`## Risks` 影響程度「高」的票，在 `Blocked by` 允許的範圍內往前排——
    越早撞到越便宜。每張票做完，系統都還是好的。
-2. ASK 這批票要不要同時做。答案記進 `plan.md` 的 `## Parallel Work`，行尾 `← 使用者 <日期>`：
+2. ASK 這批票要不要同時做（只重切時跳過，見〈再跑〉）。答案記進 `plan.md` 的 `## Parallel Work`，行尾 `← 使用者 <日期>`：
 
    | 回答 | 寫什麼 |
    | --- | --- |
@@ -291,7 +291,7 @@ IMPORTANT: 接合點要寫**路徑**，不是模組名。寫「HTTP 層」，合
    | **要** | 接合點表：每張票 `接合點` 的聯集，路徑、種類、為什麼會共用（`references/plan-format.md`〈Parallel Work〉）。**先定契約，再並行**：共用同一份契約的票等 `## API 契約` 定了才同時做 |
 
 3. 分波：答「要」時，`Blocked by` 都完成、沒有共同的 `爭用` 接合點、沒有兩張都要新建的東西的票同一波；答「不要」時
-   一張一波。每一波之後放一個檢查點，不並行時每 2–3 張票一個（〈檢查點〉）——停下來驗系統還是好的，再往下；命令照
+   每 2–3 張票一波。每一波之後放一個檢查點，不並行時每 2–3 張票一個（〈檢查點〉）——停下來驗系統還是好的，再往下；命令照
    `## Commands`。
 
 **做完的樣子**：沒有一張票排在它依賴的節點之前；高風險的票在允許的範圍內排在前面；`## Parallel Work` 記了使用者的回答；
@@ -342,6 +342,8 @@ addyosmani 的「不覆寫還有沒勾的計畫」：`tasks.md` 有人照著開�
   編號之後。重切的票一樣過〈ASK 切法〉
 - 票節 `#### 缺口` 裡 `implement` 記下的洞：屬於設計的，這一輪在設計裡補上、記進 `## Further Notes` 的「技術決定的修訂」；
   屬於需求的，進 `plan.md` 的 `## 缺口` 交回 `spec`。兩種都在票節那一條後面標「→ 已記入 plan.md」
+- 只重切：`spec.md` 與 `.feature` 在 `plan.md` 的日期之後都沒改，新的輸入只有 `tasks.md` 的 `#### 缺口` 列 → 跳過〈設計〉的
+  seam ASK 與 API DELEGATE、Step 5 的並行 ASK（記下的回答照舊成立），屬於設計的列當場補上，從 Step 3 開始
 - 喚醒或修補之後：舊票 `#### 缺口` 裡已經被 `spec.md` `## Open Questions` 新題回答的列（判準：那一題的答案正是那一列在等的），
   在列尾標「→ 已回答 Q-<n>」，交給新票做；不標，下一個讀缺口的人會再猜一次
 
@@ -384,7 +386,8 @@ specs/ongoing/<date>-<feature>/plan.md    骨架照 references/plan-format.md；
 specs/ongoing/<date>-<feature>/tasks.md   開頭：來源、哪幾張可以同時開始；一波一節，一張票一個票節（00 前置整理有才寫）。照 references/tasks-format.md
 ```
 
-MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md` 與 `tasks.md`，**不修改專案既有的任何檔案**，包括 `spec.md`、`.feature` 與 `api/openapi.yaml`。
+MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md` 與 `tasks.md`，**不修改專案既有的任何檔案**，包括 `spec.md`、`.feature` 與 `api/openapi.yaml`。唯一例外：併舊的 `tasks/`
+目錄時 `git rm -r tasks/`，單獨一個 commit（〈再跑〉）。
 
 ## Verification
 
@@ -399,6 +402,9 @@ MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md` 與 `tasks.md`，**不�
 - [ ] 每張票答得出能 demo 什麼；每張票每一欄都在（沒有就「無」），模組照抄、沒有檔案路徑，接合點是路徑加種類；沒有 L 與 XL
 - [ ] `## API 契約` 是 OpenAPI 片段時，有契約的票驗收條件裡有「搬進 api/openapi.yaml 的 operation 與 plan.md 的片段一致」；程式碼層契約的票沒有這一條
 - [ ] 每張票的 `**驗證**` 有閘門命令；有 `涵蓋場景` 的票另有場景命令，tag 運算式跟 `涵蓋場景` 一一對應
+- [ ] 指著票裡的任何一句話，說得出它來自哪條 FR、`plan.md` 的哪一個技術決定、或哪個 `@example-N.M`
+- [ ] `## Risks` 影響程度「高」的票，在 `Blocked by` 允許的範圍內排在前面
+- [ ] `**可以同時開始**` 的票之間沒有共同的 `爭用` 接合點，也沒有兩張都要新建的東西
 - [ ] 沒有一張票排在它依賴的 `## 依賴圖` 節點之前；每一波（不並行時每 2–3 張票）之後有檢查點；`## Parallel Work` 記了使用者的回答
 - [ ] 寫 `tasks.md` 之前把切法攤給使用者、問過粒度／Blocked by／合併或再拆三件事，使用者點了頭
 - [ ] 再跑時，驗收條件已有勾的票只動了 `接合點`／`Blocked by`／`大小`，編號沒有重排或重用

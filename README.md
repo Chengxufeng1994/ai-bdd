@@ -36,7 +36,7 @@
 | `spec.md` `## Domain Concepts`（只有 `### 詞彙`；聚合與不變條件在 `plan.md`） | `<feature>/spec.md` | `spec`（第 4 步，先讀 `docs/CONTEXT.md`） | `spec-by-example`、`formulation`：用詞對齊；`plan`：設計 Domain Model 的起點；`archive`：併進 `docs/CONTEXT.md` |
 | 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級、每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
 | `plan.md`（技術決定：Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions；三份設計：Domain Model、Database Schema、API 契約（OpenAPI 片段）；依賴圖、風險、要不要並行與接合點） | `<feature>/` | `plan`（seam 經使用者確認；有洞加進 `## 缺口`） | `plan`：讀三份設計切票、每張票列碰到的 operation 與表、抄模組、內迴圈、驗證命令，高風險排前面；`implement`：把票涵蓋的 OpenAPI operation 照抄進 `api/openapi.yaml`、照 Database Schema 寫 migration，其餘照著寫程式；`archive`：聚合併進 `docs/DOMAIN-MODEL.md`、表併進 `docs/DATABASE-SCHEMA.md`、技術現況併進 `docs/TECH.md` |
-| `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `plan` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`plan` 再跑時把設計的洞搬進 `plan.md` |
+| `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `plan` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`plan` 再跑時把設計的洞在設計裡補上（記進 `## Further Notes`）；屬於需求的才進 `## 缺口` 交回 `spec` |
 | 產品程式碼、step definition、`@review` tag、票節勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
 | `docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`docs/TECH.md`（專案現況，只動 ai-bdd 區塊） | 專案 `docs/` | `archive` | 下一個 feature 的 `plan`：聚合、表與技術現況從這裡讀 |
 | `specs/sleeping/<date>-<feature>/`（做完的 feature 整個目錄） | `specs/sleeping/` | `archive`（`git mv`） | 要修正時，`spec` 喚醒、搬回 `specs/ongoing/`、狀態改回 `澄清中` |
@@ -165,7 +165,7 @@
 2. 設計：seam 攤給使用者確認，再寫 Domain Model → Database Schema → API 契約，三份並排對一次
 3. Step 2 依賴圖
 4. Step 3 垂直切片、Step 4 寫任務、Step 5 排序與 Checkpoint
-5. ASK 切法：攤給使用者，點頭才 WRITE `plan.md` 與 `tasks.md`，停，交 `/implement <票號>`
+5. ASK 切法：攤給使用者，點頭才寫 `tasks.md`（`plan.md` 在前面各步已寫好），停，交 `/implement <票號>`
 
 #### `api-and-interface-design`
 
