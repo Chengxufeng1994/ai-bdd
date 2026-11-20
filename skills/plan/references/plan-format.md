@@ -1,14 +1,13 @@
 # `plan.md` 的骨架
 
-照抄即可。讀這份的時機：`plan` 第 2 步開始寫 `plan.md` 之前，以及第 4 步寫執行計畫之前。
+照抄即可。讀這份的時機：`plan`〈設計〉開始寫 `plan.md` 之前，以及 Step 2 寫 `## Risks`、Step 5 寫 `## Parallel Work` 之前。
 
 一個 feature 一份，路徑 `specs/ongoing/<date>-<feature>/plan.md`，跟同目錄的 `spec.md` 配對——目錄名已經帶 feature 的識別資訊，檔頭不重複列。
 
-它裝四件事：`## 系統介面`——這次碰到哪些介面、照什麼順序分析；**技術決定**——用什麼做、seam、模組、
-測試層級，七節的寫法見 `tech-format.md`；**三份設計**——`## Domain Model`、`## Database Schema`、
-`## API 契約`，寫法見 `design-format.md`；**執行計畫**——依賴、哪裡危險、順序與 checkpoint、能不能並行，
-以及 `## 缺口`。要做成什麼在 `spec.md`，這裡不重寫。票不在這裡——`task-breakdown` 從這份計畫拆到同目錄的
-`tasks.md`，格式見 `../../task-breakdown/references/tasks-format.md`。
+它裝三件事：**技術決定**——用什麼做、seam、模組、測試層級，七節的寫法見 `tech-format.md`；**三份設計**——
+`## Domain Model`、`## Database Schema`、`## API 契約`，寫法見 `design-format.md`；**執行計畫**——依賴、哪裡危險、
+能不能並行，以及 `## 缺口`。要做成什麼在 `spec.md`，這裡不重寫。票、順序與 checkpoint 不在這裡——`plan` 的
+Step 3–5 把它們寫進同目錄的 `tasks.md`，格式見 `tasks-format.md`。
 
 執行計畫是拋棄式快照，實作一開始就會過期；技術決定與三份設計不是——它們改了要在 `## Further Notes` 留紀錄，
 做完時 `archive` 從它們更新 `docs/TECH.md`、`docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`。
@@ -20,8 +19,6 @@
 **日期**: <YYYY-MM-DD>
 
 ## Overview
-
-## 系統介面          → design-format.md
 
 ## Tech Stack        → tech-format.md（這七節）
 ## Commands
@@ -37,16 +34,16 @@
 
 ## 依賴圖            → design-format.md
 ## Risks
-## 順序與 Checkpoint
 ## Parallel Work
 
 ## 缺口
 
-這份計畫自己的洞、三份設計並排時錯在需求的，以及 `task-breakdown` 拆票時發現技術決定沒定案的。
-沒有就寫「沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切」。
+addyosmani 的 Open Questions：要人回答、這一步答不了的。三份設計並排時錯在需求的、`.feature` 寫了 seam 驗不到的、
+再跑時票節 `#### 缺口` 裡屬於需求的。設計自己的錯不進這裡——當場改掉，記進 `## Further Notes`。
+沒有就寫「沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切」。有要回 `spec`／`formulation` 的列時，`plan` 不切票。
 
-- <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、技術決定或設計的洞（回 `plan` 補）、`.feature` 寫了 seam
-  驗不到的行為（回 `formulation`），或執行上的選擇（留給 IMPLEMENT 決定）>
+- <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、`.feature` 寫了 seam 驗不到的行為（回 `formulation`），
+  或執行上的選擇（留給 IMPLEMENT 決定）>
 
 ## Further Notes
 
@@ -63,7 +60,7 @@
 ## Overview
 
 一段話，三到五句：這批 story 做完之後使用者能做什麼，加上技術上大致怎麼做（seam 在哪一層、
-新增或改動的主要模組、三份設計各新增了什麼——聚合、表、operation，照下面各節）。給 `task-breakdown` 與人第一眼看懂這份計畫在做什麼。
+新增或改動的主要模組、三份設計各新增了什麼——聚合、表、operation，照下面各節）。給做票的 session 與人第一眼看懂這份計畫在做什麼；切了票的話，最後一句寫切成幾張票。
 
 只摘要 `spec.md` 與下面各節已經寫的東西，**不在這裡做新決定**，所以不標來源。寫著寫著發現要
 講一件下面各節沒有的事，那件事屬於某一節技術決定——寫進那一節，不是這一段。
@@ -86,41 +83,16 @@
 | 中 | 要返工，但不會壞資料 |
 | 低 | 只影響效能、維運或日後擴充 |
 
-`task-breakdown` 會把碰到「高」的票排在前面：越早撞到，越便宜。
+`plan` 的 Step 5 會把碰到「高」的票排在前面：越早撞到，越便宜。
 
 SHOULD NOT: 把解法寫死。「用 Redis 還是 DB 行鎖」需要知道實際流量與既有基礎
 設施，而那些不在規格裡。寫「兩種都可以，看部署形態」比寫「用 Redis」有用——
 後者看起來是決定，實際上是猜的。
 
-## 順序與 Checkpoint
-
-照 `## 依賴圖` 排：被依賴的節點先做，碰到「高」風險的節點盡量往前。每兩三個節點之後放一個
-checkpoint——停下來驗系統還是好的，再往下。
-
-```markdown
-## 順序與 Checkpoint
-
-1. 借閱聚合（到期日、續借一次）與讀者證系統的查詢埠——兩者都沒有依賴；兩則 story 都用到到期日的算法，最先做
-2. `loans` 表與 repository
-3. `## API 契約` 的 `lendBook`、`renewLoan` 與 HTTP handler
-
-**Checkpoint：1–2 之後**
-- [ ] `## Commands` 的閘門綠
-- [ ] AC-1.1–1.3 的內迴圈測試綠
-
-**Checkpoint：3 之後**
-- [ ] `## Commands` 的閘門綠
-- [ ] 涵蓋的 `.feature` 全部場景綠
-- [ ] 給使用者看過再往下
-```
-
-這裡排的是**節點**，不是票：`task-breakdown` 切票時照這個先後與 checkpoint 排波次，一張票不得排在它依賴的節點
-之前。checkpoint 的命令照 `## Commands` 的 `閘門` 與 `跑場景` 寫，不另編。
-
 ## Parallel Work
 
-這批票要不要同時做，以及同時做時哪些檔會在合回時相撞。`task-breakdown` 照這一節標每張票的
-`接合點`，不自己編路徑。
+這批票要不要同時做，以及同時做時哪些檔會在合回時相撞。表是 Step 4 每張票 `接合點` 的聯集——
+同一份路徑與種類，兩邊對得上。
 
 **先定契約，再並行**：共用同一份 API 契約的票，要等 `## API 契約` 定好才能同時做——契約還在動時並行，每張票
 都照自己猜的形狀寫。
@@ -142,12 +114,12 @@ checkpoint——停下來驗系統還是好的，再往下。
 - **要不要並行**是 `Ask user`，不是推論。預設不要——並行換到的是時間，代價是每張票都要
   在合回時解衝突。選「不要」時只寫這一行，表格省略
 - 種類三選一加一個 `新建`，定義與合回時怎麼解 →
-  `../../task-breakdown/references/tasks-format.md`〈接合點與同時跑〉。
+  `tasks-format.md`〈接合點與同時跑〉。
 - 從上面的 `## Implementation Decisions` 與 `## Database Schema` 推，最常漏的有七類（清單與例子 →
   `tasks-format.md`〈接合點與同時跑〉）：會長大的介面連同它的測試 stub、第一次用到的 library 帶進來的
   依賴檔、兩個以上 use case 都要住的新 package、新的必填組裝欄位連同每個組它的測試、按 feature 分的
   mapper／presenter 與共用的步驟檔、跨 feature 共用的步驟句子、migration 目錄與它的序號
-- 兩張票會改同一段既有邏輯的地方標 `爭用`，寫明是哪一段；`task-breakdown` 會把它們排成先後
+- 兩張票會改同一段既有邏輯的地方標 `爭用`，寫明是哪一段；Step 5 會把它們排成先後
 
 ## 為什麼一個 feature 一份，不是一則 story 一份
 
@@ -172,17 +144,13 @@ schema 一節全退化成「見共用檔」），而且兩種檔案各用一套�
 `application.借閱` 這一層，新增借閱的 domain 模組與借書、續借 use case，HTTP 只做轉接。三份設計：一個新聚合
 「借閱」加一條跨聚合規則（逾期擋續借）、一張 `loans` 表、`lendBook` 與 `renewLoan` 兩個 operation。
 
-（`## 系統介面` 與三份設計略，寫法與範例見 `design-format.md`；技術決定七節略，見 `tech-format.md`〈範例：技術決定〉）
+（三份設計與 `## 依賴圖` 略，寫法與範例見 `design-format.md`；技術決定七節略，見 `tech-format.md`〈範例：技術決定〉）
 
 ## Risks
 
 | 風險 | 影響程度 | 從哪條規則長出來 | 影響什麼 |
 | --- | --- | --- | --- |
 | 一本逾期就擋掉全部續借，讀者有正當理由時櫃台沒有例外通道 | 中 | renewal FR-3 | 要不要留館員手動續借的通道，留給 IMPLEMENT |
-
-## 順序與 Checkpoint
-
-（略，見上面〈順序與 Checkpoint〉的範例）
 
 ## Parallel Work
 

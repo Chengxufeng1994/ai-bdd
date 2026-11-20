@@ -1,8 +1,8 @@
 # `plan.md` 技術決定的骨架
 
-照抄即可。讀這份的時機：`plan` 第 3 步，seam 確認過、準備寫技術決定的時候。
+照抄即可。讀這份的時機：`plan`〈設計〉，seam 確認過、準備寫技術決定的時候。
 
-技術決定接在 `## 系統介面` 之後、`## Domain Model` 之前，七節，順序固定（整份的順序見
+技術決定接在 `## Overview` 之後、`## Domain Model` 之前，七節，順序固定（整份的順序見
 `plan-format.md`）。它回答「用什麼做、怎麼驗」；要做成什麼在 `spec.md`，聚合、表、API 契約在三份設計
 （`design-format.md`），怎麼排、哪裡危險、能不能並行在 `plan.md` 的執行計畫。
 
@@ -135,7 +135,7 @@ MUST NOT: 在這一節寫「已經決定好的技術事項」——那是 `## Im
 （`gofmt -l .` 有檔沒排版也照樣 exit 0）要包成會失敗的形式（`test -z "$(gofmt -l .)"`）。專案的閘門
 找得到、但在這個環境跑不起來時，照寫它（標來源），另寫一行 `替代閘門（本環境）` 標 `← 推論`，並在
 `## Further Notes` 記為什麼——這行只為這次的環境寫，`archive` 不把它寫進 `docs/TECH.md`。
-`跑單一 .feature` 給 `implement` 判 `@review` 用（「整個檔的場景都綠了」）。`跑場景` 與 `閘門` 兩行一定要有——`task-breakdown` 把它們抄進每張票的 `**驗證**`，`implement`
+`跑單一 .feature` 給 `implement` 判 `@review` 用（「整個檔的場景都綠了」）。`跑場景` 與 `閘門` 兩行一定要有——`plan` 的 Step 4 把它們抄進每張票的 `**驗證**`，`implement`
 照著跑。專案裡找不到閘門命令就寫「（沒有——要問使用者）」，並在 `## 缺口` 記一條；
 不要猜一個看起來合理的命令。
 
@@ -258,7 +258,7 @@ MUST NOT: 在這裡做新決定。推不出來的寫進 `## 缺口`（需求的�
 | --- | --- | --- | --- |
 | `application.WorkoutService` | 既有 | 規則全在 domain 與 application，HTTP 只是轉發 | 推論 |
 
-判準見 `../SKILL.md` 第 3 步〈決定 seam〉的那張表，**不要在這裡抄一份**。
+判準見 `../SKILL.md`〈設計〉的〈決定 seam〉那張表，**不要在這裡抄一份**。
 seam 一旦寫在這裡就會往下傳：IMPLEMENT 照著打，REVIEW 把沒人同意過的 seam
 當成 finding。
 
