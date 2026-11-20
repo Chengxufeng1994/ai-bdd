@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | `docs/CONTEXT.md` | 詞彙 | `spec.md` `## Domain Concepts` 的 `### 詞彙`；只追加，不用區塊標記 |
 | `docs/DOMAIN-MODEL.md` | 聚合、不變條件、跨聚合的規則 | `plan.md` `## Domain Model`；骨架見 `domain-model-format.md` |
-| `docs/DATABASE-SCHEMA.md` | 資料表與欄位、索引與約束 | `plan.md` `## Database Schema`，拿掉 `守住哪條不變條件` 那一欄 |
+| `docs/DATABASE-SCHEMA.md` | 資料表與欄位、索引與約束 | `plan.md` `## Database Schema`，拿掉 `守住哪條不變條件` 那一欄與「屬於 <聚合> 聚合」那一行（聚合歸屬在 `DOMAIN-MODEL.md`） |
 | `docs/TECH.md` | Tech Stack、Commands、Project Structure、Code Style、Boundaries | `plan.md` 技術決定的同名五節 |
 
 `docs/CONTEXT.md` 不包區塊：它的規則從來就是「只建立或追加，不改寫既有段落」，專案自己也會加詞，

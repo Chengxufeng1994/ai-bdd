@@ -56,7 +56,7 @@ Check if: 這個 feature 在 `specs/ongoing/` 底下；`tasks.md` 列的每張�
 例如 walking skeleton 的 `version.feature`，不算）。任何一項不成立就停下，說還差哪張票——還沒做完的東西寫進現況，
 `docs/` 就不再是系統真正的樣子。
 
-Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `### 聚合與不變條件`。是就停下，請使用者
+Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `## Domain Model` 或 `### 聚合與不變條件`。是就停下，請使用者
 重跑 `/plan`（`spec.md` 的舊節由再跑 `/spec` 刪掉）。舊格式不吃：聚合不在 `plan.md`，`DOMAIN-MODEL.md` 沒有來源可抄。
 
 ---
@@ -85,7 +85,7 @@ Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還�
 | --- | --- | --- |
 | `CONTEXT.md` | `spec.md` `## Domain Concepts` 的 `### 詞彙` | 新的詞追加在表尾；已經有、定義一樣的不動；已經有、定義不同的**停**——`spec` 第 4 步該擋下它，到這裡代表漏了 |
 | `DOMAIN-MODEL.md` | `plan.md` `## Domain Model` | 新的聚合加進去；改了既有聚合的，照那個聚合的「原本是什麼、為什麼改」記修訂紀錄 |
-| `DATABASE-SCHEMA.md` | `plan.md` `## Database Schema` | 新表加區塊；改了既有表的，照新的寫。拿掉 `守住哪條不變條件` 那一欄，`來源` 前面加 `<date>-<feature>` |
+| `DATABASE-SCHEMA.md` | `plan.md` `## Database Schema` | 新表加區塊；改了既有表的，照新的寫。拿掉 `守住哪條不變條件` 那一欄與表名底下「屬於 <聚合> 聚合」那一行（聚合歸屬只記在 `DOMAIN-MODEL.md`），`來源` 前面加 `<date>-<feature>` |
 | `TECH.md` | `plan.md` `## Tech Stack` 到 `## Boundaries` | 只改跟現況不一樣的條目——多數 feature 這五節跟 `TECH.md` 一字不差，那就不動。`## Commands` 的 `替代閘門（本環境）` 不寫進去：它是那次環境的變通，不是專案的現況 |
 
 把要改的條目先攤成一張表（檔、區塊、原本、改成、來源），再動手。
@@ -150,8 +150,8 @@ MUST NOT: 寫 `docs/` 底下這四份以外的任何檔，或改 `specs/` 底下
 - [ ] commit 標題是 `docs: archive <date>-<feature>`
 - [ ] feature 目錄是 `git mv` 搬的，目錄裡的檔一個字都沒改；`docs/` 的改動與搬家在同一個 commit
 - [ ] 沒有改程式碼、`spec.md`、`plan.md`、票節或 `.feature`
-- [ ] `DOMAIN-MODEL.md` 照 `plan.md` `## Domain Model`、`DATABASE-SCHEMA.md` 照 `## Database Schema`（拿掉了 `守住哪條不變條件` 欄）；
-  遇到舊格式（`plan.md` 沒有 `## Domain Model`、`spec.md` 有 `### 聚合與不變條件`）停下請使用者重跑 `/plan`
+- [ ] `DOMAIN-MODEL.md` 照 `plan.md` `## Domain Model`、`DATABASE-SCHEMA.md` 照 `## Database Schema`（拿掉了 `守住哪條不變條件` 欄與「屬於 <聚合> 聚合」那一行）；
+  遇到舊格式（`plan.md` 沒有 `## Domain Model`、`spec.md` 有 `## Domain Model` 或 `### 聚合與不變條件`）停下請使用者重跑 `/plan`
 
 ## 完成後
 

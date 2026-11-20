@@ -11,7 +11,7 @@ disable-model-invocation: true
 | | |
 | --- | --- |
 | **職責** | 設計穩定、難被誤用的 API 與介面契約（REST、GraphQL、程式碼層介面） |
-| **讀** | `spec.md` 的 FR／AC、涵蓋的 `.feature`、專案既有的 `api/openapi.yaml` |
+| **讀** | `spec.md` 的 FR／AC、涵蓋的 `.feature`、專案既有的 `api/openapi.yaml`、`plan.md` 的 `## Domain Model` |
 | **寫** | 不寫檔——把 OpenAPI 片段（或沒有 HTTP 時的程式碼層介面契約）交回 `plan` |
 | **上游** | `plan` 第 3 步 |
 | **下游** | `plan` |

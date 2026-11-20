@@ -235,7 +235,9 @@ paths:
   /loans:
     post:
       operationId: lendBook
-      description: 館員借出一本書，回到期日。服務 AC-1.1、AC-1.2、AC-1.3
+      description: |
+        館員借出一本書，回到期日。服務 AC-1.1、AC-1.2、AC-1.3
+        不冪等、沒有 idempotency key：不可重試。
       requestBody:
         required: true
         content:
@@ -252,7 +254,9 @@ paths:
   /loans/{loanId}/renewal:
     post:
       operationId: renewLoan
-      description: 讀者在到期日前續借一次。服務 AC-2.1、AC-3.1
+      description: |
+        讀者在到期日前續借一次。服務 AC-2.1、AC-3.1
+        不冪等、沒有 idempotency key：不可重試。
       parameters:
         - name: loanId
           in: path
@@ -323,7 +327,9 @@ components:
 | 每張表屬於一個聚合 | 一張表寫了兩個聚合，或不屬於任何聚合 |
 | 每個 operation 最多寫一個聚合，除非一條跨聚合的規則說要 | 一個 operation 同時改兩個聚合，`### 跨聚合的規則` 卻沒有那一條 |
 
-對不上的進 `## 缺口`，不在三份裡挑一份順手改掉另一份——對不上通常表示某一份的判斷錯了，先找出是哪一份。
+對不上通常表示某一份的判斷錯了，先找出是哪一份，不要不判斷就挑一份去遷就另一份。錯在設計 → 這一步就改掉那一份，
+對不上的地方與怎麼改的記進 `## Further Notes` 的「技術決定的修訂」；錯在需求（規則沒說、或兩條 FR 打架）→ `## 缺口`
+一列，交回 `spec`。
 
 範例：不變條件「一筆借閱最多續借一次」有聚合、也有 `renewed` 守住，但 `## API 契約` 沒有「第二次續借」的錯誤回應——
 FR-2 說限一次，卻沒有一條 AC 寫第二次續借會怎樣。這是需求的洞：`## 缺口` 一列，交回 `spec`。

@@ -77,7 +77,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 NEVER: `plan.md` 沒有技術決定時開始。seam、埠的形狀、錯誤分類都在那裡；沒有它，這一步會
 自己設計，而設計出來的東西沒有任何場景驗得到。
 
-Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `### 聚合與不變條件`。是就停下，請使用者
+Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `## Domain Model` 或 `### 聚合與不變條件`。是就停下，請使用者
 重跑 `/plan`（`spec.md` 的舊節由再跑 `/spec` 刪掉），再跑 `/task-breakdown`——舊格式沒有可以照抄的契約與資料表。
 
 MUST: 一個 session 一張票。撿起票的人只看過票節與 `plan.md` 的技術決定——這是 `task-breakdown`
@@ -132,7 +132,8 @@ seam 是 HTTP 時，契約的 operation、重新產碼、**回錯誤**（不是�
 停在 404 只證明路由不存在，不是這張票的紅。
 
 **契約從 `plan.md` 搬進來。** 票節有 `**契約**`、`plan.md` 的 `## API 契約` 是 OpenAPI 片段時：把那幾個 operation
-與它們用到的 `components`，從片段照抄進 `api/openapi.yaml`，再重新產碼。`api/openapi.yaml` 是 `追加` 接合點，
+與它們用到的 `components`，從片段照抄進 `api/openapi.yaml`，再重新產碼。某個 component 前面的票已經搬進
+`api/openapi.yaml`：跟片段一樣 → 留著，不再搬一次；不一樣 → 記進票節 `#### 缺口`、停下回報，交回 `plan`。`api/openapi.yaml` 是 `追加` 接合點，
 合回照〈合回主線〉。`## API 契約` 是程式碼層契約（沒有 OpenAPI 片段）時沒有要搬的，跳過這段，埠照它的方法寫。
 
 MUST NOT: 搬的時候改形狀——欄位、型別、必填、狀態碼、錯誤碼都跟片段一樣。要改，記進票節 `#### 缺口`、停下回報：
@@ -276,7 +277,7 @@ MUST NOT: 改 `spec.md` 或 `.feature` 的例子。例子跟規則打架、規�
 
 前面的票寫的程式碼可以改——這張票的場景需要時，就改。條件是那些票的場景照樣綠：第 5 步的
 閘門要跑主線上所有驗收條件已勾完的票的場景，不只這張。改不動、或改了會讓前面的票的
-`spec.md` 技術決定不成立 → 記進票節的 `#### 缺口` 並回報，不要改掉那張票的驗收條件或票節。
+`plan.md` 的技術決定不成立 → 記進票節的 `#### 缺口` 並回報，不要改掉那張票的驗收條件或票節。
 
 前面的票的測試寫的是被 `spec.md` 修訂推翻的規則（喚醒之後常見）：
 
@@ -323,7 +324,7 @@ MUST: 不修改 `spec.md`、`plan.md`、`.feature` 的任何場景文字；`task
 - [ ] 這個 session 只做了一張票
 - [ ] 有 OpenAPI 片段時，`api/openapi.yaml` 裡這張票的 operation 與 `components` 跟 `plan.md` 的片段一致；migration 跟
   `## Database Schema` 一致；要改形狀的記進了 `#### 缺口`，沒有在專案裡改
-- [ ] `plan.md` 有 `## Domain Model`、`spec.md` 沒有 `### 聚合與不變條件`；不是就停下請使用者重跑 `/plan`
+- [ ] `plan.md` 有 `## Domain Model`、`spec.md` 沒有 `## Domain Model` 與 `### 聚合與不變條件`；不是就停下請使用者重跑 `/plan`
 
 ## 完成後
 

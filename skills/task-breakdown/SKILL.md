@@ -60,7 +60,7 @@ Check if: 同目錄的 `plan.md` 有 `## Implementation Decisions`、`## Testing
 不成立就停下，說先跑 `plan`（或缺口指名的那一步）——沒有技術決定時切票，票裡的層與內迴圈
 全是這一步自己設計的，而沒有人同意過那份設計。
 
-Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `### 聚合與不變條件`。是就停下，請使用者
+Check if: 舊格式——`plan.md` 沒有 `## Domain Model`，或 `spec.md` 還有 `## Domain Model` 或 `### 聚合與不變條件`。是就停下，請使用者
 重跑 `/plan`（`spec.md` 的舊節由再跑 `/spec` 刪掉）。舊格式不吃：聚合、資料表、契約不在 `plan.md` 裡並排，
 票的 `**契約**`／`**資料表**` 就只能自己猜。
 
@@ -199,11 +199,11 @@ MUST: 只寫入 `specs/ongoing/<date>-<feature>/tasks.md`，以及 `plan.md` `##
 - [ ] 每張票答得出「做完之後我能 demo 什麼」
 - [ ] 碰到 `## Risks` 影響程度「高」的票，在 `Blocked by` 允許的範圍內排在前面
 - [ ] 每張票都有 `Blocked by` 與 `接合點` 兩欄（沒有就寫「無」），每個接合點標了種類且照抄 `plan.md` `## Parallel Work`
-- [ ] 每張票標了模組（照抄 `spec.md`，沒有檔案路徑）與大小，沒有 XL
+- [ ] 每張票標了模組（照抄 `plan.md`，沒有檔案路徑）與大小，沒有 XL
 - [ ] 每張票有 `**契約**` 與 `**資料表**`（沒有就「無」），照抄 `plan.md` 的 `## API 契約` 與 `## Database Schema`；
   `## API 契約` 是 OpenAPI 片段時，有契約的票驗收條件裡有「搬進 api/openapi.yaml 的 operation 與 plan.md 的片段一致」
 - [ ] 沒有一張票排在它依賴的 `## 依賴圖` 節點之前
-- [ ] `plan.md` 有 `## Domain Model`、`spec.md` 沒有 `### 聚合與不變條件`；不是就停下請使用者重跑 `/plan`
+- [ ] `plan.md` 有 `## Domain Model`、`spec.md` 沒有 `## Domain Model` 與 `### 聚合與不變條件`；不是就停下請使用者重跑 `/plan`
 - [ ] 每張票的 `**驗證**` 有閘門命令；有 `涵蓋場景` 的票另有場景命令，tag 運算式跟 `涵蓋場景` 一一對應
 - [ ] `tasks.md` 每一波（不並行時每 2–3 張票）之後有檢查點
 - [ ] `tasks.md` 開頭寫了哪幾張可以同時開始（或「不適用」），那幾張沒有共同的 `爭用` 接合點、也沒有兩張都要新建的東西

@@ -42,7 +42,7 @@
 
 ## 缺口
 
-這份計畫自己的洞、三份設計並排時對不上的，以及 `task-breakdown` 拆票時發現技術決定沒定案的。
+這份計畫自己的洞、三份設計並排時錯在需求的，以及 `task-breakdown` 拆票時發現技術決定沒定案的。
 沒有就寫「沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切」。
 
 - <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、技術決定或設計的洞（回 `plan` 補）、`.feature` 寫了 seam
@@ -52,7 +52,8 @@
 
 - **推論的技術決定**：技術決定每條標 `← 推論` 的再列一次，一行一條指回它在哪一節
 - **留給 IMPLEMENT 的技術選擇**：不影響任何 AC 的選擇（哪個 library、欄位叫什麼）
-- **技術決定的修訂**：票切出去之後改了 seam、介面、schema、聚合、API 契約的，一行一條：日期、改了什麼、為什麼
+- **技術決定的修訂**：票切出去之後改了 seam、介面、schema、聚合、API 契約的，以及三份設計並排時錯在設計、當場改掉的，
+  一行一條：日期、改了什麼、為什麼
 ```
 
 骨架裡的 `→` 只是告訴你去哪讀寫法，不要抄進 `plan.md`。
@@ -142,10 +143,10 @@ checkpoint——停下來驗系統還是好的，再往下。
   在合回時解衝突。選「不要」時只寫這一行，表格省略
 - 種類三選一加一個 `新建`，定義與合回時怎麼解 →
   `../../task-breakdown/references/tasks-format.md`〈接合點與同時跑〉。
-- 從上面的 `## Implementation Decisions` 推，最常漏的有六類（清單與例子 →
+- 從上面的 `## Implementation Decisions` 與 `## Database Schema` 推，最常漏的有七類（清單與例子 →
   `tasks-format.md`〈接合點與同時跑〉）：會長大的介面連同它的測試 stub、第一次用到的 library 帶進來的
   依賴檔、兩個以上 use case 都要住的新 package、新的必填組裝欄位連同每個組它的測試、按 feature 分的
-  mapper／presenter 與共用的步驟檔、跨 feature 共用的步驟句子
+  mapper／presenter 與共用的步驟檔、跨 feature 共用的步驟句子、migration 目錄與它的序號
 - 兩張票會改同一段既有邏輯的地方標 `爭用`，寫明是哪一段；`task-breakdown` 會把它們排成先後
 
 ## 為什麼一個 feature 一份，不是一則 story 一份

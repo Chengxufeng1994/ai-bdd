@@ -33,6 +33,8 @@ disable-model-invocation: true
 - `discovery` 以 `收斂`（或 `喊停`）結束了，要把問答寫成規格
 - 開過補問題、`discovery` 問完又收斂了，要修補 `spec.md`
 - 要定這個 feature 的詞彙（寫在 `spec.md`，做完時由 `archive` 併進 `docs/`）
+- 下游 skill 說 `spec.md` 還留著舊的聚合一節（`## Domain Model`／`### 聚合與不變條件`），要清掉它：同目錄 `plan.md`
+  已有 `## Domain Model` 時只刪這一節，狀態不動（見〈再跑：修補，不重寫〉第 5、6 步）
 - 要改一個已經在 `specs/sleeping/` 的 feature：先喚醒它，見 `references/wake-up.md`
 
 ## Skill Boundaries
@@ -42,6 +44,7 @@ disable-model-invocation: true
 | 結束方式是 `阻塞`／`零進展`／`—`（還沒問完） | `discovery` |
 | 要把 FR 與 AC 寫成 `.feature` | `formulation`，`已對焦` 之後**由使用者叫**，本 skill 不呼叫它 |
 | 要決定 seam、模組、契約、測試層級 | `plan`（寫在 `plan.md`） |
+| 要定聚合、不變條件、schema、API 契約 | `plan` |
 | 要攤整個 feature 的流程、找缺的替代流程與反例 | `feature-mapping`，本 skill 寫完 `spec.md` 之後第一個呼叫它 |
 | 要攤四色卡、判就緒 | `example-mapping`，本 skill 在 `feature-mapping` 之後呼叫它 |
 | 要把規格寫成業務方讀的驗收旅程 | `spec-by-example`，本 skill 在診斷之後、就緒問句之前呼叫它 |
@@ -284,7 +287,8 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 5. CHECK 舊版 `spec.md` 還有 `## Domain Model` 或 `### 聚合與不變條件` → 同目錄 `plan.md` 已有 `## Domain Model`
    就從 `spec.md` 刪掉這一節；沒有就留著並**停下**，請使用者先重跑 `/plan`（`plan` 讀這一節當輸入），再重跑 `/spec`。
    `spec` 自己不搬。
-6. WRITE 狀態回 `待對焦`，從第 2 步重跑。
+6. WRITE 狀態回 `待對焦`，從第 2 步重跑。**例外**：這次唯一的改動是第 5 步刪掉舊的聚合一節（同目錄 `plan.md`
+   已有 `## Domain Model`）→ 狀態不動、不重跑——規則一條都沒變，不用再對焦一次。
 
 ## 產物
 
@@ -311,7 +315,7 @@ MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何
 - [ ] `已對焦` 是 `example-mapping` 照需求方的回答寫的——本 skill 沒有自己寫
 - [ ] `spec.md` 裡沒有任何技術決定（Tech Stack、seam、模組、契約、測試層級）
 - [ ] 再跑時 FR／AC 編號沒有重排，改動的每一條都記了修訂
-- [ ] 再跑時舊版的 `## Domain Model`／`### 聚合與不變條件`：`plan.md` 已有 `## Domain Model` 才刪，否則留著並停下請使用者先重跑 `/plan`
+- [ ] 再跑時舊版的 `## Domain Model`／`### 聚合與不變條件`：`plan.md` 已有 `## Domain Model` 才刪，否則留著並停下請使用者先重跑 `/plan`；只刪了這一節時狀態沒有改回 `待對焦`
 - [ ] 詞彙寫在 `## Domain Concepts`，跟 `docs/CONTEXT.md` 定義不同的詞開成了補問題；`docs/` 底下沒有任何檔案被碰
 - [ ] 每則 story 有優先級（或「（沒問過）」並開了補問題）；`## Edge Cases` 每一條指向 AC 或一題補問題
 - [ ] 沒有呼叫 `formulation` 或 `discovery`，也沒有寫任何 `.feature`
