@@ -41,8 +41,8 @@
 | 步驟 | 模式 | 只做 | 不做 |
 | --- | --- | --- | --- |
 | **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、一次問一題、記答案原話與誰答的、意圖陳述 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
-| **SPEC**（`spec`／`formulation`） | agent 寫、需求方審 | `spec.md` 的已答題 → FR／AC（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、改回 `澄清中`、停 |
-| **PLAN**（`plan`／`api-and-interface-design`） | agent 定與排、工程師審（seam 經使用者確認） | `spec.md` ＋ `.feature` → 三份設計 → 技術決定 → 依賴、風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`，有洞記進 `## 缺口` 並交回 `spec` |
+| **SPEC**（`spec`／`feature-mapping`／`example-mapping`／`spec-by-example`） | agent 寫、需求方審 | `spec.md` 的已答題 → FR／AC → 兩張圖的診斷 → 驗收旅程（`已對焦`） | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、改回 `澄清中`、停 |
+| **PLAN**（`plan`／`formulation`／`api-and-interface-design`） | agent 定與排、工程師審（seam 經使用者確認） | `spec.md` → seam → `.feature` → 三份設計 → 技術決定 → 依賴、風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md`、只經 `formulation` 動 `.feature`，有洞記進 `## 缺口` 並交回 `spec` |
 
 「agent 補一個合理的答案然後繼續」這個風險，舊版靠「DISCOVERY 不寫檔」擋，
 而 2026-09-14 的設計承認那條從來沒真的成立過。現在改靠「每條 FR／AC 必須指得出
@@ -60,8 +60,8 @@ already made, not a place where new ones get made.」
 | 步驟 | 這一步在問什麼 | 作法 | 產物 |
 | --- | --- | --- | --- |
 | **DISCOVERY** | 需求方想要什麼？還有哪些不知道？問到不能再問為止（brainstorming） | 開場當書記：原文逐字、粗切 story；之後設計樹＋前沿，一次一題，答案逐題記下，意圖陳述要 yes | `spec.md` 的問答那幾節（澄清中，結束方式 收斂） |
-| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？（to spec） | 已答題 → FR／AC（`spec`）→ 流程與四色卡診斷（`feature-mapping`、`example-mapping`）→ 驗收旅程（`spec-by-example`）→ 就緒判定（`example-mapping`）→ 使用者叫 Gherkin（`formulation`） | `spec.md`（澄清中 → 待對焦 → 已對焦，含 `## Domain Concepts`）＋ `.feature`（可執行） |
-| **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | Domain Model／Database Schema／API 契約、依賴與風險、接合點、tracer bullet 垂直切片 ＋ blocking edges、順序與 Checkpoint（都是 `plan`） | `plan.md` ＋ `tasks.md` |
+| **SPEC** | 這些答案寫成規格長怎樣？需求方點頭了嗎？（to spec） | 已答題 → FR／AC（`spec`）→ 流程與四色卡診斷（`feature-mapping`、`example-mapping`）→ 驗收旅程（`spec-by-example`）→ 就緒判定（`example-mapping`） | `spec.md`（澄清中 → 待對焦 → 已對焦，含 `## Domain Concepts`） |
+| **PLAN** | 哪裡危險？能不能並行？怎麼切成一次做得完的步驟？（to plan） | seam、Gherkin（委派 `formulation`，排在設計之前）、Domain Model／Database Schema／API 契約、依賴與風險、接合點、tracer bullet 垂直切片 ＋ blocking edges、順序與 Checkpoint（都是 `plan`） | `.feature`（可執行）＋ `plan.md` ＋ `tasks.md` |
 | **IMPLEMENT** | 讓這張票從 red 到 green | step defs ＋ outside-in 雙迴圈 | 程式碼 |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？ | 全新 reviewer 對照情境驗收 ＋ 鏈稽核 | 審查結論 ＋ 稽核報告 |
 | **VERIFY** | 交付前最後一次：綠了嗎？紅的是 bug 還是規格過期？ | 跑閘門與全部情境 ＋ 失敗判讀 | 測試結果 ＋ 判讀結論 |
@@ -148,7 +148,7 @@ docs/TECH.md                     ARCHIVE  Tech Stack 到 Boundaries 的現況
 | 依賴圖 | 以模組與契約為節點，哪個先存在別的才寫得出來（切票時當約束） | 三份設計 |
 | Risks | 規格沒說但實作一定撞到的（併發、冪等、交易邊界），標影響程度 | 從規則推出來 |
 | Parallel Work | 要不要並行、接合點的路徑與種類 | 使用者、`plan.md` 的 Implementation Decisions |
-| 缺口 | 推不出來的；需求的洞交回 `spec`、場景驗不到的交回 `formulation`（票與前置整理住 `tasks.md`） | — |
+| 缺口 | 推不出來的；需求的洞與換說法也驗不到的場景交回 `spec`（票與前置整理住 `tasks.md`） | — |
 
 **一批一份，不是一則 story 一份。** 這不是新決定：`plan` 的
 `references/plan-format.md` 記錄過「每 feature 一份 ＋ 共用檔」試過並且壞掉——
@@ -236,9 +236,9 @@ REVIEW 可以把「沒人同意過的 seam」當成 finding 抓出來。這個�
 | | `feature-mapping` | 整個 feature 的流程圖、三條診斷（替代流程、反例、結果沒有規則），缺口寫成補問 | **已實作**（2026-11-18，照 John Ferguson Smart 的 Feature Mapping；還沒實跑過）；由 `spec` 在 `example-mapping` 之前呼叫 |
 | | `example-mapping` | 四色卡、四條診斷、就緒判定；唯一寫 `已對焦` 的 skill | **已實作**；由 `spec` 呼叫 |
 | | `spec-by-example` | `spec.md` → `acceptance/*.feature` 業務語意驗收旅程，`@covers-` 標 AC | **已實作**；2026-11-14，參考 aixbdd `spec-by-example`；由 `spec` 在診斷與就緒問句之間呼叫 |
-| | `formulation` | `spec.md` → `.feature` | **已實作** |
 | | `spec-review` | 反命令式、conjunction step、情境爆炸稽核 | 未實作 |
-| PLAN | `plan` | `spec.md` ＋ `.feature` → `plan.md` ＋ `tasks.md`：三份設計（Domain Model／Database Schema／API 契約）、技術決定（seam 經使用者確認）、依賴圖、風險、垂直切片成票、順序與 Checkpoint、要不要並行、接合點 | **已實作**；2026-11-20 改照 addyosmani 的 planning 流程，併入 `task-breakdown` 並刪掉系統介面與 Wave；2026-11-20 先改寫成 system-analysis，聚合從 `spec.md` 移進來；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `task-breakdown`、技術設計搬到 `spec.md`；2026-11-18 技術決定搬回來 |
+| PLAN | `plan` | `spec.md` → `.feature`（委派 `formulation`）＋ `plan.md` ＋ `tasks.md`：seam 之後先寫 `.feature`，再三份設計（Domain Model／Database Schema／API 契約）、技術決定（seam 經使用者確認）、依賴圖、風險、垂直切片成票、順序與 Checkpoint、要不要並行、接合點 | **已實作**；2026-11-20 改照 addyosmani 的 planning 流程，併入 `task-breakdown` 並刪掉系統介面與 Wave；2026-11-20 先改寫成 system-analysis，聚合從 `spec.md` 移進來；2026-11-14 接手原 `design.md` 的技術設計；2026-11-15 切票移到 `task-breakdown`、技術設計搬到 `spec.md`；2026-11-18 技術決定搬回來 |
+| | `formulation` | `spec.md` → `.feature` | **已實作**；2026-11-22 從 SPEC 搬進 PLAN，由 `plan` 在 seam 之後、三份設計之前委派 |
 | | `api-and-interface-design` | `plan` 〈設計〉委派：需求與既有 `api/openapi.yaml` → OpenAPI 片段交回 `plan` | **已實作**（2026-11-20，addyosmani 原文＋職責卡） |
 | IMPLEMENT | `implement` | 一張票一個 session，outside-in：外迴圈紅 → domain 單元測試 → 接線 → step definition → 閘門綠 → `@review` | **已實作**（2026-10-03，從 parking 實跑的做法抽出來）；原本規劃的 `-step-definitions`／`-outside-in` 兩個子 skill 併進本文，等實跑證明太長再拆 |
 | | `behavior-driven-development` | 一個範疇內一次一個 slice，red／green／refactor 三個入口擇一；`implement` 委派 green 與 refactor，red 由 `implement` 自己做 | **已實作**（2026-11-15，照 aixbdd 的 `behavior-driven-development` 與 `implement` 的委派方式；還沒實跑過） |
@@ -392,7 +392,8 @@ Always-on: ~1,620 tok  每個 session 都付
 - [x] 2026-11-16 `task-breakdown` 改寫單一 `tasks.md`（一張票一個票節），取代 `tasks/` 目錄與 `index.md`
 - [x] 2026-11-18 `discovery.md` 併進 `spec.md`（`## Open Questions`、`## 原文`），`clarify` 併進 `discovery`
 - [x] 2026-11-18 `discovery` 不寫 `spec.md`，只寫訪談紀錄 `interview-log.md`；`spec` 是 `spec.md` 唯一的寫入者
-- [ ] 重跑 `parking-billing`：`discovery` → `spec` → `formulation` → `plan`，驗證單檔與一次一題
+- [x] 2026-11-22 `formulation` 從 SPEC 搬進 PLAN：`plan` 定了 seam 之後委派它，排在 Domain Model／Schema／API 之前——`.feature` 只寫業務行為，先設計的話 endpoint 與表名會滲進場景
+- [ ] 重跑 `parking-billing`：`discovery` → `spec` → `plan`（含 `formulation`），驗證單檔與一次一題
 - [ ] `verify`、`review`
 - [ ] 用 `implement` 重跑一次 parking 的某張票，驗證 skill 寫的跟做的一樣
 

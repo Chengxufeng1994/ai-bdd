@@ -19,7 +19,7 @@ disable-model-invocation: true
 | **讀** | 流程內：`specs/ongoing/<date>-<feature>/spec.md`（`待對焦`）與同目錄的 `acceptance/`；單獨：一段 story 的描述 |
 | **寫** | 流程內：`spec.md` 的 `狀態`（使用者答「就緒」才寫 `已對焦`）或在 `## Open Questions` 開 `待答` 題；單獨：不寫檔。地圖只印在終端 |
 | **上游** | `spec`（`spec.md` 寫完、`feature-mapping` 跑完後呼叫）；也可單獨使用 |
-| **下游** | 就緒 → 交回 `spec`，使用者接著叫 `formulation`；未就緒 → `spec`〈有洞〉 |
+| **下游** | 就緒 → 交回 `spec`，使用者接著叫 `plan`；未就緒 → `spec`〈有洞〉 |
 | **不做** | 不替使用者判就緒、不把紅卡問到收斂、不切 story、不寫 Gherkin、不產出 `example-map.md` |
 
 **票不是你投的。** 本 skill 攤牌、診斷、提問；就緒與否由使用者判，`已對焦` 寫的是他的決定。
@@ -38,7 +38,7 @@ disable-model-invocation: true
 | 要看整個 feature 的流程、替代流程與反例 | `feature-mapping`，`spec` 在本 skill 之前呼叫它 |
 | 要把紅卡逐一問到收斂 | `discovery`，本 skill 只指出還剩幾張 |
 | 要把 story 切小 | `story-splitting` |
-| 要把例子寫成 Gherkin | `formulation` |
+| 要把例子寫成 Gherkin | `plan`（它 DELEGATE `formulation`） |
 
 ## 流程
 

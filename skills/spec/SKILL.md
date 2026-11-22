@@ -3,7 +3,7 @@ name: spec
 description: >
   讀 `discovery` 的訪談紀錄 `interview-log.md`（已答的題與原文），寫 `spec.md`——原文逐字照抄、問答整理成
   `## Open Questions`（題號不變），再寫 story、FR／AC 行尾 `← Q-<n>`／`← PRD §n`、角色、範圍與不做的事、假設與限制，交 `example-mapping`
-  判就緒，需求方點頭就停，下一步由使用者叫 `formulation`。只寫要做成什麼，不寫技術決定（那是 `plan`）；
+  判就緒，需求方點頭就停，下一步由使用者叫 `plan`（`.feature` 由它 DELEGATE `formulation` 寫）。只寫要做成什麼，不寫技術決定（那是 `plan`）；
   詞彙寫進 `## Domain Concepts`，等 `archive` 才進 `docs/`。
   不訪談：有洞就在 `## Open Questions` 開一題待答、狀態改回澄清中、停下。BDD 六步流程的 to spec 步驟。
   觸發詞：「寫 spec」「to spec」「把問答寫成規格」「discovery 問完了，接下來」
@@ -21,7 +21,7 @@ disable-model-invocation: true
 | **讀** | `specs/ongoing/<date>-<feature>/interview-log.md`（結束方式 `收斂` 或 `喊停`）；再跑時既有的 `spec.md`；`docs/CONTEXT.md`（有的話） |
 | **寫** | 同一個目錄的 `spec.md`，唯一的寫入者：照抄的 `## 原文`、整理的 `## Open Questions`、其餘各節、FR／AC、狀態 `待對焦`；有洞時補問題與狀態 `澄清中` |
 | **上游** | `discovery` |
-| **下游** | `feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` → 交回，使用者接著叫 `formulation` |
+| **下游** | `feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` → 交回，使用者接著叫 `plan` |
 | **不做** | 不訪談、不寫 `interview-log.md`、不填紀錄裡沒有的答案、不改寫 `## 原文`、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature` 也不呼叫 `formulation` 或 `discovery`、不寫 `docs/`、不寫技術決定與 seam、不排風險與並行（都是 `plan`）、不切票 |
 
 **不訪談。** 這一步只寫已經有答案的東西。問答推不出來的，在 `## Open Questions` 開一題 `待答`、
@@ -42,7 +42,7 @@ disable-model-invocation: true
 | 情況 | 改用 |
 | --- | --- |
 | 結束方式是 `阻塞`／`零進展`／`—`（還沒問完） | `discovery` |
-| 要把 FR 與 AC 寫成 `.feature` | `formulation`，`已對焦` 之後**由使用者叫**，本 skill 不呼叫它 |
+| 要把 FR 與 AC 寫成 `.feature` | `plan`——它在定了 seam 之後 DELEGATE `formulation`；本 skill 不呼叫它 |
 | 要決定 seam、模組、契約、測試層級 | `plan`（寫在 `plan.md`） |
 | 要定聚合、不變條件、schema、API 契約 | `plan` |
 | 要攤整個 feature 的流程、找缺的替代流程與反例 | `feature-mapping`，本 skill 寫完 `spec.md` 之後第一個呼叫它 |
@@ -192,7 +192,7 @@ MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案�
 1. RUN `python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>`。
 2. CHECK 抓到的每一條：寫錯了 → 修 `spec.md`；問答裡沒有 → 補問題。
 3. CHECK 再跑（修補）時 `.feature` 已經存在，覆蓋比對會報這一輪新增或改動的 AC「漏了」。**只有這幾條**是
-   預期的：本 skill 交回之後由 `formulation` 補，不開補問題、也不跳過。
+   預期的：本 skill 交回之後由 `plan` DELEGATE `formulation` 補，不開補問題、也不跳過。
 
 `.feature` 還不存在時跑得到十三項：`spec.md` 的形狀、它的 `← PRD §n` 對 `## 原文` 的引用、`acceptance/` 旅程的
 `@covers-` tag，包含第 14 項（每條 FR／AC 有來源、`← Q-<n>` 在 `## Open Questions` 找得到而且是 `已答`）。
@@ -248,7 +248,7 @@ MUST NOT: 自己寫 `已對焦`。`example-mapping` 是唯一寫它的 skill，�
 需求方答「就緒」、`example-mapping` 寫了 `已對焦`，這份規格就完成了。
 
 1. RUN `check_spec.py`：除了第 3 步說的覆蓋比對「漏了」，其餘全過。
-2. STOP 照〈完成後〉回報，告訴使用者下一步是 `/formulation`，然後結束這一輪。
+2. STOP 照〈完成後〉回報，告訴使用者下一步是 `/plan`，然後結束這一輪。
 
 MUST NOT: 呼叫 `formulation`、自己寫 `.feature`，或接著做 `plan`。每個 skill 都由使用者明確叫用，一個 skill
 在內部接著跑下一個，等於繞過了那個決定。
@@ -297,7 +297,7 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 | `specs/ongoing/<date>-<feature>/spec.md` | `references/spec-format.md` |
 | `spec.md` 的 `## Domain Concepts` | `references/spec-format.md` |
 | `interview-log.md` | DISCOVERY 寫的；本 skill 只讀，`spec.md` 的 `## 原文` 與 `## Open Questions` 照它抄 |
-| `features/<story-slug>.feature` | 由 `formulation` 寫 |
+| `features/<story-slug>.feature` | 由 `plan` DELEGATE `formulation` 寫 |
 
 MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何其他檔案**（含
 `docs/` 底下的每一個檔案）。`interview-log.md` 一個字都不動。
@@ -330,4 +330,4 @@ MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何
 4. 就緒問句的結果：`已對焦`，或開了哪幾題補問題（`Q-<n>`）、為什麼
 5. `### Non-Goals` 列了幾項延後、幾項不做；`## Edge Cases` 有幾條找不到 AC
 
-`已對焦` → 下一步由使用者叫 `/formulation`，之後才是 `/plan`。開了補問題 → 使用者叫 `/discovery`。
+`已對焦` → 下一步由使用者叫 `/plan`（它先 DELEGATE `formulation` 寫 `.feature`，再做設計與切票）。開了補問題 → 使用者叫 `/discovery`。

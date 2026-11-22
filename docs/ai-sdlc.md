@@ -37,16 +37,16 @@ DISCOVERY  →  SPEC  →  PLAN  →  IMPLEMENT  →  REVIEW  →  VERIFY
 ```
 
 **帶 BDD 的那三格不等於 BDD。** DISCOVERY 的開場在對 `## 原文` 掃隱含假設——這件事
-本身不是 Discovery，卻是 Discovery（把需求逼成規則與例子）真正要用的輸入；SPEC 除了
-`formulation` 產的 `.feature`，還要把問答寫成 `spec.md`、判就緒。只有 IMPLEMENT 跟
+本身不是 Discovery，卻是 Discovery（把需求逼成規則與例子）真正要用的輸入；SPEC 把問答寫成 `spec.md`、判就緒，BDD 的 Formulation（`formulation` 產的 `.feature`）
+則挪到 PLAN 開頭。只有 IMPLEMENT 跟
 Automation 重合，因為 Automation 的產物本來就是程式碼而不是膠水層（見
 [bdd.md](./bdd.md) §③）。BDD 的覆蓋也不連續：**PLAN 是夾在中間的洞**。
 
 | 步驟 | 存在的理由 | BDD 對應 |
 | --- | --- | --- |
 | **DISCOVERY** | brainstorming：開場把需求方的話逐字收進訪談紀錄 `interview-log.md` 的 `## 原文`、粗切 story（不是 BDD，BDD 假設 story 已經存在）＋對 `## 原文` 掃隱含假設（不是 BDD）＋把每則 story 一題一題問到規則與例子都有人答過（BDD 的 Discovery）。**只記問答，不寫規則、不寫 `spec.md`**——每個答案記原話與誰答的，最後要需求方對意圖陳述說 yes。需求進來時是模糊的，而 agent 對模糊的預設反應是猜 | Discovery ＋ 額外 |
-| **SPEC** | to spec：讀訪談紀錄寫 `spec.md`——原文照抄、問答整理成 `## Open Questions`（題號不變），再寫成規則（FR／AC 每一條行尾指回 `## 原文` 或 `## Open Questions` 的已答題，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`）＋可執行規格（BDD 的 Formulation，`formulation`，`已對焦` 之後由使用者叫） | Formulation ＋ 額外 |
-| **PLAN** | to plan：設計（Domain Model／Database Schema／API 契約）＋執行計畫（依賴、風險、順序、要不要並行、接合點）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`plan` 一個 skill 寫 `plan.md` 與 `tasks.md`） | **無**——BDD 明確沒有排序指引 |
+| **SPEC** | to spec：讀訪談紀錄寫 `spec.md`——原文照抄、問答整理成 `## Open Questions`（題號不變），再寫成規則（FR／AC 每一條行尾指回 `## 原文` 或 `## Open Questions` 的已答題，`spec`）＋業務語意的驗收旅程（`acceptance/*.feature`，不執行，`spec-by-example`）＋流程與四色卡診斷（`feature-mapping`、`example-mapping`）＋就緒判定（`example-mapping`） | 額外 |
+| **PLAN** | to plan：可執行規格（BDD 的 Formulation，`plan` 定了 seam 之後委派 `formulation`，排在設計之前）＋設計（Domain Model／Database Schema／API 契約）＋執行計畫（依賴、風險、順序、要不要並行、接合點）＋把工作切到一個 fresh session 做得完，並宣告誰卡誰、誰能同時做（`plan` 一個 skill 寫 `plan.md` 與 `tasks.md`） | Formulation；其餘**無**——BDD 明確沒有排序指引 |
 | **IMPLEMENT** | 用外迴圈驅動內迴圈，把行為做出來；一張票一個 session，做完把 `.feature` 翻到 `@review`（`implement`） | Automation |
 | **REVIEW** | 這變更真的滿足它宣稱的情境嗎？鏈斷了嗎？全新的 reviewer 對照 `spec.md`／`.feature` 審整批 | **無**——治理不在三個實踐裡 |
 | **VERIFY** | 最後一次驗證：閘門、全部情境、鏈稽核都有輸出當證據才算交付；紅的是 bug 還是規格過期？ | Automation 之後的持續活動 |
@@ -67,8 +67,8 @@ PLAN 的技術設計與切票、REVIEW、VERIFY 的交付證據）都不是補�
 | 步驟 | 模式 | 只做 | 不做 |
 | --- | --- | --- | --- |
 | **DISCOVERY**（`discovery`） | agent 問、需求方答（開場建檔那一回合是需求方說、agent 記） | 原文逐字、粗切 story、一次問一題、記答案原話與誰答的、意圖陳述 | 不寫 FR／AC、不寫 Gherkin、不設計、不自己填答案 |
-| **SPEC**（`spec`／`spec-by-example`／`formulation`） | agent 寫、需求方審 | `interview-log.md` 的已答題 → `spec.md` 的 FR／AC（`待對焦`）→ `acceptance/` 驗收旅程 →（`已對焦`）→ `.feature` | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、狀態改回 `澄清中`、停 |
-| **PLAN**（`plan`） | agent 定與切、工程師確認 seam、審切法與計畫 | `spec.md` ＋ `.feature` → 三份設計 → 技術決定 → 依賴、風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md` 與 `.feature`，有洞記進 `## 缺口` 並交回 `spec`／`formulation` |
+| **SPEC**（`spec`／`feature-mapping`／`example-mapping`／`spec-by-example`） | agent 寫、需求方審 | `interview-log.md` 的已答題 → `spec.md` 的 FR／AC（`待對焦`）→ 兩張圖的診斷 → `acceptance/` 驗收旅程 →（`已對焦`） | 不訪談、不寫技術決定，有洞就在 `## Open Questions` 開一題、狀態改回 `澄清中`、停 |
+| **PLAN**（`plan`） | agent 定與切、工程師確認 seam、審切法與計畫 | `spec.md` → seam → `.feature`（委派 `formulation`）→ 三份設計 → 技術決定 → 依賴、風險與接合點 → tracer bullet ＋ blocking edges | `plan` 不改 `spec.md`、只經 `formulation` 動 `.feature`，有洞記進 `## 缺口` 並交回 `spec` |
 
 三條互相支撐：SPEC 能「不訪談」是因為 DISCOVERY 把每個答案連原話記下來了；PLAN 能
 「不改需求」是因為 SPEC 寫下了需求方點過頭的規則；DISCOVERY 能只問不寫，是因為 SPEC
@@ -136,11 +136,14 @@ skill，等於要求同一次判斷既收斂**語意**（這句話夠不夠、�
 部分」。界線改靠**檔案**守：`spec.md` 只寫要做成什麼，需求方判就緒時整份都讀得懂；用什麼做、seam、
 契約、schema 寫在 `plan.md` 的前半。seam 仍是工程判斷，所以由 `plan` 攤給使用者確認。
 
-順帶的好處：`plan` 在 `.feature` 之後跑，定 seam 時看得到每一個場景，能把 seam 上驗不到的 Then
-（設備端的退錢、畫面顯示）攔下來交回 `formulation`——試跑時這類場景是一路寫到 PLAN 都沒人擋。
+Formulation 放在 PLAN 開頭（2026-11-22 起）：seam 之後、三份設計之前。`.feature` 只寫業務行為，endpoint、
+表名一個都不出現，所以設計還沒定也寫得出來；真正綁設計的是 step definition，那是 IMPLEMENT 的事。反過來
+先設計，同一個 context 裡已經有 operation 與表名，場景就會寫成「Then 回應 201」。API 契約反過來對著場景
+設計。三份設計做完，`plan` 再把每個場景對一次 seam，驗不到的 Then（設備端的退錢、畫面顯示）先請
+`formulation` 換說法，換不了才交回 `spec`——試跑時這類場景是一路寫到 PLAN 都沒人擋。
 
-**沒有任何 skill 呼叫下一個。** 每個 skill 都設了 `disable-model-invocation`，每一步由使用者打
-`/<skill>`；試跑時 `spec` 照它當時的指示自己接著跑了 `formulation`，繞過了這個決定。
+**沒有任何 skill 呼叫下一步。** 每個 skill 都設了 `disable-model-invocation`，每一步由使用者打
+`/<skill>`；一個 skill 只在自己那一步裡 DELEGATE 幫手（`spec` 叫兩張圖、`plan` 叫 `formulation`）。試跑時 `spec` 照它當時的指示自己接著跑了 `formulation`，繞過了這個決定。
 
 SPEC 的診斷有兩張圖，方向相反：`feature-mapping` 看整個 feature 的**寬度**——流程有沒有斷、
 每一步的替代流程與規則的反例寫了沒；`example-mapping` 看一則 story 的**深度**——每條規則有沒有

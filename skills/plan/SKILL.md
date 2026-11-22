@@ -2,16 +2,16 @@
 name: plan
 description: >
   SPEC 說要做成什麼，PLAN 說用什麼做、怎麼排、切成哪幾張票——照 addyosmani 的 planning-and-task-breakdown 五步走：
-  唯讀收集 `spec.md`（已對焦）、`.feature` 與專案現況；Step 2 之前先設計三份可以直接照著寫程式的東西——Domain Model
+  唯讀收集 `spec.md`（已對焦）與專案現況；Step 2 之前先定 seam、DELEGATE `formulation` 寫 `.feature`，再設計三份可以直接照著寫程式的東西——Domain Model
   （聚合與不變條件）、Database Schema（表、欄位、約束）、API 契約（DELEGATE `api-and-interface-design` 寫 OpenAPI
   片段，沒有 HTTP 時寫程式碼層介面契約），並排對過，再定技術決定七節（seam 攤給使用者確認）；然後排依賴圖、
   切成 tracer bullet、寫每張票、排序與 checkpoint、問要不要並行，把切法攤給使用者看、點頭才寫
-  `tasks.md`。不改 `spec.md`、不改 `.feature`、不動 `api/openapi.yaml`、不寫程式。BDD 六步流程的 PLAN 步驟。
+  `tasks.md`。不改 `spec.md`、`.feature` 只經 `formulation` 寫、不動 `api/openapi.yaml`、不寫程式。BDD 六步流程的 PLAN 步驟。
   觸發詞：「寫 plan」「執行計畫」「技術設計」「決定 seam」「驗收測試打在哪一層」「API 契約要怎麼定」
   「這個 feature 動哪些模組」「schema 怎麼定」「domain model 怎麼切」「聚合怎麼定」「依賴圖」
   「這批有什麼風險」「哪裡最危險」「這批要怎麼切」「拆成幾張票」「切票」「拆成 tasks」「先做哪一個」
   「排實作順序」「這些票誰卡誰」「要不要並行」「哪幾張可以同時做」「接合點有哪些」
-  「formulation 寫完了下一步」。
+  「spec 已對焦了下一步」「寫 .feature 之後要做什麼」。
   English: write the plan, technical design, decide the acceptance test seam, define the API contract,
   design the database schema, design the domain model, dependency graph, what are the risks,
   break the plan into tasks, slice the work into tickets, vertical slices, what order should I build these,
@@ -23,12 +23,12 @@ disable-model-invocation: true
 
 | | |
 | --- | --- |
-| **職責** | 把一份已對焦的規格變成計畫與票：設計聚合、資料表、API 契約並排對過，定技術決定與 seam，排依賴圖，切成一疊 tracer bullet、排好順序與 checkpoint |
-| **讀** | `spec.md`（`已對焦`）、涵蓋的 `.feature`、`docs/TECH.md`、`docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`api/openapi.yaml`（有的話）、專案既有的結構與程式碼；再跑時同目錄既有的 `plan.md` 與 `tasks.md`（或舊的 `tasks/`） |
-| **寫** | `specs/ongoing/<date>-<feature>/plan.md` 與同目錄的 `tasks.md`（一張票一個票節） |
-| **上游** | `formulation`（`.feature` 寫好之後，使用者叫 `/plan`） |
-| **下游** | `implement <票號>`（一張票一個全新 session）；`api-and-interface-design` 由〈設計〉DELEGATE |
-| **不做** | 不改 `spec.md`、不改 `.feature`、不動 `api/openapi.yaml`、不寫 migration、不訪談需求、不寫程式、不動開工了的票（只准補 `接合點`／`Blocked by`／`大小`）、不派工 |
+| **職責** | 把一份已對焦的規格變成計畫與票：定 seam、交 `formulation` 寫 `.feature`，設計聚合、資料表、API 契約並排對過，定技術決定，排依賴圖，切成一疊 tracer bullet、排好順序與 checkpoint |
+| **讀** | `spec.md`（`已對焦`）、`formulation` 寫出的 `.feature`、`docs/TECH.md`、`docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`、`api/openapi.yaml`（有的話）、專案既有的結構與程式碼；再跑時同目錄既有的 `plan.md` 與 `tasks.md`（或舊的 `tasks/`） |
+| **寫** | `specs/ongoing/<date>-<feature>/plan.md` 與同目錄的 `tasks.md`（一張票一個票節）；`.feature` 由 DELEGATE 的 `formulation` 寫 |
+| **上游** | `spec`（`已對焦` 之後，使用者叫 `/plan`） |
+| **下游** | `implement <票號>`（一張票一個全新 session）；`formulation` 與 `api-and-interface-design` 由〈設計〉DELEGATE |
+| **不做** | 不改 `spec.md`、不自己寫或改 `.feature`（只經 `formulation`）、不動 `api/openapi.yaml`、不寫 migration、不訪談需求、不寫程式、不動開工了的票（只准補 `接合點`／`Blocked by`／`大小`）、不派工 |
 
 **Plan Mode：這一步不寫程式。** 產物是兩份文件——`plan.md` 說用什麼做、怎麼排，`tasks.md` 說切成哪幾張票；
 程式碼、migration、`api/openapi.yaml` 都是 `implement` 做票時才碰。
@@ -41,8 +41,8 @@ disable-model-invocation: true
 
 ## 使用時機
 
-- `spec.md` 已對焦、`.feature` 也寫好了，要設計 API、schema、domain model、排計畫、切成票
-- `spec.md` 修補過、`.feature` 跟著改了，`plan.md` 與 `tasks.md` 要跟上
+- `spec.md` 已對焦，要寫 `.feature`、設計 API、schema、domain model、排計畫、切成票
+- `spec.md` 修補過，`.feature`、`plan.md` 與 `tasks.md` 要跟上
 - 技術設計沒變，但票切得不對或順序要調，只重切票（〈再跑〉「只重切」那一條）
 - 一批工作大到一個 session 做不完，要拆給多個 session 接力或同時做
 
@@ -51,9 +51,9 @@ disable-model-invocation: true
 | 情況 | 改用 |
 | --- | --- |
 | 還沒有 `spec.md`，或狀態不是 `已對焦` | `spec`（連訪談紀錄 `interview-log.md` 都沒有就先 `discovery`） |
-| 還沒有 `.feature` | `formulation` |
 | **要改 FR、AC、story、範圍** | `spec`——不是這裡 |
-| `.feature` 寫了 seam 驗不到的行為 | `formulation`，本 skill 只指出來 |
+| `.feature` 寫了 seam 驗不到的行為 | 〈設計〉第 10 步：換說法看得到就再 DELEGATE `formulation` 改寫，怎麼換都看不到就交回 `spec` |
+| 只想把 `spec.md` 翻成 `.feature`，不排計畫 | `formulation`（單獨叫用） |
 | 要把太大的 **story** 切小 | `story-splitting`——它切的是需求，本 skill 切的是實作 |
 | 只要 API 設計的建議，不寫 `plan.md` | `api-and-interface-design`（單獨叫用） |
 | 要把契約搬進 `api/openapi.yaml`、寫 migration、寫 step definition 與產品程式碼、實際做某一張票 | `implement` |
@@ -68,6 +68,7 @@ disable-model-invocation: true
 - `references/tech-format.md` — 技術決定七節的骨架、五選一的來源標記、範例。**〈設計〉寫技術決定之前先讀**
 - `references/tasks-format.md` — `tasks.md` 的骨架、誰寫哪幾行、契約與資料表、接合點與同時跑、大小、驗證、檢查點、
   三條切票規則、驗收條件要能失敗、wide refactor 的例外。**Step 3 切票之前先讀**
+- `../formulation/SKILL.md` — 〈設計〉DELEGATE，把 `spec.md` 寫成 `.feature`
 - `../api-and-interface-design/SKILL.md` — 〈設計〉DELEGATE，設計 `## API 契約`
 - addyosmani/agent-skills 的 `planning-and-task-breakdown`（MIT）——整個流程的骨架：Step 1 唯讀收集（Plan Mode）、
   Step 2 依賴圖、Step 3 垂直切片、Step 4 每張票的寫法、Step 5 順序與 checkpoint；Task Sizing（XS–XL，L 以上要拆）、
@@ -78,8 +79,8 @@ disable-model-invocation: true
 
 ## 前置確認（Ask user）
 
-Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒有待答的補問題（定義見 `../spec/references/spec-format.md`〈寫規格時發現的洞〉），而且它涵蓋的 `.feature` 已經
-寫好。任何一項不成立就停下，說該回上表的哪個 skill——規格還有洞時定的技術決定，定的是一份還不存在的需求。
+Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒有待答的補問題（定義見 `../spec/references/spec-format.md`〈寫規格時發現的洞〉）。
+任何一項不成立就停下，說該回上表的哪個 skill——規格還有洞時定的技術決定，定的是一份還不存在的需求。
 
 ---
 
@@ -101,7 +102,7 @@ Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒
 | 步驟 | 做什麼 | 要問使用者嗎 |
 | --- | --- | --- |
 | Step 1 收集 | 唯讀：一次讀完整批與專案現況 | — |
-| 設計 | seam → Domain Model、Database Schema、API 契約 → 並排對照 → 技術決定七節 → 場景在 seam 上驗得到嗎 | 要，seam 攤給使用者確認 |
+| 設計 | seam → `formulation` 寫 `.feature` → Domain Model、Database Schema、API 契約 → 並排對照 → 技術決定七節 → 場景在 seam 上驗得到嗎 | 要，seam 攤給使用者確認 |
 | Step 2 依賴圖 | 節點是模組與契約；Risks | — |
 | Step 3 垂直切片 | 最薄的完整路徑先，其餘依 FR；wide refactor 用 expand–contract | — |
 | Step 4 寫任務 | 每張票的行為、驗收條件、驗證命令、Blocked by、模組、契約、資料表、接合點、大小 | — |
@@ -119,7 +120,7 @@ Check if: 同目錄的 `spec.md` 狀態是 `已對焦`、`## Open Questions` 沒
    | `spec.md` 的 `## Domain Concepts` 的 `### 詞彙` | 聚合、表、operation、票的標題照這些詞，不另起一套 |
    | `spec.md` 的 `## Assumptions / Constraints`、`## Non-Functional Requirements` | 外部限制與品質屬性，`## Tech Stack`、`## Boundaries`、`## Risks` 的來源 |
    | `spec.md` `## Open Questions` 裡技術面向、狀態 `已答` 的題 | **技術決定的原始素材**（seam、模組邊界、契約、既有資產、測試慣例），行尾標 `← Q-<n>` |
-   | 涵蓋的每個 `.feature` | 場景與 tag——對照 seam；票的 `涵蓋場景`；哪些場景會一起被一個風險影響 |
+   | 既有的 `.feature`（有的話） | 已經在跑的場景——這次的 `.feature` 由〈設計〉DELEGATE `formulation` 寫，不在這裡讀 |
    | `docs/TECH.md`（有的話） | 技術現況：Tech Stack 到 Boundaries 從這裡抄，逐條確認現在還成立，標 `← 專案 docs/TECH.md` |
    | `docs/DOMAIN-MODEL.md`、`docs/DATABASE-SCHEMA.md`（有的話） | 既有的聚合與表——這次是新增還是改動；改動要寫「原本是什麼、為什麼改」 |
    | `api/openapi.yaml`（有的話） | 既有的契約——`## API 契約` 只放新增與改動的，錯誤格式與命名照它 |
@@ -165,22 +166,33 @@ MUST NOT: 把 seam 的討論變成需求訪談。談的時候發現需求有洞�
 
 IMPORTANT: seam 一旦寫進 `plan.md` 就往下傳——IMPLEMENT 照著打，REVIEW 把「沒人同意過的 seam」當成 finding。
 
+#### `.feature` —— 先寫行為，再設計
+
+2. DELEGATE `../formulation/SKILL.md`（只重切時跳過，見〈再跑〉）：照它把 `spec.md` 寫成 `features/*.feature`、跑
+   `check_spec.py`、產覆蓋表。交給它的只有 `spec.md` 與它自己要讀的檔——**不給**剛定的 seam 以外的任何技術決定。
+   它回報的覆蓋缺口（`spec.md` 漏了例子、規則與例子打架）WRITE 進 `## 缺口`，交回 `spec`。
+
+排在三份設計之前，因為 `.feature` 只寫業務行為：endpoint、表名、欄位一個都不出現，設計怎麼定都不用改它；真正綁設計
+的是 step definition，那是 `implement` 做票時才寫。反過來排，同一個 context 裡已經有 operation 與表名，場景很容易寫成
+「Then 回應 201」「寫入 sessions 表」——綁死實作，需求方也讀不懂。設計反過來讀 `.feature`：API 契約的每個 operation
+要指得出它服務哪幾個場景。
+
 #### 三份設計
 
-三份的順序固定：Domain Model → Database Schema → API 契約。格式與範例都在 `references/design-format.md`。
+三份的順序固定：Domain Model → Database Schema → API 契約，都排在 `.feature` 之後。格式與範例都在 `references/design-format.md`。
 
-2. WRITE `## Domain Model`：這次新增或改動的聚合、不變條件、跨聚合的規則。`被誰保證` 只寫聚合；動到
+3. WRITE `## Domain Model`：這次新增或改動的聚合、不變條件、跨聚合的規則。`被誰保證` 只寫聚合；動到
    `docs/DOMAIN-MODEL.md` 既有的聚合，寫「原本是什麼、為什麼改」。
-3. WRITE `## Database Schema`：表、欄位、索引、約束；每張表寫它屬於哪個聚合，每個欄位寫 `守住哪條不變條件`。
-4. DELEGATE `../api-and-interface-design/SKILL.md`（只重切時跳過，見〈再跑〉）：交給它這次的 FR／AC、涵蓋的 `.feature`、`api/openapi.yaml`
+4. WRITE `## Database Schema`：表、欄位、索引、約束；每張表寫它屬於哪個聚合，每個欄位寫 `守住哪條不變條件`。
+5. DELEGATE `../api-and-interface-design/SKILL.md`（只重切時跳過，見〈再跑〉）：交給它這次的 FR／AC、第 2 步寫的 `.feature`、`api/openapi.yaml`
    與剛寫的 Domain Model；它交回 OpenAPI 片段（有 HTTP 對外介面時）或程式碼層介面契約（沒有時）。WRITE 進
    `## API 契約`，每個 operation 寫出它服務哪幾條 AC。
-5. CHECK 三份並排對一次（判準表見 `references/design-format.md`〈三份並排對照〉）：每條不變條件有一個聚合、資料庫
+6. CHECK 三份並排對一次（判準表見 `references/design-format.md`〈三份並排對照〉）：每條不變條件有一個聚合、資料庫
    守得住的有一個約束；每張表屬於一個聚合；每個 operation 最多寫一個聚合，除非一條跨聚合的規則說要。
    對不上 → 先判斷錯在哪：錯在某一份設計 → 這一步就找出是哪一份、改掉它，對不上的地方與怎麼改的記進
    `## Further Notes` 的「技術決定的修訂」；錯在需求（規則沒說、或兩條 FR 打架）→ `## 缺口` 交回 `spec`。
    不要不判斷就挑一份去遷就另一份。
-6. CHECK 每個 operation 指得出 AC。指不出 → 刪掉那個 operation；AC 要求的行為沒有 operation → 補上，或是需求的洞就
+7. CHECK 每個 operation 指得出 AC。指不出 → 刪掉那個 operation；AC 要求的行為沒有 operation → 補上，或是需求的洞就
    進 `## 缺口`。
 
 MUST NOT: 在這一步改 `api/openapi.yaml` 或寫 migration。`plan.md` 是契約與 schema 的來源；`implement` 做票時
@@ -188,8 +200,8 @@ MUST NOT: 在這一步改 `api/openapi.yaml` 或寫 migration。`plan.md` 是契
 
 #### 技術決定
 
-7. READ `references/tech-format.md`。
-8. WRITE 七節：`## Tech Stack`、`## Commands`、`## Project Structure`、`## Code Style`、`## Boundaries`、
+8. READ `references/tech-format.md`。
+9. WRITE 七節：`## Tech Stack`、`## Commands`、`## Project Structure`、`## Code Style`、`## Boundaries`、
    `## Implementation Decisions`、`## Testing Decisions`。前五節（技術現況）照舊完整寫出——`plan.md` 自成一體；
    `## Implementation Decisions` 寫動哪些模組、程式碼層的介面與埠、架構決定、互動，**不放** API 契約與 schema；
    `## Testing Decisions` 寫 seam 與每個 AC 在哪一層測。每條行尾標來源（五選一）；可以用 `推論`，但每一條同時
@@ -197,18 +209,18 @@ MUST NOT: 在這一步改 `api/openapi.yaml` 或寫 migration。`plan.md` 是契
 
 #### `.feature` 在 seam 上驗得到嗎
 
-9. CHECK 逐個場景問：它的 Then 在剛定的 seam 上**看得到**嗎？例如 seam 是 HTTP API，「借書單印出到期日」
+10. CHECK 逐個場景問：它的 Then 在剛定的 seam 上**看得到**嗎？例如 seam 是 HTTP API，「借書單印出到期日」
    「櫃台刷書機嗶一聲」是設備端的行為，HTTP 回應裡看不到。
 
    | 結果 | 怎麼做 |
    | --- | --- |
    | 看得到 | 照常，`## Testing Decisions` 的測試層級表標它在哪一層 |
-   | 看不到，但換一個說法看得到（「API 回應帶這次借閱的到期日」） | `## 缺口` 一列，交回 `formulation` 改寫那個場景的 Then |
+   | 看不到，但換一個說法看得到（「API 回應帶這次借閱的到期日」） | 再 DELEGATE `formulation` 改寫那個場景的 Then：交給它那個場景與「seam 上看不到什麼」，措辭由它定；改完回這一步再對一次 |
    | 怎麼換都看不到 | `## 缺口` 一列，交回 `spec`：這條 AC 驗不了，要需求方決定是換一個驗法還是拿掉 |
 
-   MUST NOT: 自己改 `.feature` 的場景，或把驗不到的場景默默標成手動測試。
+   MUST NOT: 不經 `formulation` 自己改 `.feature` 的場景，或把驗不到的場景默默標成手動測試。
 
-**做完的樣子**：seam 使用者確認過（或標了 `推論` 並記進 Further Notes）；三份設計都寫了、並排對過，設計這邊對不上的
+**做完的樣子**：seam 使用者確認過（或標了 `推論` 並記進 Further Notes）；`.feature` 由 `formulation` 寫好、覆蓋缺口進了 `## 缺口`；三份設計都寫了、並排對過，設計這邊對不上的
 當場改了並記進 Further Notes、需求那邊的進了 `## 缺口`；技術決定七節都在；每個場景對照過 seam。→ Step 2
 
 ### Step 2 依賴圖
@@ -224,7 +236,7 @@ MUST NOT: 在這一步改 `api/openapi.yaml` 或寫 migration。`plan.md` 是契
 
 先過兩道關，任何一道不過就 WRITE `## Overview`（〈WRITE〉第 2 步）、照〈完成後〉回報、STOP，**不切票**：
 
-1. CHECK `## 缺口` 有要回 `spec`／`formulation` 的列 → 告訴使用者先回那一步。
+1. CHECK `## 缺口` 有要回 `spec` 的列 → 告訴使用者先回 `/spec`。
    設計還會變時切的票，`**契約**`、`**資料表**`、`**驗證**` 抄的都是會變的東西。
 2. CHECK Step 1 記下 `spec.md` 還有舊的聚合一節 → 請使用者跑 `/spec`（`plan.md` 已有 `## Domain Model`，它只刪那一節），
    再叫 `/plan` 接著切票。舊節留著，兩份聚合各說各的，票的 `**契約**`／`**資料表**` 就只能自己猜。
@@ -327,7 +339,7 @@ IMPORTANT: **切太細是這一步最常見的失效**，而且它不會自己�
 
 addyosmani 的「不覆寫還有沒勾的計畫」：`tasks.md` 有人照著開工了，整份重寫等於丟掉一份只存在那裡的進度。
 
-`plan.md` 已經存在時照新的 `spec.md` 與 `.feature` 改，不另開一份；票切出去之後改了 seam、介面、schema、聚合、API 契約，
+`plan.md` 已經存在時照新的 `spec.md` 改，不另開一份——〈設計〉第 2 步 DELEGATE `formulation` 照它的〈再跑〉改 `.feature`；票切出去之後改了 seam、介面、schema、聚合、API 契約，
 記進 `## Further Notes` 的「技術決定的修訂」。
 
 `tasks.md` 已經存在時（還是 2026-11-16 以前的 `tasks/` 目錄時，先併成一份：照 `index.md` 的順序把每張票檔的內容放進
@@ -343,14 +355,14 @@ addyosmani 的「不覆寫還有沒勾的計畫」：`tasks.md` 有人照著開�
 - 票節 `#### 缺口` 裡 `implement` 記下的洞：屬於設計的，這一輪在設計裡補上、記進 `## Further Notes` 的「技術決定的修訂」；
   屬於需求的，進 `plan.md` 的 `## 缺口` 交回 `spec`。兩種都在票節那一條後面標「→ 已記入 plan.md」
 - 只重切：`spec.md` 與 `.feature` 在 `plan.md` 的日期之後都沒改，新的輸入只有 `tasks.md` 的 `#### 缺口` 列 → 跳過〈設計〉的
-  seam ASK 與 API DELEGATE、Step 5 的並行 ASK（記下的回答照舊成立），屬於設計的列當場補上，從 Step 3 開始
+  seam ASK、`formulation` 與 API 兩個 DELEGATE、Step 5 的並行 ASK（記下的回答照舊成立），屬於設計的列當場補上，從 Step 3 開始
 - 喚醒或修補之後：舊票 `#### 缺口` 裡已經被 `spec.md` `## Open Questions` 新題回答的列（判準：那一題的答案正是那一列在等的），
   在列尾標「→ 已回答 Q-<n>」，交給新票做；不標，下一個讀缺口的人會再猜一次
 
 ## 不改規格：有洞怎麼辦
 
-MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story、範圍，或任何 `.feature` 場景。它們已經在 `spec.md`
-與 `.feature` 裡、需求方說過「就緒」；這裡再決定一次，只會產生一份跟規格不一樣的規格。
+MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story、範圍；`.feature` 只由 `formulation` 照 `spec.md` 寫，本 skill
+不自己動任何場景。需求已經在 `spec.md` 裡、需求方說過「就緒」；這裡再決定一次，只會產生一份跟規格不一樣的規格。
 
 判準：指著 `plan.md` 或 `tasks.md` 裡的任何一句話，說得出它是為了 `spec.md` 的哪條 FR 或 NFR 嗎？說不出來就是這一步
 僭越了。
@@ -361,7 +373,8 @@ MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story、範圍，
 | --- | --- | --- |
 | **技術選擇** | 哪個 library、欄位叫什麼 | `## Further Notes` 的「留給 IMPLEMENT 的技術選擇」 |
 | **執行上的選擇** | 某個檢查要不要加 | 留給 IMPLEMENT 決定 |
-| **場景驗不到** | 〈設計〉第 9 步找到的 | `## 缺口`，交回 `formulation`（換說法）或 `spec`（換驗法） |
+| **場景驗不到** | 〈設計〉第 10 步找到的 | 換說法看得到 → 再 DELEGATE `formulation`；怎麼換都看不到 → `## 缺口` 交回 `spec`（換驗法） |
+| **`.feature` 的覆蓋缺口** | 〈設計〉第 2 步 `formulation` 回報的：`spec.md` 漏了例子、規則與例子打架 | `## 缺口`，交回 `spec` |
 | **三份設計對不上、依賴圖切不出票** | 表屬於兩個聚合、不變條件沒人守、operation 改兩個聚合；照圖排會把一條行為拆成兩半 | 錯在設計 → 不進 `## 缺口`：這一步當場改掉錯的那一份，記進 `## Further Notes` 的「技術決定的修訂」；錯在需求 → `## 缺口` 交回 `spec` |
 | **需求的洞** | 某條規則在某個情況下該怎麼做，沒人說過；兩條 FR 對同一個介面假設不一樣 | `## 缺口`，告訴使用者跑 `spec`；它開成補問題、交給 `discovery` 問 |
 
@@ -386,18 +399,19 @@ specs/ongoing/<date>-<feature>/plan.md    骨架照 references/plan-format.md；
 specs/ongoing/<date>-<feature>/tasks.md   開頭：來源、哪幾張可以同時開始；一波一節，一張票一個票節（00 前置整理有才寫）。照 references/tasks-format.md
 ```
 
-MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md` 與 `tasks.md`，**不修改專案既有的任何檔案**，包括 `spec.md`、`.feature` 與 `api/openapi.yaml`。唯一例外：併舊的 `tasks/`
-目錄時 `git rm -r tasks/`，單獨一個 commit（〈再跑〉）。
+MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md` 與 `tasks.md`，**不修改專案既有的任何檔案**，包括 `spec.md` 與 `api/openapi.yaml`。例外兩個：
+`features/*.feature` 由〈設計〉DELEGATE 的 `formulation` 照它自己的規則寫；併舊的 `tasks/` 目錄時 `git rm -r tasks/`，單獨一個 commit（〈再跑〉）。
 
 ## Verification
 
 交回前逐項確認；任何一項答「否」就不交——修好，或在回報裡明說哪一項沒過：
 
-- [ ] `spec.md`、`.feature`、`api/openapi.yaml` 與任何程式碼沒有新增、刪除或改寫
+- [ ] `spec.md`、`api/openapi.yaml` 與任何程式碼沒有新增、刪除或改寫；`.feature` 只經 `formulation` 寫或改
+- [ ] `.feature` 在三份設計之前寫好，場景裡沒有 endpoint、表名、欄位；`formulation` 回報的覆蓋缺口進了 `## 缺口`
 - [ ] seam 攤給使用者確認過，回覆記在回報裡；談 seam 時發現的需求洞進了 `## 缺口`，沒有順口問掉
 - [ ] 三份設計並排對過；錯在設計的當場改了、記進 `## Further Notes`；錯在需求的進了 `## 缺口` 交回 `spec`；API 契約每個 operation 指得出 AC
 - [ ] 技術決定七節都在（空的寫了為什麼空），`## Implementation Decisions` 裡沒有 API 契約與 schema；每條行尾有來源，每條 `← 推論` 同時列在 `## Further Notes`
-- [ ] 每個場景都對照過 seam；有要回 `spec`／`formulation` 的 `## 缺口` 時沒有切票
+- [ ] 每個場景都對照過 seam；有要回 `spec` 的 `## 缺口` 時沒有切票
 - [ ] `## 依賴圖` 的節點是模組與契約；`## Risks` 每條指得出從哪條規則長出來、標了影響程度
 - [ ] 每張票答得出能 demo 什麼；每張票每一欄都在（沒有就「無」），模組照抄、沒有檔案路徑，接合點是路徑加種類；沒有 L 與 XL
 - [ ] `## API 契約` 是 OpenAPI 片段時，有契約的票驗收條件裡有「搬進 api/openapi.yaml 的 operation 與 plan.md 的片段一致」；程式碼層契約的票沒有這一條
@@ -415,11 +429,11 @@ MUST: 只寫入 `specs/ongoing/<date>-<feature>/plan.md` 與 `tasks.md`，**不�
 
 1. **seam 是哪一層**、是確認 `## Open Questions` 裡問過的還是推的、使用者確認了沒
 2. **三份設計**：幾個聚合（新增／改動）、幾張表、幾個 operation，`## API 契約` 是 OpenAPI 片段還是程式碼層契約；並排時對不上幾處、其中幾處當場改了設計、幾處交回 `spec`
-3. 動哪些模組、幾個決定標了 `推論`；幾個場景 seam 驗不到、交回給誰
+3. `formulation` 寫了幾個 `.feature`、幾個場景、覆蓋表有沒有缺口；動哪些模組、幾個決定標了 `推論`；幾個場景 seam 驗不到、幾個請 `formulation` 換了說法、幾個交回 `spec`
 4. 幾條風險、幾條影響程度「高」
 5. 幾張票、第一張是哪一張（以及**為什麼是它**）、有沒有前置整理；幾個檢查點
 6. 要不要並行；要的話哪幾張可以同時開始、哪幾張邏輯上獨立卻因為 `爭用` 或新建的東西排成先後
-7. `## 缺口` 有幾條，其中幾條要回 `spec`、幾條要回 `formulation`
+7. `## 缺口` 有幾條，其中幾條要回 `spec`
 
-`## 缺口` 有要回 `spec`／`formulation` 的 → 先回那一步（這一輪沒有切票）。沒有 → 下一步 `/implement <票號>`，一張票一個
+`## 缺口` 有要回 `spec` 的 → 先回 `/spec`（這一輪沒有切票）。沒有 → 下一步 `/implement <票號>`，一張票一個
 全新 session；同時做的票各開一個 worktree。

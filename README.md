@@ -13,8 +13,8 @@
 | 步驟 | Skill |
 | --- | --- |
 | DISCOVERY | `discovery` |
-| SPEC | `spec`、`feature-mapping`、`example-mapping`、`spec-by-example`、`formulation`、`story-splitting` |
-| PLAN | `plan`（設計 Domain Model／Database Schema／API 契約、依賴圖、垂直切片成票、排序與 Checkpoint；寫 `plan.md` 與 `tasks.md`）、`api-and-interface-design`（由 `plan` 委派寫 API 契約） |
+| SPEC | `spec`、`feature-mapping`、`example-mapping`、`spec-by-example`、`story-splitting` |
+| PLAN | `plan`（定 seam、委派 `formulation` 寫 `.feature`，再設計 Domain Model／Database Schema／API 契約、依賴圖、垂直切片成票、排序與 Checkpoint；寫 `plan.md` 與 `tasks.md`）、`formulation`（由 `plan` 委派寫可執行 `.feature`）、`api-and-interface-design`（由 `plan` 委派寫 API 契約） |
 | IMPLEMENT | `implement`（一張票：測試層先紅、閘門、合回）、`behavior-driven-development`（由 `implement` 委派 green／refactor，模型不自動觸發）、`archive`（票全部合回後：寫回 `docs/` 現況、搬進 `specs/sleeping/`） |
 | REVIEW／VERIFY | 尚未實作 |
 
@@ -34,9 +34,9 @@
 | `spec.md` `## Open Questions` 的補問題（寫規格時發現的洞，`Q-<n>` 待答） | `<feature>/spec.md` | `spec`、`feature-mapping`、`spec-by-example`、`example-mapping`（未就緒時） | `spec`：狀態改回 `澄清中`、停；`discovery`：只讀，在紀錄追加同號的題先問 |
 | `splitting.md`（切分紀錄） | `<feature>/` | `story-splitting` | `spec`：照切法寫 story，FR 編號不重編 |
 | 驗收旅程 `*.feature`（不執行） | `<feature>/acceptance/` | `spec-by-example` | 需求方：對著旅程判就緒；`example-mapping`：提就緒問句；`formulation`：只借用語 |
-| `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `formulation`：寫可執行 `.feature`；`plan`：寫系統分析與技術決定 |
+| `spec.md`（`已對焦`） | `<feature>/` | `example-mapping`（只寫需求方的決定） | `plan`：委派 `formulation` 寫可執行 `.feature`，再寫系統分析與技術決定 |
 | `spec.md` `## Domain Concepts`（只有 `### 詞彙`；聚合與不變條件在 `plan.md`） | `<feature>/spec.md` | `spec`（第 4 步，先讀 `docs/CONTEXT.md`） | `spec-by-example`、`formulation`：用詞對齊；`plan`：設計 Domain Model 的起點；`archive`：併進 `docs/CONTEXT.md` |
-| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation` | `plan`：每個 AC 的測試層級、每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
+| 可執行 `.feature`（`@ready`／`@draft`） | `features/` | `formulation`（由 `plan` 委派） | `plan`：API 契約對著場景設計、每個 AC 的測試層級、每張票涵蓋哪些場景；`implement`：讓場景由紅變綠 |
 | `plan.md`（技術決定：Tech Stack、Commands、Project Structure、Code Style、Boundaries、Implementation／Testing Decisions；三份設計：Domain Model、Database Schema、API 契約（OpenAPI 片段）；依賴圖、風險、要不要並行與接合點） | `<feature>/` | `plan`（seam 經使用者確認；有洞加進 `## 缺口`） | `plan`：讀三份設計切票、每張票列碰到的 operation 與表、抄模組、內迴圈、驗證命令，高風險排前面；`implement`：把票涵蓋的 OpenAPI operation 照抄進 `api/openapi.yaml`、照 Database Schema 寫 migration，其餘照著寫程式；`archive`：聚合併進 `docs/DOMAIN-MODEL.md`、表併進 `docs/DATABASE-SCHEMA.md`、技術現況併進 `docs/TECH.md` |
 | `tasks.md`（一波一節、一張票一個票節：行為、模組、大小、Blocked by、接合點、驗收條件、驗證命令；波與波之間是檢查點） | `<feature>/` | `plan` 建立；`implement` 只改自己的票節：勾驗收條件、記檢查點、寫 `#### 缺口` | `implement`：挑下一張票、判斷能不能跟別張同時做、開新一波前跑檢查點，一張票一個 session；`plan` 再跑時把設計的洞在設計裡補上（記進 `## Further Notes`）；屬於需求的才進 `## 缺口` 交回 `spec` |
 | 產品程式碼、step definition、`@review` tag、票節勾選 | 專案程式碼、`features/` | `implement` | `archive`：確認全部做完；REVIEW／VERIFY（尚未實作，目前人工對照） |
@@ -71,7 +71,7 @@
 **職責**：把已答的問答寫成規格：要做成什麼、不做什麼，帶到需求方說「就緒」
 
 - **上游**：`discovery`
-- **下游**：`feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` → 交回，使用者接著叫 `formulation`
+- **下游**：`feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` → 交回，使用者接著叫 `plan`
 - **不做**：不訪談、不填答案、不改 `## 原文`、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature` 也不呼叫 `formulation`、不寫 `docs/`、不寫技術決定與 seam、不排風險與並行（都是 `plan`）、不切票
 
 1. 寫需求部分（`待對焦`）：story 與優先級、FR／AC、Edge Cases
@@ -101,7 +101,7 @@
 **職責**：把一則 story 攤成四色卡地圖、跑四條診斷，把就緒問句交給使用者
 
 - **上游**：`spec`（`spec.md` 寫完、`feature-mapping` 跑完後呼叫）；也可單獨使用
-- **下游**：就緒 → `spec` 交回，使用者接著叫 `formulation`；未就緒 → `spec`〈有洞〉
+- **下游**：就緒 → `spec` 交回，使用者接著叫 `plan`；未就緒 → `spec`〈有洞〉
 - **不做**：不替使用者判就緒、不把紅卡問到收斂、不切 story、不寫 Gherkin、不產出 `example-map.md`
 
 1. 認模式：流程內或單獨
@@ -123,27 +123,12 @@
 4. 跑 `check_spec.py`，第 17 項要過
 5. 交回 `spec` 或 `example-mapping`
 
-#### `formulation`
-
-**職責**：把已對焦的 `spec.md` 翻成 Gherkin `.feature`：FR 變 `Rule:`、AC 變 `Example:`、編號變 tag，步驟套一組封閉文法
-
-- **上游**：`spec`（`已對焦` 之後呼叫本 skill）
-- **下游**：`plan`（覆蓋表沒有大洞時）；洞多回 `spec`
-- **不做**：不訪談、不發明例子、不寫 `spec.md`、不寫 step definition、不讀 `plan.md`
-
-1. 讀四樣東西，只做 `已對焦` 的 feature
-2. FR → `Rule:`、AC → `Example:`、編號 → tag；歸象限、看三種結果、取場景名
-3. 每個步驟套四種形狀之一
-4. 句子只差資料的例子收成 `Scenario Outline`
-5. 一則 story 一個 `.feature`
-6. 跑 `check_spec.py`、產覆蓋表
-
 #### `story-splitting`
 
 **職責**：把一則太大的 story 切成數則**各自都還能交付價值**的小 story，並寫下切分依據
 
 - **上游**：`discovery`（粗切）、`spec`（`已對焦` 前重切）；也可單獨使用
-- **下游**：回到呼叫它的 skill；`spec.md` 改完由 `formulation` 寫成 `.feature`
+- **下游**：回到呼叫它的 skill；`spec.md` 改完由 `plan` 委派 `formulation` 寫成 `.feature`
 - **不做**：不排順序、不估點數、不寫規格、`spec.md` 已經 `已對焦` 時不切
 
 1. 過 INVEST（Small 除外），Valuable 不成立就先修、不切
@@ -157,17 +142,32 @@
 
 #### `plan`
 
-**職責**：把一份已對焦的規格變成計畫與票：設計 Domain Model、Database Schema、API 契約三份並排對過，定技術決定與 seam，排依賴圖，垂直切片成一疊 tracer bullet，排好順序與 Checkpoint、能不能並行
+**職責**：把一份已對焦的規格變成計畫與票：定 seam、委派 `formulation` 寫 `.feature`，設計 Domain Model、Database Schema、API 契約三份並排對過，定技術決定與 seam，排依賴圖，垂直切片成一疊 tracer bullet，排好順序與 Checkpoint、能不能並行
 
-- **上游**：`formulation`（`.feature` 寫好之後）
-- **下游**：`implement <票號>`（一張票一個全新 session）；〈設計〉把 API 契約委派給 `api-and-interface-design`
-- **不做**：不改 `spec.md`、不改 `.feature`、不動 `api/openapi.yaml`、不寫 migration、不訪談需求、不寫程式
+- **上游**：`spec`（`已對焦` 之後）
+- **下游**：`implement <票號>`（一張票一個全新 session）；〈設計〉把 `.feature` 委派給 `formulation`、API 契約委派給 `api-and-interface-design`
+- **不做**：不改 `spec.md`、不自己寫或改 `.feature`（只經 `formulation`）、不動 `api/openapi.yaml`、不寫 migration、不訪談需求、不寫程式
 
-1. Step 1 收集：讀 `spec.md`、`.feature` 與專案現況
-2. 設計：seam 攤給使用者確認，再寫 Domain Model → Database Schema → API 契約，三份並排對一次
+1. Step 1 收集：讀 `spec.md` 與專案現況
+2. 設計：seam 攤給使用者確認 → 委派 `formulation` 寫 `.feature`（只寫業務行為）→ Domain Model → Database Schema → API 契約，三份並排對一次
 3. Step 2 依賴圖
 4. Step 3 垂直切片、Step 4 寫任務、Step 5 排序與 Checkpoint
 5. ASK 切法：攤給使用者，點頭才寫 `tasks.md`（`plan.md` 在前面各步已寫好），停，交 `/implement <票號>`
+
+#### `formulation`
+
+**職責**：把已對焦的 `spec.md` 翻成 Gherkin `.feature`：FR 變 `Rule:`、AC 變 `Example:`、編號變 tag，步驟套一組封閉文法
+
+- **上游**：`plan`（定了 seam 之後、設計 API 與 schema 之前委派；也可單獨叫用）
+- **下游**：回 `plan`；覆蓋缺口由 `plan` 記進 `## 缺口` 交回 `spec`
+- **不做**：不訪談、不發明例子、不寫 `spec.md`、不寫 step definition、不讀 `plan.md`
+
+1. 讀四樣東西，只做 `已對焦` 的 feature
+2. FR → `Rule:`、AC → `Example:`、編號 → tag；歸象限、看三種結果、取場景名
+3. 每個步驟套四種形狀之一
+4. 句子只差資料的例子收成 `Scenario Outline`
+5. 一則 story 一個 `.feature`
+6. 跑 `check_spec.py`、產覆蓋表
 
 #### `api-and-interface-design`
 

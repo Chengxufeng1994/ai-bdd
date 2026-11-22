@@ -38,11 +38,11 @@ Step 3–5 把它們寫進同目錄的 `tasks.md`，格式見 `tasks-format.md`�
 
 ## 缺口
 
-addyosmani 的 Open Questions：要人回答、這一步答不了的。三份設計並排時錯在需求的、`.feature` 寫了 seam 驗不到的、
+addyosmani 的 Open Questions：要人回答、這一步答不了的。三份設計並排時錯在需求的、`formulation` 回報的覆蓋缺口、`.feature` 寫了 seam 驗不到而換說法也救不回的、
 再跑時票節 `#### 缺口` 裡屬於需求的。設計自己的錯不進這裡——當場改掉，記進 `## Further Notes`。
-沒有就寫「沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切」。有要回 `spec`／`formulation` 的列時，`plan` 不切票。
+沒有就寫「沒有——`spec.md` 與這份計畫涵蓋了這批需要的一切」。有要回 `spec` 的列時，`plan` 不切票。
 
-- <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、`.feature` 寫了 seam 驗不到的行為（回 `formulation`），
+- <缺口>：<需求的洞（回 `spec`，它開成補問題交給 `discovery`）、`.feature` 寫了 seam 驗不到、換說法也救不回的行為（回 `spec` 換驗法），
   或執行上的選擇（留給 IMPLEMENT 決定）>
 
 ## Further Notes

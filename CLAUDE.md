@@ -17,7 +17,8 @@ The plugin's subject is a six-step pipeline:
 
 (brainstorming → to spec → to plan → implement → review → verify.) Only the first four
 steps exist as skills; REVIEW and VERIFY are planned. PLAN is served by one skill, `plan`
-(following addyosmani's planning flow: collect; design — Domain Model, Database Schema and the API
+(following addyosmani's planning flow: collect; design — the seam, then the `.feature` files delegated to
+`formulation` (business language only, before any design), then Domain Model, Database Schema and the API
 contract side by side, the contract delegated to `api-and-interface-design`, plus the technical
 decisions with the seam confirmed by the user; dependency graph; vertical slices; write the tasks;
 order and checkpoints; `plan.md` is written during the steps, and only `tasks.md` waits for the user's nod
@@ -27,12 +28,12 @@ on the slicing — one section per ticket, so tickets can run in parallel — an
 (green and refactor, delegated by `implement`; `disable-model-invocation`, so only
 that delegation or a manual `/behavior-driven-development` runs it). When all of a feature's tickets are merged,
 `archive` writes what it delivered into the project's current truth under `docs/` and moves
-its directory from `specs/ongoing/` to `specs/sleeping/`. SPEC is served by three skills —
+its directory from `specs/ongoing/` to `specs/sleeping/`. SPEC is served by `spec`, `feature-mapping`, `example-mapping` and
 `spec` (writes `spec.md` from the recorded answers — what to build and what not to: context,
 personas, goals and non-goals, prioritised stories with FR → AC, domain concepts, edge cases;
-it stops once `已對焦` and writes no technical decisions), `spec-by-example` (writes
-business-language acceptance journeys under `acceptance/`, not executed) and
-`formulation`, BDD's own Formulation practice. `docs/ai-sdlc.md`
+it stops once `已對焦` and writes no technical decisions) and `spec-by-example` (writes
+business-language acceptance journeys under `acceptance/`, not executed). `formulation`, BDD's own
+Formulation practice, is delegated by `plan`. `docs/ai-sdlc.md`
 explains which steps map onto BDD's practices and which are this project's own additions.
 
 ## Commands
@@ -154,19 +155,21 @@ Each of the first three steps holds because it runs in one main working mode:
   (the log is evidence and never edited; on a mismatch its wording wins) and turns the answered ones into FR/AC,
   `feature-mapping` (whole feature, breadth) and `example-mapping` (one story, depth)
   diagnose it, `spec-by-example` writes acceptance journeys the originator reads, `example-mapping`
-  takes it to `已對焦`; the user then runs `formulation`, which writes `.feature` files —
+  takes it to `已對焦` —
   **none of them interviews**; a hole is opened as a new `待答` `Q-<n>` in `## Open Questions`,
   the status goes back to `澄清中`, and the user runs `/discovery`, which reads those questions, appends them to
   the log under the same number and asks them. **An FR or AC without `← PRD §n` or `← Q-<n>` is a
   defect**, and a `← Q-<n>` must name an answered row in `## Open Questions` — `check_spec.py`
-  check 14 rejects both. No skill calls the next one: every step is a user-typed `/<skill>`.
-- **PLAN** owns the technical decisions (seam, modules, test levels), the three designs
+  check 14 rejects both. No skill calls the next step: every step is a user-typed `/<skill>`; a skill
+  may only DELEGATE helpers inside its own step.
+- **PLAN** owns the `.feature` files (delegated to `formulation` right after the seam, before any
+  design, so scenarios stay in business language), the technical decisions (seam, modules, test levels), the three designs
   (Domain Model with aggregates and invariants, Database Schema, API contract as an OpenAPI
   fragment — aggregates live in `plan.md`, not `spec.md`, whose `## Domain Concepts` holds only
   the glossary) and the execution plan (risks, parallel work, join points) — `plan` **does not change
-  `spec.md` or the `.feature` files**; the seam is the one thing confirmed with the user,
+  `spec.md`, and touches `.feature` files only through `formulation`**; the seam is the one thing confirmed with the user,
   technical lines may be `← 推論` or `← 專案 <path>`, and holes go to `## 缺口` and back to
-  `spec` (or to `formulation` when a scenario cannot be observed at the seam). `plan` also
+  `spec` (a scenario not observable at the seam is first re-delegated to `formulation` for a rewording). `plan` also
   slices tracer bullets into `tasks.md`; a rerun redoes only tickets not yet started. `implement` writes only its own ticket's section of `tasks.md`, never `plan.md` or
   another ticket's section (it copies its operations from `plan.md`'s API contract into `api/openapi.yaml` unchanged) — that is what lets tickets run in parallel. A ticket done in a worktree
   is merged back by the session that did it: generated files are regenerated, append-only

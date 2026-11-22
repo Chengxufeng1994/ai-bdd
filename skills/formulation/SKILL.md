@@ -4,10 +4,9 @@ description: >
   把已對焦的 `spec.md` 翻成可執行的 Gherkin `.feature`——FR 變成 `Rule:` 區塊、
   AC 變成 `Example:`、編號變成 tag 帶下去，步驟套一組封閉文法讓 step definition
   能重用，最後跑一次雙向覆蓋稽核。不訪談、不發明例子、不改 `spec.md`。
-  BDD 三實踐裡的 Formulation。
+  BDD 三實踐裡的 Formulation；由 `plan` 在定了 seam 之後、設計 API 與 schema 之前委派。
   觸發詞：「寫成 feature 檔」「轉成 Gherkin」「產出驗收情境」「把例子寫成場景」
-  「寫 .feature」「產生驗收測試規格」「這些規則的 scenario 長怎樣」
-  「prd 已對焦了下一步」「跟 PM 對答案」。
+  「寫 .feature」「產生驗收測試規格」「這些規則的 scenario 長怎樣」「跟 PM 對答案」。
   English: turn spec.md into Gherkin, write the feature file, generate
   acceptance scenarios, convert rules and examples into scenarios,
   formulation step of BDD.
@@ -21,8 +20,8 @@ disable-model-invocation: true
 | **職責** | 把已對焦的 `spec.md` 翻成 Gherkin `.feature`：FR 變 `Rule:`、AC 變 `Example:`、編號變 tag，步驟套一組封閉文法 |
 | **讀** | `specs/ongoing/<date>-<feature>/spec.md`（`已對焦`）、`docs/CONTEXT.md`（有的話）、既有的 `.feature`、`specs/ongoing/<date>-<feature>/acceptance/*.feature`（只取用語） |
 | **寫** | `features/<story-slug>.feature`（測試框架已有位置就跟隨）；覆蓋表只回報、不落地 |
-| **上游** | `spec`（`已對焦` 之後，使用者叫 `/formulation`） |
-| **下游** | `plan`（覆蓋表沒有大洞時）；洞多回 `spec` |
+| **上游** | `plan`（〈設計〉定了 seam 之後 DELEGATE；也可以使用者單獨叫 `/formulation`） |
+| **下游** | 回 `plan`，它接著設計 Domain Model、schema、API 契約；覆蓋缺口由 `plan` 記進 `## 缺口` 交回 `spec` |
 | **不做** | 不訪談、不發明例子、不寫 `spec.md`、不寫 step definition、不讀 `plan.md` |
 
 **不發明例子。** `Rule:`、`Example:` 與 `@rule-`／`@example-` tag 只從 `spec.md` 來；覺得少了
@@ -34,7 +33,7 @@ disable-model-invocation: true
 - `spec.md` 已對焦，要把 FR 與 AC 變成 `.feature`
 - 要跟 PM 或需求方對答案——攤開規則與例子請他點頭。`.feature` 就是對答案用的那一份，不另做第二
   份給人讀的版本——那是 Cucumber 的前提。PM 讀不動就修 `references/step-grammar.md`
-- 準備進 IMPLEMENT，需要先有紅燈的情境
+- `plan` 定了 seam、要設計 API 與 schema 之前，需要先有行為的場景（`plan` DELEGATE 進來）
 
 ## Skill Boundaries
 
@@ -122,8 +121,8 @@ MUST NOT: 從驗收旅程新增 `spec.md` 沒有的例子、場景或 `Then`。�
 另造一個形狀等於白做。寫新樣板之前先 grep 一次既有的 `.feature`。
 
 IMPORTANT: `spec.md` 由 `spec` 維護，本 skill **不得寫入**。要補一條
-規則、改一個例子，都回 `spec`；問答裡沒有的，它會開一題補問題、請使用者跑 `discovery`。本 skill 通常就是
-`spec` 在 `已對焦` 之後呼叫的。
+規則、改一個例子，都回 `spec`；問答裡沒有的，它會開一題補問題、請使用者跑 `discovery`。本 skill 通常是
+`plan` 在定了 seam 之後、設計 API 與 schema 之前 DELEGATE 的（為什麼排在設計之前，見 `plan`〈設計〉）。
 
 MUST: 只做 `spec.md` 的 `## Document Overview` 裡 `狀態` 已經是 `已對焦` 的 feature。
 還停在 `澄清中` 或 `待對焦` 的整份跳過（例外只有下一段的 `@draft`），並明講該回哪個 skill——
@@ -473,7 +472,7 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 ### 再跑：`spec.md` 改過之後
 
 `spec.md` 到過 `已對焦`、`.feature` 已經寫了，之後 `spec` 照新的答案修補了 FR／AC，
-需求方又答「就緒」——這時 `spec` 再呼叫本 skill。照 `spec.md` 的 `### 版本修訂歷史`
+需求方又答「就緒」——這時使用者再叫 `/plan`，它在〈設計〉再 DELEGATE 本 skill。照 `spec.md` 的 `### 版本修訂歷史`
 新增的列，只動對到的場景：
 
 | 修訂歷史說 | 對 `.feature` 做什麼 |
@@ -485,7 +484,7 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 
 改過場景的 `.feature`，狀態 tag 改回 `@ready`——改過的場景還沒有人實作，舊的 `@wip`／
 `@review` 已經不是真的。回報裡列出改了哪些 tag，`plan` 才知道要為它們開票。
-沒有對到修訂歷史的場景一個字都不動。
+沒有對到修訂歷史的場景一個字都不動。`plan` 交來一個場景與「seam 上看不到什麼」時，只改那個 `Then`：換成 seam 上看得到、意思不變的業務說法，tag 不變，**不寫** endpoint、狀態碼、欄位名；意思會變或怎麼換都看不到 → 不改，回報給 `plan`，由它交回 `spec`。
 
 ## Verification
 
@@ -496,7 +495,7 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 - [ ] 沒有 `spec.md` 以外的例子、場景或 `Then`——包括從 `acceptance/` 旅程抄來的
 - [ ] 每個 `.feature` 恰好一個狀態 tag、一個型別 tag；沒有 `規則:`
 - [ ] 跑了 `check_spec.py`，沒有任何一項失敗，輸出貼在回報裡（只報數字的項目與跳過的項目照實列出）
-- [ ] 沒有寫入 `spec.md`、`plan.md`、`docs/CONTEXT.md`；既有的 `.feature` 只在再跑時、只改對到修訂歷史的場景
+- [ ] 沒有寫入 `spec.md`、`plan.md`、`docs/CONTEXT.md`；既有的 `.feature` 只在再跑時、只改對到修訂歷史的場景或 `plan` 指名的那個 `Then`
 
 ## 完成後
 
@@ -511,4 +510,4 @@ MUST: 只新增 `.feature`，**不修改專案既有的任何檔案**（含既�
 這些場景現在應該**全部是紅的**（step definition 還不存在）。這是對的：
 綠燈要等 IMPLEMENT。一跑就綠代表這些場景沒有驗到任何東西。
 
-覆蓋表沒有大洞 → `plan` 做技術設計，並切票。洞多 → 回 `spec`。
+由 `plan` DELEGATE 進來的 → 回 `plan`，覆蓋缺口交它記進 `## 缺口`；單獨叫用的 → 下一步 `/plan`，洞多回 `spec`。

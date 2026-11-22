@@ -39,7 +39,7 @@ Cucumber），內迴圈是 domain 與 use case 的單元測試。兩圈都先看
 
 | 情況 | 改用 |
 | --- | --- |
-| 還沒有 `.feature` | `formulation` |
+| 還沒有 `.feature` | `plan`（它 DELEGATE `formulation`） |
 | `plan.md` 沒有技術決定（seam、埠、契約） | `plan` |
 | 要改 operation、`components` 或表的形狀 | `plan`（改 `## API 契約`／`## Database Schema`）——本 skill 只照抄 |
 | 還沒有 `tasks.md`（包括票還寫在 `plan.md` `## 票` 裡、或還是 `tasks/` 目錄的舊格式） | `plan` |

@@ -39,7 +39,7 @@ disable-model-invocation: true
 
 | 情況 | 改用 |
 | --- | --- |
-| 還沒有 `.feature` | `formulation` |
+| 還沒有 `.feature` | `plan`（它 DELEGATE `formulation`） |
 | 要做完**一整張票**：標 `@wip`、跑專案閘門、勾驗收條件、翻 `@review`、合回主線 | `implement`——它管票，本 skill 管票裡的一個 slice |
 | 要改場景的文字、例子或規則 | 回 `discovery` 開一題；本 skill 不碰 `.feature` |
 | 要決定 seam、模組、契約 | `plan` |

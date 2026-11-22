@@ -25,7 +25,7 @@ disable-model-invocation: true
 | **不做** | 不執行、不訪談、不改 FR／AC／狀態、不填答案、不寫 `spec.md` 沒有的結果 |
 
 **它是規格，不是測試。** 不執行、沒有 step definition、不進 `features/`。程式版本的
-`features/*.feature` 照舊由 `formulation` 在 `已對焦` 之後寫，來源照舊只有 `spec.md`。
+`features/*.feature` 照舊由 `formulation` 在 `已對焦` 之後寫（由 `plan` DELEGATE），來源照舊只有 `spec.md`。
 每條旅程標出它走過哪幾條 AC，每個結果都是 `spec.md` 裡已經有的。
 
 ## 使用時機

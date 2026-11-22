@@ -14,6 +14,6 @@ Ask user: 要不要喚醒 `<date>-<feature>`。搬回來是使用者的決定—
 | 要 | 1. `mkdir -p specs/ongoing && git mv specs/sleeping/<date>-<feature> specs/ongoing/<date>-<feature>`（目錄名不改：日期是它開始的日子；全部歸檔後 git 不留空的 `specs/ongoing/`，所以先建）<br>2. `spec.md` 的狀態改 `澄清中`，`### 版本修訂歷史` 記一列「喚醒：<需求方的原話，逐字>」<br>3. STOP，告訴使用者跑 `/discovery`：它在 `interview-log.md` 追加一場 `### <日期> · 喚醒` Session，把這次要改什麼開成新題（`**來自**`：喚醒 —「<同一句原話>」）再問 |
 | 不要 | 告訴使用者跑 `/discovery` 開新的 feature |
 
-喚醒之後全部走現成的再跑規則：`spec` 讀紀錄的新題修補（編號不重排、記修訂）、`formulation`〈再跑：`spec.md` 改過之後〉、
-`plan` 重寫被規格推翻的 Risks 與接合點並重切（有勾的舊票不動）、`implement` 做新票。做完由 `archive` 再寫一次現況、搬回 `specs/sleeping/`。
+喚醒之後全部走現成的再跑規則：`spec` 讀紀錄的新題修補（編號不重排、記修訂）、`plan`〈設計〉DELEGATE `formulation` 照它的〈再跑：`spec.md` 改過之後〉改 `.feature`，
+再重寫被規格推翻的 Risks 與接合點並重切（有勾的舊票不動）、`implement` 做新票。做完由 `archive` 再寫一次現況、搬回 `specs/sleeping/`。
 「上一次交付了什麼」看搬回來那個 commit 的 `spec.md`（`git show <commit>:<路徑>`）。
