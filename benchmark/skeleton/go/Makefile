@@ -133,7 +133,7 @@ verify-generated:
 	@sum() { find . -type d \( $(foreach n,$(GENERATED_DIR_NAMES),-name $(n) -o) -false \) \
 		-exec find {} -type f \; 2>/dev/null | sort | xargs -r sha256sum | sha256sum; }; \
 	before=$$(sum); \
-	$(MAKE) --no-print-directory gen >/dev/null; \
+	$(MAKE) --no-print-directory gen >/dev/null || exit 1; \
 	after=$$(sum); \
 	if [ "$$before" != "$$after" ]; then \
 		echo "generated code is stale — run 'make gen' and commit the result"; \
