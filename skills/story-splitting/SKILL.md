@@ -16,7 +16,7 @@ disable-model-invocation: true
 | --- | --- |
 | **職責** | 把一則太大的 story 切成數則**各自都還能交付價值**的小 story，並寫下切分依據 |
 | **讀** | 要切的 story（一句話，或 `spec.md` 的某幾條 `FR-<n>`）與已知的規則 |
-| **寫** | `spec.md` 的 `## User Stories`（`spec` 呼叫時，連 FR 一起搬）；`discovery` 呼叫時不寫檔，切法交回它記進 `interview-log.md` 的粗切；切分紀錄追加進同目錄的 `splitting.md` |
+| **寫** | `spec.md` 的 `## User Stories`（`spec` 呼叫時，連 FR 一起搬）；`discovery` 呼叫時不寫檔，切法交回它記進 interview-log.md 的粗切；切分紀錄追加進同目錄的 `splitting.md` |
 | **上游** | `discovery`（粗切）、`spec`（`已對焦` 前重切）；也可單獨使用 |
 | **下游** | 回到呼叫它的 skill；`spec.md` 改完由 `plan` DELEGATE `formulation` 寫成 `.feature` |
 | **不做** | 不排順序、不估點數、不寫規格、`spec.md` 已經 `已對焦` 時不切 |
@@ -60,6 +60,8 @@ Ask user: 若以下不明確，先問清楚。
 
 ### 1. 先確認它值得切
 
+產出：INVEST（Small 除外）的判斷；不是價值增量就先回頭，不切
+
 > "If you start with something that isn't an increment of value, there's no way
 > to slice it smaller and get an increment of value."
 > —— [Humanizing Work Guide to Splitting User Stories](https://www.humanizingwork.com/the-humanizing-work-guide-to-splitting-user-stories/)
@@ -79,6 +81,8 @@ IMPORTANT: Valuable 不成立時**先修它，不要切**。把一個沒有價�
 
 ### 2. 判斷該不該切
 
+產出：該不該切的結論與訊號（藍卡太多才切）
+
 Example Mapping 的診斷訊號裡，跟切分有關的是**藍卡（規則）太多**。這是真的大小訊號，
 不是換個人分組就沒事——`spec.md` 裡一個 `### US-<n> · <slug>` 就是一個 `.feature` 檔，
 規則太多代表這個檔案裝不下，本 skill 該接手切。完整的四條診斷、它們在這裡各自代表什麼、
@@ -91,6 +95,8 @@ Example Mapping 的診斷訊號裡，跟切分有關的是**藍卡（規則）�
 模式。
 
 ### 3. 優先沿規則切
+
+產出：沿規則切出的 story 草稿，每則掛哪幾條 FR
 
 > "Rules make natural fault lines for slicing your story."
 > —— [Example Mapping introduction](https://cucumber.io/blog/bdd/example-mapping-introduction/)
@@ -114,6 +120,8 @@ Story: 記錄訓練並看到總容量
 
 ### 4. 規則切不動時的九種模式
 
+產出：規則切不動時，照其中一種模式切出的 story 草稿
+
 規則數量少、或規則之間纏在一起時，換這幾種
 （[出處](https://www.humanizingwork.com/the-humanizing-work-guide-to-splitting-user-stories/)）：
 
@@ -134,6 +142,8 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 
 ### 5. 有好幾種切法時，選哪一種
 
+產出：選定的切法與理由；被否決的切法與理由
+
 先過一條硬性的，再套兩條偏好的。
 
 **規則零（硬性）：命令與查詢不同住一則。** 一則 story 就是一個 `.feature`，而
@@ -150,6 +160,8 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 大的那則裡還藏著沒被分開的東西。
 
 ### 6. 驗收：垂直切片
+
+產出：每則都是垂直切片的確認；不是就回第 3–5 步重切。通過了才寫〈產物〉的檔
 
 每一則都必須是**垂直切片**——穿過 UI、業務邏輯、資料庫，交付可觀察的價值。
 
@@ -178,9 +190,12 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 
 ## 產物
 
-切分紀錄追加進呼叫它的那個 feature 目錄的 `splitting.md`（`specs/ongoing/<date>-<feature>/splitting.md`；
-單獨使用時 `specs/ongoing/<date>-<topic-slug>/splitting.md`），一次切分一個 `## 切分：` 區塊，舊的不刪。
-不放進 `spec.md`——它的格式由 `spec` 與 `check_spec.py` 定義。不修改專案其他既有檔案：
+| 檔 | 哪一步寫 | 格式在哪 |
+| --- | --- | --- |
+| `splitting.md`——呼叫它的 feature 目錄 specs/ongoing/<date>-<feature>/（單獨使用時 specs/ongoing/<date>-<topic-slug>/），一次切分一個 `## 切分：` 區塊，舊的不刪 | 6 通過後追加 | 下面的樣板 |
+| `spec.md` 的 `## User Stories`（`spec` 呼叫時，連 FR 一起搬） | 切法定案後 | `../spec/references/spec-format.md` |
+
+切分紀錄不放進 `spec.md`——它的格式由 `spec` 與 `check_spec.py` 定義。不修改專案其他既有檔案：
 
 ```markdown
 ## 切分：<原始 story>
