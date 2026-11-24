@@ -43,7 +43,7 @@ disable-model-invocation: true
 
 ## 參考檔案
 
-- `rules/` — `structure.md`（目錄與章節 S1–S16、章節順序、範本）、`frontmatter.md`（`description` 與觸發詞）、
+- `rules/` — `structure.md`（目錄與章節 S1–S18、章節順序、範本）、`frontmatter.md`（`description` 與觸發詞）、
   `keywords.md`（標強度）、`quality-checklist.md`（人工判斷的完整清單與稽核報告格式）
 - `references/runtime-facts.md` — 執行期行為的證據（巢狀目錄、命名空間）
 - `examples/anti-patterns.md` — 反面教材，每一項都是實際會導致 skill 失效的寫法；`examples/minimal-skill.md` —

@@ -16,9 +16,9 @@ disable-model-invocation: true
 | --- | --- |
 | **職責** | 把一則太大的 story 切成數則**各自都還能交付價值**的小 story，並寫下切分依據 |
 | **讀** | 要切的 story（一句話，或 `spec.md` 的某幾條 `FR-<n>`）與已知的規則 |
-| **寫** | `spec.md` 的 `## User Stories`（`spec` 呼叫時，連 FR 一起搬）；`discovery` 呼叫時不寫檔，切法交回它記進 interview-log.md 的粗切；切分紀錄追加進同目錄的 `splitting.md` |
+| **寫** | `spec.md` 的 `## User Stories`（`spec` 呼叫時，連 FR 一起搬）；`discovery` 呼叫時不寫檔；切分紀錄追加進同目錄的 `splitting.md` |
 | **上游** | `discovery`（粗切）、`spec`（`已對焦` 前重切）；也可單獨使用 |
-| **下游** | 回到呼叫它的 skill；`spec.md` 改完由 `plan` DELEGATE `formulation` 寫成 `.feature` |
+| **下游** | 回到呼叫它的 skill（`discovery` 呼叫時，切法由它記進 `interview-log.md` 的粗切）；`spec.md` 改完由 `plan` DELEGATE `formulation` 寫成 `.feature` |
 | **不做** | 不排順序、不估點數、不寫規格、`spec.md` 已經 `已對焦` 時不切 |
 
 **切開的是價值，不是工作量。** 每一則都要還能單獨交付價值，否則只是把工作分段。
@@ -192,8 +192,8 @@ Spike 排最後是有理由的：它**不交付價值**，只交付知識。用�
 
 | 檔 | 哪一步寫 | 格式在哪 |
 | --- | --- | --- |
-| `splitting.md`——呼叫它的 feature 目錄 specs/ongoing/<date>-<feature>/（單獨使用時 specs/ongoing/<date>-<topic-slug>/），一次切分一個 `## 切分：` 區塊，舊的不刪 | 6 通過後追加 | 下面的樣板 |
-| `spec.md` 的 `## User Stories`（`spec` 呼叫時，連 FR 一起搬） | 切法定案後 | `../spec/references/spec-format.md` |
+| `splitting.md`——呼叫它的 feature 目錄 `specs/ongoing/<date>-<feature>/`（單獨使用時 `specs/ongoing/<date>-<topic-slug>/`），一次切分一個 `## 切分：` 區塊，舊的不刪 | 6 通過後追加 | 下面的樣板 |
+| `spec.md` 的 `## User Stories`（`spec` 呼叫時，連 FR 一起搬） | 5 定案、6 通過後 | `../spec/references/spec-format.md` |
 
 切分紀錄不放進 `spec.md`——它的格式由 `spec` 與 `check_spec.py` 定義。不修改專案其他既有檔案：
 

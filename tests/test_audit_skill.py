@@ -153,6 +153,11 @@ class ProductTable(unittest.TestCase):
         table = TABLE + "| `a.md` | 1 | x |\n\n### 產物隔離\n\n| 規則 | 強度 |\n| --- | --- |\n| 只寫入 `specs/` 底下 | MUST |\n"
         self.assertNotIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))
 
+    def test_directory_in_a_row_is_not_a_product(self):
+        # 「放在 `specs/ongoing/<date>-<feature>/`」說的是位置，產物是那個檔
+        table = TABLE + "| `a.md`——放在 `specs/ongoing/<date>-<feature>/` | 1 | x |\n"
+        self.assertNotIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))
+
     def test_matching_card_and_table_pass(self):
         table = TABLE + "| `a.md` | 1 | x |\n"
         self.assertNotIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))

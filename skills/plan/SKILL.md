@@ -233,7 +233,7 @@ MUST NOT: 在這一步改 `api/openapi.yaml` 或寫 migration。`plan.md` 是契
 
 ### Step 3 垂直切片
 
-產出：票的清單草稿（還不寫 `tasks.md`）；兩道關沒過時是 `## Overview` 與回報，不切票
+產出：票的清單草稿（還不寫 `tasks.md`）；兩道關沒過時是 `## Overview` 與回報，不切票；圖錯了時是 `## Further Notes` 的修訂
 
 先過兩道關，任何一道不過就 WRITE `## Overview`（〈WRITE〉第 2 步）、照〈完成後〉回報、STOP，**不切票**：
 
@@ -407,7 +407,7 @@ MUST NOT: 在這一步新增、刪除或改寫任何 FR、AC、story、範圍；
 
 | 檔 | 哪一步寫 | 格式在哪 |
 | --- | --- | --- |
-| `specs/ongoing/<date>-<feature>/plan.md` | 設計、Step 2、Step 5、WRITE（`## Overview` 最後寫） | `references/plan-format.md`（整份節序）；技術決定七節 `references/tech-format.md`；三份設計與 `## 依賴圖` `references/design-format.md` |
+| `specs/ongoing/<date>-<feature>/plan.md` | 設計、Step 2–5、WRITE（`## Overview` 最後寫；Step 3 兩道關沒過時提早寫） | `references/plan-format.md`（整份節序）；技術決定七節 `references/tech-format.md`；三份設計與 `## 依賴圖` `references/design-format.md` |
 | `specs/ongoing/<date>-<feature>/tasks.md` | WRITE（〈ASK 切法〉點頭後） | `references/tasks-format.md`：開頭三行（來源、哪幾張可以同時開始）、一波一節、一張票一個票節（`00` 前置整理有才寫） |
 | `features/*.feature` | 設計第 2、10 步，由 DELEGATE 的 `formulation` 寫 | `../formulation/SKILL.md` |
 
