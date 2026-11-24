@@ -81,6 +81,17 @@ def referenced_files(text: str) -> set[str]:
     return set(re.findall(r"(?:rules|references|examples|scripts)/[\w./-]+", text))
 
 
+def section_body(body: str, title: str) -> str | None:
+    """`## <title>` 底下到下一個 `## ` 為止的內容；沒有這一節回 None。"""
+    m = re.search(rf"^## {re.escape(title)}[^\n]*\n(.*?)(?=^## |\Z)", body, re.M | re.S)
+    return m.group(1) if m else None
+
+
+def paths(cell: str) -> set[str]:
+    """反引號裡像檔案的東西（有 `/` 或副檔名、沒有空白）；`@wip`、`#### 缺口` 不算。"""
+    return {t for t in re.findall(r"`([^`\s]+)`", cell) if "/" in t or re.search(r"\.[A-Za-z]+$", t)}
+
+
 def audit(skill_dir: Path) -> list[Finding]:
     findings: list[Finding] = []
     add = lambda r, lv, m: findings.append(Finding(r, lv, m))  # noqa: E731
@@ -139,6 +150,27 @@ def audit(skill_dir: Path) -> list[Finding]:
     missing = [row for row in CARD_ROWS if not re.search(rf"^\|\s*\*\*{row}\*\*\s*\|", preamble, re.M)]
     if missing:
         add("S16", SHOULD, f"標題底下的職責卡缺少：{'、'.join(missing)}")
+
+    flow = section_body(body, "流程")
+    if flow is not None:
+        # S17: 編號步驟（`### N.`）的第一行是「產出：」；沒編號的小節（續跑、不越界）不算步驟
+        for title, rest in re.findall(r"^### (\d+\..*)\n((?:.*\n?)*?)(?=^### |\Z)", flow, re.M):
+            first = next((ln for ln in rest.splitlines() if ln.strip()), "")
+            if not first.startswith("產出："):
+                add("S17", SHOULD, f"步驟「{title.strip()}」第一行不是「產出：…」")
+
+        # S18: 產物表第一欄的檔，與職責卡「寫」裡的檔，是同一份清單
+        card_write = re.search(r"^\|\s*\*\*寫\*\*\s*\|(.*)\|\s*$", preamble, re.M)
+        written = paths(card_write.group(1)) if card_write else set()
+        products = section_body(body, "產物") or ""
+        if not re.search(r"^\|\s*檔\s*\|\s*哪一步寫\s*\|\s*格式在哪\s*\|", products, re.M):
+            add("S18", SHOULD, "「## 產物」沒有「| 檔 | 哪一步寫 | 格式在哪 |」表")
+        else:
+            rows = {p for ln in products.splitlines() if ln.startswith("|") for p in paths(ln.split("|")[1])}
+            if rows - written:
+                add("S18", SHOULD, f"產物表有、職責卡「寫」沒有：{'、'.join(sorted(rows - written))}")
+            if written - rows:
+                add("S18", SHOULD, f"職責卡「寫」有、產物表沒有：{'、'.join(sorted(written - rows))}")
 
     body_lines = len(body.splitlines())
     if body_lines > BODY_LINE_LIMIT:

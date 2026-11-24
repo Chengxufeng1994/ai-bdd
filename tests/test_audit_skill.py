@@ -96,5 +96,53 @@ class Verification(unittest.TestCase):
         self.assertNotIn("S15", rules_hit(body))
 
 
+def skill(write: str, flow: str, products: str = "") -> str:
+    card = CARD.replace("| **寫** | 無 |", f"| **寫** | {write} |")
+    return HEAD.replace("# demo\n", "# demo\n" + card) + flow + products
+
+
+TABLE = "\n## 產物\n\n| 檔 | 哪一步寫 | 格式在哪 |\n| --- | --- | --- |\n"
+
+
+class StepOutputs(unittest.TestCase):
+    # S17: 每一步交出什麼要寫在步驟開頭，讀的人不必讀完整步才知道它產出什麼。
+
+    def test_numbered_step_without_output_is_flagged(self):
+        self.assertIn("S17", rules_hit_any(skill("無", "\n## 流程\n\n### 1. 讀\n\n- x\n")))
+
+    def test_step_with_output_passes(self):
+        self.assertNotIn("S17", rules_hit_any(skill("無", "\n## 流程\n\n### 1. 讀\n\n產出：無，只讀\n")))
+
+    def test_unnumbered_subsection_is_exempt(self):
+        # 「續跑」「不越界」這類不是步驟，沒有自己的產出
+        self.assertNotIn("S17", rules_hit_any(skill("無", "\n## 流程\n\n### 續跑\n\n- x\n")))
+
+    def test_no_flow_section_skips_both(self):
+        # 照搬原文的 skill 沒有 `## 流程`，不受這兩條約束
+        rules = rules_hit_any(skill("`a.md`", "\n## Overview\n\n### 1. Do\n\n- x\n"))
+        self.assertFalse({"S17", "S18"} & rules)
+
+
+class ProductTable(unittest.TestCase):
+    # S18: 產物表與職責卡的「寫」是同一份清單的兩個位置，對不上就有一邊是錯的。
+
+    FLOW = "\n## 流程\n\n### 1. 寫\n\n產出：`a.md`\n"
+
+    def test_product_row_missing_from_card_is_flagged(self):
+        table = TABLE + "| `a.md` | 1 | x |\n| `b.md` | 1 | x |\n"
+        self.assertIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))
+
+    def test_card_path_missing_from_table_is_flagged(self):
+        table = TABLE + "| `a.md` | 1 | x |\n"
+        self.assertIn("S18", rules_hit_any(skill("`a.md`、`b.md`", self.FLOW, table)))
+
+    def test_missing_table_is_flagged(self):
+        self.assertIn("S18", rules_hit_any(skill("`a.md`", self.FLOW)))
+
+    def test_matching_card_and_table_pass(self):
+        table = TABLE + "| `a.md` | 1 | x |\n"
+        self.assertNotIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))
+
+
 if __name__ == "__main__":
     unittest.main()
