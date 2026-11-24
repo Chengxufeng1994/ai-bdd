@@ -89,7 +89,8 @@ def section_body(body: str, title: str) -> str | None:
 
 def paths(cell: str) -> set[str]:
     """反引號裡像檔案的東西（有 `/` 或副檔名、沒有空白）；`@wip`、`#### 缺口` 不算。"""
-    return {t for t in re.findall(r"`([^`\s]+)`", cell) if "/" in t or re.search(r"\.[A-Za-z]+$", t)}
+    spans = re.findall(r"`([^`]+)`", cell)
+    return {t for t in spans if not re.search(r"\s", t) and ("/" in t or re.search(r"\.[A-Za-z]+$", t))}
 
 
 def audit(skill_dir: Path) -> list[Finding]:

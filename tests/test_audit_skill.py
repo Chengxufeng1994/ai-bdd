@@ -139,6 +139,11 @@ class ProductTable(unittest.TestCase):
     def test_missing_table_is_flagged(self):
         self.assertIn("S18", rules_hit_any(skill("`a.md`", self.FLOW)))
 
+    def test_span_with_space_does_not_shift_backtick_pairs(self):
+        # `#### 缺口` 不是檔；它後面的 `b.md` 仍要被認出來
+        table = TABLE + "| `a.md` | 1 | x |\n| `b.md` | 1 | x |\n"
+        self.assertNotIn("S18", rules_hit_any(skill("`a.md`（`#### 缺口`）、`b.md`", self.FLOW, table)))
+
     def test_matching_card_and_table_pass(self):
         table = TABLE + "| `a.md` | 1 | x |\n"
         self.assertNotIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))
