@@ -113,6 +113,10 @@ class StepOutputs(unittest.TestCase):
     def test_step_with_output_passes(self):
         self.assertNotIn("S17", rules_hit_any(skill("無", "\n## 流程\n\n### 1. 讀\n\n產出：無，只讀\n")))
 
+    def test_step_n_heading_counts_as_numbered(self):
+        # plan 的步驟叫「Step 2 依賴圖」，別的 skill 指它時用這個名字，不改成「2.」
+        self.assertIn("S17", rules_hit_any(skill("無", "\n## 流程\n\n### Step 2 依賴圖\n\n- x\n")))
+
     def test_unnumbered_subsection_is_exempt(self):
         # 「續跑」「不越界」這類不是步驟，沒有自己的產出
         self.assertNotIn("S17", rules_hit_any(skill("無", "\n## 流程\n\n### 續跑\n\n- x\n")))

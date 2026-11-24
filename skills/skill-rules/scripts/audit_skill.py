@@ -155,7 +155,7 @@ def audit(skill_dir: Path) -> list[Finding]:
     flow = section_body(body, "流程")
     if flow is not None:
         # S17: 編號步驟（`### N.`）的第一行是「產出：」；沒編號的小節（續跑、不越界）不算步驟
-        for title, rest in re.findall(r"^### (\d+\..*)\n((?:.*\n?)*?)(?=^### |\Z)", flow, re.M):
+        for title, rest in re.findall(r"^### ((?:Step )?\d+\b.*)\n((?:.*\n?)*?)(?=^### |\Z)", flow, re.M):
             first = next((ln for ln in rest.splitlines() if ln.strip()), "")
             if not first.startswith("產出："):
                 add("S17", SHOULD, f"步驟「{title.strip()}」第一行不是「產出：…」")
