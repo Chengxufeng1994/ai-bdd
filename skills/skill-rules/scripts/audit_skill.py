@@ -164,10 +164,11 @@ def audit(skill_dir: Path) -> list[Finding]:
         card_write = re.search(r"^\|\s*\*\*寫\*\*\s*\|(.*)\|\s*$", preamble, re.M)
         written = paths(card_write.group(1)) if card_write else set()
         products = section_body(body, "產物") or ""
-        if not re.search(r"^\|\s*檔\s*\|\s*哪一步寫\s*\|\s*格式在哪\s*\|", products, re.M):
+        table = re.search(r"^\|\s*檔\s*\|\s*哪一步寫\s*\|\s*格式在哪\s*\|.*\n((?:\|.*\n?)*)", products, re.M)
+        if not table:
             add("S18", SHOULD, "「## 產物」沒有「| 檔 | 哪一步寫 | 格式在哪 |」表")
         else:
-            rows = {p for ln in products.splitlines() if ln.startswith("|") for p in paths(ln.split("|")[1])}
+            rows = {p for ln in table.group(1).splitlines() for p in paths(ln.split("|")[1])}
             if rows - written:
                 add("S18", SHOULD, f"產物表有、職責卡「寫」沒有：{'、'.join(sorted(rows - written))}")
             if written - rows:

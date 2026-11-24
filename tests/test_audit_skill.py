@@ -148,6 +148,11 @@ class ProductTable(unittest.TestCase):
         table = TABLE + "| `a.md` | 1 | x |\n| `b.md` | 1 | x |\n"
         self.assertNotIn("S18", rules_hit_any(skill("`a.md`（`#### 缺口`）、`b.md`", self.FLOW, table)))
 
+    def test_only_the_product_table_is_read(self):
+        # 產物節底下別的表（產物隔離的規則表）提到的路徑不是產物
+        table = TABLE + "| `a.md` | 1 | x |\n\n### 產物隔離\n\n| 規則 | 強度 |\n| --- | --- |\n| 只寫入 `specs/` 底下 | MUST |\n"
+        self.assertNotIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))
+
     def test_matching_card_and_table_pass(self):
         table = TABLE + "| `a.md` | 1 | x |\n"
         self.assertNotIn("S18", rules_hit_any(skill("`a.md`", self.FLOW, table)))
