@@ -18,10 +18,10 @@ disable-model-invocation: true
 | --- | --- |
 | **職責** | 在指定的 `.feature` 範疇裡，用 red／green／refactor 其中一個入口，一次一個 slice 把場景推進到那個入口的完成條件 |
 | **讀** | 指定的 `.feature`（`@ready` 或 `@wip`）、`plan.md` 的技術決定、既有的 step definition／測試／產品程式碼；由票委派時加上那張票節 |
-| **寫** | step definition、測試、產品程式碼。**不寫 `specs/` 底下任何檔案** |
+| **寫** | step definition、測試、產品程式碼 |
 | **上游** | `implement`（第 3 步委派 green、第 4 步委派 refactor，範疇是票的涵蓋場景），或使用者手動叫 `/behavior-driven-development` |
 | **下游** | 回報給呼叫它的人，並建議下一次從哪個入口繼續 |
-| **不做** | 不產或改 `.feature`、不改 `spec.md`／`plan.md`、不翻狀態 tag、不勾票、不跨出指定範疇、一次不進兩個入口 |
+| **不做** | 不寫 `specs/` 底下任何檔案、不產或改 `.feature`、不改 `spec.md`／`plan.md`、不翻狀態 tag、不勾票、不跨出指定範疇、一次不進兩個入口 |
 
 **每次只進一個入口，同一時刻只處理一個 slice。** 紅燈是用來驅動的，不是事後補的：沒看過
 對應這個 slice 的失敗，就沒有理由寫下一行產品程式碼。
@@ -86,10 +86,14 @@ Check if: 指定的 `.feature` 存在，而且狀態 tag 是 `@ready` 或 `@wip`
 
 ### 1. 對齊範疇與入口
 
+產出：這次的範疇（一個 `.feature`、一條 `Rule:` 或幾個 `@example-N.M`）與入口
+
 讀指定的 `.feature` 範疇、`plan.md` 的 `## Implementation Decisions` 與 `## Testing Decisions`
 （seam 在哪一層、每個例子在哪一層測）。由票委派時再讀票節的 `涵蓋場景`——它就是範疇。
 
 ### 2. 盤點測試入口與既有抽象
+
+產出：最窄的重跑命令；可沿用的 step definition、fixture、替身與落點
 
 動手之前先看專案現在有什麼：
 
@@ -105,10 +109,14 @@ SHOULD NOT: 把「先跑整包比較保險」當預設。跑不到單一場景�
 
 ### 3. 選下一個 slice
 
+產出：下一個要做的 slice（一個 `@example-N.M`）
+
 照 `rules/slice.md`：一個 slice 是一個 `Example:`（一個 `@example-N.M`）；範疇內先做能形成
 最小、最獨立回饋的那一個。
 
 ### 4. 照入口推進
+
+產出：這個 slice 達到入口的完成條件（見下表最右欄）
 
 | 入口 | 起點 | 可以動 | 完成條件 |
 | --- | --- | --- | --- |
@@ -120,6 +128,8 @@ MUST: 入口的起點不成立就不要開始，改回報該先進哪個入口�
 `refactor` 不在綠燈下，做出來的東西都沒有任何測試在保護。
 
 ### 5. 下一個 slice，或停
+
+產出：回到第 3 步，或停下的原因（下表其中一項）
 
 當前 slice 達到完成條件、範疇內還有下一個、而且沒有碰到下表任何一項，就回到第 3 步，
 **用同一個入口**做下一個。
@@ -136,16 +146,19 @@ MUST NOT: 為了讓場景綠而改 `.feature` 的任何文字。場景是需求�
 
 ### 6. 回報
 
-見〈完成後〉。
+產出：給呼叫者的回報，內容見〈完成後〉
 
 ---
 
 ## 產物
 
-只有程式：step definition、測試、產品程式碼，落在專案既有的結構裡。
+| 檔 | 哪一步寫 | 格式在哪 |
+| --- | --- | --- |
+| step definition | 4 | `references/step-definitions.md`、`../formulation/references/step-grammar.md` |
+| 測試（含內迴圈的單元測試） | 4 | `references/inner-loop.md` |
+| 產品程式碼 | 4（green、refactor） | `references/inner-loop.md`；落在專案既有的結構裡 |
 
-MUST: 不寫 `specs/` 底下任何檔案、不改 `.feature`。狀態 tag、票節的勾選與 `#### 缺口` 都是
-`implement` 的——本 skill 只回報，由它記。
+MUST: 不寫 `specs/` 底下任何檔案、不改 `.feature`——狀態 tag、票節的勾選與 `#### 缺口` 都是 `implement` 的，本 skill 只回報，由它記。
 
 ## Verification
 
