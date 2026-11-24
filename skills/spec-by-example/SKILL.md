@@ -65,11 +65,15 @@ Check if: `spec.md` 狀態是 `待對焦`，`## Open Questions` 沒有待答的�
 
 ### 1. 讀 `spec.md`，挑旅程
 
+產出：無，只讀——要寫的旅程清單：主流程一條，加少數結果明顯不同的變種
+
 讀 `## User Stories` 的 FR／AC、`## Personas`、`## Goals / Non-Goals`、`## Domain Concepts`，以及 `docs/CONTEXT.md`
 的詞彙。挑的是**業務方會想看人走一遍的流程**：主流程一條，加少數結果明顯不同的變種。
 一條旅程可以跨好幾則 story、好幾條 AC。
 
 ### 2. 寫旅程
+
+產出：`acceptance/<旅程>.feature`，每個 `Example:` 上方有 `@covers-`
 
 照 `rules/journey-format.md`。每個 `Example:` 上方 `@covers-` 列出它走過的 AC。
 
@@ -78,6 +82,8 @@ MUST NOT: 寫出 `spec.md` 沒有的結果、規則或例子。旅程不執行�
 就不寫，改走第 3 步。
 
 ### 3. 定不下來的，就地標記並寫進補問
+
+產出：旅程裡的 `# [need clarification]` 標記，與 `spec.md` `## Open Questions` 的同一題
 
 IMPORTANT: 標記與 `spec.md` `## Open Questions` 的那一題要**同時**寫。只標在旅程裡，`spec` 與
 `example-mapping` 看的 `spec.md` 仍然沒有待答的補問題，就緒問句照樣會提出來——洞安靜地留在
@@ -94,6 +100,8 @@ IMPORTANT: 標記與 `spec.md` `## Open Questions` 的那一題要**同時**寫�
 
 ### 4. 跑 `check_spec.py`
 
+產出：`check_spec.py` 的輸出（進回報）
+
 ```bash
 python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 ```
@@ -101,6 +109,8 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 第 17 項要過：每個 `@covers-` 都指得到 AC，每個 `Example:` 都有 `@covers-`。
 
 ### 5. 交回
+
+產出：交給 `spec`〈有洞〉或 `example-mapping` 的回報（下表）
 
 | 旅程裡 | 交給 |
 | --- | --- |
@@ -115,9 +125,10 @@ python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>
 
 ## 產物
 
-`specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`，一個驗收主題一個檔，檔名用業務旅程
-命名。骨架與六條規則見 `rules/journey-format.md`，完整範例見
-`examples/借書看到期日.feature`。有標記時另有 `spec.md` `## Open Questions` 的新題。
+| 檔 | 哪一步寫 | 格式在哪 |
+| --- | --- | --- |
+| `specs/ongoing/<date>-<feature>/acceptance/<旅程>.feature`——一個驗收主題一個檔，檔名用業務旅程命名 | 2、3 | `rules/journey-format.md`（骨架與六條規則）；完整範例 `examples/借書看到期日.feature` |
+| `spec.md` 的 `## Open Questions` 新題（有標記時） | 3 | `../spec/references/spec-format.md`〈寫規格時發現的洞〉 |
 
 ## Verification
 
