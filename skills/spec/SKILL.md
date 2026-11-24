@@ -19,7 +19,7 @@ disable-model-invocation: true
 | --- | --- |
 | **職責** | 把已答的問答寫成規格：要做成什麼、不做什麼，帶到需求方說「就緒」 |
 | **讀** | `specs/ongoing/<date>-<feature>/interview-log.md`（結束方式 `收斂` 或 `喊停`）；再跑時既有的 `spec.md`；`docs/CONTEXT.md`（有的話） |
-| **寫** | 同一個目錄的 `spec.md`，唯一的寫入者：照抄的 `## 原文`、整理的 `## Open Questions`、其餘各節、FR／AC、狀態 `待對焦`；有洞時補問題與狀態 `澄清中` |
+| **寫** | 同目錄的 `specs/ongoing/<date>-<feature>/spec.md`，唯一的寫入者：照抄的 `## 原文`、整理的 `## Open Questions`、其餘各節、FR／AC、狀態 `待對焦`；有洞時補問題與狀態 `澄清中`；`specs/ongoing/<date>-<feature>/acceptance/*.feature` 由 DELEGATE 的 `spec-by-example` 寫 |
 | **上游** | `discovery` |
 | **下游** | `feature-mapping` ＋ `example-mapping` ＋ `spec-by-example`（判就緒）→ `已對焦` → 交回，使用者接著叫 `plan` |
 | **不做** | 不訪談、不寫 `interview-log.md`、不填紀錄裡沒有的答案、不改寫 `## 原文`、FR／AC 不標 `推論`、不自己寫 `已對焦`、不寫 `.feature` 也不呼叫 `formulation` 或 `discovery`、不寫 `docs/`、不寫技術決定與 seam、不排風險與並行（都是 `plan`）、不切票 |
@@ -97,7 +97,7 @@ NEVER: 紀錄沒有 `## 原文` 時開始。`← PRD §x` 指的就是它照抄�
 | `ASK` | 問使用者，等他回答 |
 | `STOP` | 回報後結束這一輪，不往下做 |
 
-每一步最後一行是**做完的樣子**與下一步；做完的樣子不成立，就不往下走。
+每一步第一行是**產出**，最後一行是**做完的樣子**與下一步；做完的樣子不成立，就不往下走。
 
 | 步驟 | 做什麼 | 要問使用者嗎 |
 | --- | --- | --- |
@@ -110,6 +110,8 @@ NEVER: 紀錄沒有 `## 原文` 時開始。`← PRD §x` 指的就是它照抄�
 | 7 | 有洞 → 開補問題、改回 `澄清中`，停 | — |
 
 ### 1. 寫需求部分
+
+產出：`spec.md`——照抄的 `## 原文` 與 `## Open Questions`、需求各節、FR／AC、`## Edge Cases`、狀態 `待對焦`；寫不出來的開成補問題
 
 1. READ `references/spec-format.md`，骨架照抄；`examples/minimal-spec.md` 是寫好的樣子。
 2. READ `interview-log.md` 的五節（格式 `../discovery/references/interview-log-format.md`）。
@@ -173,6 +175,8 @@ MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案�
 
 ### 2. 收尾檢查
 
+產出：重切過的 `## User Stories`（需要時）；不成立的開成補問題
+
 只有寫出 FR 之後才做得了的檢查：
 
 1. CHECK **角色**：`## Personas` 的每個角色至少被一條 FR 的主詞或一則 story 的 `身為` 用到，FR 與 story
@@ -189,6 +193,8 @@ MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案�
 
 ### 3. 自檢
 
+產出：`check_spec.py` 的輸出（進回報）、照它修過的 `spec.md`
+
 1. RUN `python3 <ai-bdd>/skills/formulation/scripts/check_spec.py <專案根>`。
 2. CHECK 抓到的每一條：寫錯了 → 修 `spec.md`；問答裡沒有 → 補問題。
 3. CHECK 再跑（修補）時 `.feature` 已經存在，覆蓋比對會報這一輪新增或改動的 AC「漏了」。**只有這幾條**是
@@ -201,6 +207,8 @@ MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案�
 
 ### 4. 詞彙
 
+產出：`## Domain Concepts` 的 `### 詞彙`；有爭議的詞開成補問題
+
 有待答的補問題時**不做這一步**，直接第 7 步：詞彙要建立在收斂的規則上，補問的答案可能改掉它們。
 
 1. READ `docs/CONTEXT.md`（專案的現況詞彙；沒有就是第一個 feature）。
@@ -211,7 +219,7 @@ MUST NOT: 填補問題的答案欄，或寫任何一題紀錄裡沒有的答案�
    | --- | --- | --- | --- |
    | 到期日 | 借出當天加 14 天，遇休館日順延到下一個開館日 | Q-6 | 「兩週內還」的兩週不是 14 個開館日 |
 
-   第四欄不是裝飾——一個不需要解釋為什麼要定義的詞，通常本來就沒有歧義，列進來只是雜訊。
+   第四欄不是裝飾——不需要解釋為什麼要定義的詞，通常本來就沒有歧義，列進來只是雜訊。
 3. CHECK 詞義有爭議、或跟 `docs/CONTEXT.md` 裡同一個詞的定義不同 → 補問題，問清楚是改定義還是
    換一個詞。**只轉錄，不裁決**：自己挑一個定義就是訪談，SPEC 不訪談。
 
@@ -222,6 +230,8 @@ MUST NOT: 寫 `docs/CONTEXT.md` 或 `docs/` 底下任何檔案。`docs/` 只放�
 否則第 5 步
 
 ### 5. 診斷、寫旅程、問就緒
+
+產出：兩張圖的判讀、`acceptance/*.feature`（經 `spec-by-example`）、需求方的就緒回答——`已對焦` 由 `example-mapping` 寫
 
 沒有待答的補問題時才進來。
 
@@ -245,6 +255,8 @@ MUST NOT: 自己寫 `已對焦`。`example-mapping` 是唯一寫它的 skill，�
 
 ### 6. 交回，然後停
 
+產出：給使用者的回報，下一步 `/plan`
+
 需求方答「就緒」、`example-mapping` 寫了 `已對焦`，這份規格就完成了。
 
 1. RUN `check_spec.py`：除了第 3 步說的覆蓋比對「漏了」，其餘全過。
@@ -259,6 +271,8 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 **做完的樣子**：`已對焦`、`check_spec.py` 只剩預期的「漏了」；回報後停下。
 
 ### 7. 有洞：開了補問題，停
+
+產出：狀態 `澄清中`、修訂歷史的一列（到過 `已對焦` 時）、給使用者的回報，下一步 `/discovery`
 
 四種情況會到這裡：開了補問題、`spec-by-example` 在旅程裡標了 `# [need clarification]`、
 `example-mapping` 判不就緒、收尾檢查要的資訊問答裡沒有。後三種也都要先開成補問題。
@@ -292,15 +306,14 @@ MUST NOT: 寫任何技術決定——Tech Stack、seam、模組、契約、測�
 
 ## 產物
 
-| 產物 | 格式 |
-| --- | --- |
-| `specs/ongoing/<date>-<feature>/spec.md` | `references/spec-format.md` |
-| `spec.md` 的 `## Domain Concepts` | `references/spec-format.md` |
-| `interview-log.md` | DISCOVERY 寫的；本 skill 只讀，`spec.md` 的 `## 原文` 與 `## Open Questions` 照它抄 |
-| `features/<story-slug>.feature` | 由 `plan` DELEGATE `formulation` 寫 |
+| 檔 | 哪一步寫 | 格式在哪 |
+| --- | --- | --- |
+| `specs/ongoing/<date>-<feature>/spec.md`（含 `## Domain Concepts`） | 1–4、7；`已對焦` 那一行由 `example-mapping` 在第 5 步寫 | `references/spec-format.md`；寫好的樣子 `examples/minimal-spec.md` |
+| `specs/ongoing/<date>-<feature>/acceptance/*.feature` | 5，由 DELEGATE 的 `spec-by-example` 寫 | `../spec-by-example/SKILL.md` |
 
-MUST: 只新增或修改本節列出的產物，**不修改專案既有的任何其他檔案**（含
-`docs/` 底下的每一個檔案）。`interview-log.md` 一個字都不動。
+`interview-log.md` 是 DISCOVERY 寫的，本 skill 只讀（`## 原文` 與 `## Open Questions` 照它抄）；`features/<story-slug>.feature` 由 `plan` DELEGATE `formulation` 寫。
+
+MUST: 只新增或修改上表的產物，**不修改專案既有的任何其他檔案**（含 `docs/` 底下的每一個檔案）。`interview-log.md` 一個字都不動。
 
 ## Verification
 
