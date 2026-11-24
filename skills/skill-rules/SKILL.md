@@ -17,7 +17,7 @@ disable-model-invocation: true
 | --- | --- |
 | **職責** | 定本專案 skill 的房規（結構、frontmatter、規則關鍵字），並對現成 skill 逐項稽核 |
 | **讀** | 稽核：`skills/<name>/` 整個目錄；寫新 skill：既有 skill 的 `## Skill Boundaries`（找重疊） |
-| **寫** | 稽核：不寫檔，報告照 `rules/quality-checklist.md` 的格式；寫新 skill：`skills/<name>/SKILL.md` 與有內容的子目錄 |
+| **寫** | 稽核：不寫檔，交一份報告；寫新 skill：`skills/<name>/SKILL.md` 與有內容的子目錄 |
 | **上游** | 無（不在流程裡；寫或改任何 skill 之前讀） |
 | **下游** | 無 |
 | **不做** | 不跑 eval 迴圈、不最佳化觸發率（都是 `skill-creator`）；職責重疊時不自己決定合併或劃界 |
@@ -58,6 +58,8 @@ disable-model-invocation: true
 
 #### 1. 機械檢查
 
+產出：`audit_skill.py` 與 `claude plugin validate` 的輸出
+
 ```bash
 python3 scripts/audit_skill.py <skill 目錄路徑>
 ```
@@ -77,6 +79,8 @@ IMPORTANT: `claude plugin validate` **不會遞迴巢狀目錄**。放在 `skill
 
 #### 2. 人工判斷
 
+產出：稽核報告（必須修正／建議／通過，格式 `rules/quality-checklist.md`）
+
 機械檢查過不了的東西，才需要讀：
 
 - 觸發詞涵蓋動詞變化、名詞同義、口語與正式、中英文了嗎？
@@ -89,14 +93,14 @@ IMPORTANT: `claude plugin validate` **不會遞迴巢狀目錄**。放在 `skill
 
 ### 寫新 skill 的流程
 
-| 步驟 | 做什麼 | 要問使用者嗎 |
-| --- | --- | --- |
-| 1 | **確認它不該是別的東西**。只是一段常用提示詞 → 不需要 skill。只有你會手動叫 → 可能該是 command | — |
-| 2 | **先寫 `description`**。寫不出清楚的觸發條件，代表這個 skill 的職責還沒想清楚 | — |
-| 3 | **寫 `## Skill Boundaries`**，特別是與既有 skill 的分界。這一步會逼你面對重疊 | 職責明顯重疊時要 |
-| 4 | 寫 `## 流程` 與 `## 產物`，再寫 `## Verification`——寫不出可判是或否的項目，代表流程還沒說清楚「做完」長什麼樣 | — |
-| 5 | 判斷需不需要子目錄；需要時建，並在 SKILL.md 裡明確指路 | — |
-| 6 | 跑稽核 | — |
+| 步驟 | 做什麼 | 產出 | 要問使用者嗎 |
+| --- | --- | --- | --- |
+| 1 | **確認它不該是別的東西**。只是一段常用提示詞 → 不需要 skill。只有你會手動叫 → 可能該是 command | 要不要寫的結論 | — |
+| 2 | **先寫 `description`**。寫不出清楚的觸發條件，代表這個 skill 的職責還沒想清楚 | frontmatter | — |
+| 3 | **寫 `## Skill Boundaries`**，特別是與既有 skill 的分界。這一步會逼你面對重疊 | `## Skill Boundaries` | 職責明顯重疊時要 |
+| 4 | 寫 `## 流程`（每步第一行 `產出：`，S17）與 `## 產物`（S18 的表），再寫 `## Verification`——寫不出可判是或否的項目，代表流程還沒說清楚「做完」長什麼樣 | 這三節 | — |
+| 5 | 判斷需不需要子目錄；需要時建，並在 SKILL.md 裡明確指路 | 有內容的子目錄 | — |
+| 6 | 跑稽核 | 稽核輸出，沒有 MUST | — |
 
 Ask user: 若新 skill 與既有 skill 的職責明顯重疊，先問使用者要合併還是劃界，不要自己決定——重疊的兩個
 skill 會互搶觸發，而使用者無從得知模型挑了哪一個。
@@ -180,7 +184,11 @@ skill 會互搶觸發，而使用者無從得知模型挑了哪一個。
 
 ## 產物
 
-稽核是一份報告，照 `rules/quality-checklist.md` 的格式（必須修正／建議／通過）；寫新 skill 是 `skills/<name>/`，結構照〈房規〉。
+| 檔 | 哪一步寫 | 格式在哪 |
+| --- | --- | --- |
+| `skills/<name>/SKILL.md` 與有內容的子目錄（寫新 skill 時） | 寫新 skill 第 2–5 步 | 〈房規〉、`rules/structure.md`、`rules/frontmatter.md` |
+
+稽核不寫檔，交一份報告，格式照 `rules/quality-checklist.md`（必須修正／建議／通過）。
 
 ## Verification
 
